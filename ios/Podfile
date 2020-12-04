@@ -1,4 +1,4 @@
-platform :ios, '9.0'
+platform :ios, '10.0'
 
 # use_frameworks!
 
@@ -66,7 +66,9 @@ target 'Bluezone' do
   pod 'Firebase/Core', '~> 6.3.0'
   pod 'Firebase/Messaging'
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
-
+  # fitness 
+  pod 'react-native-fitness', :path => '../node_modules/@ovalmoney/react-native-fitness'
+  pod 'RNCharts', :path => '../node_modules/react-native-charts-wrapper'
   # firebase Analytics
   pod 'GoogleIDFASupport', '~> 3.14.0'
 

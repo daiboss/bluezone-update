@@ -23,10 +23,10 @@
 
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import {withNavigation} from '@react-navigation/compat';
+import { withNavigation } from '@react-navigation/compat';
 
 // Components
-import {View, AppState, Linking, Platform} from 'react-native';
+import { View, AppState, Linking, Platform } from 'react-native';
 import ModalBase from './ModalNotify';
 
 import {
@@ -41,7 +41,7 @@ import {
 } from '../../../../../core/bluetooth';
 
 // Language
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import message from '../../../../../core/msg/home';
 
 class ModalNotify extends React.Component {
@@ -105,7 +105,7 @@ class ModalNotify extends React.Component {
       switch (permissionBluetooth) {
         case 'blocked':
           if (!this.isPermissionBluetooth) {
-            this.setState({isVisiblePermissionBLE: true});
+            this.setState({ isVisiblePermissionBLE: true });
             this.isPermissionBluetooth = true;
           }
           break;
@@ -120,12 +120,12 @@ class ModalNotify extends React.Component {
   }
 
   checkRequestNotifications() {
-    requestNotifications(['alert', 'sound']).then(({status, settings}) => {
+    requestNotifications(['alert', 'sound']).then(({ status, settings }) => {
       switch (status) {
         case 'denied':
           break;
         case 'blocked':
-          this.setState({isVisiblePermissionNotify: true});
+          this.setState({ isVisiblePermissionNotify: true });
           break;
         case 'granted':
           this.checkBLT = true;
@@ -143,7 +143,7 @@ class ModalNotify extends React.Component {
   setStatusBluetooth(status) {
     console.log('setStatusBluetooth', status);
     if (this.vesionIOS < 13 || (!this.checkBLT && this.vesionIOS > 12)) {
-      this.setState({isVisibleBLE: !status});
+      this.setState({ isVisibleBLE: !status });
     }
 
     if (status && this.checkBLT) {
@@ -155,7 +155,7 @@ class ModalNotify extends React.Component {
   }
 
   onTurnOnPermissionBLE() {
-    this.setState({isVisiblePermissionBLE: false});
+    this.setState({ isVisiblePermissionBLE: false });
     Linking.canOpenURL('app-settings:')
       .then(supported => {
         if (!supported) {
@@ -181,7 +181,7 @@ class ModalNotify extends React.Component {
   }
 
   onTurnOnNotify() {
-    this.setState({isVisiblePermissionNotify: false});
+    this.setState({ isVisiblePermissionNotify: false });
     Linking.canOpenURL('app-settings://')
       .then(supported => {
         if (!supported) {
@@ -194,15 +194,15 @@ class ModalNotify extends React.Component {
   }
 
   render() {
-    const {language} = this.context;
-    const {intl} = this.props;
+    const { language } = this.context;
+    const { intl } = this.props;
 
     const {
       isVisiblePermissionBLE,
       isVisibleBLE,
       isVisiblePermissionNotify,
     } = this.state;
-    const {formatMessage} = intl;
+    const { formatMessage } = intl;
 
     const {
       NOTIFI_BLE_IOS_TEXT,
@@ -232,12 +232,12 @@ class ModalNotify extends React.Component {
           onPress={this.onTurnOnPermissionBLE}
           btnText={formatMessage(message.openSettingPermissionBlueTooth)}
         />
-        <ModalBase
+        {/* <ModalBase
           isVisible={isVisibleBLE}
           content={_NOTIFI_BLE_IOS_TEXT}
           onPress={this.onTurnOnBLE}
           btnText={formatMessage(message.openSettingBluetooth)}
-        />
+        /> */}
         <ModalBase
           isVisible={isVisiblePermissionNotify}
           content={_NOTIFI_PERMISSION_TEXT}

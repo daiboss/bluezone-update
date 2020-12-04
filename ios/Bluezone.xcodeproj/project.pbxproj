@@ -16,7 +16,8 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* BluezoneTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* BluezoneTests.m */; };
-		45784E95BE5F8BAEC4F65DC9 /* libPods-Bluezone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C15DB17B0E2FBDE49B1B754 /* libPods-Bluezone.a */; };
+		4FF94A5BDC9BCC979E129728 /* libPods-Bluezone-BluezoneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4741AE5326F458608C821068 /* libPods-Bluezone-BluezoneTests.a */; };
+		635A35AC01F6F6545CA1B7FB /* libPods-Bluezone-Bluezone.dev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F252EE117CE7C54EB629678 /* libPods-Bluezone-Bluezone.dev.a */; };
 		7D10C33B2455E97200C0E0ED /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D10C33A2455E97200C0E0ED /* CoreBluetooth.framework */; };
 		7D10C33C2455E97C00C0E0ED /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		7D10C33E2455E98E00C0E0ED /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D10C33D2455E98E00C0E0ED /* UserNotifications.framework */; };
@@ -91,9 +92,9 @@
 		7D59366124F5324D00588E05 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 7D59362D24F5113400588E05 /* Config.xcconfig */; };
 		7D59366224F5324D00588E05 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7D10C35C2455EC6800C0E0ED /* Roboto-Medium.ttf */; };
 		7D6169B824CBE5FD009AED85 /* BluezoneIdTrace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D6169B724CBE5FD009AED85 /* BluezoneIdTrace.swift */; };
-		AC1DCC9876A5B4B339A4C039 /* libPods-Bluezone-BluezoneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 61C62520F427F31A3AB8386F /* libPods-Bluezone-BluezoneTests.a */; };
-		E5EA2F1C37B7E757AA29503F /* libPods-Bluezone-Bluezone.dev.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B4C6545C02A702F60D3A388 /* libPods-Bluezone-Bluezone.dev.a */; };
-		F3882418FCBD0138ADB13777 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		B0C505387C69D32B07CB10F6 /* libPods-Bluezone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F3B863D2B8B191A1D5C7E1B4 /* libPods-Bluezone.a */; };
+		D54F971E25788557003B76FC /* libreact-native-fitness.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D54F971D25788557003B76FC /* libreact-native-fitness.a */; };
+		D54F97202578856D003B76FC /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D54F971F2578856D003B76FC /* HealthKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,8 +119,6 @@
 		00E356EE1AD99517003FC87E /* BluezoneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BluezoneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* BluezoneTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BluezoneTests.m; sourceTree = "<group>"; };
-		0B4C6545C02A702F60D3A388 /* libPods-Bluezone-Bluezone.dev.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bluezone-Bluezone.dev.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		0B5457C03663253912523E1A /* Pods-Bluezone-BluezoneTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone-BluezoneTests.debug.xcconfig"; path = "Target Support Files/Pods-Bluezone-BluezoneTests/Pods-Bluezone-BluezoneTests.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Bluezone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bluezone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Bluezone/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Bluezone/AppDelegate.m; sourceTree = "<group>"; };
@@ -129,9 +128,9 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Bluezone/main.m; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Bluezone-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bluezone-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Bluezone-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Bluezone-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3DB010279B9FEA01F09E0A9A /* Pods-Bluezone-Bluezone.dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone-Bluezone.dev.release.xcconfig"; path = "Target Support Files/Pods-Bluezone-Bluezone.dev/Pods-Bluezone-Bluezone.dev.release.xcconfig"; sourceTree = "<group>"; };
-		61C62520F427F31A3AB8386F /* libPods-Bluezone-BluezoneTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bluezone-BluezoneTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		67ADBD68D41CF06D656DFFF7 /* Pods-Bluezone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone.release.xcconfig"; path = "Target Support Files/Pods-Bluezone/Pods-Bluezone.release.xcconfig"; sourceTree = "<group>"; };
+		301A288D8CED563F2E489EDF /* Pods-Bluezone-Bluezone.dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone-Bluezone.dev.release.xcconfig"; path = "Target Support Files/Pods-Bluezone-Bluezone.dev/Pods-Bluezone-Bluezone.dev.release.xcconfig"; sourceTree = "<group>"; };
+		4741AE5326F458608C821068 /* libPods-Bluezone-BluezoneTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bluezone-BluezoneTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5267AB5AA393F62F29AE6836 /* Pods-Bluezone-Bluezone.dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone-Bluezone.dev.debug.xcconfig"; path = "Target Support Files/Pods-Bluezone-Bluezone.dev/Pods-Bluezone-Bluezone.dev.debug.xcconfig"; sourceTree = "<group>"; };
 		7D10C33A2455E97200C0E0ED /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		7D10C33D2455E98E00C0E0ED /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		7D10C33F2455E9B500C0E0ED /* Bluezone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Bluezone.entitlements; path = Bluezone/Bluezone.entitlements; sourceTree = "<group>"; };
@@ -171,12 +170,16 @@
 		7D59366824F5324D00588E05 /* Bluezone.dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bluezone.dev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D59366924F5324D00588E05 /* Bluezone.dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Bluezone.dev-Info.plist"; path = "/Users/bkavbso/Desktop/Optimal/BluezoneMobileApp/ios/Bluezone.dev-Info.plist"; sourceTree = "<absolute>"; };
 		7D6169B724CBE5FD009AED85 /* BluezoneIdTrace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluezoneIdTrace.swift; sourceTree = "<group>"; };
-		85BD04AEFA9F4A8929ABD44D /* Pods-Bluezone-Bluezone.dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone-Bluezone.dev.debug.xcconfig"; path = "Target Support Files/Pods-Bluezone-Bluezone.dev/Pods-Bluezone-Bluezone.dev.debug.xcconfig"; sourceTree = "<group>"; };
-		874FE28FD0209D058AF442AE /* Pods-Bluezone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone.debug.xcconfig"; path = "Target Support Files/Pods-Bluezone/Pods-Bluezone.debug.xcconfig"; sourceTree = "<group>"; };
-		9C15DB17B0E2FBDE49B1B754 /* libPods-Bluezone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bluezone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C7D8A71E3680D7779A85C36B /* Pods-Bluezone-BluezoneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone-BluezoneTests.release.xcconfig"; path = "Target Support Files/Pods-Bluezone-BluezoneTests/Pods-Bluezone-BluezoneTests.release.xcconfig"; sourceTree = "<group>"; };
+		7F252EE117CE7C54EB629678 /* libPods-Bluezone-Bluezone.dev.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bluezone-Bluezone.dev.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		80986FC7A7005671F47FC727 /* Pods-Bluezone-BluezoneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone-BluezoneTests.release.xcconfig"; path = "Target Support Files/Pods-Bluezone-BluezoneTests/Pods-Bluezone-BluezoneTests.release.xcconfig"; sourceTree = "<group>"; };
+		A3812E53D47DFDE8C7FAB1DF /* Pods-Bluezone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone.release.xcconfig"; path = "Target Support Files/Pods-Bluezone/Pods-Bluezone.release.xcconfig"; sourceTree = "<group>"; };
+		D54F971D25788557003B76FC /* libreact-native-fitness.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-fitness.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D54F971F2578856D003B76FC /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		E3E9BF2AD95C78115FEBD567 /* Pods-Bluezone-BluezoneTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone-BluezoneTests.debug.xcconfig"; path = "Target Support Files/Pods-Bluezone-BluezoneTests/Pods-Bluezone-BluezoneTests.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
+		EFD47581D9F7380A8B983797 /* Pods-Bluezone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bluezone.debug.xcconfig"; path = "Target Support Files/Pods-Bluezone/Pods-Bluezone.debug.xcconfig"; sourceTree = "<group>"; };
+		F3B863D2B8B191A1D5C7E1B4 /* libPods-Bluezone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bluezone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,7 +187,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC1DCC9876A5B4B339A4C039 /* libPods-Bluezone-BluezoneTests.a in Frameworks */,
+				4FF94A5BDC9BCC979E129728 /* libPods-Bluezone-BluezoneTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,11 +195,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D54F971E25788557003B76FC /* libreact-native-fitness.a in Frameworks */,
 				7D10C33E2455E98E00C0E0ED /* UserNotifications.framework in Frameworks */,
 				7D10C33B2455E97200C0E0ED /* CoreBluetooth.framework in Frameworks */,
-				F3882418FCBD0138ADB13777 /* (null) in Frameworks */,
+				D54F97202578856D003B76FC /* HealthKit.framework in Frameworks */,
 				7D10C33C2455E97C00C0E0ED /* JavaScriptCore.framework in Frameworks */,
-				45784E95BE5F8BAEC4F65DC9 /* libPods-Bluezone.a in Frameworks */,
+				B0C505387C69D32B07CB10F6 /* libPods-Bluezone.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,7 +225,7 @@
 				7D59364E24F5324D00588E05 /* UserNotifications.framework in Frameworks */,
 				7D59364F24F5324D00588E05 /* CoreBluetooth.framework in Frameworks */,
 				7D59365124F5324D00588E05 /* JavaScriptCore.framework in Frameworks */,
-				E5EA2F1C37B7E757AA29503F /* libPods-Bluezone-Bluezone.dev.a in Frameworks */,
+				635A35AC01F6F6545CA1B7FB /* libPods-Bluezone-Bluezone.dev.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,13 +269,15 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D54F971F2578856D003B76FC /* HealthKit.framework */,
+				D54F971D25788557003B76FC /* libreact-native-fitness.a */,
 				7D10C33D2455E98E00C0E0ED /* UserNotifications.framework */,
 				7D10C33A2455E97200C0E0ED /* CoreBluetooth.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				61C62520F427F31A3AB8386F /* libPods-Bluezone-BluezoneTests.a */,
-				0B4C6545C02A702F60D3A388 /* libPods-Bluezone-Bluezone.dev.a */,
-				9C15DB17B0E2FBDE49B1B754 /* libPods-Bluezone.a */,
+				F3B863D2B8B191A1D5C7E1B4 /* libPods-Bluezone.a */,
+				7F252EE117CE7C54EB629678 /* libPods-Bluezone-Bluezone.dev.a */,
+				4741AE5326F458608C821068 /* libPods-Bluezone-BluezoneTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -386,12 +392,12 @@
 		9963A15B316B7CB7B5B5BC56 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				874FE28FD0209D058AF442AE /* Pods-Bluezone.debug.xcconfig */,
-				67ADBD68D41CF06D656DFFF7 /* Pods-Bluezone.release.xcconfig */,
-				0B5457C03663253912523E1A /* Pods-Bluezone-BluezoneTests.debug.xcconfig */,
-				C7D8A71E3680D7779A85C36B /* Pods-Bluezone-BluezoneTests.release.xcconfig */,
-				85BD04AEFA9F4A8929ABD44D /* Pods-Bluezone-Bluezone.dev.debug.xcconfig */,
-				3DB010279B9FEA01F09E0A9A /* Pods-Bluezone-Bluezone.dev.release.xcconfig */,
+				EFD47581D9F7380A8B983797 /* Pods-Bluezone.debug.xcconfig */,
+				A3812E53D47DFDE8C7FAB1DF /* Pods-Bluezone.release.xcconfig */,
+				5267AB5AA393F62F29AE6836 /* Pods-Bluezone-Bluezone.dev.debug.xcconfig */,
+				301A288D8CED563F2E489EDF /* Pods-Bluezone-Bluezone.dev.release.xcconfig */,
+				E3E9BF2AD95C78115FEBD567 /* Pods-Bluezone-BluezoneTests.debug.xcconfig */,
+				80986FC7A7005671F47FC727 /* Pods-Bluezone-BluezoneTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -403,11 +409,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BluezoneTests" */;
 			buildPhases = (
-				76F531F3C575C8D2F987C721 /* [CP] Check Pods Manifest.lock */,
+				6D138F6CC7BFE5A786758515 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				6980E48F0E4EAB9F085460FC /* [CP] Copy Pods Resources */,
+				DD92390A41745BC21F4B042D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -423,13 +429,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Bluezone" */;
 			buildPhases = (
-				C16EA96EDEA4C57B60B5E352 /* [CP] Check Pods Manifest.lock */,
+				9642749B415D999563360DCC /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				DA877D2B96CFA9BB6391B70D /* [CP] Copy Pods Resources */,
+				C19FF46EBB0EFA64820DFF8B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -481,13 +487,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7D59366524F5324D00588E05 /* Build configuration list for PBXNativeTarget "Bluezone.dev" */;
 			buildPhases = (
-				7D59363624F5324D00588E05 /* [CP] Check Pods Manifest.lock */,
+				D0E9BF46CEFEFB0C9B2EFB57 /* [CP] Check Pods Manifest.lock */,
 				7D59363724F5324D00588E05 /* Start Packager */,
 				7D59363824F5324D00588E05 /* Sources */,
 				7D59364D24F5324D00588E05 /* Frameworks */,
 				7D59365224F5324D00588E05 /* Resources */,
 				7D59366324F5324D00588E05 /* Bundle React Native code and images */,
-				7D59366424F5324D00588E05 /* [CP] Copy Pods Resources */,
+				8152C13B3530CF7668A1F7FF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -626,7 +632,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
@@ -634,9 +640,9 @@
 			name = "Bundle React Native code and images";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -652,55 +658,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		6980E48F0E4EAB9F085460FC /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bluezone-BluezoneTests/Pods-Bluezone-BluezoneTests-resources.sh",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bluezone-BluezoneTests/Pods-Bluezone-BluezoneTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		76F531F3C575C8D2F987C721 /* [CP] Check Pods Manifest.lock */ = {
+		6D138F6CC7BFE5A786758515 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -716,28 +674,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Bluezone-BluezoneTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7D59363624F5324D00588E05 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Bluezone-Bluezone.dev-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -777,7 +713,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		7D59366424F5324D00588E05 /* [CP] Copy Pods Resources */ = {
+		8152C13B3530CF7668A1F7FF /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -825,7 +761,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bluezone-Bluezone.dev/Pods-Bluezone-Bluezone.dev-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C16EA96EDEA4C57B60B5E352 /* [CP] Check Pods Manifest.lock */ = {
+		9642749B415D999563360DCC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -847,7 +783,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DA877D2B96CFA9BB6391B70D /* [CP] Copy Pods Resources */ = {
+		C19FF46EBB0EFA64820DFF8B /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -893,6 +829,76 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bluezone/Pods-Bluezone-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D0E9BF46CEFEFB0C9B2EFB57 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Bluezone-Bluezone.dev-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DD92390A41745BC21F4B042D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Bluezone-BluezoneTests/Pods-Bluezone-BluezoneTests-resources.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bluezone-BluezoneTests/Pods-Bluezone-BluezoneTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -1045,7 +1051,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0B5457C03663253912523E1A /* Pods-Bluezone-BluezoneTests.debug.xcconfig */;
+			baseConfigurationReference = E3E9BF2AD95C78115FEBD567 /* Pods-Bluezone-BluezoneTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1069,7 +1075,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C7D8A71E3680D7779A85C36B /* Pods-Bluezone-BluezoneTests.release.xcconfig */;
+			baseConfigurationReference = 80986FC7A7005671F47FC727 /* Pods-Bluezone-BluezoneTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1090,7 +1096,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 874FE28FD0209D058AF442AE /* Pods-Bluezone.debug.xcconfig */;
+			baseConfigurationReference = EFD47581D9F7380A8B983797 /* Pods-Bluezone.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1125,7 +1131,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 67ADBD68D41CF06D656DFFF7 /* Pods-Bluezone.release.xcconfig */;
+			baseConfigurationReference = A3812E53D47DFDE8C7FAB1DF /* Pods-Bluezone.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1260,7 +1266,7 @@
 		};
 		7D59366624F5324D00588E05 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 85BD04AEFA9F4A8929ABD44D /* Pods-Bluezone-Bluezone.dev.debug.xcconfig */;
+			baseConfigurationReference = 5267AB5AA393F62F29AE6836 /* Pods-Bluezone-Bluezone.dev.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1295,7 +1301,7 @@
 		};
 		7D59366724F5324D00588E05 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3DB010279B9FEA01F09E0A9A /* Pods-Bluezone-Bluezone.dev.release.xcconfig */;
+			baseConfigurationReference = 301A288D8CED563F2E489EDF /* Pods-Bluezone-Bluezone.dev.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

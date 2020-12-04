@@ -272,6 +272,8 @@ dependencies {
 
     // thu viện beacon
     implementation 'org.altbeacon:android-beacon-library:2.+'
+    implementation project(':react-native-charts-wrapper')
+
 }
 
 // Run this once to be able to run the application with BUCK

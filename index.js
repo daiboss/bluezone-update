@@ -19,23 +19,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RemoteMessage} from 'react-native-firebase';
+import { RemoteMessage } from 'react-native-firebase';
 
 const _XHR = GLOBAL.originalXMLHttpRequest
   ? GLOBAL.originalXMLHttpRequest
   : (GLOBAL.XMLHttpRequest =
-      GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest);
+    GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest);
 XMLHttpRequest = _XHR;
 
-import {AppRegistry} from 'react-native';
+import { AppRegistry } from 'react-native';
 // import './app/core/log/console';
 
 // Components
 import App from './App';
-import {name as appName} from './app.json';
+import { name as appName } from './app.json';
 
-import {remoteMessageListener} from './app/core/push';
-import {getLanguage} from './app/core/storage';
+import { remoteMessageListener } from './app/core/push';
+import { getLanguage } from './app/core/storage';
 
 async function handleBackgroundMessage(message: RemoteMessage) {
   const language = await getLanguage();
