@@ -51,7 +51,7 @@ android/java*
 node_modules/
 npm-debug.log
 yarn-error.log
-
+*.lock
 # BUCK
 buck-out/
 \.buckd/
