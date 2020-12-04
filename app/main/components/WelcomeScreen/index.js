@@ -179,7 +179,8 @@ class WelcomeScreen extends React.Component {
   };
 
   onSelect = () => {
-    this.setState({isVisible: true});
+    // this.setState({isVisible: true});
+    this.props.navigation.navigate('Profile')
   };
 
   onClose = () => {

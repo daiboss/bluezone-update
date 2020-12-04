@@ -55,7 +55,7 @@ import styles from './styles/index.css';
 import Service from '../../../core/apis/service';
 
 const currentVersion = Service.getVersion();
-const isDeploygateVersion = currentVersion.includes('deploygate');
+const isDeploygateVersion = currentVersion?.includes('deploygate');
 
 class WatchScanScreen extends React.Component {
   constructor(props) {

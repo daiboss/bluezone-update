@@ -242,5 +242,17 @@
     "bluezone.welcome.closeAlert": "Close",
     "bluezone.welcome.perpetualCalendar": "Perpetual calendar",
     "bluezone.welcome.notify": "You are not in close contact with F0 yet!",
-    "bluezone.welcome.close": "Ok"
+    "bluezone.welcome.close": "Ok",
+
+    "bluezone.profile.titleHeader":"Profile",
+    "bluezone.profile.gender":"Gender",
+    "bluezone.profile.height":"Height",
+    "bluezone.profile.weight":"Weight",
+    "bluezone.profile.enterYourHeight":"Please enter your height",
+    "bluezone.profile.enterYourWeight":"Please enter your weight",
+    "bluezone.profile.male":"Male",
+    "bluezone.profile.female":"Female",
+    "bluezone.profile.finish":"Finish",
+    "bluezone.profile.errorTitle": "Notifications",
+    "bluezone.profile.errorDescription": "An error has occurred. Please try again."
 }

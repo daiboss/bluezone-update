@@ -244,5 +244,18 @@
   "bluezone.welcome.closeAlert": "Đóng",
   "bluezone.welcome.perpetualCalendar": "Lịch vạn niên",
   "bluezone.welcome.notify": "Bạn chưa tiếp xúc gần với F0 nào!",
-  "bluezone.welcome.close": "OK"
+  "bluezone.welcome.close": "OK",
+
+  "bluezone.profile.titleHeader":"Hồ sơ",
+  "bluezone.profile.gender":"Giới tính",
+  "bluezone.profile.height":"Chiều cao",
+  "bluezone.profile.weight":"Cân nặng",
+  "bluezone.profile.complete":"Hoàn tất",
+  "bluezone.profile.enterYourHeight":"Bạn vui lòng nhập chiều cao",
+  "bluezone.profile.enterYourWeight":"Bạn vui lòng nhập cân nặng",
+  "bluezone.profile.male":"Nam",
+  "bluezone.profile.female":"Nữ",
+  "bluezone.profile.finish":"Hoàn tất",
+  "bluezone.profile.errorTitle": "Thông báo",
+  "bluezone.profile.errorDescription": "Đã có lỗi xảy ra. Bạn vui lòng thử lại."
 }

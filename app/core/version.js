@@ -127,10 +127,10 @@ const checkUpdate = (currentVersion, latestVersion, rangeVersion = []) => {
 const getVersionValue = version => {
   let hasSuffixes;
   let suffixes;
-  if (version.endsWith('-deploygate')) {
+  if (version?.endsWith('-deploygate')) {
     hasSuffixes = true;
     suffixes = '-deploygate';
-  } else if (version.endsWith('-deploygate.dev')) {
+  } else if (version?.endsWith('-deploygate.dev')) {
     hasSuffixes = true;
     suffixes = '-deploygate.dev';
   }

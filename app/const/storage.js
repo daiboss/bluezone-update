@@ -40,3 +40,4 @@ export const LastTimeClearLog = 'LastTimeClearLog';
 export const DateOfWelcome = 'DateOfWelcome';
 export const DisplayOriginalImg = 'DisplayOriginalImg';
 export const QuestionFAQ = 'QuestionFAQ';
+export const Profile = 'Profile';

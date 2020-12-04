@@ -24,7 +24,7 @@
 import Service from './service';
 
 const currentVersion = Service.getVersion();
-export const dev = currentVersion.endsWith('dev');
+export const dev = currentVersion?.endsWith('dev');
 
 export const DOMAIN = dev
   ? 'https://apibetabz.bkav.com'

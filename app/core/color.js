@@ -22,3 +22,4 @@
 'use strict';
 
 export const blue_bluezone = '#015cd0';
+export const red_bluezone = '#FE4358';

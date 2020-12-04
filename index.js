@@ -28,7 +28,7 @@ const _XHR = GLOBAL.originalXMLHttpRequest
 XMLHttpRequest = _XHR;
 
 import {AppRegistry} from 'react-native';
-import './app/core/log/console';
+// import './app/core/log/console';
 
 // Components
 import App from './App';

@@ -102,6 +102,7 @@ import {
   removeDeliveredNotification,
 } from './app/core/fcm';
 import {getIsFirstLoading, setIsFirstLoading} from './app/core/storage';
+import ProfileScreen from './app/main/components/ProfileScreen';
 
 // Components
 const HomeScreen = decorateMainAppStart(Home);
@@ -380,6 +381,7 @@ class App extends React.Component {
                   name={WELCOME_INITIAL_ROUTE}
                   component={this.WelcomeProps}
                 />
+                <Stack.Screen name="Profile" component={ProfileScreen} />
               </Stack.Navigator>
             ) : (
               <Stack.Navigator
@@ -427,7 +429,8 @@ class App extends React.Component {
                   component={ContactHistory}
                 />
                 {/*<Stack.Screen name="ScanScreen" component={ScanScreen} />*/}
-                <Stack.Screen name="Welcome" component={Welcome} />
+                <Stack.Screen name="Profile" component={ProfileScreen} />
+                {/* <Stack.Screen name="Welcome" component={Welcome} /> */}
                 <Stack.Screen name="FAQScreen">
                   {props => <FAQScreen {...props} showBack={true} />}
                 </Stack.Screen>

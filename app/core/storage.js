@@ -45,6 +45,7 @@ import {
   DateOfWelcome,
   DisplayOriginalImg,
   QuestionFAQ,
+  Profile,
 } from '../const/storage';
 
 // TODO Can sua de moi du lieu ghi vao storage deu dung JSON.stringify, va lay ra deu dung JSON.parse. Dam bao tuong tich ban cu. thay vi ben ngoai phan tu convert nhu gio.
@@ -289,7 +290,19 @@ const setQuestionFAQ = (value = '') => {
   AsyncStorage.setItem(QuestionFAQ, _resource);
 };
 
+const getProfile = async () => {
+  const result = await AsyncStorage.getItem(Profile);
+  return _processOutput(result);
+};
+
+const setProfile = (value = '') => {
+  const _resource = _processInput(value);
+  AsyncStorage.setItem(Profile, _resource);
+};
+
 export {
+  setProfile,
+  getProfile,
   getResourceLanguage,
   setResourceLanguage,
   getConfiguration,
