@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, SafeAreaView, StatusBar, Text, TouchableOpacity, StyleSheet, ImageBackground, Image } from 'react-native'
+import { View, SafeAreaView, StatusBar, Text, TouchableOpacity, StyleSheet, ImageBackground, Image, processColor } from 'react-native'
 import Fitness from '@ovalmoney/react-native-fitness';
 import { LineChart } from 'react-native-charts-wrapper';
 
@@ -8,7 +8,8 @@ import { Dimensions } from "react-native";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { ScrollView } from 'react-native-gesture-handler';
 // import { LineChart, Grid } from 'react-native-svg-charts'
-
+import moment from 'moment';
+import 'moment/locale/vi'; // without this line it didn't work
 const screenWidth = Dimensions.get("window").width;
 const StepCount = ({ props, navigation }) => {
     const data = {
@@ -33,23 +34,48 @@ const StepCount = ({ props, navigation }) => {
         useShadowColorFromDataset: false // optional
     };
     const [countStep, setCountStep] = useState(null)
+    const [countRest, setCountRest] = useState(0)
+    const [countCarlo, setCountCarlo] = useState(0)
+    const [distant, setDistant] = useState(0)
+    const totalCount = 20000
     const permissions = [
         { kind: Fitness.PermissionKinds.Steps, access: Fitness.PermissionAccesses.Read },
         { kind: Fitness.PermissionKinds.Calories, access: Fitness.PermissionAccesses.Read },
         { kind: Fitness.PermissionKinds.Distances, access: Fitness.PermissionAccesses.Read },
     ];
+    const [dataChart, setDataChart] = useState({})
+    const xAxis = {
+        granularityEnabled: true,
+        granularity: 1,
+        // axisLineWidth: 3,
+        position: 'TOP',
+        labelCount: 7,
+        avoidFirstLastClipping: true,
+
+
+    }
     useEffect(() => {
-        getPermission()
+        var end = new Date().getTime()
+
+        var start = new Date().setDate(new Date().getDate() - 6)
+
+        // let listDate = getListDate(start, end)
+
+        getPermission(moment(start).format('YYYY-MM-DD').toString(), moment(end).format('YYYY-MM-DD').toString())
     }, [])
-    const getPermission = () => {
+    const getPermission = (start, end) => {
+
         Fitness.requestPermissions(permissions).then(res => {
-            console.log('res: ', res);
+
             if (res == true) {
-                onGetSteps()
-                onGetCalories()
-                onGetDistances()
+                let listDate = getListDate(start, end)
+                renderDataMap(listDate)
+                onGetSteps(start, end)
+                onGetCalories(start, end)
+                onGetDistances(start, end)
             }
         }).catch(err => {
+
 
         })
         // Fitness.requestPermissions(permissions).then(res => {
@@ -67,52 +93,118 @@ const StepCount = ({ props, navigation }) => {
 
         // })
     }
-    const onGetSteps = () => {
-        Fitness.getSteps({ startDate: '2020/12/01', endDate: '2020/12/03' }).then(res => {
-            console.log('readsds: ', res);
+    const renderDataMap = (listDate) => {
+        let valueDate = []
+        listDate.map(obj => {
+            valueDate.push({
+                x: obj
+            })
+        })
+
+    }
+    const onGetSteps = (start, end) => {
+        Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
+
+            var valueDate = []
             var total = 0
             res.map(obj => {
-                console.log('obj: ', obj);
+                valueDate.push({
+                    x: moment(obj.endDate).format('MM/DD'),
+                    y: obj.quantity
+                })
                 total += obj.quantity
             })
             setCountStep(numberWithCommas(total))
-            console.log('numberWithCommas(total): ', numberWithCommas(total));
+
+            setCountRest(totalCount - total)
+
+
+
+
+            setDataChart({
+                dataSets: [{
+                    label: "demo",
+                    values: valueDate,
+
+                    config: {
+                        color: processColor('#fe4358'),
+                        drawCircles: true,
+                        lineWidth: 3,
+                        drawValues: false,
+                        axisDependency: 'LEFT',
+                        circleColor: processColor('#fe4358'),
+                        circleRadius: 5,
+                        drawCircleHole: false,
+                        mode: 'HORIZONTAL_BEZIER',
+                    },
+                },]
+            })
         }).catch(err => {
-            console.log('err: ', err);
+
+
 
         })
     }
-    const onGetDistances = () => {
-        Fitness.getDistances({ startDate: '2020/12/01', endDate: '2020/12/03' }).then(res => {
-            console.log('res: ', res);
-            // console.log('readsds: ', res);
-            // var total = 0
-            // res.map(obj => {
-            //     console.log('obj: ', obj);
-            //     total += obj.quantity
-            // })
-            // setCountStep(total)
+    const onGetDistances = (start, end) => {
+        Fitness.getDistances({ startDate: start, endDate: end }).then(res => {
+
+
+
+
+            // 
+            var total = 0
+            res.map(obj => {
+
+                total += obj.quantity
+            })
+            total = total / 1000
+            setDistant(total.toFixed(1))
         }).catch(err => {
-            console.log('err: ', err);
+
+
 
         })
+    }
+    const addDays = (date, days = 1) => {
+        var list = []
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+
+        list.push(result)
+
+
+        return [...list];
+    };
+
+    const getListDate = (startDate, endDate, range = []) => {
+
+
+        var start = new Date(startDate);
+        var end = new Date(endDate);
+
+        if (start > end) {
+            return range
+        };
+        const next = addDays(start, 1);
+        return getListDate(next, end, [...range, start]);
     }
     const numberWithCommas = (x) => {
-        console.log('x: ', x);
+
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
-    const onGetCalories = () => {
-        Fitness.getCalories({ startDate: '2020/12/01', endDate: '2020/12/03' }).then(res => {
+    const onGetCalories = (start, end) => {
+        Fitness.getCalories({ startDate: start, endDate: end }).then(res => {
             console.log('res: ', res);
-            // console.log('readsds: ', res);
-            // var total = 0
-            // res.map(obj => {
-            //     console.log('obj: ', obj);
-            //     total += obj.quantity
-            // })
-            // setCountStep(total)
+
+            // 
+            var total = 0
+            res.map(obj => {
+
+                total += obj.quantity
+            })
+            setCountCarlo(total)
         }).catch(err => {
-            console.log('err: ', err);
+
 
         })
     }
@@ -120,13 +212,16 @@ const StepCount = ({ props, navigation }) => {
         <SafeAreaView style={styles.container}>
             <StatusBar></StatusBar>
             <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+                {/* <View>
+                    <Text>Thống kê bước chân</Text>
+                </View> */}
                 <ImageBackground resizeMode={'stretch'} source={require('./images/bg_step_count.png')} style={styles.viewCircular}>
                     <View style={styles.viewBorderCircular}>
                         <AnimatedCircularProgress
                             size={180}
                             style={styles.circular}
                             width={6}
-                            fill={60}
+                            fill={(totalCount - countRest) / totalCount * 100}
                             tintColor="#FE4358"
                             backgroundColor="#e5e5e5">
                             {
@@ -143,7 +238,7 @@ const StepCount = ({ props, navigation }) => {
                                             {countStep}
                                         </Text>
                                         <Text style={styles.txCountTarget} >
-                                            Mục tiêu: {countStep}
+                                            Mục tiêu: {totalCount}
                                         </Text>
                                     </View>
                                 )
@@ -154,19 +249,19 @@ const StepCount = ({ props, navigation }) => {
                 <View style={styles.dataHealth}>
                     <View style={styles.viewImgData}>
                         <Image style={styles.img} source={require('./images/ic_step.png')}></Image>
-                        <Text style={styles.txData}>{`Còn 9000`}</Text>
+                        <Text style={styles.txData}>{`Còn ${countRest}`}</Text>
                         <Text style={styles.txUnit}>{`bước`}</Text>
 
                     </View>
                     <View style={styles.viewImgData}>
                         <Image style={styles.img} source={require('./images/ic_distance.png')}></Image>
-                        <Text style={styles.txData}>{`1000`}</Text>
+                        <Text style={styles.txData}>{distant}</Text>
                         <Text style={styles.txUnit}>{`km`}</Text>
 
                     </View>
                     <View style={styles.viewImgData}>
                         <Image style={styles.img} source={require('./images/ic_calories.png')}></Image>
-                        <Text style={styles.txData}>{`1000`}</Text>
+                        <Text style={styles.txData}>{countCarlo}</Text>
                         <Text style={styles.txUnit}>{`kal`}</Text>
 
                     </View>
@@ -180,7 +275,65 @@ const StepCount = ({ props, navigation }) => {
                 </View>
                 <View style={styles.viewLineChart}>
                     <LineChart style={styles.chart}
-                        data={{ dataSets: [{ label: "demo", values: [{ y: 1 }, { y: 2 }, { y: 1 }] }] }}
+                        data={dataChart}
+                        style={styles.chart}
+                        // data={this.state.data}
+                        xAxis={xAxis}
+                        highlights={[{ x: 3 }, { x: 6 }]}
+                        animation={{
+                            durationY: 2000,
+                        }}
+                        chartDescription={{
+                            text: '',
+                        }}
+                        yAxis={{
+
+                            left: {
+                                // valueFormatter: 'largeValue',
+                                // axisMinimum: 10,
+                                // drawAxisLine: false,
+                                // gridDashedLine: {
+                                //   lineLength: 5,
+                                //   spaceLength: 5,
+                                // },
+                            },
+                            right: {
+                                inverted: true,
+                                enabled: false,
+                            },
+                        }}
+                        touchEnabled={true}
+                        dragEnabled={true}
+                        scaleEnabled={true}
+                        syncX={true}
+
+                        scaleXEnabled={true}
+                        legend={{
+                            form: 'LINE',
+                            horizontalAlignment: 'CENTER',
+
+                            orientation: 'HORIZONTAL',
+                            wordWrapEnabled: true,
+                            xEntrySpace: 20,
+                            formSize: 20,
+                            textSize: 13,
+                            custom: {
+                                colors: '#FE4358'
+                            }
+
+                        }}
+
+                        marker={{
+                            enabled: true,
+                            markerColor: processColor('#372B7B'),
+                            textColor: processColor('#FFF'),
+                            markerFontSize: 14,
+                        }}
+                        scaleYEnabled={true}
+                        // visibleRange={this.state.visibleRange}
+                        dragDecelerationEnabled={false}
+                    // ref="chart"
+                    // onChange={this.handleChange.bind(this)}
                     />
                 </View>
                 <View style={styles.viewHeight}></View>
@@ -261,6 +414,10 @@ const styles = StyleSheet.create({
     txCountTarget: {
         color: '#949494',
         fontSize: 14
-    }
+    },
+    chart: {
+        flex: 1,
+        height: 300,
+    },
 })
 export default StepCount
