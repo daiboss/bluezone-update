@@ -22,10 +22,10 @@
 'use strict';
 
 import React from 'react';
-import {View, StatusBar, AppState} from 'react-native';
+import { View, StatusBar, AppState } from 'react-native';
 import * as PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 
 // Language
 import message from '../../../core/msg/home';
@@ -33,14 +33,14 @@ import messageWarning from '../../../core/msg/warning';
 
 // Components
 import ModalNotify from './components/ModalNotify';
-import Text, {MediumText, ThinText} from '../../../base/components/Text';
+import Text, { MediumText, ThinText } from '../../../base/components/Text';
 import Radar from './components/Radar';
 import SwitchLanguage from './components/SwitchLanguage';
 import UpdateVersion from '../UpdateVersion';
 import ButtonIconText from '../../../base/components/ButtonIconText';
 
 // Styles
-import style, {HEADER_BACKGROUND_HEIGHT} from './styles/index.css';
+import style, { HEADER_BACKGROUND_HEIGHT } from './styles/index.css';
 import * as fontSize from '../../../core/fontSize';
 // Logo
 import LogoBluezone from '../../../core/logo/logo_bluezone';
@@ -48,10 +48,10 @@ import IconBTT from './styles/images/IconBTT';
 import IconBYT from './styles/images/IconBYT';
 
 // Core
-import {checkRegisterNotificationOfDay} from '../../../core/notifyScheduler';
-import {setStatusNotifyRegister} from '../../../configuration';
-import {createNews} from '../../../core/announcement';
-import {messageNotifyOTP} from '../../../core/data';
+import { checkRegisterNotificationOfDay } from '../../../core/notifyScheduler';
+import { setStatusNotifyRegister } from '../../../configuration';
+import { createNews } from '../../../core/announcement';
+import { messageNotifyOTP } from '../../../core/data';
 // import Home from "../MainScreen";
 
 const modalStatusDefault = {
@@ -82,7 +82,7 @@ class HomeTab extends React.Component {
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
     this.timer = setTimeout(() => {
-      this.setState({showModal: true});
+      this.setState({ showModal: true });
     }, 1000);
   }
 
@@ -93,7 +93,7 @@ class HomeTab extends React.Component {
 
   handleAppStateChange(appState) {
     if (appState === 'active') {
-      const {stepSelected} = this.state;
+      const { stepSelected } = this.state;
       // if (stepSelected === 'updateVersion') {
       //   debugger;
       //   this.setModalStatus({isPermission: true});
@@ -102,19 +102,19 @@ class HomeTab extends React.Component {
   }
 
   getTextByLevel = () => {
-    const {intl} = this.props;
-    const {formatMessage} = intl;
+    const { intl } = this.props;
+    const { formatMessage } = intl;
     return formatMessage(messageWarning.lableF);
   };
 
   setModalStatus(status) {
     let step = {};
     if (status.isPermission) {
-      step = {stepSelected: 'isPermission'};
+      step = { stepSelected: 'isPermission' };
     }
 
     if (status.isCheckRegisterPhone) {
-      step = {stepSelected: 'isCheckRegisterPhone'};
+      step = { stepSelected: 'isCheckRegisterPhone' };
       this.setNotifyRegister();
     }
 
@@ -127,8 +127,8 @@ class HomeTab extends React.Component {
   }
 
   setNotifyRegister() {
-    const {stepSelected} = this.state;
-    const {language} = this.context;
+    const { stepSelected } = this.state;
+    const { language } = this.context;
 
     if (stepSelected === 'isCheckRegisterPhone') {
       return;
@@ -148,12 +148,12 @@ class HomeTab extends React.Component {
   }
 
   onWatchHistory() {
-    this.props.navigation.navigate('ContactHistory');
+    this.props.navigation.navigate('stepCount');
   }
 
   renderReminderModal() {
-    const {navigation} = this.props;
-    const {isUpdateVersion, isPermission, showModal} = this.state;
+    const { navigation } = this.props;
+    const { isUpdateVersion, isPermission, showModal } = this.state;
 
     if (!showModal) {
       return null;
@@ -173,15 +173,15 @@ class HomeTab extends React.Component {
   }
 
   render() {
-    const {intl, navigation} = this.props;
-    const {colorCircle, textF} = this.state;
-    const {formatMessage} = intl;
+    const { intl, navigation } = this.props;
+    const { colorCircle, textF } = this.state;
+    const { formatMessage } = intl;
 
     return (
       <View style={style.container}>
         <StatusBar hidden={true} />
         <View style={style.background}>
-          <View style={{backgroundColor: '#015cd0'}}>
+          <View style={{ backgroundColor: '#015cd0' }}>
             <View style={style.switchLanguage}>
               <View style={style.logo}>
                 <LogoBluezone width={28.8} height={34.6} />
@@ -211,11 +211,11 @@ class HomeTab extends React.Component {
                   </MediumText>
                 </View>
                 <View style={style.borderLogo} />
-                <View style={{marginHorizontal: 14.6}}>
+                <View style={{ marginHorizontal: 14.6 }}>
                   <IconBTT width={30} height={30} />
                 </View>
                 <View style={style.borderLogo} />
-                <View style={{marginLeft: 14.6}}>
+                <View style={{ marginLeft: 14.6 }}>
                   <IconBYT width={30} height={30} />
                 </View>
               </View>
@@ -223,7 +223,7 @@ class HomeTab extends React.Component {
             </View>
             <FastImage
               source={require('./styles/images/Banner.png')}
-              style={{height: HEADER_BACKGROUND_HEIGHT}}
+              style={{ height: HEADER_BACKGROUND_HEIGHT }}
               resizeMode={FastImage.resizeMode.contain}
               cacheControl={'immutable'}
             />
@@ -242,7 +242,7 @@ class HomeTab extends React.Component {
               </Text>
             </View>
           </View>
-          <Text style={[style.textF, {color: colorCircle}]} text={textF} />
+          <Text style={[style.textF, { color: colorCircle }]} text={textF} />
           <View style={style.watchScan}>
             <Radar navigation={navigation} />
           </View>
@@ -252,7 +252,7 @@ class HomeTab extends React.Component {
               text={formatMessage(message.historyButton)}
               source={require('./styles/images/icon_history.png')}
               styleBtn={style.buttonScan}
-              styleText={{fontSize: fontSize.normal}}
+              styleText={{ fontSize: fontSize.normal }}
               styleIcon={style.buttonIcon}
             />
             <ButtonIconText
@@ -260,7 +260,7 @@ class HomeTab extends React.Component {
               text={formatMessage(message.utilities)}
               source={require('./styles/images/bluezoner.png')}
               styleBtn={style.buttonHistory}
-              styleText={{fontSize: fontSize.normal}}
+              styleText={{ fontSize: fontSize.normal }}
               styleIcon={style.buttonIcon}
             />
           </View>
