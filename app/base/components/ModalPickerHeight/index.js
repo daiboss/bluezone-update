@@ -15,8 +15,10 @@ import Text from '../Text';
 import styles from './styles/index.css';
 import ModalComponent from '../ModalComponent';
 import {widthPercentageToDP} from '../../../core/utils/dimension';
-function ModalPicker({isVisibleModal, onCloseModal, onSelected}) {
+function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender}) {
   const [data, setData] = useState([]);
+  const [height, setHeight] = useState(gender == 1 ? '165 cm' : '155 cm');
+  const [index, setIndex] = useState(0);
   useEffect(() => {
     let dataHeight = [];
     let i = 100;
@@ -24,9 +26,19 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected}) {
       dataHeight.push(i.toString() + ' cm');
     }
     setData(dataHeight);
+    setIndex(65);
+    setHeight('165 cm');
   }, []);
-  const [height, setHeight] = useState('100 cm');
-  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (gender == 1) {
+      setHeight('165 cm');
+      setIndex(data.findIndex(e => e == '165 cm'));
+    } else if (gender == 0) {
+      setHeight('155 cm');
+      setIndex(data.findIndex(e => e == '155 cm'));
+    }
+  }, [gender]);
   const selectHeight = () => {
     onSelected && onSelected(height);
     onCloseModal();
@@ -34,30 +46,25 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected}) {
   return (
     <ModalComponent
       isVisible={isVisibleModal}
-      onBackdropPress={onCloseModal}
+      onBackdropPress={selectHeight}
       backdropOpacity={0.5}
       animationInTiming={500}
       animationOutTiming={500}
       style={styles.modal}
       backdropTransitionInTiming={1000}
       backdropTransitionOutTiming={1000}>
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <WheelPicker
-            selectedItem={index}
-            data={data}
-            style={{
-              height: widthPercentageToDP(Platform.OS === 'ios' ? 50 : 40),
-            }}
-            onItemSelected={height => {
-              setHeight(data[height]);
-              setIndex(height);
-            }}
-          />
-        </View>
-        <TouchableOpacity onPress={selectHeight} style={styles.buttonSelect}>
-          <Text>Chọn</Text>
-        </TouchableOpacity>
+      <View style={styles.content}>
+        <WheelPicker
+          selectedItem={index}
+          data={data}
+          style={{
+            height: widthPercentageToDP(Platform.OS === 'ios' ? 50 : 40),
+          }}
+          onItemSelected={height => {
+            setHeight(data[height]);
+            setIndex(height);
+          }}
+        />
       </View>
     </ModalComponent>
   );

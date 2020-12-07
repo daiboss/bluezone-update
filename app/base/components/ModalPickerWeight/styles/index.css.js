@@ -17,12 +17,7 @@ import {StyleSheet} from 'react-native';
 import * as fontSize from '../../../../core/fontSize';
 
 const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
+  container: {},
   modal: {
     marginHorizontal: 0,
   },
@@ -35,10 +30,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   content: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: '#FFF',
-    borderRadius: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     padding: 10,
-    flexDirection: 'row'
+    flexDirection: 'row',
     // justifyContent: 'center'
   },
 

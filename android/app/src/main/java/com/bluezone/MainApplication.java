@@ -41,7 +41,6 @@ public class MainApplication extends Application implements ReactApplication {
            packages.add(new RNFirebaseMessagingPackage());
            packages.add(new RNFirebaseNotificationsPackage());
            packages.add(new LottiePackage());
-           packages.add(new MPAndroidChartPackage());           // <----- Add this
 
            return packages;
         }

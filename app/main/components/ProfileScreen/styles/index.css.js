@@ -37,6 +37,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
+  container3: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  textLabel: {
+    fontSize: fontSize.normal,
+    flex: 1,
+    paddingLeft: 15,
+  },
+  iconInfo: {
+    height: 20,
+    width: 20,
+    resizeMode: 'contain',
+  },
   modalFooter: {
     borderTopWidth: 0.5,
     borderTopColor: 'rgba(60, 60, 67, 0.29)',
@@ -65,7 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
     justifyContent: 'space-between',
-    paddingTop:'15%'
+    paddingTop: '15%',
   },
   container2: {
     shadowColor: '#00000040',
@@ -84,7 +98,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
   },
- 
 });
 
 export default styles;

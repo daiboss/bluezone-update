@@ -18,9 +18,14 @@ import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from '../../../core/utils/dimension';
-function ModalPicker({isVisibleModal, onCloseModal, onSelected}) {
+function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender}) {
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
+  const [weight, setWeight] = useState(gender == 1 ? '65' : '50');
+  const [index, setIndex] = useState(0);
+
+  const [weight2, setWeight2] = useState('0 kg');
+  const [index2, setIndex2] = useState(0);
   useEffect(() => {
     let dataWeight = [];
     let i = 15;
@@ -32,14 +37,20 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected}) {
     for (j; j <= 9; j++) {
       data3.push(j.toString() + ' kg');
     }
+    setIndex(50);
+    setWeight('65');
     setData(dataWeight);
     setData2(data3);
   }, []);
-  const [weight, setWeight] = useState('15');
-  const [index, setIndex] = useState(0);
-
-  const [weight2, setWeight2] = useState('0 kg');
-  const [index2, setIndex2] = useState(0);
+  useEffect(() => {
+    if (gender == 1) {
+      setIndex(data.findIndex(e => e == '65'));
+      setWeight('65');
+    } else if (gender == 0) {
+      setIndex(data.findIndex(e => e == '55'));
+      setWeight('55');
+    }
+  }, [gender]);
 
   const selectHeight = () => {
     onSelected && onSelected(weight + ',' + weight2);
@@ -48,43 +59,38 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected}) {
   return (
     <ModalComponent
       isVisible={isVisibleModal}
-      onBackdropPress={onCloseModal}
+      onBackdropPress={selectHeight}
       backdropOpacity={0.5}
       animationInTiming={500}
       animationOutTiming={500}
       style={styles.modal}
       backdropTransitionInTiming={1000}
       backdropTransitionOutTiming={1000}>
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <WheelPicker
-            selectedItem={index}
-            data={data}
-            style={{
-              width: widthPercentageToDP(50),
-              height: heightPercentageToDP(30),
-            }}
-            onItemSelected={weight => {
-              setWeight(data[weight]);
-              setIndex(weight);
-            }}
-          />
-          <WheelPicker
-            selectedItem={index2}
-            data={data2}
-            style={{
-              width: widthPercentageToDP(50),
-              height: heightPercentageToDP(30),
-            }}
-            onItemSelected={weight => {
-              setWeight2(data2[weight]);
-              setIndex2(weight);
-            }}
-          />
-        </View>
-        <TouchableOpacity onPress={selectHeight} style={styles.buttonSelect}>
-          <Text>Chọn</Text>
-        </TouchableOpacity>
+      <View style={styles.content}>
+        <WheelPicker
+          selectedItem={index}
+          data={data}
+          style={{
+            width: widthPercentageToDP(50),
+            height: heightPercentageToDP(30),
+          }}
+          onItemSelected={weight => {
+            setWeight(data[weight]);
+            setIndex(weight);
+          }}
+        />
+        <WheelPicker
+          selectedItem={index2}
+          data={data2}
+          style={{
+            width: widthPercentageToDP(50),
+            height: heightPercentageToDP(30),
+          }}
+          onItemSelected={weight => {
+            setWeight2(data2[weight]);
+            setIndex2(weight);
+          }}
+        />
       </View>
     </ModalComponent>
   );

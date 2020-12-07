@@ -254,5 +254,16 @@
     "bluezone.profile.female":"Female",
     "bluezone.profile.finish":"Finish",
     "bluezone.profile.errorTitle": "Notifications",
-    "bluezone.profile.errorDescription": "An error has occurred. Please try again."
+    "bluezone.profile.errorDescription": "An error has occurred. Please try again.",
+    "bluezone.profile.skinny": "Skinny",
+    "bluezone.profile.fit": "Fit",
+    "bluezone.profile.overWeight": "Overweight",
+    "bluezone.profile.classOneObesity": "Class 1 obesity",
+    "bluezone.profile.classTwoObesity": "Class 2 obesity",
+
+
+    "bluezone.bmi.titleHeader":"BMI",
+    "bluezone.bmi.finish":"View results",
+    "bluezone.bmi.content":"Body Mass Index (BMI) is calculated from the body's height and weight. It provides a reliable indicator of body fatness for people."
+
 }

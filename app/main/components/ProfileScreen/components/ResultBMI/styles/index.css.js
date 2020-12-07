@@ -16,12 +16,16 @@
 import {StyleSheet} from 'react-native';
 import * as fontSize from '../../../../../../core/fontSize';
 import {blue_bluezone, red_bluezone} from '../../../../../../core/color';
+import { heightPercentageToDP } from '../../../../../../core/utils/dimension';
 
 const styles = StyleSheet.create({
-  iconNext: {
-    height: 17,
-    width: 17,
-    resizeMode: 'contain',
+  empty:{
+    height:30
+  },
+  textTotalBmi: {
+    color: '#00B67E',
+    fontWeight: '500',
+    fontSize: fontSize.normal,
   },
   textGender: {
     fontSize: fontSize.normal,
@@ -30,22 +34,6 @@ const styles = StyleSheet.create({
   textLabel: {
     fontSize: fontSize.normal,
     fontWeight: 'bold',
-  },
-  buttonSelectGender: {
-    borderRadius: 15,
-    padding: 5,
-    paddingHorizontal: 10,
-  },
-  backgroundColorGenderSelected: {
-    backgroundColor: red_bluezone,
-  },
-  colorGenderSelected: {
-    color: '#FFF',
-  },
-  containerSelectGender: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    flex: 1,
   },
   container2: {
     shadowColor: '#00000020',
@@ -67,25 +55,67 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     minHeight: 65,
   },
-  borderError: {
-    borderColor: 'red',
-  },
-  textError: {
-    color: 'red',
-    paddingLeft: 15,
-    paddingTop: 5,
-  },
-  buttonSelect: {
+  container4: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  flex: {
     flex: 1,
-    paddingLeft: '30%',
   },
-  textLabel: {
+  textValue: {
+    position: 'absolute',
+    right: -10,
+    top: -20,
+    fontSize: fontSize.small,
+  },
+  group: {
+    justifyContent: 'center',
+    paddingTop: 15,
+    paddingBottom:10
+  },
+  borderRadiusLeft: {
+    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 10,
+  },
+  borderRadiusRight: {
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  line: {
+    height: 6,
+    width: '100%',
+    marginBottom: 20,
+  },
+  line1: {
+    backgroundColor: '#015CD0',
+  },
+  line2: {
+    backgroundColor: '#00B67E',
+  },
+  line3: {
+    backgroundColor: '#FFD500',
+  },
+  line4: {
+    backgroundColor: '#FF8E30',
+  },
+  line5: {
+    backgroundColor: '#FE4358',
+  },
+  dot: {
+    backgroundColor: '#FFF',
+    borderColor: '#015CD0',
+    borderWidth: 1,
+    height: 15,
+    width: 15,
+    borderRadius: 15 / 2,
+    position: 'absolute',
+    top:'12%'
+  },
+  textWarning:{
+    textAlign:'center',
+    flex: 1,
     fontSize: fontSize.normal,
-    fontWeight: 'bold',
-  },
+  }
 });
 
 export default styles;

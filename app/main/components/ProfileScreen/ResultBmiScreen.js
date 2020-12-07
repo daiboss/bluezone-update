@@ -19,7 +19,7 @@ import ButtonIconText from '../../../base/components/ButtonIconText';
 import ModalBase from '../../../base/components/ModalBase';
 
 import {blue_bluezone, red_bluezone} from '../../../core/color';
-import message from '../../../core/msg/profile';
+import message from '../../../core/msg/bmi';
 
 // Styles
 import styles from './styles/index.css';
@@ -31,6 +31,7 @@ const TIMEOUT_LOADING = 800;
 import moment from 'moment';
 import {ButtonClose} from '../../../base/components/ButtonText/ButtonModal';
 import ResultBMI from './components/ResultBMI';
+import ResultBmiProgress from './components/ResultBmiProgress';
 const visibleModal = {
   isProcessing: false,
   isVisibleVerifySuccess: false,
@@ -39,94 +40,32 @@ const visibleModal = {
   isVisibleVerifyError: false,
 };
 
-const ProfileScreen = ({route, intl, navigation}) => {
+const ResultBmiScreen = ({route, intl, navigation}) => {
+  console.log('route: ', route);
   const {formatMessage} = intl;
   const [gender, setGender] = useState(0);
   const [listProfile, setListProfile] = useState([]);
   const [listTime, setListTime] = useState([]);
+  const [bmi, setBmi] = useState(0);
 
   const [heightError, setHeightError] = useState(null);
   const [weightError, setWeightError] = useState(null);
   const [isVisibleVerifyError, setisVisibleVerifyError] = useState(false);
-  const [height, setHeight] = useState(null);
-  const [weight, setWeight] = useState(null);
+  const [height, setHeight] = useState(() => route?.params.height);
+  const [weight, setWeight] = useState(() => route?.params.weight);
   const onGoBack = () => navigation.goBack();
-  const onSelectGender = gender => setGender(gender);
-  const getListProfile = async () => {
-    try {
-      let profiles = (await getProfile()) || [];
-
-      let data = profiles.reduce((r, a) => {
-        r['values'] = r['values'] || [];
-        r['values'].unshift({
-          y: Number(
-            a.weight.substring(0, a.weight.length - 3).replace(',', '.'),
-          ),
-          marker: a.weight,
-        });
-        // r.label = 'Chỉ số khối (BMI)';
-        // r.color = '#FFAAAA';
-        return r;
-      }, Object.create(null));
-
-      if (profiles?.length) {
-        let time = profiles.map(e => moment(e.date)?.format('DD/MM'));
-        setListTime(time);
-        setListProfile([data]);
-      } else {
-        // setListTime([]);
-        // setListProfile([]);
-      }
-      let profile = profiles.find(
-        item => moment(item.date).diff(moment(), 'M') == 0,
-      );
-
-      if (profile) {
-        setGender(profile.gender);
-        setHeight(profile.height);
-        setWeight(profile.weight);
-      }
-    } catch (error) {}
-  };
-  useEffect(() => {
-    setGender(1);
-    getListProfile();
-  }, []);
-  const onConfirm = async () => {
-    try {
-      if (!height) {
-        setHeightError(true);
-      }
-      if (!weight) {
-        setWeightError(true);
-      }
-      if (!height || !weight) return;
-      let profiles = (await getProfile()) || [];
-
-      let index = profiles.findIndex(
-        profile => moment(profile.date).diff(moment(), 'M') == 0,
-      );
-
-      let obj = {
-        gender,
-        height,
-        weight,
-        date: moment()
-          .toDate()
-          .getTime(),
-      };
-      if (index != -1) {
-        profiles.splice(index, 1, obj);
-      } else {
-        profiles.push(obj);
-      }
-      setProfile(profiles);
-      navigation.navigate('Bmi');
-    } catch (error) {
-      setisVisibleVerifyError(true);
-    }
-  };
   const onCloseModalProfile = () => setisVisibleVerifyError(false);
+  useEffect(() => {
+    if (height && weight) {
+      let h = height.substring(0, height.length - 3) / 100;
+      console.log('h: ', h);
+      let w = weight.substring(0, weight.length - 3).replace(',', '.');
+      console.log('w: ', w);
+      let totalBmi = parseFloat(w / (h * h)).toFixed(1);
+      console.log('totalBmi: ', totalBmi);
+      setBmi(totalBmi);
+    }
+  }, [height, weight]);
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -138,10 +77,10 @@ const ProfileScreen = ({route, intl, navigation}) => {
           fontSize: fontSize.bigger,
         }}
       />
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <ScrollView>
         <View style={styles.group}>
           <View>
-            <SelectGender gender={gender} onSelectGender={onSelectGender} />
+            <ResultBmiProgress bmi={bmi} />
             <SelectHeightOrWeight
               label={formatMessage(message.height)}
               value={height ? height : 'cm'}
@@ -166,17 +105,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
                 setWeight(weight);
               }}
             />
-            {height && weight ? (
-              <ResultBMI height={height} weight={weight} />
-            ) : null}
-          </View>
-          <View style={styles.buttonConfirm}>
-            <ButtonIconText
-              onPress={onConfirm}
-              text={formatMessage(message.finish)}
-              styleBtn={[styles.colorButtonConfirm]}
-              styleText={{fontSize: fontSize.normal}}
-            />
+            <ResultBMI height={height} weight={weight} resultScreen={true} />
           </View>
         </View>
       </ScrollView>
@@ -195,13 +124,13 @@ const ProfileScreen = ({route, intl, navigation}) => {
   );
 };
 
-ProfileScreen.propTypes = {
+ResultBmiScreen.propTypes = {
   intl: intlShape.isRequired,
   onFinished: PropTypes.func,
 };
 
-ProfileScreen.defaultProps = {
+ResultBmiScreen.defaultProps = {
   disabled: true,
 };
 
-export default injectIntl(ProfileScreen);
+export default injectIntl(ResultBmiScreen);

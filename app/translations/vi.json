@@ -257,5 +257,16 @@
   "bluezone.profile.female":"Nữ",
   "bluezone.profile.finish":"Hoàn tất",
   "bluezone.profile.errorTitle": "Thông báo",
-  "bluezone.profile.errorDescription": "Đã có lỗi xảy ra. Bạn vui lòng thử lại."
+  "bluezone.profile.errorDescription": "Đã có lỗi xảy ra. Bạn vui lòng thử lại.",
+  "bluezone.profile.skinny": "Gầy",
+  "bluezone.profile.fit": "Bình thường",
+  "bluezone.profile.overWeight": "Thừa cân",
+  "bluezone.profile.classOneObesity": "Béo phì độ 1",
+  "bluezone.profile.classTwoObesity": "Béo phì độ 2",
+
+
+  "bluezone.bmi.titleHeader":"Chỉ số BMI",
+  "bluezone.bmi.finish":"Xem kết quả",
+  "bluezone.bmi.content":"BMI (Body mass Index) là chỉ số được tính từ chiều cao và cân nặng,là một chỉ số đáng tin cậy về sự gầy/béo của một người."
+
 }
