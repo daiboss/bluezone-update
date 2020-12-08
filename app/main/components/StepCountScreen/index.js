@@ -10,8 +10,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
+import Header from '../Header'
 const screenWidth = Dimensions.get("window").width;
 const StepCount = ({ props, navigation }) => {
+    console.log('navigation: ', navigation);
     const data = {
         labels: ["January", "February", "March", "April", "May", "June"],
         datasets: [
@@ -208,13 +210,30 @@ const StepCount = ({ props, navigation }) => {
 
         })
     }
+    const onBack = () => {
+        try {
+            navigation.pop()
+        } catch (e) {
+            console.log('e: ', e);
+
+        }
+    }
+    const onShowMenu = () => {
+        navigation.openDrawer();
+    }
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar></StatusBar>
+
             <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
                 {/* <View>
                     <Text>Thống kê bước chân</Text>
                 </View> */}
+                <Header
+                    onBack={onBack}
+                    onShowMenu={onShowMenu}
+                    title={'Thống kê bước chân'}
+                ></Header>
                 <ImageBackground resizeMode={'stretch'} source={require('./images/bg_step_count.png')} style={styles.viewCircular}>
                     <View style={styles.viewBorderCircular}>
                         <AnimatedCircularProgress
