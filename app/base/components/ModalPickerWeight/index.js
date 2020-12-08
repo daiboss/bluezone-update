@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import * as PropTypes from 'prop-types';
-import {View, Platform, TouchableOpacity} from 'react-native';
+import {View, Platform, TouchableOpacity, Dimensions} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {
   WheelPicker,
@@ -18,7 +18,9 @@ import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from '../../../core/utils/dimension';
-function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender}) {
+const windowWidth = Dimensions.get('window').width;
+import DynamicallySelectedPicker from '../DynamicallySelectedPicker/DynamicallySelectedPicker';
+function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender,currentWeight}) {
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
   const [weight, setWeight] = useState(gender == 1 ? '65' : '50');
@@ -30,30 +32,28 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender}) {
     let dataWeight = [];
     let i = 15;
     for (i; i <= 300; i++) {
-      dataWeight.push(i.toString());
+      dataWeight.push({value: i, label: i.toString() + ','});
     }
     let j = 0;
     let data3 = [];
     for (j; j <= 9; j++) {
-      data3.push(j.toString() + ' kg');
+      data3.push({value: i, label: j.toString() + ' kg'});
     }
-    setIndex(50);
     setWeight('65');
     setData(dataWeight);
+
     setData2(data3);
   }, []);
   useEffect(() => {
     if (gender == 1) {
-      setIndex(data.findIndex(e => e == '65'));
-      setWeight('65');
+      setWeight('65,');
     } else if (gender == 0) {
-      setIndex(data.findIndex(e => e == '55'));
-      setWeight('55');
+      setWeight('55,');
     }
   }, [gender]);
 
   const selectHeight = () => {
-    onSelected && onSelected(weight + ',' + weight2);
+    onSelected && onSelected(weight + (weight2 || '0kg'));
     onCloseModal();
   };
   return (
@@ -67,29 +67,30 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender}) {
       backdropTransitionInTiming={1000}
       backdropTransitionOutTiming={1000}>
       <View style={styles.content}>
-        <WheelPicker
-          selectedItem={index}
-          data={data}
+        <DynamicallySelectedPicker
+          items={data}
+          initialSelectedIndex={gender == 1 ? 50 : gender == 0 ? 40 : 50}
+          onScroll={({index, item}) => {
+            setWeight(item.label);
+          }}
+          height={300}
           style={{
-            width: widthPercentageToDP(50),
-            height: heightPercentageToDP(30),
+            alignItems: 'flex-end',
+            paddingRight: 20,
           }}
-          onItemSelected={weight => {
-            setWeight(data[weight]);
-            setIndex(weight);
-          }}
+          width={windowWidth / 2}
         />
-        <WheelPicker
-          selectedItem={index2}
-          data={data2}
+        <DynamicallySelectedPicker
+          items={data2}
           style={{
-            width: widthPercentageToDP(50),
-            height: heightPercentageToDP(30),
+            alignItems: 'flex-start',
+            paddingLeft: 20,
           }}
-          onItemSelected={weight => {
-            setWeight2(data2[weight]);
-            setIndex2(weight);
+          onScroll={({index, item}) => {
+            setWeight2(item.label);
           }}
+          height={300}
+          width={windowWidth / 2}
         />
       </View>
     </ModalComponent>

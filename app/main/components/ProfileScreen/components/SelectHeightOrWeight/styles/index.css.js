@@ -21,7 +21,9 @@ const styles = StyleSheet.create({
   iconNext: {
     height: 17,
     width: 17,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
+    marginTop:2,
+    marginLeft:10,
   },
   textGender: {
     fontSize: fontSize.normal,
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
-    minHeight: 65,
+    minHeight: 55,
   },
   borderError: {
     borderColor: 'red',

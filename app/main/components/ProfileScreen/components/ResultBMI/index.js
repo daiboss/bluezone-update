@@ -36,7 +36,9 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
   };
   return (
     <View style={[styles.container2]}>
-      {resultScreen ? <View style={[styles.empty]}/> : (
+      {resultScreen ? (
+        <View style={[styles.empty]} />
+      ) : (
         <View style={[styles.container3]}>
           <Text style={styles.textLabel}>Kết quả BMI (Kg/m2) của bạn</Text>
           <Text style={styles.textTotalBmi}>{bmi}</Text>
@@ -50,7 +52,7 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
               style={[styles.line1, styles.line, styles.borderRadiusLeft]}
             />
           </View>
-          <Text style={[styles.textWarning]}>
+          <Text style={[styles.textWarning, styles.textWarning1]}>
             {formatMessage(message.skinny)}
           </Text>
         </View>
@@ -59,14 +61,16 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
             <Text style={styles.textValue}>22.9</Text>
             <View style={[styles.line2, styles.line]} />
           </View>
-          <Text style={[styles.textWarning]}>{formatMessage(message.fit)}</Text>
+          <Text style={[styles.textWarning, styles.textWarning2]}>
+            {formatMessage(message.fit)}
+          </Text>
         </View>
         <View style={[styles.flex, styles.group]}>
           <View style={[styles.flex]}>
             <Text style={styles.textValue}>24.9</Text>
             <View style={[styles.line3, styles.line]} />
           </View>
-          <Text style={[styles.textWarning]}>
+          <Text style={[styles.textWarning, styles.textWarning3]}>
             {formatMessage(message.overWeight)}
           </Text>
         </View>
@@ -75,7 +79,7 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
             <Text style={styles.textValue}>29.9</Text>
             <View style={[styles.line4, styles.line]} />
           </View>
-          <Text style={[styles.textWarning]}>
+          <Text style={[styles.textWarning, styles.textWarning4]}>
             {formatMessage(message.classOneObesity)}
           </Text>
         </View>
@@ -85,7 +89,7 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
               style={[styles.line5, styles.line, styles.borderRadiusRight]}
             />
           </View>
-          <Text style={[styles.textWarning]}>
+          <Text style={[styles.textWarning, styles.textWarning5]}>
             {formatMessage(message.classTwoObesity)}
           </Text>
         </View>

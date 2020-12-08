@@ -17,6 +17,8 @@ const SelectHeightOrWeight = ({
   listProfile,
   time,
   gender,
+  currentHeight,
+  currentWeight,
 }) => {
   const {formatMessage} = intl;
   const [isVisibleHeight, setIsVisibleHeight] = useState(false);
@@ -61,6 +63,7 @@ const SelectHeightOrWeight = ({
         isVisibleModal={isVisibleHeight}
         onCloseModal={() => setIsVisibleHeight(false)}
         gender={gender}
+        currentHeight={currentHeight}
         onSelected={height => {
           onSelected(height);
         }}
@@ -70,6 +73,7 @@ const SelectHeightOrWeight = ({
         isVisibleModal={isVisibleWeight}
         onCloseModal={() => setIsVisibleWeight(false)}
         gender={gender}
+        currentWeight={currentWeight}
         onSelected={weight => {
           onSelected(weight);
         }}

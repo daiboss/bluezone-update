@@ -52,31 +52,29 @@ const ProfileScreen = ({route, intl, navigation}) => {
   const [weight, setWeight] = useState(null);
   const onGoBack = () => navigation.goBack();
   const onSelectGender = gender => setGender(gender);
+  const getProfileList = async profiles => {
+    let data = profiles.reduce((r, a) => {
+      r['values'] = r['values'] || [];
+      r['values'].unshift({
+        y: Number(a.weight.substring(0, a.weight.length - 3).replace(',', '.')),
+        marker: a.weight,
+      });
+      return r;
+    }, Object.create(null));
+
+    if (profiles?.length) {
+      let time = profiles.map(e => moment(e.date)?.format('DD/MM'));
+      setListTime(time);
+      setListProfile([data]);
+    } else {
+      // setListTime([]);
+      // setListProfile([]);
+    }
+  };
   const getListProfile = async () => {
     try {
       let profiles = (await getProfile()) || [];
-
-      let data = profiles.reduce((r, a) => {
-        r['values'] = r['values'] || [];
-        r['values'].unshift({
-          y: Number(
-            a.weight.substring(0, a.weight.length - 3).replace(',', '.'),
-          ),
-          marker: a.weight,
-        });
-        // r.label = 'Chỉ số khối (BMI)';
-        // r.color = '#FFAAAA';
-        return r;
-      }, Object.create(null));
-
-      if (profiles?.length) {
-        let time = profiles.map(e => moment(e.date)?.format('DD/MM'));
-        setListTime(time);
-        setListProfile([data]);
-      } else {
-        // setListTime([]);
-        // setListProfile([]);
-      }
+      getProfileList(profiles);
       let profile = profiles.find(
         item => moment(item.date).diff(moment(), 'M') == 0,
       );
@@ -127,14 +125,39 @@ const ProfileScreen = ({route, intl, navigation}) => {
     }
   };
   const onCloseModalProfile = () => setisVisibleVerifyError(false);
+  const onSelectWeight = async weight => {
+    try {
+      setWeightError(false);
+      setWeight(weight);
+      let profiles = (await getProfile()) || [];
+
+      let index = profiles.findIndex(
+        profile => moment(profile.date).diff(moment(), 'M') == 0,
+      );
+
+      let obj = {
+        weight,
+        date: moment()
+          .toDate()
+          .getTime(),
+      };
+      if (index != -1) {
+        profiles.splice(index, 1, obj);
+      } else {
+        profiles.push(obj);
+      }
+      getProfileList(profiles);
+    } catch (error) {}
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Header
         onBack={onGoBack}
+        colorIcon={'#000'}
         title={formatMessage(message.title)}
         styleHeader={styles.header}
         styleTitle={{
-          color: blue_bluezone,
+          color: '#000',
           fontSize: fontSize.bigger,
         }}
       />
@@ -147,6 +170,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
               value={height ? height : 'cm'}
               gender={gender}
               type="height"
+              currentHeight={height}
               error={heightError ? formatMessage(message.heightError2) : null}
               onSelected={height => {
                 setHeightError(false);
@@ -158,13 +182,11 @@ const ProfileScreen = ({route, intl, navigation}) => {
               value={weight ? weight : 'kg'}
               error={weightError ? formatMessage(message.weightError2) : null}
               type="weight"
+              currentWeight={weight}
               gender={gender}
               listProfile={listProfile}
               time={listTime}
-              onSelected={weight => {
-                setWeightError(false);
-                setWeight(weight);
-              }}
+              onSelected={onSelectWeight}
             />
             {height && weight ? (
               <ResultBMI height={height} weight={weight} />
@@ -175,7 +197,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
               onPress={onConfirm}
               text={formatMessage(message.finish)}
               styleBtn={[styles.colorButtonConfirm]}
-              styleText={{fontSize: fontSize.normal}}
+              styleText={{fontSize: fontSize.normal, fontWeight: 'bold'}}
             />
           </View>
         </View>

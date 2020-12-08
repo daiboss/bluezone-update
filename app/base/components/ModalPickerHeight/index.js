@@ -1,48 +1,54 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import * as PropTypes from 'prop-types';
-import {View, Platform, TouchableOpacity} from 'react-native';
+import {View, Platform, TouchableOpacity, Dimensions} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {
   WheelPicker,
   TimePicker,
   DatePicker,
 } from 'react-native-wheel-picker-android';
-
 // Components
 import Text from '../Text';
-
 // Styles
 import styles from './styles/index.css';
 import ModalComponent from '../ModalComponent';
 import {widthPercentageToDP} from '../../../core/utils/dimension';
-function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender}) {
+import DynamicallySelectedPicker from '../DynamicallySelectedPicker/DynamicallySelectedPicker';
+const windowWidth = Dimensions.get('window').width;
+function ModalPicker({
+  isVisibleModal,
+  onCloseModal,
+  onSelected,
+  gender,
+  currentHeight,
+}) {
   const [data, setData] = useState([]);
-  const [height, setHeight] = useState(gender == 1 ? '165 cm' : '155 cm');
+  const [height, setHeight] = useState(165);
   const [index, setIndex] = useState(0);
   useEffect(() => {
     let dataHeight = [];
     let i = 100;
     for (i; i <= 300; i++) {
-      dataHeight.push(i.toString() + ' cm');
+      dataHeight.push({
+        label: i + ' cm',
+        value: i,
+      });
     }
     setData(dataHeight);
-    setIndex(65);
-    setHeight('165 cm');
   }, []);
 
   useEffect(() => {
     if (gender == 1) {
-      setHeight('165 cm');
-      setIndex(data.findIndex(e => e == '165 cm'));
+      setHeight(165);
     } else if (gender == 0) {
-      setHeight('155 cm');
-      setIndex(data.findIndex(e => e == '155 cm'));
+      setHeight(155);
     }
   }, [gender]);
   const selectHeight = () => {
     onSelected && onSelected(height);
     onCloseModal();
   };
+ 
   return (
     <ModalComponent
       isVisible={isVisibleModal}
@@ -54,16 +60,20 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender}) {
       backdropTransitionInTiming={1000}
       backdropTransitionOutTiming={1000}>
       <View style={styles.content}>
-        <WheelPicker
-          selectedItem={index}
-          data={data}
-          style={{
-            height: widthPercentageToDP(Platform.OS === 'ios' ? 50 : 40),
+        <DynamicallySelectedPicker
+          items={data}
+          initialSelectedIndex={
+            gender == 1
+              ? 65
+              : gender == 0
+              ? 55
+              : 65
+          }
+          onScroll={({index, item}) => {
+            setHeight(item.label);
           }}
-          onItemSelected={height => {
-            setHeight(data[height]);
-            setIndex(height);
-          }}
+          height={300}
+          width={windowWidth}
         />
       </View>
     </ModalComponent>

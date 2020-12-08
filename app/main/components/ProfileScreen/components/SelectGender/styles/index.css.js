@@ -27,9 +27,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonSelectGender: {
-    borderRadius: 15,
-    padding: 5,
-    paddingHorizontal: 10,
+    borderRadius: 20,
+    paddingVertical:7,
+    paddingHorizontal: 15,
   },
   backgroundColorGenderSelected: {
     backgroundColor: red_bluezone,
@@ -40,16 +40,15 @@ const styles = StyleSheet.create({
   containerSelectGender: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 5,
+    padding: 3,
     borderRadius: 20,
     borderColor: '#00000060',
     borderWidth: 1,
   },
   container2: {
-    shadowColor: '#00000020',
-    shadowOffset: {width: 1, height: 1},
-    shadowOpacity: 0.6,
-    shadowRadius: 10,
+    shadowColor: '#00000040',
+    shadowOffset: {width: 0.3,height:0.3},
+    shadowOpacity: 0.8,
     backgroundColor: '#FFF',
     borderColor: '#00000040',
     borderWidth: 1,
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: 10,
     padding: 10,
-    minHeight: 65,
+    minHeight: 75,
   },
   colorUnSelected: {
     color: '#949494',

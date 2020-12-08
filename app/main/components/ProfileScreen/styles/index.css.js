@@ -71,8 +71,9 @@ const styles = StyleSheet.create({
     backgroundColor: red_bluezone,
     height: 46,
     alignSelf: 'center',
-    width: '60%',
+    width: '80%',
     borderRadius: 25,
+    paddingVertical:0
   },
 
   group: {

@@ -13,14 +13,14 @@
  */
 'use strict';
 
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Platform} from 'react-native';
 import * as fontSize from '../../../../../../core/fontSize';
 import {blue_bluezone, red_bluezone} from '../../../../../../core/color';
-import { heightPercentageToDP } from '../../../../../../core/utils/dimension';
+import {heightPercentageToDP} from '../../../../../../core/utils/dimension';
 
 const styles = StyleSheet.create({
-  empty:{
-    height:30
+  empty: {
+    height: 30,
   },
   textTotalBmi: {
     color: '#00B67E',
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   group: {
     justifyContent: 'center',
     paddingTop: 15,
-    paddingBottom:10
+    paddingBottom: 10,
   },
   borderRadiusLeft: {
     borderBottomLeftRadius: 10,
@@ -101,6 +101,21 @@ const styles = StyleSheet.create({
   line5: {
     backgroundColor: '#FE4358',
   },
+  textWarning1: {
+    color: '#015CD0',
+  },
+  textWarning2: {
+    color: '#00B67E',
+  },
+  textWarning3: {
+    color: '#FFD500',
+  },
+  textWarning4: {
+    color: '#FF8E30',
+  },
+  textWarning5: {
+    color: '#FE4358',
+  },
   dot: {
     backgroundColor: '#FFF',
     borderColor: '#015CD0',
@@ -109,13 +124,13 @@ const styles = StyleSheet.create({
     width: 15,
     borderRadius: 15 / 2,
     position: 'absolute',
-    top:'12%'
+    top: Platform.OS == 'android' ? '17%' : '12%',
   },
-  textWarning:{
-    textAlign:'center',
+  textWarning: {
+    textAlign: 'center',
     flex: 1,
-    fontSize: fontSize.normal,
-  }
+    fontSize: fontSize.smaller,
+  },
 });
 
 export default styles;

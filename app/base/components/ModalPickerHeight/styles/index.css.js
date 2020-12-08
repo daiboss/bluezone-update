@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
   },
   modal: {
     marginHorizontal: 0,
+    marginBottom:0
   },
   content: {
     position: 'absolute',
