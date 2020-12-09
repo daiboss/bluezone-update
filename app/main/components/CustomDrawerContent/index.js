@@ -14,6 +14,8 @@ const CustomDrawer = ({ navigation }) => {
 
     }
     const toSetting = () => {
+        navigation.navigate('settingScreen')
+
 
     }
     return (

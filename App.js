@@ -46,6 +46,8 @@ import RegisterInfomation from './app/main/components/RegisterInfomationScreen';
 import ContactHistory from './app/main/components/ContactHistoryScreen';
 // import ScanScreen from './app/main/components/ScanScreen';
 import StepCount from './app/main/components/StepCountScreen';
+import StepHistory from './app/main/components/StepHistoryScreen';
+import SettingScreen from './app/main/components/SettingScreen'
 import FAQScreen from './app/main/components/FAQScreen';
 
 import ContextProvider from './LanguageContext';
@@ -451,6 +453,14 @@ class App extends React.Component {
               <Stack.Screen
                 name={'stepCount'}
                 component={StepCount}
+              ></Stack.Screen>
+              <Stack.Screen
+                name={'stepHistory'}
+                component={StepHistory}
+              ></Stack.Screen>
+              <Stack.Screen
+                name={'settingScreen'}
+                component={SettingScreen}
               ></Stack.Screen>
               <Stack.Screen name="Profile" component={ProfileScreen} />
               <Stack.Screen name="Bmi" component={BmiScreen} />

@@ -11,7 +11,7 @@ const Header = (props) => {
                 <Image resizeMode={'contain'} style={styles.imageBack} source={require('./images/ic_back.png')}>
                 </Image>
             </TouchableOpacity>
-            <Text>{props.title}</Text>
+            <Text style={styles.txTitle}>{props.title}</Text>
             <TouchableOpacity
                 style={styles.btn}
                 onPress={props.onShowMenu}
@@ -43,6 +43,11 @@ const styles = StyleSheet.create({
     },
     btn: {
         padding: 5
+    },
+    txTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#000000'
     }
 })
 export default Header

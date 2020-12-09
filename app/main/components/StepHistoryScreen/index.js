@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, SafeAreaView, StatusBar, Text, TouchableOpacity, StyleSheet, ImageBackground, Image, processColor } from 'react-native'
 import Fitness from '@ovalmoney/react-native-fitness';
-import { LineChart } from 'react-native-charts-wrapper';
+import { BarChart } from 'react-native-charts-wrapper';
 
 import { Dimensions } from "react-native";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
@@ -24,7 +24,9 @@ const StepCount = ({ props, navigation }) => {
             }
         ],
     };
-
+    const [selectDate, setSelectDate] = useState(true)
+    const [selectWeek, setSelectWeek] = useState(false)
+    const [selectMonth, setSelectMonth] = useState(false)
     const chartConfig = {
         backgroundGradientFrom: "#fff",
         backgroundGradientFromOpacity: 0,
@@ -59,12 +61,52 @@ const StepCount = ({ props, navigation }) => {
     useEffect(() => {
         var end = new Date().getTime()
 
-        var start = new Date().setDate(new Date().getDate() - 6)
+        var start = new Date().setDate()
 
         // let listDate = getListDate(start, end)
 
         getPermission(moment(start).format('YYYY-MM-DD').toString(), moment(end).format('YYYY-MM-DD').toString())
     }, [])
+    const onSetSelect = (type) => () => {
+        if (type == 1) {
+            let start = new Date()
+            let end = new Date()
+            getPermission(moment(start).format('YYYY-MM-DD').toString(), moment(end).format('YYYY-MM-DD').toString())
+            setSelectDate(true)
+            setSelectMonth(false)
+            setSelectWeek(false)
+            return
+        }
+        if (type == 2) {
+            let end = new Date()
+            var start = new Date().setDate(new Date().getDate() - 6)
+            getPermission(moment(start).format('YYYY-MM-DD').toString(), moment(end).format('YYYY-MM-DD').toString())
+            setSelectDate(false)
+            setSelectMonth(false)
+            setSelectWeek(true)
+            return
+        }
+        if (type == 3) {
+            let month = new Date().getMonth()
+            let year = new Date().getFullYear()
+            let end = new Date()
+            var start = new Date(year, month, 1)
+            getPermission(moment(start).format('YYYY-MM-DD').toString(), moment(end).format('YYYY-MM-DD').toString())
+            setSelectDate(false)
+            setSelectMonth(true)
+            setSelectWeek(false)
+            return
+        }
+    }
+    const getDaysInMonth = (month, year) => {
+        var date = new Date(year, month, 1);
+        var days = [];
+        while (date.getMonth() === month) {
+            days.push(new Date(date));
+            date.setDate(date.getDate() + 1);
+        }
+        return days;
+    }
     const getPermission = (start, end) => {
 
         Fitness.requestPermissions(permissions).then(res => {
@@ -130,8 +172,7 @@ const StepCount = ({ props, navigation }) => {
 
                     config: {
                         color: processColor('#fe4358'),
-                        drawCircles: true,
-                        lineWidth: 3,
+                        barWidth: 0.7,
                         drawValues: false,
                         axisDependency: 'LEFT',
                         circleColor: processColor('#fe4358'),
@@ -139,7 +180,10 @@ const StepCount = ({ props, navigation }) => {
                         drawCircleHole: false,
                         mode: 'HORIZONTAL_BEZIER',
                     },
-                },]
+                },],
+                config: {
+                    barWidth: 0.1,
+                },
             })
         }).catch(err => {
 
@@ -221,6 +265,7 @@ const StepCount = ({ props, navigation }) => {
     const onShowMenu = () => {
         navigation.openDrawer();
     }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar></StatusBar>
@@ -232,39 +277,70 @@ const StepCount = ({ props, navigation }) => {
                 <Header
                     onBack={onBack}
                     onShowMenu={onShowMenu}
-                    title={'Thống kê bước chân'}
+                    title={'Lịch sử đếm bước'}
                 ></Header>
-                <ImageBackground resizeMode={'stretch'} source={require('./images/bg_step_count.png')} style={styles.viewCircular}>
-                    <View style={styles.viewBorderCircular}>
-                        <AnimatedCircularProgress
-                            size={180}
-                            style={styles.circular}
-                            width={6}
-                            fill={(totalCount - countRest) / totalCount * 100}
-                            tintColor="#FE4358"
-                            backgroundColor="#e5e5e5">
-                            {
-                                (fill) => (
-                                    <View style={styles.viewFill}>
-                                        <Image
-                                            source={require('./images/ic_run.png')}
-                                            resizeMode={'contain'}
-                                            height={30}
-                                        >
+                <View style={styles.viewLineChart}>
+                    <BarChart style={styles.chart}
+                        data={dataChart}
+                        style={styles.chart}
+                        // data={this.state.data}
+                        xAxis={xAxis}
+                        highlights={[{ x: 3 }, { x: 6 }]}
+                        animation={{
+                            durationY: 1000,
+                        }}
+                        chartDescription={{
+                            text: '',
+                        }}
+                        yAxis={{
 
-                                        </Image>
-                                        <Text style={styles.txCountStep} >
-                                            {countStep}
-                                        </Text>
-                                        <Text style={styles.txCountTarget} >
-                                            Mục tiêu: {totalCount}
-                                        </Text>
-                                    </View>
-                                )
+                            left: {
+                                // valueFormatter: 'largeValue',
+                                // axisMinimum: 10,
+                                // drawAxisLine: false,
+                                // gridDashedLine: {
+                                //   lineLength: 5,
+                                //   spaceLength: 5,
+                                // },
+                            },
+                            right: {
+                                inverted: true,
+                                enabled: false,
+                            },
+                        }}
+                        // touchEnabled={true}
+                        dragEnabled={true}
+                        scaleEnabled={true}
+                        syncX={true}
+                        scaleXEnabled={true}
+                        legend={{
+                            form: 'SQUARE',
+                            horizontalAlignment: 'CENTER',
+                            orientation: 'HORIZONTAL',
+                            wordWrapEnabled: true,
+                            xEntrySpace: 10,
+                            formSize: 20,
+                            textSize: 13,
+                            custom: {
+                                colors: '#FE4358'
                             }
-                        </AnimatedCircularProgress>
-                    </View>
-                </ImageBackground>
+
+                        }}
+
+                        // marker={{
+                        //     enabled: true,
+                        //     markerColor: processColor('#372B7B'),
+                        //     textColor: processColor('#FFF'),
+                        //     markerFontSize: 14,
+                        // }}
+                        scaleYEnabled={true}
+                        // visibleRange={this.state.visibleRange}
+                        dragDecelerationEnabled={false}
+                    // ref="chart"
+                    // onChange={this.handleChange.bind(this)}
+                    />
+                </View>
+
                 <View style={styles.dataHealth}>
                     <View style={styles.viewImgData}>
                         <Image style={styles.img} source={require('./images/ic_step.png')}></Image>
@@ -286,87 +362,53 @@ const StepCount = ({ props, navigation }) => {
                     </View>
                     <View style={styles.viewImgData}>
                         <Image style={styles.img} source={require('./images/ic_time.png')}></Image>
-
                         <Text style={styles.txData}>{`50`}</Text>
                         <Text style={styles.txUnit}>{`phút`}</Text>
 
                     </View>
                 </View>
-                <View style={styles.viewLineChart}>
-                    <LineChart style={styles.chart}
-                        data={dataChart}
-                        style={styles.chart}
-                        // data={this.state.data}
-                        xAxis={xAxis}
-                        highlights={[{ x: 3 }, { x: 6 }]}
-                        animation={{
-                            durationY: 500,
-                        }}
-                        chartDescription={{
-                            text: '',
-                        }}
-                        yAxis={{
-
-                            left: {
-                                // valueFormatter: 'largeValue',
-                                // axisMinimum: 10,
-                                // drawAxisLine: false,
-                                // gridDashedLine: {
-                                //   lineLength: 5,
-                                //   spaceLength: 5,
-                                // },
-                            },
-                            right: {
-                                inverted: true,
-                                enabled: false,
-                            },
-                        }}
-                        touchEnabled={true}
-                        dragEnabled={true}
-                        scaleEnabled={true}
-                        syncX={true}
-
-                        scaleXEnabled={true}
-                        legend={{
-                            form: 'LINE',
-                            horizontalAlignment: 'CENTER',
-
-                            orientation: 'HORIZONTAL',
-                            wordWrapEnabled: true,
-                            xEntrySpace: 20,
-                            formSize: 20,
-                            textSize: 13,
-                            custom: {
-                                colors: '#FE4358'
-                            }
-
-                        }}
-
-                        marker={{
-                            enabled: true,
-                            markerColor: processColor('#372B7B'),
-                            textColor: processColor('#FFF'),
-                            markerFontSize: 14,
-                        }}
-                        scaleYEnabled={true}
-                        // visibleRange={this.state.visibleRange}
-                        dragDecelerationEnabled={false}
-                    // ref="chart"
-                    // onChange={this.handleChange.bind(this)}
-                    />
+                <View style={styles.viewBtn}>
+                    <TouchableOpacity onPress={onSetSelect(1)} style={[styles.btnDate, selectDate ? styles.bgRed : {}]}>
+                        <Text style={[styles.txDate, selectDate ? {} : styles.txGray]}>
+                            {'Ngày'}
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={onSetSelect(2)} style={[styles.btnDate, selectWeek ? styles.bgRed : {}]}>
+                        <Text style={[styles.txDate, selectWeek ? {} : styles.txGray]}>
+                            {'Tuần'}
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={onSetSelect(3)} style={[styles.btnDate, selectMonth ? styles.bgRed : {}]}>
+                        <Text style={[styles.txDate, selectMonth ? {} : styles.txGray]}>
+                            {'Tháng'}
+                        </Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.viewHeight}></View>
 
             </ScrollView>
-            <TouchableOpacity style={styles.btnHistory} onPress={() => navigation.navigate('stepHistory')}>
-                <Text style={styles.txHistory}>
-                    Lịch sử
-                </Text>
-            </TouchableOpacity>
+
         </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({
+    viewBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'center',
+        marginTop: 20
+    },
+    bgRed: {
+        backgroundColor: '#fe4358',
+    },
+    txGray: {
+        color: '#a1a1a1'
+    },
+    btnDate: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 50
+    },
     img: {
     },
     chart: {
@@ -391,8 +433,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 10,
-
+        marginTop: 10
     },
     txUnit: {
         fontSize: 14,
@@ -405,7 +446,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginHorizontal: 30,
-        marginTop: 20
+        marginTop: 20,
+        borderTopColor: '#00000010',
+        borderBottomColor: '#00000010',
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        paddingVertical: 20
     },
 
     viewCircular: {
@@ -444,19 +490,10 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 300,
     },
-    btnHistory: {
-        alignSelf: 'center',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '70%',
-        height: 41,
-        backgroundColor: '#fe4358',
-        borderRadius: 6,
-        marginBottom: 20
-    },
-    txHistory: {
+    txDate: {
         color: '#fff',
         fontSize: 14
     }
+
 })
 export default StepCount
