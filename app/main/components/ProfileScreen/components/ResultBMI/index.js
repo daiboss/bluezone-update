@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import React, {useEffect, useState, useRef} from 'react';
+import {View, Text, Animated} from 'react-native';
 import styles from './styles/index.css';
 import message from '../../../../../core/msg/profile';
 import {injectIntl, intlShape} from 'react-intl';
 const ResultBMI = ({height, weight, intl, resultScreen}) => {
   const {formatMessage} = intl;
   const [bmi, setBmi] = useState(0);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     if (height && weight) {
       let h = height.substring(0, height.length - 3) / 100;
@@ -16,7 +17,14 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
       console.log('totalBmi: ', totalBmi);
       setBmi(totalBmi);
     }
+    handleAnim();
   }, [height, weight]);
+  const handleAnim = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+    }).start();
+  };
   const getPositionDot = () => {
     let per = '0%';
     if (bmi < 18.5) {
@@ -93,7 +101,22 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
             {formatMessage(message.classTwoObesity)}
           </Text>
         </View>
-        <View style={[styles.dot, {left: getPositionDot()}]} />
+        <Animated.View
+          style={[
+            styles.dot,
+            {
+              left: getPositionDot(),
+              transform: [
+                {
+                  translateX: fadeAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-150, 0], // 0 : 150, 0.5 : 75, 1 : 0
+                  }),
+                },
+              ],
+            },
+          ]}
+        />
       </View>
     </View>
   );

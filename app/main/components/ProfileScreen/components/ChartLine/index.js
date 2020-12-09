@@ -22,6 +22,7 @@ class ChartLine extends React.Component {
     this.xMax = 7;
     this.state = {
       data: {},
+      year: null,
       xAxis: {
         granularityEnabled: true,
         granularity: 1,
@@ -60,10 +61,11 @@ class ChartLine extends React.Component {
           drawValues: false,
           // axisDependency: 'LEFT',
           circleColor: processColor(red_bluezone),
-          circleRadius: 5,
+          circleRadius: 4,
           drawCircleHole: true,
           mode: 'HORIZONTAL_BEZIER',
-          fillColor: processColor('#FE4358'),
+          fillColor: processColor(red_bluezone),
+          // highlightColor:processColor('#FFF'),
           fillAlpha: 15,
           drawFilled: true,
         },
@@ -73,7 +75,6 @@ class ChartLine extends React.Component {
     return data;
   };
   componentWillReceiveProps = preProps => {
-    console.log('preProps: ', preProps);
     if (this.props.data != preProps.data) {
       let newState = update(this.state, {
         data: {
@@ -96,64 +97,65 @@ class ChartLine extends React.Component {
   };
 
   handleChange = event => {
-    let nativeEvent = event.nativeEvent;
-
-    if (nativeEvent.action == 'chartTranslated') {
-      let {left, right, centerX} = nativeEvent;
-
-      console.log(
-        'data is from ' +
-          this.xMin +
-          ' to ' +
-          this.xMax +
-          ' left ' +
-          left +
-          ' right ' +
-          right +
-          ' isLoading ' +
-          this.isLoading,
-      );
-      if (!this.isLoading) {
-        if (left < 2) {
-          this.isLoading = true;
-
-          if (this.timeout) clearTimeout(this.timeout);
-          this.timeout = setTimeout(() => {
-            this.props.loadMore && this.props.loadMore();
-            this.isLoading = false;
-          }, 500);
-
-          // Because of the implementation of MpAndroidChart, if the action of setDataAndLockIndex is triggered by user dragging,
-          // then the size of new data should be equal to original data, otherwise the calculation of position transition won't be accurate,
-          // use may find the chart suddenly blink to another position.
-          // This restriction only exists in android, in iOS, we have no such problem.
-          // this.mockLoadDataFromServer(
-          //   centerX - pageSize,
-          //   centerX + pageSize,
-          // ).then(data => {
-          //   this.refs.chart.setDataAndLockIndex(data);
-
-          //   this.isLoading = false;
-          // });
-        }
-      }
-    }
+    // let nativeEvent = event.nativeEvent;
+    // if (nativeEvent.action == 'chartTranslated') {
+    //   let {left, right, centerX} = nativeEvent;
+    //   console.log(
+    //     'data is from ' +
+    //       this.xMin +
+    //       ' to ' +
+    //       this.xMax +
+    //       ' left ' +
+    //       left +
+    //       ' right ' +
+    //       right +
+    //       ' isLoading ' +
+    //       this.isLoading,
+    //   );
+    //   if (!this.isLoading) {
+    //     if (left < 2) {
+    //       this.isLoading = true;
+    //       if (this.timeout) clearTimeout(this.timeout);
+    //       this.timeout = setTimeout(() => {
+    //         this.props.loadMore && this.props.loadMore();
+    //         this.isLoading = false;
+    //       }, 500);
+    //       // Because of the implementation of MpAndroidChart, if the action of setDataAndLockIndex is triggered by user dragging,
+    //       // then the size of new data should be equal to original data, otherwise the calculation of position transition won't be accurate,
+    //       // use may find the chart suddenly blink to another position.
+    //       // This restriction only exists in android, in iOS, we have no such problem.
+    //       // this.mockLoadDataFromServer(
+    //       //   centerX - pageSize,
+    //       //   centerX + pageSize,
+    //       // ).then(data => {
+    //       //   this.refs.chart.setDataAndLockIndex(data);
+    //       //   this.isLoading = false;
+    //       // });
+    //     }
+    //   }
+    // }
   };
   handleSelect = event => {
-    console.log('event: ', event);
     let entry = event.nativeEvent;
     console.log('entry: ', entry);
-    if (entry == null) {
-      this.setState({...this.state, selectedEntry: null});
-    } else {
-      this.setState({...this.state, selectedEntry: JSON.stringify(entry)});
-    }
 
-    console.log(event.nativeEvent);
+    if (entry == null) {
+      this.setState({
+        ...this.state,
+        selectedEntry: null,
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        selectedEntry: JSON.stringify(entry),
+        year: entry?.data?.year,
+      });
+    }
   };
   render() {
     return (
       <View style={styles.container}>
+        <Text style={styles.txtYear}>{this.state.year}</Text>
         <LineChart
           style={styles.chart}
           data={this.state.data}

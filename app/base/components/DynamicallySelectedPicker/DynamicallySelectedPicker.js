@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {StyleSheet, View, ScrollView, Platform} from 'react-native';
 import PickerListItem from './PickerListItem';
 import * as fontSize from '../../../core/fontSize';
+import { widthPercentageToDP } from '../../../core/utils/dimension';
 
 export default class DynamicallySelectedPicker extends React.Component {
   constructor(props) {
@@ -127,7 +128,7 @@ export default class DynamicallySelectedPicker extends React.Component {
       allItemsColor,
       fontFamily,
       selectedItemBorderColor,
-      style
+      style,
     } = this.props;
     return (
       <View style={{height: height, width: width}}>
@@ -174,30 +175,20 @@ export default class DynamicallySelectedPicker extends React.Component {
                     ? {
                         fontWeight: 'bold',
                       }
-                    : {}
+                    : {color: '#00000060'}
                 }
                 style={[
                   styles.listItem,
                   {
-                    backgroundColor:
-                      this.state.itemIndex + transparentItemRows == index
-                        ? '#FE435840'
-                        : '#FFF',
                     height: itemHeight,
-                  },style
+                  },
+                  style,
                 ]}
               />
             );
           })}
         </ScrollView>
-        <View
-          style={[
-            styles.gradientWrapper,
-            {
-              top: 0,
-            },
-          ]}
-          pointerEvents="none">
+        <View pointerEvents="none" style={styles.containerView}>
           <View
             style={[
               styles.pickerGradient,
@@ -206,15 +197,7 @@ export default class DynamicallySelectedPicker extends React.Component {
               },
             ]}
           />
-        </View>
-        <View
-          style={[
-            styles.gradientWrapper,
-            {
-              bottom: 0,
-            },
-          ]}
-          pointerEvents="none">
+          <View style={styles.viewLine} />
           <View
             style={[
               styles.pickerGradient,
@@ -280,6 +263,17 @@ DynamicallySelectedPicker.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  viewLine: {
+    flex: 1,
+    backgroundColor: '#FE435840',
+  },
+  containerView: {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    position: 'absolute',
+  },
   listItem: {
     alignItems: 'center',
     justifyContent: 'center',

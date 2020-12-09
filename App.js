@@ -21,9 +21,9 @@
 
 import React from 'react';
 import 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 
 // Components
 import LoadingScreen from './app/main/components/LoadingScreen';
@@ -47,19 +47,19 @@ import ContactHistory from './app/main/components/ContactHistoryScreen';
 // import ScanScreen from './app/main/components/ScanScreen';
 import StepCount from './app/main/components/StepCountScreen';
 import StepHistory from './app/main/components/StepHistoryScreen';
-import SettingScreen from './app/main/components/SettingScreen'
+import SettingScreen from './app/main/components/SettingScreen';
 import FAQScreen from './app/main/components/FAQScreen';
 
 import ContextProvider from './LanguageContext';
 import LanguageProvider from './app/base/LanguageProvider';
-import { translationMessages } from './app/i18n';
-import { remoteMessageListener } from './app/core/push';
+import {translationMessages} from './app/i18n';
+import {remoteMessageListener} from './app/core/push';
 import decorateMainAppStart from './app/main/decorateMainAppStart';
-import { navigationRef, navigate } from './RootNavigation';
-import { registerMessageHandler } from './app/core/fcm';
-import CustomDrawerContent from './app/main/components/CustomDrawerContent'
+import {navigationRef, navigate} from './RootNavigation';
+import {registerMessageHandler} from './app/core/fcm';
+import CustomDrawerContent from './app/main/components/CustomDrawerContent';
 // Api
-import { registerResourceLanguageChange } from './app/core/language';
+import {registerResourceLanguageChange} from './app/core/language';
 
 const isLastStepOfWizard = name => {
   return wizard.indexOf(name) + 1 === wizard.length;
@@ -80,7 +80,7 @@ const prevStepName = name => {
 };
 
 // Const
-import { NOTIFICATION_TYPE } from './app/const/notification';
+import {NOTIFICATION_TYPE} from './app/const/notification';
 const LOADING_SCREEN_NAME = 'LoadingScreen';
 const INTRODUTION_WIZARD_NAME = 'IntrodutionWizard';
 const PHONE_NUMBER_REGISTER_WIZARD_NAME = 'PhoneNumberRegisterWizard';
@@ -105,7 +105,7 @@ import {
   registerInitialNotification,
   removeDeliveredNotification,
 } from './app/core/fcm';
-import { getIsFirstLoading, setIsFirstLoading } from './app/core/storage';
+import {getIsFirstLoading, setIsFirstLoading} from './app/core/storage';
 import ProfileScreen from './app/main/components/ProfileScreen';
 import BmiScreen from './app/main/components/ProfileScreen/BmiScreen';
 import ResultBmiScreen from './app/main/components/ProfileScreen/ResultBmiScreen';
@@ -194,7 +194,7 @@ class App extends React.Component {
   async componentDidMount() {
     // Check trạng thái lần đầu tiên vào app => hien: Dang khoi tao. Lan sau: Dang dong bo
     const isFirstLoading = await getIsFirstLoading();
-    this.setState({ isFirstLoading: isFirstLoading === null });
+    this.setState({isFirstLoading: isFirstLoading === null});
     if (isFirstLoading === null) {
       setIsFirstLoading(false);
     }
@@ -234,7 +234,7 @@ class App extends React.Component {
     gotoMainScreen = false,
     goBack = false,
   ) => {
-    const { isFirstLoading, loading } = this.state;
+    const {isFirstLoading, loading} = this.state;
 
     console.log(
       'handleFinishedWork',
@@ -252,7 +252,7 @@ class App extends React.Component {
 
     // Neu khong phai la lan dau vao app hoac khong the hoan thanh 1 buoc trong wizard hoac la buoc cua wizard thi chuyen luon vao giao dien chinh.
     if (!isFirstLoading || isLastStepOfWizard(name)) {
-      this.setState({ loading: false });
+      this.setState({loading: false});
       return;
     }
 
@@ -273,15 +273,15 @@ class App extends React.Component {
   };
 
   onChangeStackHome() {
-    this.setState({ isHome: true });
+    this.setState({isHome: true});
   }
 
   onResourceLanguageChange(resource) {
-    this.setState({ translationMessagesState: resource });
+    this.setState({translationMessagesState: resource});
   }
 
   onNotificationOpened = remoteMessage => {
-    const { loading } = this.state;
+    const {loading} = this.state;
 
     if (!remoteMessage) {
       return;
@@ -335,167 +335,158 @@ class App extends React.Component {
     );
   };
 
-  HomeStack = (currentProps) => () => {
-
+  HomeStack = currentProps => () => {
     const currentComponent = currentProps.currentComponent;
-    const { loading, isHome } = currentProps.currentComponent.state
-    return (
-      loading ? (
-        <Stack.Navigator
-          id="auth"
-          headerMode="none"
-          mode="card"
-          initialRouteName={LOADING_INITIAL_ROUTE} >
-          <Stack.Screen
-            name={LOADING_INITIAL_ROUTE}
-            component={currentComponent.LoadingProps}
-          />
-          <Stack.Screen
-            name={INTRODUTION_WIZARD_NAME}
-            component={currentComponent.IntroducationProps}
-          />
-          <Stack.Screen
-            name={PHONE_NUMBER_REGISTER_WIZARD_NAME}
-            component={currentComponent.PhoneNumberRegisterProps}
-          />
-          <Stack.Screen
-            name={PHONE_NUMBER_VERITY_OTP_WIZARD_NAME}
-            component={currentComponent.PhoneNumberVerifyOTPProps}
-          />
-          <Stack.Screen
-            name={REGISTER_INFOMATION_WIZARD_NAME}
-            component={currentComponent.RegisterInfomationProps}
-          />
-          <Stack.Screen
-            name={START_USE_WIZARD_NAME}
-            component={currentComponent.StartUseProps}
-          />
-          <Stack.Screen
-            path="NotifyDetail"
-            name="NotifyDetail"
-            component={NotifyDetail}
-          />
-        </Stack.Navigator >
-      ) : !isHome ? (
-        <Stack.Navigator
-          id="Welcome"
-          headerMode="none"
-          mode="card"
-          initialRouteName={WELCOME_INITIAL_ROUTE}>
-          {/* <Stack.Screen
+    const {loading, isHome} = currentProps.currentComponent.state;
+    return loading ? (
+      <Stack.Navigator
+        id="auth"
+        headerMode="none"
+        mode="card"
+        initialRouteName={LOADING_INITIAL_ROUTE}>
+        <Stack.Screen name="Profile2" component={ProfileScreen} />
+        <Stack.Screen
+          name={LOADING_INITIAL_ROUTE}
+          component={currentComponent.LoadingProps}
+        />
+        <Stack.Screen
+          name={INTRODUTION_WIZARD_NAME}
+          component={currentComponent.IntroducationProps}
+        />
+        <Stack.Screen
+          name={PHONE_NUMBER_REGISTER_WIZARD_NAME}
+          component={currentComponent.PhoneNumberRegisterProps}
+        />
+        <Stack.Screen
+          name={PHONE_NUMBER_VERITY_OTP_WIZARD_NAME}
+          component={currentComponent.PhoneNumberVerifyOTPProps}
+        />
+        <Stack.Screen
+          name={REGISTER_INFOMATION_WIZARD_NAME}
+          component={currentComponent.RegisterInfomationProps}
+        />
+        <Stack.Screen
+          name={START_USE_WIZARD_NAME}
+          component={currentComponent.StartUseProps}
+        />
+        <Stack.Screen
+          path="NotifyDetail"
+          name="NotifyDetail"
+          component={NotifyDetail}
+        />
+      </Stack.Navigator>
+    ) : !isHome ? (
+      <Stack.Navigator
+        id="Welcome"
+        headerMode="none"
+        mode="card"
+        initialRouteName={WELCOME_INITIAL_ROUTE}>
+        {/* <Stack.Screen
                   name={'stepCount'}
                   component={StepCount}
                 ></Stack.Screen> */}
-          <Stack.Screen
-            name={WELCOME_INITIAL_ROUTE}
-            component={currentComponent.WelcomeProps}
-          />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="Bmi" component={BmiScreen} />
-          <Stack.Screen name="resultBmi" component={ResultBmiScreen} />
-        </Stack.Navigator>
-      ) : (
-            <Stack.Navigator
-              id="home"
-              headerMode="none"
-              mode="card"
-              initialRouteName={MAIN_INITIAL_ROUTE}>
-              {/* <Stack.Screen
+        <Stack.Screen
+          name={WELCOME_INITIAL_ROUTE}
+          component={currentComponent.WelcomeProps}
+        />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Bmi" component={BmiScreen} />
+        <Stack.Screen name="resultBmi" component={ResultBmiScreen} />
+        <Stack.Screen name="Profile2" component={ProfileScreen} />
+        <Stack.Screen name={'stepCount'} component={StepCount} />
+        <Stack.Screen name={'stepHistory'} component={StepHistory} />
+        <Stack.Screen name={'settingScreen'} component={SettingScreen} />
+      </Stack.Navigator>
+    ) : (
+      <Stack.Navigator
+        id="home"
+        headerMode="none"
+        mode="card"
+        initialRouteName={MAIN_INITIAL_ROUTE}>
+        {/* <Stack.Screen
                       name={'stepCount'}
                       component={StepCount}
                     > */}
-              {/* </Stack.Screen> */}
-              <Stack.Screen
-                name={MAIN_INITIAL_ROUTE}
-                component={currentComponent.HomeProps}
-              />
+        {/* </Stack.Screen> */}
+        <Stack.Screen
+          name={MAIN_INITIAL_ROUTE}
+          component={currentComponent.HomeProps}
+        />
 
-              <Stack.Screen name="WatchScan" component={WatchScan} />
-              <Stack.Screen name="HistoryScan" component={HistoryScan} />
-              <Stack.Screen
-                name="NotifyDetail"
-                component={NotifyDetail}
-                path="NotifyDetail"
-              />
-              <Stack.Screen name="Invite" component={Invite} />
-              <Stack.Screen
-                name="PhoneNumberRegisterScreen"
-                component={PhoneNumberRegisterScreen}
-              />
-              <Stack.Screen
-                name="PhoneNumberVerifyOTPScreen"
-                component={PhoneNumberVerifyOTPScreen}
-              />
-              <Stack.Screen
-                name="RegisterInfomation"
-                component={RegisterInfomation}
-              />
-              <Stack.Screen name="PageView" component={PageView} />
-              <Stack.Screen name="DetailNew" component={DetailNew} />
-              <Stack.Screen
-                name="HistoryUploadedByOTP"
-                component={HistoryUploadedByOTPScreen}
-              />
-              <Stack.Screen name="ViewLog" component={ViewLog} />
-              <Stack.Screen
-                name="DownloadLatestVersionScreen"
-                component={DownloadLatestVersionScreen}
-              />
-              <Stack.Screen
-                name="ContactHistory"
-                component={ContactHistory}
-              />
-              {/*<Stack.Screen name="ScanScreen" component={ScanScreen} />*/}
-              <Stack.Screen name="Welcome" component={Welcome} />
-              <Stack.Screen name="FAQScreen">
-                {props => <FAQScreen {...props} showBack={true} />}
-              </Stack.Screen>
-              <Stack.Screen
-                name={'stepCount'}
-                component={StepCount}
-              ></Stack.Screen>
-              <Stack.Screen
-                name={'stepHistory'}
-                component={StepHistory}
-              ></Stack.Screen>
-              <Stack.Screen
-                name={'settingScreen'}
-                component={SettingScreen}
-              ></Stack.Screen>
-              <Stack.Screen name="Profile" component={ProfileScreen} />
-              <Stack.Screen name="Bmi" component={BmiScreen} />
-              <Stack.Screen name="resultBmi" component={ResultBmiScreen} />
-            </Stack.Navigator>
-          )
-    )
-  }
+        <Stack.Screen name="WatchScan" component={WatchScan} />
+        <Stack.Screen name="HistoryScan" component={HistoryScan} />
+        <Stack.Screen
+          name="NotifyDetail"
+          component={NotifyDetail}
+          path="NotifyDetail"
+        />
+        <Stack.Screen name="Invite" component={Invite} />
+        <Stack.Screen
+          name="PhoneNumberRegisterScreen"
+          component={PhoneNumberRegisterScreen}
+        />
+        <Stack.Screen
+          name="PhoneNumberVerifyOTPScreen"
+          component={PhoneNumberVerifyOTPScreen}
+        />
+        <Stack.Screen
+          name="RegisterInfomation"
+          component={RegisterInfomation}
+        />
+        <Stack.Screen name="PageView" component={PageView} />
+        <Stack.Screen name="DetailNew" component={DetailNew} />
+        <Stack.Screen
+          name="HistoryUploadedByOTP"
+          component={HistoryUploadedByOTPScreen}
+        />
+        <Stack.Screen name="ViewLog" component={ViewLog} />
+        <Stack.Screen
+          name="DownloadLatestVersionScreen"
+          component={DownloadLatestVersionScreen}
+        />
+        <Stack.Screen name="ContactHistory" component={ContactHistory} />
+        {/*<Stack.Screen name="ScanScreen" component={ScanScreen} />*/}
+        <Stack.Screen name="Welcome" component={Welcome} />
+        <Stack.Screen name="FAQScreen">
+          {props => <FAQScreen {...props} showBack={true} />}
+        </Stack.Screen>
+        <Stack.Screen name={'stepCount'} component={StepCount} />
+        <Stack.Screen name={'stepHistory'} component={StepHistory} />
+        <Stack.Screen name={'settingScreen'} component={SettingScreen} />
 
-  RightDrawer = (props) => {
+        <Stack.Screen name="Profile2" component={ProfileScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Bmi" component={BmiScreen} />
+        <Stack.Screen name="resultBmi" component={ResultBmiScreen} />
+      </Stack.Navigator>
+    );
+  };
 
+  RightDrawer = props => {
     return (
-      <Drawer.Navigator currentComponent={props.currentComponent} initialRouteName="HomeStack" drawerPosition="right" drawerContent={(props) => <CustomDrawerContent {...props} />}>
+      <Drawer.Navigator
+        currentComponent={props.currentComponent}
+        initialRouteName="HomeStack"
+        drawerPosition="right"
+        drawerContent={props => <CustomDrawerContent {...props} />}>
         {/* <Home /> */}
         <Drawer.Screen
           name={'HomeStack'}
           currentComponent={props.currentComponent}
           component={this.HomeStack(props)}
-        ></Drawer.Screen>
+        />
       </Drawer.Navigator>
-    )
-  }
-
+    );
+  };
 
   render() {
-    const { translationMessagesState, loading, isHome } = this.state;
+    const {translationMessagesState, loading, isHome} = this.state;
     return (
       <ContextProvider>
         <LanguageProvider messages={translationMessagesState}>
           <NavigationContainer ref={navigationRef}>
-
-            <this.RightDrawer currentComponent={this} ></this.RightDrawer>
-
+            <this.RightDrawer currentComponent={this} />
           </NavigationContainer>
-
         </LanguageProvider>
       </ContextProvider>
     );

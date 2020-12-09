@@ -49,7 +49,12 @@ const SelectHeightOrWeight = ({
               </Text>
               <FastImage
                 source={require('../../styles/images/ic_next.png')}
-                style={[styles.iconNext]}
+                style={[
+                  styles.iconNext,
+                  type == 'weight' && listProfile?.length
+                    ? {transform: [{rotate: '90deg'}]}
+                    : {},
+                ]}
               />
             </TouchableOpacity>
           </View>
@@ -63,7 +68,7 @@ const SelectHeightOrWeight = ({
         isVisibleModal={isVisibleHeight}
         onCloseModal={() => setIsVisibleHeight(false)}
         gender={gender}
-        currentHeight={currentHeight}
+        currentHeight={currentHeight || ''}
         onSelected={height => {
           onSelected(height);
         }}
@@ -73,7 +78,7 @@ const SelectHeightOrWeight = ({
         isVisibleModal={isVisibleWeight}
         onCloseModal={() => setIsVisibleWeight(false)}
         gender={gender}
-        currentWeight={currentWeight}
+        currentWeight={currentWeight || ''}
         onSelected={weight => {
           onSelected(weight);
         }}

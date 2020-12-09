@@ -20,7 +20,23 @@ import {
 } from '../../../core/utils/dimension';
 const windowWidth = Dimensions.get('window').width;
 import DynamicallySelectedPicker from '../DynamicallySelectedPicker/DynamicallySelectedPicker';
-function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender,currentWeight}) {
+let dataWeight = [];
+let i = 15;
+let j = 0;
+let data3 = [];
+for (i; i <= 300; i++) {
+  dataWeight.push({value: i, label: i.toString() + ','});
+}
+for (j; j <= 9; j++) {
+  data3.push({value: i, label: j.toString() + ' kg'});
+}
+function ModalPicker({
+  isVisibleModal,
+  onCloseModal,
+  onSelected,
+  gender,
+  currentWeight,
+}) {
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
   const [weight, setWeight] = useState(gender == 1 ? '65' : '50');
@@ -29,16 +45,6 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender,currentWe
   const [weight2, setWeight2] = useState('0 kg');
   const [index2, setIndex2] = useState(0);
   useEffect(() => {
-    let dataWeight = [];
-    let i = 15;
-    for (i; i <= 300; i++) {
-      dataWeight.push({value: i, label: i.toString() + ','});
-    }
-    let j = 0;
-    let data3 = [];
-    for (j; j <= 9; j++) {
-      data3.push({value: i, label: j.toString() + ' kg'});
-    }
     setWeight('65');
     setData(dataWeight);
 
@@ -48,7 +54,7 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender,currentWe
     if (gender == 1) {
       setWeight('65,');
     } else if (gender == 0) {
-      setWeight('55,');
+      setWeight('50,');
     }
   }, [gender]);
 
@@ -69,7 +75,22 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender,currentWe
       <View style={styles.content}>
         <DynamicallySelectedPicker
           items={data}
-          initialSelectedIndex={gender == 1 ? 50 : gender == 0 ? 40 : 50}
+          initialSelectedIndex={
+            dataWeight.findIndex(
+              e =>
+                e.label == currentWeight.substring(0, currentWeight.length - 4),
+            )
+              ? dataWeight.findIndex(
+                  e =>
+                    e.label ==
+                    currentWeight.substring(0, currentWeight.length - 4),
+                )
+              : gender == 1
+              ? 50
+              : gender == 0
+              ? 35
+              : 0
+          }
           onScroll={({index, item}) => {
             setWeight(item.label);
           }}
@@ -78,10 +99,29 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender,currentWe
             alignItems: 'flex-end',
             paddingRight: 20,
           }}
-          width={windowWidth / 2}
+          width={'50%'}
         />
         <DynamicallySelectedPicker
           items={data2}
+          initialSelectedIndex={
+            data3.findIndex(
+              e =>
+                e.label ==
+                currentWeight.substring(
+                  currentWeight.length - 4,
+                  currentWeight.length,
+                ),
+            )
+              ? data3.findIndex(
+                  e =>
+                    e.label ==
+                    currentWeight.substring(
+                      currentWeight.length - 4,
+                      currentWeight.length,
+                    ),
+                )
+              : 0
+          }
           style={{
             alignItems: 'flex-start',
             paddingLeft: 20,
@@ -90,7 +130,7 @@ function ModalPicker({isVisibleModal, onCloseModal, onSelected, gender,currentWe
             setWeight2(item.label);
           }}
           height={300}
-          width={windowWidth / 2}
+          width={'50%'}
         />
       </View>
     </ModalComponent>

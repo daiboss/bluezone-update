@@ -15,6 +15,14 @@ import ModalComponent from '../ModalComponent';
 import {widthPercentageToDP} from '../../../core/utils/dimension';
 import DynamicallySelectedPicker from '../DynamicallySelectedPicker/DynamicallySelectedPicker';
 const windowWidth = Dimensions.get('window').width;
+let dataHeight = [];
+let i = 100;
+for (i; i <= 300; i++) {
+  dataHeight.push({
+    label: i + ' cm',
+    value: i,
+  });
+}
 function ModalPicker({
   isVisibleModal,
   onCloseModal,
@@ -23,18 +31,19 @@ function ModalPicker({
   currentHeight,
 }) {
   const [data, setData] = useState([]);
-  const [height, setHeight] = useState(165);
-  const [index, setIndex] = useState(0);
-  useEffect(() => {
-    let dataHeight = [];
-    let i = 100;
-    for (i; i <= 300; i++) {
-      dataHeight.push({
-        label: i + ' cm',
-        value: i,
-      });
+  const [height, setHeight] = useState(() => {
+    if (currentHeight) {
+      return currentHeight.subString(0, currentHeight.length - 3);
+    } else {
+      return 165;
     }
+  });
+  const [index, setIndex] = useState(0);
+  
+  useEffect(() => {
     setData(dataHeight);
+    // setIndex(dataHeight.findIndex(e => e.label == currentHeight));
+    // 
   }, []);
 
   useEffect(() => {
@@ -48,7 +57,7 @@ function ModalPicker({
     onSelected && onSelected(height);
     onCloseModal();
   };
- 
+
   return (
     <ModalComponent
       isVisible={isVisibleModal}
@@ -63,7 +72,9 @@ function ModalPicker({
         <DynamicallySelectedPicker
           items={data}
           initialSelectedIndex={
-            gender == 1
+            dataHeight.findIndex(e => e.label == currentHeight) != -1
+              ? dataHeight.findIndex(e => e.label == currentHeight)
+              : gender == 1
               ? 65
               : gender == 0
               ? 55
@@ -73,7 +84,7 @@ function ModalPicker({
             setHeight(item.label);
           }}
           height={300}
-          width={windowWidth}
+          width={'100%'}
         />
       </View>
     </ModalComponent>

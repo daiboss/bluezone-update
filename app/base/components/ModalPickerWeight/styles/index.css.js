@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   container: {},
   modal: {
     marginHorizontal: 0,
+    marginBottom:0
   },
   buttonSelect: {
     backgroundColor: '#FFF',
@@ -35,9 +36,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: '#FFF',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    padding: 10,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    paddingHorizontal: 30,
     flexDirection: 'row',
     // justifyContent: 'center'
   },

@@ -54,10 +54,12 @@ const ProfileScreen = ({route, intl, navigation}) => {
   const onSelectGender = gender => setGender(gender);
   const getProfileList = async profiles => {
     let data = profiles.reduce((r, a) => {
+      console.log('a: ', a);
       r['values'] = r['values'] || [];
       r['values'].unshift({
         y: Number(a.weight.substring(0, a.weight.length - 3).replace(',', '.')),
         marker: a.weight,
+        year:moment(a.date).format('YYYY')
       });
       return r;
     }, Object.create(null));
@@ -119,7 +121,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
         profiles.push(obj);
       }
       setProfile(profiles);
-      navigation.navigate('Bmi');
+      navigation.navigate('stepCount');
     } catch (error) {
       setisVisibleVerifyError(true);
     }
@@ -153,7 +155,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
     <SafeAreaView style={styles.container}>
       <Header
         onBack={onGoBack}
-        colorIcon={'#000'}
+        colorIcon={'#FE4358'}
         title={formatMessage(message.title)}
         styleHeader={styles.header}
         styleTitle={{

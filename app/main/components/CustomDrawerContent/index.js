@@ -7,7 +7,7 @@ const CustomDrawer = ({ navigation }) => {
         navigation.closeDrawer()
     }
     const toProfile = () => {
-        navigation.navigate('Profile')
+        navigation.navigate('Profile2')
     }
     const toBmi = () => {
         navigation.navigate('Bmi')

@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   line: {
     height: 6,
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   line1: {
     backgroundColor: '#015CD0',
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     width: 15,
     borderRadius: 15 / 2,
     position: 'absolute',
-    top: Platform.OS == 'android' ? '17%' : '12%',
+    top: Platform.OS == 'android' ? '17%' : '13%',
   },
   textWarning: {
     textAlign: 'center',
