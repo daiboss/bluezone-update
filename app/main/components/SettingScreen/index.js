@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, StatusBar, SafeAreaView, Switch, Text } from 'react-native'
+import { View, StyleSheet, StatusBar, SafeAreaView, Switch, Text, } from 'react-native'
 import Header from '../Header'
 
 const SettingScreen = ({ navigation }) => {

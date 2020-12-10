@@ -25,6 +25,7 @@
     "@ant-design/react-native": "^3.3.0",
     "@bankify/react-native-animate-number": "^0.2.1",
     "@ovalmoney/react-native-fitness": "^0.5.1",
+    "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-community/art": "^1.2.0",
     "@react-native-community/async-storage": "^1.9.0",
     "@react-native-community/checkbox": "^0.4.2",

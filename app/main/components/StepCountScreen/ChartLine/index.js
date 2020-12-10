@@ -11,7 +11,7 @@ import {
 import update from 'immutability-helper';
 import styles from './styles/index.css';
 import { LineChart } from 'react-native-charts-wrapper';
-import { red_bluezone } from '../../../../../core/color';
+import { red_bluezone } from '../../../../core/color';
 
 const distanceToLoadMore = 10;
 const pageSize = 10;
@@ -35,6 +35,7 @@ class ChartLine extends React.Component {
     };
   }
   componentDidMount() {
+    console.log('this.props.data: ', this.props.data);
     let newState = update(this.state, {
       data: {
         $set: {
@@ -43,7 +44,6 @@ class ChartLine extends React.Component {
         },
       },
     });
-    console.log('this.props.data: ', this.props.data);
     this.setState(newState);
 
     this.setState({
@@ -52,7 +52,6 @@ class ChartLine extends React.Component {
   }
 
   getDataChart = (dataCharts = []) => {
-    console.log('dataCharts: ', dataCharts);
     let data = dataCharts.map((e, i) => {
       return {
         values: e.values,

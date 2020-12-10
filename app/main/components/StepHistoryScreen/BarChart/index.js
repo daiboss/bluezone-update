@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import update from 'immutability-helper';
 import styles from './styles/index.css';
-import { LineChart } from 'react-native-charts-wrapper';
-import { red_bluezone } from '../../../../../core/color';
+import { BarChart } from 'react-native-charts-wrapper';
+import { red_bluezone } from '../../../../core/color';
 
 const distanceToLoadMore = 10;
 const pageSize = 10;
@@ -29,21 +29,26 @@ class ChartLine extends React.Component {
         axisLineWidth: 0,
         position: 'TOP',
         labelCount: 6,
+        barPercentage: 0.5,
+        strokeWidth: 2,
+        barWidth: 0.1,
         // drawAxisLines: true,
         avoidFirstLastClipping: true,
       },
     };
   }
   componentDidMount() {
+    console.log('this.props.data: ', this.props.data);
     let newState = update(this.state, {
       data: {
         $set: {
           dataSets: this.getDataChart(this.props.data),
-
+          config: {
+            barWidth: 0.1,
+          }
         },
       },
     });
-    console.log('this.props.data: ', this.props.data);
     this.setState(newState);
 
     this.setState({
@@ -52,7 +57,6 @@ class ChartLine extends React.Component {
   }
 
   getDataChart = (dataCharts = []) => {
-    console.log('dataCharts: ', dataCharts);
     let data = dataCharts.map((e, i) => {
       return {
         values: e.values,
@@ -60,7 +64,6 @@ class ChartLine extends React.Component {
         config: {
           color: processColor(red_bluezone),
           drawCircles: true,
-          lineWidth: 4,
           drawValues: false,
           // axisDependency: 'LEFT',
           circleColor: processColor(red_bluezone),
@@ -70,6 +73,7 @@ class ChartLine extends React.Component {
           fillColor: processColor(red_bluezone),
           // highlightColor:processColor('#FFF'),
           fillAlpha: 15,
+
           drawFilled: true,
         },
       };
@@ -83,6 +87,9 @@ class ChartLine extends React.Component {
         data: {
           $set: {
             dataSets: this.getDataChart(preProps.data),
+            config: {
+              barWidth: 0.1,
+            }
           },
         },
       });
@@ -159,7 +166,7 @@ class ChartLine extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.txtYear}>{this.state.year}</Text>
-        <LineChart
+        <BarChart
           style={styles.chart}
           data={this.state.data}
           xAxis={this.state.xAxis}
@@ -195,7 +202,7 @@ class ChartLine extends React.Component {
           scaleYEnabled={true}
           visibleRange={{ x: { max: 6 } }}
           dragDecelerationEnabled={false}
-          ref="chart"
+          // ref="chart"
           onSelect={this.handleSelect}
         //   autoScalesMinMaxEnabled={true}
         // onChange={this.handleChange.bind(this)}

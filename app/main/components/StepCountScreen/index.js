@@ -11,6 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../Header'
+import ChartLine from './ChartLine'
 const screenWidth = Dimensions.get("window").width;
 const StepCount = ({ props, navigation }) => {
     console.log('navigation: ', navigation);
@@ -24,7 +25,7 @@ const StepCount = ({ props, navigation }) => {
             }
         ],
     };
-
+    const [time, setTime] = useState(([]))
     const chartConfig = {
         backgroundGradientFrom: "#fff",
         backgroundGradientFromOpacity: 0,
@@ -45,7 +46,7 @@ const StepCount = ({ props, navigation }) => {
         { kind: Fitness.PermissionKinds.Calories, access: Fitness.PermissionAccesses.Read },
         { kind: Fitness.PermissionKinds.Distances, access: Fitness.PermissionAccesses.Read },
     ];
-    const [dataChart, setDataChart] = useState({})
+    const [dataChart, setDataChart] = useState([])
     const xAxis = {
         granularityEnabled: true,
         granularity: 1,
@@ -108,39 +109,47 @@ const StepCount = ({ props, navigation }) => {
         Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
 
             var valueDate = []
+            var valueTime = []
             var total = 0
             res.map(obj => {
+                valueTime.push(
+                    moment(obj.endDate).format('MM/DD'),
+                )
                 valueDate.push({
-                    x: moment(obj.endDate).format('MM/DD'),
+
+                    marker: obj.quantity,
                     y: obj.quantity
                 })
                 total += obj.quantity
             })
+
+
+            let dataChart = [{
+                // label: "demo",
+                values: valueDate,
+
+                // config: {
+                //     color: processColor('#fe4358'),
+                //     drawCircles: true,
+                //     lineWidth: 3,
+                //     drawValues: false,
+                //     axisDependency: 'LEFT',
+                //     circleColor: processColor('#fe4358'),
+                //     circleRadius: 5,
+                //     drawCircleHole: false,
+                //     mode: 'HORIZONTAL_BEZIER',
+                // },
+            },]
+
+            console.log('dataChart: ', dataChart);
+            setDataChart(
+                dataChart
+
+            )
+            setTime(valueTime)
             setCountStep(numberWithCommas(total))
 
             setCountRest(totalCount - total)
-
-
-
-
-            setDataChart({
-                dataSets: [{
-                    label: "demo",
-                    values: valueDate,
-
-                    config: {
-                        color: processColor('#fe4358'),
-                        drawCircles: true,
-                        lineWidth: 3,
-                        drawValues: false,
-                        axisDependency: 'LEFT',
-                        circleColor: processColor('#fe4358'),
-                        circleRadius: 5,
-                        drawCircleHole: false,
-                        mode: 'HORIZONTAL_BEZIER',
-                    },
-                },]
-            })
         }).catch(err => {
 
 
@@ -149,9 +158,6 @@ const StepCount = ({ props, navigation }) => {
     }
     const onGetDistances = (start, end) => {
         Fitness.getDistances({ startDate: start, endDate: end }).then(res => {
-
-
-
 
             // 
             var total = 0
@@ -220,6 +226,23 @@ const StepCount = ({ props, navigation }) => {
     }
     const onShowMenu = () => {
         navigation.openDrawer();
+    }
+    const handleSelect = (event) => {
+        // let entry = event.nativeEvent;
+        // console.log('entry: ', entry);
+
+        // if (entry == null) {
+        //     this.setState({
+        //         ...this.state,
+        //         selectedEntry: null,
+        //     });
+        // } else {
+        //     this.setState({
+        //         ...this.state,
+        //         selectedEntry: JSON.stringify(entry),
+        //         year: entry?.data?.year,
+        //     });
+        // }
     }
     return (
         <SafeAreaView style={styles.container}>
@@ -293,7 +316,8 @@ const StepCount = ({ props, navigation }) => {
                     </View>
                 </View>
                 <View style={styles.viewLineChart}>
-                    <LineChart style={styles.chart}
+                    {dataChart.length && <ChartLine data={dataChart} time={time}></ChartLine> || null}
+                    {/* <LineChart style={styles.chart}
                         data={dataChart}
                         style={styles.chart}
                         // data={this.state.data}
@@ -305,19 +329,12 @@ const StepCount = ({ props, navigation }) => {
                         chartDescription={{
                             text: '',
                         }}
-                        yAxis={{
 
+                        yAxis={{
                             left: {
-                                // valueFormatter: 'largeValue',
-                                // axisMinimum: 10,
-                                // drawAxisLine: false,
-                                // gridDashedLine: {
-                                //   lineLength: 5,
-                                //   spaceLength: 5,
-                                // },
+                                enabled: false,
                             },
                             right: {
-                                inverted: true,
                                 enabled: false,
                             },
                         }}
@@ -325,35 +342,22 @@ const StepCount = ({ props, navigation }) => {
                         dragEnabled={true}
                         scaleEnabled={true}
                         syncX={true}
-
                         scaleXEnabled={true}
                         legend={{
-                            form: 'LINE',
-                            horizontalAlignment: 'CENTER',
-
-                            orientation: 'HORIZONTAL',
-                            wordWrapEnabled: true,
-                            xEntrySpace: 20,
-                            formSize: 20,
-                            textSize: 13,
-                            custom: {
-                                colors: '#FE4358'
-                            }
-
+                            enabled: false,
                         }}
-
                         marker={{
                             enabled: true,
-                            markerColor: processColor('#372B7B'),
+                            markerColor: processColor('#fe4358'),
                             textColor: processColor('#FFF'),
                             markerFontSize: 14,
                         }}
                         scaleYEnabled={true}
-                        // visibleRange={this.state.visibleRange}
+                        visibleRange={{ x: { max: 6 } }}
                         dragDecelerationEnabled={false}
-                    // ref="chart"
-                    // onChange={this.handleChange.bind(this)}
-                    />
+                        // ref="chart"
+                        onSelect={handleSelect}
+                    /> */}
                 </View>
                 <View style={styles.viewHeight}></View>
 

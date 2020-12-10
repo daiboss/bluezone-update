@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, SafeAreaView, StatusBar, Text, TouchableOpacity, StyleSheet, ImageBackground, Image, processColor } from 'react-native'
 import Fitness from '@ovalmoney/react-native-fitness';
-import { BarChart } from 'react-native-charts-wrapper';
+// import { BarChart } from 'react-native-charts-wrapper';
 
 import { Dimensions } from "react-native";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
@@ -11,6 +11,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../Header'
+import BarChart from './BarChart'
 const screenWidth = Dimensions.get("window").width;
 const StepCount = ({ props, navigation }) => {
     console.log('navigation: ', navigation);
@@ -37,6 +38,7 @@ const StepCount = ({ props, navigation }) => {
         barPercentage: 0.5,
         useShadowColorFromDataset: false // optional
     };
+    const [time, setTime] = useState(([]))
     const [countStep, setCountStep] = useState(null)
     const [countRest, setCountRest] = useState(0)
     const [countCarlo, setCountCarlo] = useState(0)
@@ -47,11 +49,11 @@ const StepCount = ({ props, navigation }) => {
         { kind: Fitness.PermissionKinds.Calories, access: Fitness.PermissionAccesses.Read },
         { kind: Fitness.PermissionKinds.Distances, access: Fitness.PermissionAccesses.Read },
     ];
-    const [dataChart, setDataChart] = useState({})
+    const [dataChart, setDataChart] = useState([])
     const xAxis = {
         granularityEnabled: true,
         granularity: 1,
-        // axisLineWidth: 3,
+        xAxisvalueFormatter: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
         position: 'TOP',
         labelCount: 7,
         avoidFirstLastClipping: true,
@@ -150,41 +152,46 @@ const StepCount = ({ props, navigation }) => {
         Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
 
             var valueDate = []
+            var valueTime = []
             var total = 0
             res.map(obj => {
+                valueTime.push(
+                    moment(obj.endDate).format('MM/DD'),
+                )
                 valueDate.push({
-                    x: moment(obj.endDate).format('MM/DD'),
+
+                    marker: obj.quantity,
                     y: obj.quantity
                 })
                 total += obj.quantity
             })
+            setTime(valueTime)
             setCountStep(numberWithCommas(total))
 
             setCountRest(totalCount - total)
 
+            let dataChart = [{
+                // label: "demo",
+                values: valueDate,
 
+                // config: {
+                //     color: processColor('#fe4358'),
+                //     drawCircles: true,
+                //     lineWidth: 3,
+                //     drawValues: false,
+                //     axisDependency: 'LEFT',
+                //     circleColor: processColor('#fe4358'),
+                //     circleRadius: 5,
+                //     drawCircleHole: false,
+                //     mode: 'HORIZONTAL_BEZIER',
+                // },
+            },]
 
+            console.log('dataChart: ', dataChart);
+            setDataChart(
+                dataChart
 
-            setDataChart({
-                dataSets: [{
-                    label: "demo",
-                    values: valueDate,
-
-                    config: {
-                        color: processColor('#fe4358'),
-                        barWidth: 0.7,
-                        drawValues: false,
-                        axisDependency: 'LEFT',
-                        circleColor: processColor('#fe4358'),
-                        circleRadius: 5,
-                        drawCircleHole: false,
-                        mode: 'HORIZONTAL_BEZIER',
-                    },
-                },],
-                config: {
-                    barWidth: 0.1,
-                },
-            })
+            )
         }).catch(err => {
 
 
@@ -280,11 +287,30 @@ const StepCount = ({ props, navigation }) => {
                     title={'Lịch sử đếm bước'}
                 ></Header>
                 <View style={styles.viewLineChart}>
-                    <BarChart style={styles.chart}
+                    {dataChart.length && <BarChart data={dataChart} time={time}></BarChart> || null}
+                    {/* <BarChart style={styles.chart}
                         data={dataChart}
                         style={styles.chart}
                         // data={this.state.data}
-                        xAxis={xAxis}
+                        xAxis={{
+                            drawGridLines: true,
+                            avoidFirstLastClipping: true,
+                            position: 'top',
+                            textSize: 10,
+                            valueFormatter: 'date',
+                            drawAxisLines: false,
+                            axisLineColor: processColor('#FFFFFF00'),
+                        }}
+                        yAxis={{
+                            left: {
+                                drawGridLines: false,
+                                axisLineWidth: 0,
+                                axisMinimum: 0,
+                            },
+                            right: {
+                                enabled: false,
+                            },
+                        }}
                         highlights={[{ x: 3 }, { x: 6 }]}
                         animation={{
                             durationY: 1000,
@@ -338,7 +364,7 @@ const StepCount = ({ props, navigation }) => {
                         dragDecelerationEnabled={false}
                     // ref="chart"
                     // onChange={this.handleChange.bind(this)}
-                    />
+                    /> */}
                 </View>
 
                 <View style={styles.dataHealth}>
