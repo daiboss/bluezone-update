@@ -3,7 +3,10 @@ import { View, StyleSheet, StatusBar, SafeAreaView, Switch, Text, } from 'react-
 import Header from '../Header'
 
 const SettingScreen = ({ navigation }) => {
-    const [isEnabled, setIsEnabled] = useState(false)
+    const [autoTarget, setAutoTarget] = useState(false)
+    const [alertStep, setAlertStep] = useState(false)
+    const [alertTarget, setAlertTarget] = useState(false)
+    const [alertBmi, setAlertBmi] = useState(false)
 
     const onBack = () => {
         try {
@@ -16,7 +19,10 @@ const SettingScreen = ({ navigation }) => {
     const onShowMenu = () => {
         navigation.openDrawer();
     }
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const autoTargetSwitch = () => setAutoTarget(!autoTarget);
+    const alertStepSwitch = () => setAlertStep(!alertStep);
+    const alertTargetSwitch = () => setAlertTarget(!alertTarget);
+    const alertBmiSwitch = () => setAlertBmi(!alertBmi);
 
     return (
         <SafeAreaView>
@@ -35,10 +41,10 @@ const SettingScreen = ({ navigation }) => {
                 </Text>
                 <Switch
                     trackColor={{ false: "#d8d8d8", true: "#fe435850" }}
-                    thumbColor={isEnabled ? "#fe4358" : "#a5a5a5"}
+                    thumbColor={autoTarget ? "#fe4358" : "#a5a5a5"}
                     ios_backgroundColor="#fff"
-                    onValueChange={toggleSwitch}
-                    value={isEnabled}
+                    onValueChange={autoTargetSwitch}
+                    value={autoTarget}
                 />
             </View>
             <Text style={styles.txContent}>
@@ -62,10 +68,10 @@ const SettingScreen = ({ navigation }) => {
                 </Text>
                 <Switch
                     trackColor={{ false: "#d8d8d8", true: "#fe435850" }}
-                    thumbColor={isEnabled ? "#fe4358" : "#a5a5a5"}
+                    thumbColor={alertStep ? "#fe4358" : "#a5a5a5"}
                     ios_backgroundColor="#fff"
-                    onValueChange={toggleSwitch}
-                    value={isEnabled}
+                    onValueChange={alertStepSwitch}
+                    value={alertStep}
                 />
             </View>
             <View style={[styles.viewTx, styles.borderBottom]}>
@@ -74,10 +80,10 @@ const SettingScreen = ({ navigation }) => {
                 </Text>
                 <Switch
                     trackColor={{ false: "#d8d8d8", true: "#fe435850" }}
-                    thumbColor={isEnabled ? "#fe4358" : "#a5a5a5"}
+                    thumbColor={alertTarget ? "#fe4358" : "#a5a5a5"}
                     ios_backgroundColor="#fff"
-                    onValueChange={toggleSwitch}
-                    value={isEnabled}
+                    onValueChange={alertTargetSwitch}
+                    value={alertTarget}
                 />
             </View>
             <View style={[styles.viewTx, styles.borderBottom]}>
@@ -86,10 +92,10 @@ const SettingScreen = ({ navigation }) => {
                 </Text>
                 <Switch
                     trackColor={{ false: "#d8d8d8", true: "#fe435850" }}
-                    thumbColor={isEnabled ? "#fe4358" : "#a5a5a5"}
+                    thumbColor={alertBmi ? "#fe4358" : "#a5a5a5"}
                     ios_backgroundColor="#fff"
-                    onValueChange={toggleSwitch}
-                    value={isEnabled}
+                    onValueChange={alertBmiSwitch}
+                    value={alertBmi}
                 />
             </View>
         </SafeAreaView>

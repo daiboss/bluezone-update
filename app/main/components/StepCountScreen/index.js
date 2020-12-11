@@ -60,13 +60,15 @@ const StepCount = ({ props, navigation }) => {
     useEffect(() => {
         var end = new Date().getTime()
 
-        var start = new Date().setDate(new Date().getDate() - 6)
+        var start = new Date().setDate(new Date().getDate() - 1)
+        var startLine = new Date().setDate(new Date().getDate() - 7)
+        var endLine = new Date().setDate(new Date().getDate() - 1)
 
         // let listDate = getListDate(start, end)
 
-        getPermission(moment(start).format('YYYY-MM-DD').toString(), moment(end).format('YYYY-MM-DD').toString())
+        getPermission(moment(start).format('YYYY-MM-DD').toString(), moment(end).format('YYYY-MM-DD').toString(), moment(startLine).format('YYYY-MM-DD').toString(), moment(endLine).format('YYYY-MM-DD').toString())
     }, [])
-    const getPermission = (start, end) => {
+    const getPermission = (start, end, startLine, endLine) => {
 
         Fitness.requestPermissions(permissions).then(res => {
 
@@ -74,6 +76,7 @@ const StepCount = ({ props, navigation }) => {
                 let listDate = getListDate(start, end)
                 renderDataMap(listDate)
                 onGetSteps(start, end)
+                onGetStepLine(startLine, endLine)
                 onGetCalories(start, end)
                 onGetDistances(start, end)
             }
@@ -105,9 +108,8 @@ const StepCount = ({ props, navigation }) => {
         })
 
     }
-    const onGetSteps = (start, end) => {
+    const onGetStepLine = (start, end) => {
         Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
-
             var valueDate = []
             var valueTime = []
             var total = 0
@@ -147,6 +149,17 @@ const StepCount = ({ props, navigation }) => {
 
             )
             setTime(valueTime)
+        }).catch(err => {
+
+        })
+    }
+    const onGetSteps = (start, end) => {
+        Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
+
+            var total = 0
+            res.map(obj => {
+                total += obj.quantity
+            })
             setCountStep(numberWithCommas(total))
 
             setCountRest(totalCount - total)
@@ -258,6 +271,7 @@ const StepCount = ({ props, navigation }) => {
                     title={'Thống kê bước chân'}
                 ></Header>
                 <ImageBackground resizeMode={'stretch'} source={require('./images/bg_step_count.png')} style={styles.viewCircular}>
+                    <Text style={styles.txToday}>Hôm nay</Text>
                     <View style={styles.viewBorderCircular}>
                         <AnimatedCircularProgress
                             size={180}
@@ -413,7 +427,7 @@ const styles = StyleSheet.create({
     },
 
     viewCircular: {
-        paddingVertical: 30,
+        paddingBottom: 30,
         marginTop: 20,
         alignItems: 'center',
         marginHorizontal: 20,
@@ -422,7 +436,7 @@ const styles = StyleSheet.create({
     viewBorderCircular: {
         padding: 10,
         backgroundColor: '#fff',
-        borderRadius: 200
+        borderRadius: 200,
     },
     circular: {
         alignSelf: 'center',
@@ -461,6 +475,13 @@ const styles = StyleSheet.create({
     txHistory: {
         color: '#fff',
         fontSize: 14
+    },
+    txToday: {
+        color: '#fff',
+        fontSize: 14,
+        marginVertical: 20,
+        textAlign: 'center'
+
     }
 })
 export default StepCount

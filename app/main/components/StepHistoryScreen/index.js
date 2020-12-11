@@ -63,7 +63,7 @@ const StepCount = ({ props, navigation }) => {
     useEffect(() => {
         var end = new Date().getTime()
 
-        var start = new Date().setDate()
+        var start = new Date().setDate(new Date().getDate() - 1)
 
         // let listDate = getListDate(start, end)
 
@@ -71,7 +71,7 @@ const StepCount = ({ props, navigation }) => {
     }, [])
     const onSetSelect = (type) => () => {
         if (type == 1) {
-            let start = new Date()
+            let start = new Date().setDate(new Date().getDate() - 1)
             let end = new Date()
             getPermission(moment(start).format('YYYY-MM-DD').toString(), moment(end).format('YYYY-MM-DD').toString())
             setSelectDate(true)
@@ -393,26 +393,26 @@ const StepCount = ({ props, navigation }) => {
 
                     </View>
                 </View>
-                <View style={styles.viewBtn}>
-                    <TouchableOpacity onPress={onSetSelect(1)} style={[styles.btnDate, selectDate ? styles.bgRed : {}]}>
-                        <Text style={[styles.txDate, selectDate ? {} : styles.txGray]}>
-                            {'Ngày'}
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={onSetSelect(2)} style={[styles.btnDate, selectWeek ? styles.bgRed : {}]}>
-                        <Text style={[styles.txDate, selectWeek ? {} : styles.txGray]}>
-                            {'Tuần'}
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={onSetSelect(3)} style={[styles.btnDate, selectMonth ? styles.bgRed : {}]}>
-                        <Text style={[styles.txDate, selectMonth ? {} : styles.txGray]}>
-                            {'Tháng'}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.viewHeight}></View>
+
 
             </ScrollView>
+            <View style={styles.viewBtn}>
+                <TouchableOpacity onPress={onSetSelect(1)} style={[styles.btnDate, selectDate ? styles.bgRed : {}]}>
+                    <Text style={[styles.txDate, selectDate ? {} : styles.txGray]}>
+                        {'Ngày'}
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onSetSelect(2)} style={[styles.btnDate, selectWeek ? styles.bgRed : {}]}>
+                    <Text style={[styles.txDate, selectWeek ? {} : styles.txGray]}>
+                        {'Tuần'}
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onSetSelect(3)} style={[styles.btnDate, selectMonth ? styles.bgRed : {}]}>
+                    <Text style={[styles.txDate, selectMonth ? {} : styles.txGray]}>
+                        {'Tháng'}
+                    </Text>
+                </TouchableOpacity>
+            </View>
 
         </SafeAreaView>
     )
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         alignSelf: 'center',
-        marginTop: 20
+        marginBottom: 30
     },
     bgRed: {
         backgroundColor: '#fe4358',
@@ -445,10 +445,11 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+
     },
     viewHeight: {
-        height: 50
+        height: 10
     },
     viewImgData: {
         justifyContent: 'center',
