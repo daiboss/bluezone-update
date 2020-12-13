@@ -10,11 +10,18 @@ import { ScrollView } from 'react-native-gesture-handler';
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
-import Header from '../Header'
+import Header from '../../../base/components/Header';
+import message from '../../../core/msg/stepCount';
+import { injectIntl, intlShape } from 'react-intl';
+import * as fontSize from '../../../core/fontSize';
+
 import ChartLine from './ChartLine'
 const screenWidth = Dimensions.get("window").width;
-const StepCount = ({ props, navigation }) => {
-    console.log('navigation: ', navigation);
+const StepCount = ({ props, intl,navigation }) => {
+    
+    const { formatMessage } = intl;
+    
+
     const data = {
         labels: ["January", "February", "March", "April", "May", "June"],
         datasets: [
@@ -113,56 +120,106 @@ const StepCount = ({ props, navigation }) => {
             var valueDate = []
             var valueTime = []
             var total = 0
-            res.map(obj => {
-                valueTime.push(
-                    moment(obj.endDate).format('MM/DD'),
-                )
-                valueDate.push({
+            if (res) {
 
-                    marker: obj.quantity,
-                    y: obj.quantity
+                res.map(obj => {
+                    valueTime.push(
+                        moment(obj.endDate).format('MM/DD'),
+                    )
+                    valueDate.push({
+
+                        marker: obj.quantity,
+                        y: obj.quantity
+                    })
+                    total += obj.quantity
                 })
-                total += obj.quantity
-            })
 
 
-            let dataChart = [{
-                // label: "demo",
-                values: valueDate,
+                let dataChart = [{
+                    // label: "demo",
+                    values: valueDate,
 
-                // config: {
-                //     color: processColor('#fe4358'),
-                //     drawCircles: true,
-                //     lineWidth: 3,
-                //     drawValues: false,
-                //     axisDependency: 'LEFT',
-                //     circleColor: processColor('#fe4358'),
-                //     circleRadius: 5,
-                //     drawCircleHole: false,
-                //     mode: 'HORIZONTAL_BEZIER',
-                // },
-            },]
+                    // config: {
+                    //     color: processColor('#fe4358'),
+                    //     drawCircles: true,
+                    //     lineWidth: 3,
+                    //     drawValues: false,
+                    //     axisDependency: 'LEFT',
+                    //     circleColor: processColor('#fe4358'),
+                    //     circleRadius: 5,
+                    //     drawCircleHole: false,
+                    //     mode: 'HORIZONTAL_BEZIER',
+                    // },
+                },]
 
-            console.log('dataChart: ', dataChart);
-            setDataChart(
-                dataChart
+                
+                setDataChart(
+                    dataChart
 
-            )
-            setTime(valueTime)
+                )
+                setTime(valueTime)
+            } else {
+                let dataNull = [{
+                    startDate: start,
+                    endDate: end,
+                    quantity: 0
+                }]
+                dataNull.map(obj => {
+                    valueTime.push(
+                        moment(obj.endDate).format('MM/DD'),
+                    )
+                    valueDate.push({
+
+                        marker: obj.quantity,
+                        y: obj.quantity
+                    })
+                    total += obj.quantity
+                })
+
+
+                let dataChart = [{
+                    // label: "demo",
+                    values: valueDate,
+
+                    // config: {
+                    //     color: processColor('#fe4358'),
+                    //     drawCircles: true,
+                    //     lineWidth: 3,
+                    //     drawValues: false,
+                    //     axisDependency: 'LEFT',
+                    //     circleColor: processColor('#fe4358'),
+                    //     circleRadius: 5,
+                    //     drawCircleHole: false,
+                    //     mode: 'HORIZONTAL_BEZIER',
+                    // },
+                },]
+
+                
+                setDataChart(
+                    dataChart
+
+                )
+                setTime(valueTime)
+            }
         }).catch(err => {
 
         })
     }
     const onGetSteps = (start, end) => {
         Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
+            if (res.length) {
+                var total = 0
+                res.map(obj => {
+                    total += obj.quantity
+                })
+                setCountStep(numberWithCommas(total))
 
-            var total = 0
-            res.map(obj => {
-                total += obj.quantity
-            })
-            setCountStep(numberWithCommas(total))
-
-            setCountRest(totalCount - total)
+                setCountRest(totalCount - total)
+            }
+            else {
+                setCountStep(0),
+                    setCountRest(totalCount - 0)
+            }
         }).catch(err => {
 
 
@@ -215,7 +272,7 @@ const StepCount = ({ props, navigation }) => {
     }
     const onGetCalories = (start, end) => {
         Fitness.getCalories({ startDate: start, endDate: end }).then(res => {
-            console.log('res: ', res);
+            
 
             // 
             var total = 0
@@ -233,7 +290,7 @@ const StepCount = ({ props, navigation }) => {
         try {
             navigation.pop()
         } catch (e) {
-            console.log('e: ', e);
+            
 
         }
     }
@@ -242,7 +299,7 @@ const StepCount = ({ props, navigation }) => {
     }
     const handleSelect = (event) => {
         // let entry = event.nativeEvent;
-        // console.log('entry: ', entry);
+        // 
 
         // if (entry == null) {
         //     this.setState({
@@ -267,11 +324,19 @@ const StepCount = ({ props, navigation }) => {
                 </View> */}
                 <Header
                     onBack={onBack}
+                    colorIcon={'#FE4358'}
+                    title={formatMessage(message.title)}
+                    styleHeader={styles.header}
+                    styleTitle={{
+                        color: '#000',
+                        fontSize: fontSize.bigger,
+                    }}
+                    styleHeader={{justifyContent:'space-around'}}
+                    showMenu={true}
                     onShowMenu={onShowMenu}
-                    title={'Thống kê bước chân'}
                 ></Header>
                 <ImageBackground resizeMode={'stretch'} source={require('./images/bg_step_count.png')} style={styles.viewCircular}>
-                    <Text style={styles.txToday}>Hôm nay</Text>
+                    <Text style={styles.txToday}>{formatMessage(message.today)}</Text>
                     <View style={styles.viewBorderCircular}>
                         <AnimatedCircularProgress
                             size={180}
@@ -294,7 +359,7 @@ const StepCount = ({ props, navigation }) => {
                                             {countStep}
                                         </Text>
                                         <Text style={styles.txCountTarget} >
-                                            Mục tiêu: {totalCount}
+                                            {formatMessage(message.target)} {totalCount}
                                         </Text>
                                     </View>
                                 )
@@ -305,8 +370,8 @@ const StepCount = ({ props, navigation }) => {
                 <View style={styles.dataHealth}>
                     <View style={styles.viewImgData}>
                         <Image style={styles.img} source={require('./images/ic_step.png')}></Image>
-                        <Text style={styles.txData}>{`còn ${countRest > 0 ? countRest : 0}`}</Text>
-                        <Text style={styles.txUnit}>{`bước`}</Text>
+                        <Text style={styles.txData}>{`${formatMessage(message.stepsToTarget)} ${countRest > 0 ? countRest : 0}`}</Text>
+                        <Text style={styles.txUnit}>{`${formatMessage(message.stepsNormal)}`}</Text>
 
                     </View>
                     <View style={styles.viewImgData}>
@@ -325,7 +390,7 @@ const StepCount = ({ props, navigation }) => {
                         <Image style={styles.img} source={require('./images/ic_time.png')}></Image>
 
                         <Text style={styles.txData}>{`50`}</Text>
-                        <Text style={styles.txUnit}>{`phút`}</Text>
+                        <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
 
                     </View>
                 </View>
@@ -378,7 +443,7 @@ const StepCount = ({ props, navigation }) => {
             </ScrollView>
             <TouchableOpacity style={styles.btnHistory} onPress={() => navigation.navigate('stepHistory')}>
                 <Text style={styles.txHistory}>
-                    Lịch sử
+                    {formatMessage(message.viewHistory)}
                 </Text>
             </TouchableOpacity>
         </SafeAreaView>
@@ -484,4 +549,9 @@ const styles = StyleSheet.create({
 
     }
 })
-export default StepCount
+StepCount.propTypes = {
+    intl: intlShape.isRequired,
+};
+
+
+export default injectIntl(StepCount)

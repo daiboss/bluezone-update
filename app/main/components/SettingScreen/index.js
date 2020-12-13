@@ -1,8 +1,13 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, StatusBar, SafeAreaView, Switch, Text, } from 'react-native'
+import { View, StyleSheet, StatusBar, SafeAreaView, Switch, Text, TouchableOpacity } from 'react-native'
 import Header from '../Header'
-
-const SettingScreen = ({ navigation }) => {
+import { RNAddShortcuts } from 'react-native-add-shortcuts'
+import message from '../../../core/msg/setting';
+import { injectIntl, intlShape } from 'react-intl';
+import * as fontSize from '../../../core/fontSize';
+import Icon from 'react-native-vector-icons/FontAwesome';
+const SettingScreen = ({ intl, navigation }) => {
+    const { formatMessage } = intl;
     const [autoTarget, setAutoTarget] = useState(false)
     const [alertStep, setAlertStep] = useState(false)
     const [alertTarget, setAlertTarget] = useState(false)
@@ -23,7 +28,32 @@ const SettingScreen = ({ navigation }) => {
     const alertStepSwitch = () => setAlertStep(!alertStep);
     const alertTargetSwitch = () => setAlertTarget(!alertTarget);
     const alertBmiSwitch = () => setAlertBmi(!alertBmi);
+    const addShortCut = () => {
 
+        try {
+            let copy = (
+                <Icon
+                    name="copy"
+                    size={30}
+                    color="#000000"
+                    family={'FontAwesome'}
+                />
+            );
+
+            RNAddShortcuts.AddDynamicShortcut({
+                label: 'Copy',
+                description: 'Copy Desc',
+                icon: 'copy.png',
+                link: { url: 'app:copy' },
+                onDone: () => {
+                    console.log('Shortcut Added');
+                },
+            });
+        } catch (e) {
+            console.log('e: ', e);
+
+        }
+    }
     return (
         <SafeAreaView>
             <StatusBar></StatusBar>
@@ -37,7 +67,7 @@ const SettingScreen = ({ navigation }) => {
             </Header>
             <View style={styles.viewTx}>
                 <Text style={styles.txLabel}>
-                    Tự động điều chỉnh mục tiêu
+                    {formatMessage(message.autoAdjustTarget)}
                 </Text>
                 <Switch
                     trackColor={{ false: "#d8d8d8", true: "#fe435850" }}
@@ -48,12 +78,11 @@ const SettingScreen = ({ navigation }) => {
                 />
             </View>
             <Text style={styles.txContent}>
-                Khi bật tùy chọn này, mục tiêu sẽ được tự động tính
-                để phù hợp với tổng số bước đi hàng ngày của bạn
+                {formatMessage(message.content)}
             </Text>
             <View style={[styles.viewTx, styles.borderTop, styles.borderBottom]}>
                 <Text style={styles.txLabelGray}>
-                    Số bước mục tiêu
+                    {formatMessage(message.stepTarget)}
                 </Text>
                 <Text style={styles.txLabelGray}>
                     1000 bước
@@ -98,6 +127,11 @@ const SettingScreen = ({ navigation }) => {
                     value={alertBmi}
                 />
             </View>
+            <TouchableOpacity onPress={addShortCut}>
+                <Text>
+                    Thêm tiện ích
+                </Text>
+            </TouchableOpacity>
         </SafeAreaView>
 
     )
@@ -151,4 +185,9 @@ const styles = StyleSheet.create({
         fontSize: 14
     }
 })
-export default SettingScreen
+SettingScreen.propTypes = {
+    intl: intlShape.isRequired,
+};
+
+
+export default injectIntl(SettingScreen)

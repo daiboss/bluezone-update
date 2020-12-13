@@ -1,7 +1,12 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, Image, StyleSheet, SafeAreaView } from 'react-native'
-const CustomDrawer = ({ navigation }) => {
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import message from '../../../core/msg/setting';
+import { injectIntl, intlShape } from 'react-intl';
+import * as fontSize from '../../../core/fontSize';
+import { View, Text, TouchableOpacity, Image, StyleSheet, SafeAreaView, Platform } from 'react-native'
+const CustomDrawer = ({ intl,navigation }) => {
 
+    const { formatMessage } = intl;
 
     const closeMenu = () => {
         navigation.closeDrawer()
@@ -23,12 +28,16 @@ const CustomDrawer = ({ navigation }) => {
             <View style={styles.container}>
                 <View>
                     <TouchableOpacity onPress={closeMenu} style={styles.btnMenu}>
-                        <Image style={styles.image} resizeMode={'contain'} source={require('./images/ic_menu.png')}></Image>
+                        <Ionicons
+                            name={'ios-menu'}
+                            size={28}
+                            style={styles.iconMenu}
+                        />
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity onPress={toProfile} style={styles.btn}>
                     <Image style={styles.image} resizeMode={'contain'} source={require('./images/ic_profile.png')}></Image>
-                    <Text style={styles.txBtn}>Hồ sơ</Text>
+                    <Text style={styles.txBtn}>{formatMessage(message.profile)}</Text>
 
                 </TouchableOpacity>
                 <TouchableOpacity onPress={toBmi} style={styles.btn}>
@@ -38,7 +47,7 @@ const CustomDrawer = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity onPress={toSetting} style={styles.btn}>
                     <Image style={styles.image} resizeMode={'contain'} source={require('./images/ic_setting.png')}></Image>
-                    <Text style={styles.txBtn}>Cài đặt</Text>
+                    <Text style={styles.txBtn}>{formatMessage(message.title)}</Text>
 
                 </TouchableOpacity>
 
@@ -78,6 +87,21 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         marginRight: 20,
         marginTop: 10
+    },
+    iconMenu:{
+        paddingLeft: 20,
+        paddingRight: 30,
+        ...Platform.select({
+            ios: {
+                paddingTop: 5,
+            },
+        }),
     }
 })
-export default CustomDrawer
+CustomDrawer.propTypes = {
+    intl: intlShape.isRequired,
+};
+
+
+
+export default injectIntl(CustomDrawer)

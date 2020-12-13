@@ -22,16 +22,16 @@
 'use strict';
 
 import React from 'react';
-import {BackHandler, TouchableOpacity, View} from 'react-native';
+import { BackHandler, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {withNavigation} from '@react-navigation/compat';
+import { withNavigation } from '@react-navigation/compat';
 
 // Components
-import {MediumText} from '../Text';
+import { MediumText } from '../Text';
 
 // Styles
 import styles from './styles/index.css';
-import {blue_bluezone} from '../../../core/color';
+import { blue_bluezone } from '../../../core/color';
 
 class Header extends React.Component {
   constructor(props) {
@@ -48,7 +48,7 @@ class Header extends React.Component {
   }
 
   onGoBack() {
-    const {onBack, showBack} = this.props;
+    const { onBack, showBack, } = this.props;
 
     if (!showBack) {
       return;
@@ -63,7 +63,7 @@ class Header extends React.Component {
   }
 
   render() {
-    const {showBack, title, styleHeader, styleTitle, colorIcon} = this.props;
+    const { showBack, title, styleHeader, styleTitle, colorIcon, showMenu } = this.props;
     return (
       <View style={[styles.container, styleHeader]}>
         {showBack && (
@@ -81,6 +81,18 @@ class Header extends React.Component {
             {title}
           </MediumText>
         </View>
+        {showMenu && (
+          <TouchableOpacity
+            style={styles.btnMenu}
+            onPress={this.props.onShowMenu}
+          >
+            <Ionicons
+              name={'ios-menu'}
+              size={28}
+              style={styles.iconMenu}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     );
   }

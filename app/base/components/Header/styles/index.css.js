@@ -21,9 +21,9 @@
 
 'use strict';
 
-import {StyleSheet, Platform} from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import * as fontSize from '../../../../core/fontSize';
-import {heightPercentageToDP} from '../../../../core/utils/dimension';
+import { heightPercentageToDP } from '../../../../core/utils/dimension';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,6 +31,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
+  },
+  iconMenu:{
+    paddingLeft: 20,
+    paddingRight: 30,
+    ...Platform.select({
+      ios: {
+        paddingTop: 5,
+      },
+    }),
   },
   btnBack: {
     position: 'absolute',
@@ -60,6 +69,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  btnMenu: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    height: heightPercentageToDP((50 / 720) * 100),
+    justifyContent: 'center',
+    zIndex: 99,
+  },
+  
 });
 
 export default styles;

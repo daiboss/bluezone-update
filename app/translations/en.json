@@ -264,6 +264,35 @@
 
     "bluezone.bmi.titleHeader":"BMI",
     "bluezone.bmi.finish":"View results",
-    "bluezone.bmi.content":"Body Mass Index (BMI) is calculated from the body's height and weight. It provides a reliable indicator of body fatness for people."
+    "bluezone.bmi.content":"Body Mass Index (BMI) is calculated from the body's height and weight. It provides a reliable indicator of body fatness for people.",
+
+    "bluezone.stepCount.titleHeader": "Step statistics",
+    "bluezone.stepCount.steps": "Steps",
+    "bluezone.stepCount.today": "Today",
+    "bluezone.stepCount.target": "Target:",
+    "bluezone.stepCount.stepsToTarget": "steps to target",
+    "bluezone.stepCount.history": "History",
+    "bluezone.stepCount.viewHistory": "View history",
+    "bluezone.stepCount.stepCountHistory": "Step count history",
+    "bluezone.stepCount.minute": "minute",
+    "bluezone.stepCount.day": "Day",
+    "bluezone.stepCount.week": "Week",
+    "bluezone.stepCount.month": "Month",
+
+    "bluezone.settings.titleHeader": "Settings",
+    "bluezone.settings.profile": "profile",
+    "bluezone.settings.updateProfile": "Update profile",
+    "bluezone.settings.autoAdjustTarget": "Automatically adjust target",
+    "bluezone.settings.content": "When this option is enabled, target will be automatically calculated to match your daily steps.",
+    "bluezone.settings.stepTarget ": "Step target",
+    "bluezone.settings.showNotification ": "Show notification",
+    "bluezone.settings.enterStepTarget": "Please enter your step target",
+    "bluezone.settings.stepRecommends": "The Ministry of Health recommends 10,000 steps a day",
+    "bluezone.settings.allowStep": "Allow Bluezone to send notifications about your steps daily.",
+    "bluezone.settings.allowSendNotifications": "Bluezone wants to send you notifications",
+    "bluezone.settings.completeTarget": "Target completion notification",
+    "bluezone.settings.youHave": "You have",
+    "bluezone.settings.stepToAccomplish": "steps left to accomplish your target today"
+    
 
 }

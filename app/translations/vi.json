@@ -267,6 +267,34 @@
 
   "bluezone.bmi.titleHeader":"Chỉ số BMI",
   "bluezone.bmi.finish":"Xem kết quả",
-  "bluezone.bmi.content":"BMI (Body mass Index) là chỉ số được tính từ chiều cao và cân nặng,là một chỉ số đáng tin cậy về sự gầy/béo của một người."
+  "bluezone.bmi.content":"BMI (Body mass Index) là chỉ số được tính từ chiều cao và cân nặng,là một chỉ số đáng tin cậy về sự gầy/béo của một người.",
 
+    "bluezone.stepCount.titleHeader": "Thống kê bước chân",
+    "bluezone.stepCount.steps": "Bước",
+    "bluezone.stepCount.today": "Hôm nay",
+    "bluezone.stepCount.target": "Mục tiêu",
+    "bluezone.stepCount.stepsToTarget": "còn",
+    "bluezone.stepCount.stepsNormal": "bước",
+    "bluezone.stepCount.viewHistory": "Xem lịch sử",
+    "bluezone.stepCount.stepCountHistory": "Lịch sử đếm bước",
+    "bluezone.stepCount.minute": "phút",
+    "bluezone.stepCount.day": "Ngày",
+    "bluezone.stepCount.week": "Tuần",
+    "bluezone.stepCount.month": "Tháng",
+
+    "bluezone.settings.titleHeader": "Cài đặt",
+    "bluezone.settings.profile": "Hồ sơ",
+    
+    "bluezone.settings.updateProfile": "Cập nhật hồ sơ",
+    "bluezone.settings.autoAdjustTarget": "Tự động điều chỉnh mục tiêu",
+    "bluezone.settings.content": "Khi bật tùy chọn này, mục tiêu sẽ được tự động tính để phù hợp với tổng số bước đi hàng ngày của bạn.",
+    "bluezone.settings.stepTarget ": "Số bước mục tiêu",
+    "bluezone.settings.showNotification ": "Hiển thị thông báo",
+    "bluezone.settings.enterStepTarget": "Bạn vui lòng nhập số bước mục tiêu",
+    "bluezone.settings.stepRecommends": "Bộ y tế khuyến cáo nên đi bộ 10000 bước mỗi ngày",
+    "bluezone.settings.allowStep": "Cho phép gửi thông báo để Bluezone thông báo số bước chân của bạn hàng ngày.",
+    "bluezone.settings.allowSendNotifications": "`Bluezone` Muốn gửi thông báo cho bạn",
+    "bluezone.settings.completeTarget": "Cảnh báo hoàn thành mục tiêu",
+    "bluezone.settings.youHave": "Bạn còn",
+    "bluezone.settings.stepToAccomplish": "bước để hoàn thành mục tiêu ngày hôm nay"
 }
