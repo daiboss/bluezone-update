@@ -116,11 +116,12 @@ const StepCount = ({ props, intl,navigation }) => {
 
     }
     const onGetStepLine = (start, end) => {
+        var valueDate = []
+        var valueTime = []
+        var total = 0
         Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
-            var valueDate = []
-            var valueTime = []
-            var total = 0
-            if (res) {
+           
+            if (res.length) {
 
                 res.map(obj => {
                     valueTime.push(
@@ -197,34 +198,42 @@ const StepCount = ({ props, intl,navigation }) => {
                 
                 setDataChart(
                     dataChart
+                    
 
                 )
+                console.log('dataChart: ', dataChart);
                 setTime(valueTime)
+                console.log('valueTime: ', valueTime);
             }
         }).catch(err => {
-
+            console.log('err: ', err);
+            
+            
         })
     }
     const onGetSteps = (start, end) => {
-        Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
-            if (res.length) {
-                var total = 0
-                res.map(obj => {
-                    total += obj.quantity
-                })
-                setCountStep(numberWithCommas(total))
+        setInterval(() => {
+            Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
+                
+                if (res.length) {
+                    var total = 0
+                    res.map(obj => {
+                        total += obj.quantity
+                    })
+                    setCountStep(numberWithCommas(total))
 
-                setCountRest(totalCount - total)
-            }
-            else {
-                setCountStep(0),
-                    setCountRest(totalCount - 0)
-            }
-        }).catch(err => {
+                    setCountRest(totalCount - total)
+                }
+                else {
+                    setCountStep(0),
+                        setCountRest(totalCount - 0)
+                }
+            }).catch(err => {
 
 
 
-        })
+            })
+        },3000)
     }
     const onGetDistances = (start, end) => {
         Fitness.getDistances({ startDate: start, endDate: end }).then(res => {

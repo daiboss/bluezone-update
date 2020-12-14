@@ -44,7 +44,9 @@ class ChartLine extends React.Component {
         },
       },
     });
+    console.log('newState: ', newState);
     this.setState(newState);
+    
 
     this.setState({
       xAxis: { ...this.state.xAxis, valueFormatter: this.props.time },

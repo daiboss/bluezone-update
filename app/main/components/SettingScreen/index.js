@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, StatusBar, SafeAreaView, Switch, Text, TouchableOpacity } from 'react-native'
 import Header from '../Header'
-import { RNAddShortcuts } from 'react-native-add-shortcuts'
+// import { RNAddShortcuts } from 'react-native-add-shortcuts'
 import message from '../../../core/msg/setting';
 import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { FCM_CHANNEL_ID, FCM_CHANNEL_DES, FCM_CHANNEL_NAME } from '../../../const/fcm';
+
+import firebase from 'react-native-firebase';
+
 const SettingScreen = ({ intl, navigation }) => {
     const { formatMessage } = intl;
     const [autoTarget, setAutoTarget] = useState(false)
@@ -25,35 +29,82 @@ const SettingScreen = ({ intl, navigation }) => {
         navigation.openDrawer();
     }
     const autoTargetSwitch = () => setAutoTarget(!autoTarget);
-    const alertStepSwitch = () => setAlertStep(!alertStep);
-    const alertTargetSwitch = () => setAlertTarget(!alertTarget);
+    const alertStepSwitch = () => {
+        onSetAlarm()
+        setAlertStep(!alertStep)};
+    const alertTargetSwitch = () => {
+        setAlertTarget(!alertTarget)};
     const alertBmiSwitch = () => setAlertBmi(!alertBmi);
-    const addShortCut = () => {
+    // const addShortCut = () => {
 
-        try {
-            let copy = (
-                <Icon
-                    name="copy"
-                    size={30}
-                    color="#000000"
-                    family={'FontAwesome'}
-                />
-            );
+    //     try {
+    //         let copy = (
+    //             <Icon
+    //                 name="copy"
+    //                 size={30}
+    //                 color="#000000"
+    //                 family={'FontAwesome'}
+    //             />
+    //         );
 
-            RNAddShortcuts.AddDynamicShortcut({
-                label: 'Copy',
-                description: 'Copy Desc',
-                icon: 'copy.png',
-                link: { url: 'app:copy' },
-                onDone: () => {
-                    console.log('Shortcut Added');
-                },
-            });
-        } catch (e) {
-            console.log('e: ', e);
+    //         RNAddShortcuts.AddDynamicShortcut({
+    //             label: 'Copy',
+    //             description: 'Copy Desc',
+    //             icon: 'copy.png',
+    //             link: { url: 'app:copy' },
+    //             onDone: () => {
+    //                 console.log('Shortcut Added');
+    //             },
+    //         });
+    //     } catch (e) {
+    //         console.log('e: ', e);
 
-        }
+    //     }
+    // }
+    const onSetAlarm = () => {
+        // let fire_date = new Date(new Date().setMinutes(new Date().getMinutes() + 1)).getTime()
+        // console.log('fire_date: ', fire_date);
+        // let title = 'Lời nhắc, nhấp vào để xem.'
+        // try {
+        //     console.log('try');
+        //     let notification = new firebase.notifications.Notification()
+        //         .setNotificationId(`${fire_date}`)
+        //         .android.setChannelId(FCM_CHANNEL_ID)
+        //         .android.setSmallIcon('ic_launcher')
+        //         .android.setProgress(100,40,true)
+        //         .setBody(title)
+        //         .setTitle('Bluezone')
+        //         .setSound('default')
+        //         .setData({
+        //             id: 7,
+        //             type: '-2',
+                    
+        //         });
+
+        //     firebase.notifications().scheduleNotification(notification, {
+        //         fireDate: fire_date,
+        //         id: 'alarm_notification',
+        //         push_type: 'alarm',
+        //         large_icon: 'ic_launcher',
+        //         vibrate: 500,
+        //         title: 'Hello',
+        //         repeatInterval: 'week',
+        //         sub_text: 'sub text',
+        //         priority: 'high',
+        //         show_in_foreground: true,
+        //         wake_screen: true,
+        //         extra1: { a: 1 },
+        //         extra2: 1,
+        //     });
+        // } catch (e) {
+        //     console.log('e: ', e);
+
+
+
+
+        // }
     }
+
     return (
         <SafeAreaView>
             <StatusBar></StatusBar>
