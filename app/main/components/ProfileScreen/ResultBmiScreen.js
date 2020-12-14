@@ -43,7 +43,7 @@ const visibleModal = {
 const ResultBmiScreen = ({route, intl, navigation}) => {
   console.log('route: ', route);
   const {formatMessage} = intl;
-  const [gender, setGender] = useState(0);
+  const [gender, setGender] = useState(1);
   const [listProfile, setListProfile] = useState([]);
   const [listTime, setListTime] = useState([]);
   const [bmi, setBmi] = useState(0);
@@ -86,6 +86,7 @@ const ResultBmiScreen = ({route, intl, navigation}) => {
               label={formatMessage(message.height)}
               value={height ? height : 'cm'}
               gender={gender}
+              currentHeight={height}
               type="height"
               error={heightError ? formatMessage(message.heightError2) : null}
               onSelected={height => {
@@ -97,6 +98,7 @@ const ResultBmiScreen = ({route, intl, navigation}) => {
               label={formatMessage(message.weight)}
               value={weight ? weight : 'kg'}
               error={weightError ? formatMessage(message.weightError2) : null}
+              currentWeight={weight}
               type="weight"
               gender={gender}
               listProfile={listProfile}

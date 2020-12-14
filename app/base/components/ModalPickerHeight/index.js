@@ -33,7 +33,7 @@ function ModalPicker({
   const [data, setData] = useState([]);
   const [height, setHeight] = useState(() => {
     if (currentHeight) {
-      return currentHeight.subString(0, currentHeight.length - 3);
+      return currentHeight.substring(0, currentHeight.length - 3);
     } else {
       return 165;
     }

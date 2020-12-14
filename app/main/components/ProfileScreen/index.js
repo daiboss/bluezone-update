@@ -59,7 +59,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
       r['values'].unshift({
         y: Number(a.weight.substring(0, a.weight.length - 3).replace(',', '.')),
         marker: a.weight,
-        year:moment(a.date).format('YYYY')
+        year: moment(a.date).format('YYYY'),
       });
       return r;
     }, Object.create(null));
@@ -218,6 +218,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
     </SafeAreaView>
   );
 };
+
 
 ProfileScreen.propTypes = {
   intl: intlShape.isRequired,

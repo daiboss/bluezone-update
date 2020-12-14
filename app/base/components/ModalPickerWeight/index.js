@@ -39,13 +39,13 @@ function ModalPicker({
 }) {
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
-  const [weight, setWeight] = useState(gender == 1 ? '65' : '50');
+  const [weight, setWeight] = useState(gender == 1 ? '65,' : '50,');
   const [index, setIndex] = useState(0);
 
   const [weight2, setWeight2] = useState('0 kg');
   const [index2, setIndex2] = useState(0);
   useEffect(() => {
-    setWeight('65');
+    setWeight('65,');
     setData(dataWeight);
 
     setData2(data3);
@@ -79,7 +79,7 @@ function ModalPicker({
             dataWeight.findIndex(
               e =>
                 e.label == currentWeight.substring(0, currentWeight.length - 4),
-            )
+            ) !== -1
               ? dataWeight.findIndex(
                   e =>
                     e.label ==
@@ -89,7 +89,7 @@ function ModalPicker({
               ? 50
               : gender == 0
               ? 35
-              : 0
+              : 50
           }
           onScroll={({index, item}) => {
             setWeight(item.label);

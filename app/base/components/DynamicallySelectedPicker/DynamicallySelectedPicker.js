@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {StyleSheet, View, ScrollView, Platform} from 'react-native';
 import PickerListItem from './PickerListItem';
 import * as fontSize from '../../../core/fontSize';
-import { widthPercentageToDP } from '../../../core/utils/dimension';
+import {widthPercentageToDP} from '../../../core/utils/dimension';
 
 export default class DynamicallySelectedPicker extends React.Component {
   constructor(props) {
@@ -175,7 +175,10 @@ export default class DynamicallySelectedPicker extends React.Component {
                     ? {
                         fontWeight: 'bold',
                       }
-                    : {color: '#00000060'}
+                    : this.state.itemIndex + transparentItemRows == index + 1 ||
+                      this.state.itemIndex + transparentItemRows == index - 1
+                    ? {color: '#000000'}
+                    : {color: '#00000040'}
                 }
                 style={[
                   styles.listItem,
