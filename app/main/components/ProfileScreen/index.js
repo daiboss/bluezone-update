@@ -54,7 +54,6 @@ const ProfileScreen = ({route, intl, navigation}) => {
   const onSelectGender = gender => setGender(gender);
   const getProfileList = async profiles => {
     let data = profiles.reduce((r, a) => {
-      console.log('a: ', a);
       r['values'] = r['values'] || [];
       r['values'].unshift({
         y: Number(a.weight.substring(0, a.weight.length - 3).replace(',', '.')),
@@ -92,6 +91,11 @@ const ProfileScreen = ({route, intl, navigation}) => {
     setGender(1);
     getListProfile();
   }, []);
+  function getAbsoluteMonths(momentDate) {
+    var months = Number(momentDate.format('MM'));
+    var years = Number(momentDate.format('YYYY'));
+    return months + years * 12;
+  }
   const onConfirm = async () => {
     try {
       if (!height) {
@@ -104,7 +108,8 @@ const ProfileScreen = ({route, intl, navigation}) => {
       let profiles = (await getProfile()) || [];
 
       let index = profiles.findIndex(
-        profile => moment(profile.date).diff(moment(), 'M') == 0,
+        profile =>
+          getAbsoluteMonths(profile.date) - getAbsoluteMonths(moment()) == 0,
       );
 
       let obj = {
@@ -134,7 +139,8 @@ const ProfileScreen = ({route, intl, navigation}) => {
       let profiles = (await getProfile()) || [];
 
       let index = profiles.findIndex(
-        profile => moment(profile.date).diff(moment(), 'M') == 0,
+        profile =>
+          getAbsoluteMonths(profile.date) - getAbsoluteMonths(moment()) == 0,
       );
 
       let obj = {
@@ -218,7 +224,6 @@ const ProfileScreen = ({route, intl, navigation}) => {
     </SafeAreaView>
   );
 };
-
 
 ProfileScreen.propTypes = {
   intl: intlShape.isRequired,
