@@ -21,7 +21,7 @@ import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.github.wuxudong.rncharts.MPAndroidChartPackage;
-import com.ovalmoney.fitness.RNFitnessPackage; 
+// import com.ovalmoney.fitness.RNFitnessPackage; 
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -41,7 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
            packages.add(new RNFirebaseMessagingPackage());
            packages.add(new RNFirebaseNotificationsPackage());
            packages.add(new LottiePackage());
-           packages.add(new RNFitnessPackage());
+          //  packages.add(new RNFitnessPackage());
            return packages;
         }
 
@@ -55,11 +55,24 @@ public class MainApplication extends Application implements ReactApplication {
   public ReactNativeHost getReactNativeHost() {
     return mReactNativeHost;
   }
+// @Override    
+// public boolean canOverrideExistingModule() {        
+//   return true;    
+// }  
+// @Override
+// public void checkPermission(){
+//   if (ContextCompat.checkSelfPermission(thisActivity, Manifest.permission.ACTIVITY_RECOGNITION)
+//           != PackageManager.PERMISSION_GRANTED) {
+//       ActivityCompat.requestPermissions(thisActivity,
+//             arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
+//             MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION);
+// }}
 
   @Override
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    // checkPermission();
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     registerReceiver(new GpsLocationReceiver(), new IntentFilter("android.location.PROVIDERS_CHANGED"));
     registerReceiver(new AirplaneModeReceiver(), new IntentFilter("android.intent.action.AIRPLANE_MODE"));

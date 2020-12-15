@@ -206,15 +206,15 @@ class WelcomeScreen extends React.Component {
   };
 
   onGoBack = () => {
-    const {onFinished} = this.props;
+    // const {onFinished} = this.props;
 
-    if (onFinished) {
-      onFinished();
-      return;
-    }
+    // if (onFinished) {
+    //   onFinished();
+    //   return;
+    // }
 
-    this.props.navigation.goBack();
-    return true;
+    this.props.navigation.navigate('stepCount');
+    // return true;
   };
 
   onLoad = e => {

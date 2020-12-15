@@ -76,8 +76,15 @@ const StepCount = ({ props, intl,navigation }) => {
         getPermission(moment(start).format('YYYY-MM-DD').toString(), moment(end).format('YYYY-MM-DD').toString(), moment(startLine).format('YYYY-MM-DD').toString(), moment(endLine).format('YYYY-MM-DD').toString())
     }, [])
     const getPermission = (start, end, startLine, endLine) => {
+        Fitness.subscribeToActivity().then(ress => {
+            console.log('ress: ', ress);
 
+        }).catch(err => {
+            console.log('err: ', err);
+
+        })
         Fitness.requestPermissions(permissions).then(res => {
+            console.log('res: ', res);
 
             if (res == true) {
                 let listDate = getListDate(start, end)
@@ -88,6 +95,7 @@ const StepCount = ({ props, intl,navigation }) => {
                 onGetDistances(start, end)
             }
         }).catch(err => {
+            console.log('err: ', err);
 
 
         })
