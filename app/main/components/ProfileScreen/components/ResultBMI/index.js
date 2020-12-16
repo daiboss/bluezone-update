@@ -11,7 +11,7 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
     if (height && weight) {
       let h = height.substring(0, height.length - 3) / 100;
       console.log('h: ', h);
-      let w = weight.substring(0, weight.length - 3).replace(',', '.');
+      let w = weight.substring(0, weight.length - 4).replace(',', '.');
       console.log('w: ', w);
       let totalBmi = parseFloat(w / (h * h)).toFixed(1);
       console.log('totalBmi: ', totalBmi);
