@@ -73,20 +73,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '80%',
     borderRadius: 25,
-    paddingVertical:0
+    paddingVertical: 0,
   },
 
   group: {
     flex: 1,
     padding: 15,
     justifyContent: 'space-between',
-    paddingTop: '15%',
+    paddingTop: '10%',
   },
   container2: {
-    shadowColor: '#00000040',
+    shadowColor: '#00000020',
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 1,
     elevation: 2,
-    shadowOffset: {width: 1, height: 1},
-    shadowOpacity: 0.2,
     shadowRadius: 10,
     backgroundColor: '#FFF',
     borderColor: '#00000040',

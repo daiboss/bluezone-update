@@ -65,10 +65,11 @@ class ChartLine extends React.Component {
           color: processColor(red_bluezone),
           drawCircles: true,
           drawValues: false,
+          barWidth: 5,
           // axisDependency: 'LEFT',
-          circleColor: processColor(red_bluezone),
-          circleRadius: 4,
-          drawCircleHole: true,
+          // circleColor: processColor(red_bluezone),
+          // circleRadius: 4,
+          // drawCircleHole: true,
           mode: 'HORIZONTAL_BEZIER',
           fillColor: processColor(red_bluezone),
           // highlightColor:processColor('#FFF'),
@@ -82,6 +83,7 @@ class ChartLine extends React.Component {
     return data;
   };
   componentWillReceiveProps = preProps => {
+    console.log('preProps: ', preProps);
     if (this.props.data != preProps.data) {
       let newState = update(this.state, {
         data: {

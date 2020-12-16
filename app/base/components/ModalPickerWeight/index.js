@@ -25,7 +25,7 @@ let i = 15;
 let j = 0;
 let data3 = [];
 for (i; i <= 300; i++) {
-  dataWeight.push({value: i, label: i.toString() + ','});
+  dataWeight.push({value: i, label: i.toString() + ', '});
 }
 for (j; j <= 9; j++) {
   data3.push({value: i, label: j.toString() + ' kg'});
@@ -39,22 +39,22 @@ function ModalPicker({
 }) {
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
-  const [weight, setWeight] = useState(gender == 1 ? '65,' : '50,');
+  const [weight, setWeight] = useState(gender == 1 ? '65, ' : '50, ');
   const [index, setIndex] = useState(0);
 
   const [weight2, setWeight2] = useState('0 kg');
   const [index2, setIndex2] = useState(0);
   useEffect(() => {
-    setWeight('65,');
+    setWeight('65, ');
     setData(dataWeight);
 
     setData2(data3);
   }, []);
   useEffect(() => {
     if (gender == 1) {
-      setWeight('65,');
+      setWeight('65, ');
     } else if (gender == 0) {
-      setWeight('50,');
+      setWeight('50, ');
     }
   }, [gender]);
 
@@ -78,12 +78,12 @@ function ModalPicker({
           initialSelectedIndex={
             dataWeight.findIndex(
               e =>
-                e.label == currentWeight.substring(0, currentWeight.length - 4),
+                e.label == currentWeight.substring(0, currentWeight.length - 5),
             ) !== -1
               ? dataWeight.findIndex(
                   e =>
                     e.label ==
-                    currentWeight.substring(0, currentWeight.length - 4),
+                    currentWeight.substring(0, currentWeight.length - 5),
                 )
               : gender == 1
               ? 50
@@ -108,7 +108,7 @@ function ModalPicker({
               e =>
                 e.label ==
                 currentWeight.substring(
-                  currentWeight.length - 4,
+                  currentWeight.length - 5,
                   currentWeight.length,
                 ),
             )
@@ -116,7 +116,7 @@ function ModalPicker({
                   e =>
                     e.label ==
                     currentWeight.substring(
-                      currentWeight.length - 4,
+                      currentWeight.length - 5,
                       currentWeight.length,
                     ),
                 )

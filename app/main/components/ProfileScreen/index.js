@@ -56,7 +56,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
     let data = profiles.reduce((r, a) => {
       r['values'] = r['values'] || [];
       r['values'].unshift({
-        y: Number(a.weight.substring(0, a.weight.length - 3).replace(',', '.')),
+        y: Number(a.weight.substring(0, a.weight.length - 4).replace(',', '.')),
         marker: a.weight,
         year: moment(a.date).format('YYYY'),
       });

@@ -203,7 +203,7 @@ android {
         pickFirst 'lib/x86_64/libc++_shared.so'
     }
  dexOptions {
-       javaMaxHeapSize "3g"
+       javaMaxHeapSize "4g"
     }
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
