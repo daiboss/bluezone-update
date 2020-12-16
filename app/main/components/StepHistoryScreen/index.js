@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, SafeAreaView, StatusBar, Text, TouchableOpacity, StyleSheet, ImageBackground, Image, processColor } from 'react-native'
 import Fitness from '@ovalmoney/react-native-fitness';
 // import { BarChart } from 'react-native-charts-wrapper';
+import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 
 import { Dimensions } from "react-native";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
@@ -47,6 +48,7 @@ const StepCount = ({ props, intl, navigation }) => {
     const [countRest, setCountRest] = useState(0)
     const [countCarlo, setCountCarlo] = useState(0)
     const [distant, setDistant] = useState(0)
+    const [year,setYear] = useState('')
     const totalCount = 10000
     const permissions = [
         { kind: Fitness.PermissionKinds.Steps, access: Fitness.PermissionAccesses.Read },
@@ -160,7 +162,7 @@ const StepCount = ({ props, intl, navigation }) => {
             var valueTime = []
             var total = 0
             Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
-
+                setYear(moment(end).format('YYYY'))
                 if (res.length) {
                     res.map(obj => {
 
@@ -170,7 +172,8 @@ const StepCount = ({ props, intl, navigation }) => {
                         valueDate.push({
 
                             marker: obj.quantity,
-                            y: obj.quantity
+                            y: obj.quantity,
+                            year:moment(end).format('YYYY')
                         })
                         total += obj.quantity
                     })
@@ -219,7 +222,9 @@ const StepCount = ({ props, intl, navigation }) => {
                         valueDate.push({
 
                             marker: obj.quantity,
-                            y: obj.quantity
+                            y: obj.quantity,
+                            year: moment(end).format('YYYY')
+
                         })
                         total += obj.quantity
                     })
@@ -501,6 +506,10 @@ const styles = StyleSheet.create({
     bgRed: {
         backgroundColor: '#fe4358',
     },
+    header: {
+        backgroundColor: '#ffffff',
+        marginTop: isIPhoneX ? 0 : 20,
+    },
     txGray: {
         color: '#a1a1a1'
     },
@@ -594,7 +603,13 @@ const styles = StyleSheet.create({
     txDate: {
         color: '#fff',
         fontSize: 14
-    }
+    },
+    txtYear: {
+        fontSize: fontSize.normal,
+        fontWeight: 'bold',
+        paddingBottom: 5,
+        alignSelf: 'center'
+    },
 
 })
 StepCount.propTypes = {

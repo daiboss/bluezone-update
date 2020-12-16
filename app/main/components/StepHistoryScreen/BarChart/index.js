@@ -62,7 +62,7 @@ class ChartLine extends React.Component {
         values: e.values,
         label: e.label || '',
         config: {
-          color: processColor(red_bluezone),
+          color: processColor('#a1a1a1'),
           drawCircles: true,
           drawValues: false,
           barWidth: 5,
@@ -71,11 +71,8 @@ class ChartLine extends React.Component {
           // circleRadius: 4,
           // drawCircleHole: true,
           mode: 'HORIZONTAL_BEZIER',
-          fillColor: processColor(red_bluezone),
-          // highlightColor:processColor('#FFF'),
-          fillAlpha: 15,
-
-          drawFilled: true,
+          highlightColor: processColor(red_bluezone),
+          highlightAlpha:300,
         },
       };
     });
@@ -204,7 +201,7 @@ class ChartLine extends React.Component {
           scaleYEnabled={true}
           visibleRange={{ x: { max: 6 } }}
           dragDecelerationEnabled={false}
-          // ref="chart"
+          ref="chart"
           onSelect={this.handleSelect}
         //   autoScalesMinMaxEnabled={true}
         // onChange={this.handleChange.bind(this)}
