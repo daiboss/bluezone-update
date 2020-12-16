@@ -178,11 +178,11 @@ const SettingScreen = ({ intl, navigation }) => {
                     value={alertBmi}
                 />
             </View>
-            <TouchableOpacity onPress={addShortCut}>
+            {/* <TouchableOpacity >
                 <Text>
                     Thêm tiện ích
                 </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </SafeAreaView>
 
     )
