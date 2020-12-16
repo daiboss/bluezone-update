@@ -109,7 +109,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
 
       let index = profiles.findIndex(
         profile =>
-          getAbsoluteMonths(profile.date) - getAbsoluteMonths(moment()) == 0,
+          getAbsoluteMonths(moment(profile.date)) - getAbsoluteMonths(moment()) == 0,
       );
 
       let obj = {
@@ -128,6 +128,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
       setProfile(profiles);
       navigation.navigate('stepCount');
     } catch (error) {
+      console.log('error: ', error);
       setisVisibleVerifyError(true);
     }
   };

@@ -21,7 +21,6 @@ import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.github.wuxudong.rncharts.MPAndroidChartPackage;
-// import com.ovalmoney.fitness.RNFitnessPackage; 
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -41,7 +40,6 @@ public class MainApplication extends Application implements ReactApplication {
            packages.add(new RNFirebaseMessagingPackage());
            packages.add(new RNFirebaseNotificationsPackage());
            packages.add(new LottiePackage());
-          //  packages.add(new RNFitnessPackage());
            return packages;
         }
 
