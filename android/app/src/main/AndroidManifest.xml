@@ -31,6 +31,7 @@
             android:icon="@mipmap/icon_bluezone"
             android:roundIcon="@mipmap/icon_bluezone"
             android:allowBackup="false"
+            android:largeHeap="true"
             android:theme="@style/AppTheme">
         <activity
         android:name=".MainActivity"

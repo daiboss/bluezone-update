@@ -105,7 +105,7 @@ const StepCount = ({ props, intl, navigation }) => {
     }, []);
     const getPermission = (start, end, startLine, endLine) => {
         if (Platform.OS === 'android') {
-            Fitness.subscribeToActivity()
+            Fitness.subscribeToSteps()
                 .then(ress => {
                     console.log('ress: ', ress);
                 })
@@ -113,7 +113,7 @@ const StepCount = ({ props, intl, navigation }) => {
                     console.log('err: ', err);
                 });
         }
-        Fitness.requestPermissions(permissions)
+        Fitness.isAuthorized(permissions)
             .then(res => {
                 console.log('res: ', res);
 
@@ -125,9 +125,26 @@ const StepCount = ({ props, intl, navigation }) => {
                     onGetStepLine(startLine, endLine);
                     onGetCalories(start, end);
                     onGetDistances(start, end);
+                }else{
+                    Fitness.requestPermissions(permissions)
+                        .then(res => {
+                            console.log('res: ', res);
+
+                        }).catch(err => {
+                            console.log('err: ', err);
+
+                        })
                 }
             })
             .catch(err => {
+                Fitness.isAuthorized(permissions)
+                    .then(res => {
+                        console.log('res: ', res);
+
+                    }).catch(err => {
+                        console.log('err: ', err);
+
+                    })
                 console.log('err: ', err);
             });
         // Fitness.requestPermissions(permissions).then(res => {

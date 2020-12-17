@@ -119,7 +119,7 @@ const StepCount = ({ props, intl, navigation }) => {
     }
     const getPermission = (start, end) => {
 
-        Fitness.requestPermissions(permissions).then(res => {
+        Fitness.isAuthorized(permissions).then(res => {
 
             if (res == true) {
                 let listDate = getListDate(start, end)
@@ -127,9 +127,23 @@ const StepCount = ({ props, intl, navigation }) => {
                 onGetSteps(start, end)
                 onGetCalories(start, end)
                 onGetDistances(start, end)
+            }else{
+                Fitness.requestPermissions(permissions).then(res => {
+
+
+                }).catch(err => {
+
+
+                })
             }
         }).catch(err => {
+            Fitness.requestPermissions(permissions).then(res => {
 
+               
+            }).catch(err => {
+
+
+            })
 
         })
         // Fitness.requestPermissions(permissions).then(res => {
