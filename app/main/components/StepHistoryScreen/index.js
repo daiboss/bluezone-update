@@ -93,8 +93,8 @@ const StepCount = ({props, intl, navigation}) => {
     avoidFirstLastClipping: true,
   };
   useEffect(() => {
-    var end = new Date().getTime();
-
+    var end = new Date();
+    end.setDate(end.getDate() + 1);
     var start = new Date();
     // let listDate = getListDate(start, end)
 
@@ -102,22 +102,22 @@ const StepCount = ({props, intl, navigation}) => {
       moment(start.getTime())
         .format('YYYY-MM-DD')
         .toString(),
-      moment(end)
+      moment(end.getTime())
         .format('YYYY-MM-DD')
         .toString(),
     );
   }, []);
   const onSetSelect = type => () => {
     if (type == 1) {
-      let start = new Date().getTime();
+      let start = new Date();
 
-      let end = new Date().getTime();
-
+      let end = new Date();
+      end.setDate(start.getDate() + 1);
       getPermission(
-        moment(start)
+        moment(start.getTime())
           .format('YYYY-MM-DD')
           .toString(),
-        moment(end)
+        moment(end.getTime())
           .format('YYYY-MM-DD')
           .toString(),
       );
