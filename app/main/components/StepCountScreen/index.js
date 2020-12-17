@@ -82,7 +82,7 @@ const StepCount = ({ props, intl, navigation }) => {
     useEffect(() => {
         var end = new Date().getTime();
 
-        var start = new Date().setDate(new Date().getDate() - 1);
+        var start = new Date().getTime();
         var startLine = new Date().setDate(new Date().getDate() - 7);
         var endLine = new Date().setDate(new Date().getDate() - 1);
 

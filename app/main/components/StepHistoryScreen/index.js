@@ -77,9 +77,9 @@ const StepCount = ({ props, intl, navigation }) => {
     }, [])
     const onSetSelect = (type) => () => {
         if (type == 1) {
-            let start = new Date().setDate(new Date().getDate() - 1)
+            let start = new Date().getTime()
 
-            let end = new Date()
+            let end = new Date().getTime()
 
             getPermission(moment(start).format('YYYY-MM-DD').toString(), moment(end).format('YYYY-MM-DD').toString())
             setSelectDate(true)
