@@ -16,7 +16,7 @@
     "build-product-store": "npm run clear-cache && cp -r env/product_store .env && npm run google-service-product  && cd ./android && ./gradlew bundleproductRelease",
     "build-product-web": "npm run clear-cache && cp -r env/product_web .env && npm run google-service-product && cd ./android && ./gradlew assembleproductRelease",
     "build-product-huawei": "npm run clear-cache && cp -r env/product_huawei .env && npm run google-service-product && cd ./android && ./gradlew assembleproductRelease",
-    "build-developer-dev": "npm run clear-cache && cp -r env/developer .env  && npx react-native run-android --variant=developerDebug",
+    "build-developer-dev": "npm run clear-cache && cp -r env/developer .env && npm run google-service-developer && npx react-native run-android --variant=developerDebug",
     "build-developer-store": "npm run clear-cache && cp -r env/developer .env && npm run google-service-developer && cd ./android && ./gradlew assembledeveloperRelease",
     "build-developer-web": "npm run clear-cache && cp -r env/developer_web .env && npm run google-service-developer && cd ./android && ./gradlew assembledeveloperRelease",
     "build-developer-huawei": "npm run clear-cache && cp -r env/developer_huawei .env && npm run google-service-developer && cd ./android && ./gradlew assembledeveloperRelease"

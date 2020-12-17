@@ -1,4 +1,4 @@
-package com.bluezone;
+package com.mic.bluezone;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

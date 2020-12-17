@@ -107,15 +107,15 @@ const StepCount = ({ props, intl, navigation }) => {
         if (Platform.OS === 'android') {
             Fitness.subscribeToSteps()
                 .then(ress => {
-                    console.log('ress: ', ress);
+                    console.log('ress: subscribeToSteps', ress);
                 })
                 .catch(err => {
-                    console.log('err: ', err);
+                    console.log('err: subscribeToSteps', err);
                 });
         }
         Fitness.isAuthorized(permissions)
             .then(res => {
-                console.log('res: ', res);
+                console.log('res: isAuthorized', res);
 
                 if (res == true) {
                     let listDate = getListDate(start, end);
@@ -128,10 +128,10 @@ const StepCount = ({ props, intl, navigation }) => {
                 }else{
                     Fitness.requestPermissions(permissions)
                         .then(res => {
-                            console.log('res: ', res);
+                            console.log('res: requestPermissions', res);
 
                         }).catch(err => {
-                            console.log('err: ', err);
+                            console.log('err:requestPermissions ', err);
 
                         })
                 }
@@ -139,13 +139,13 @@ const StepCount = ({ props, intl, navigation }) => {
             .catch(err => {
                 Fitness.isAuthorized(permissions)
                     .then(res => {
-                        console.log('res: ', res);
+                        console.log('res: isAuthorized', res);
 
                     }).catch(err => {
-                        console.log('err: ', err);
+                        console.log('err: isAuthorized', err);
 
                     })
-                console.log('err: ', err);
+                console.log('err: isAuthorized', err);
             });
         // Fitness.requestPermissions(permissions).then(res => {
         //     Fitness.getSteps({ startDate: '2020/12/01', endDate: '2020/12/03' }).then(res => {
@@ -176,6 +176,7 @@ const StepCount = ({ props, intl, navigation }) => {
         var valueTime = []
         var total = 0
         Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
+            console.log('res: getSteps', res);
 
             if (res.length) {
 
@@ -262,7 +263,7 @@ const StepCount = ({ props, intl, navigation }) => {
                 console.log('valueTime: ', valueTime);
             }
         }).catch(err => {
-            console.log('err: ', err);
+            console.log('err: getSteps', err);
 
 
         })
