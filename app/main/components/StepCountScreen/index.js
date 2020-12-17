@@ -1,488 +1,431 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-    View,
-    SafeAreaView,
-    StatusBar,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    ImageBackground,
-    Image,
-    processColor,
-    Platform,
+  View,
+  SafeAreaView,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+  Image,
+  processColor,
+  Platform,
 } from 'react-native';
 import Fitness from '@ovalmoney/react-native-fitness';
-import { LineChart } from 'react-native-charts-wrapper';
-import { isIPhoneX } from '../../../core/utils/isIPhoneX';
-import { Dimensions } from "react-native";
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import { ScrollView } from 'react-native-gesture-handler';
+import {LineChart} from 'react-native-charts-wrapper';
+import {isIPhoneX} from '../../../core/utils/isIPhoneX';
+import {Dimensions} from 'react-native';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import {ScrollView} from 'react-native-gesture-handler';
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
 import message from '../../../core/msg/stepCount';
-import { injectIntl, intlShape } from 'react-intl';
+import {injectIntl, intlShape} from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
 
 import ChartLine from './ChartLine';
 const screenWidth = Dimensions.get('window').width;
-const StepCount = ({ props, intl, navigation }) => {
-    const { formatMessage } = intl;
+const StepCount = ({props, intl, navigation}) => {
+  const {formatMessage} = intl;
 
-    const data = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-        datasets: [
-            {
-                data: [20, 45, 28, 80, 99, 43],
-                color: (opacity = 1) => `#fe4358`, // optional
-                strokeWidth: 2, // optional
-            },
-        ],
-    };
-    const [time, setTime] = useState([]);
-    const chartConfig = {
-        backgroundGradientFrom: '#fff',
-        backgroundGradientFromOpacity: 0,
-        backgroundGradientTo: '#fff',
-        backgroundGradientToOpacity: 0.5,
-        color: (opacity = 1) => `#fe4358`,
-        strokeWidth: 2, // optional, default 3
-        barPercentage: 0.5,
-        useShadowColorFromDataset: false, // optional
-    };
-    const [countStep, setCountStep] = useState(null);
-    const [countRest, setCountRest] = useState(0);
-    const [countCarlo, setCountCarlo] = useState(0);
-    const [distant, setDistant] = useState(0);
-    const totalCount = 10000;
-    const permissions = [
-        {
-            kind: Fitness.PermissionKinds.Steps,
-            access: Fitness.PermissionAccesses.Read,
-        },
-        {
-            kind: Fitness.PermissionKinds.Calories,
-            access: Fitness.PermissionAccesses.Read,
-        },
-        {
-            kind: Fitness.PermissionKinds.Distances,
-            access: Fitness.PermissionAccesses.Read,
-        },
-    ];
-    const [dataChart, setDataChart] = useState([]);
-    const xAxis = {
-        granularityEnabled: true,
-        granularity: 1,
-        // axisLineWidth: 3,
-        position: 'TOP',
-        labelCount: 7,
-        avoidFirstLastClipping: true,
-    };
-    useEffect(() => {
-        var end = new Date().getTime();
+  const data = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+    datasets: [
+      {
+        data: [20, 45, 28, 80, 99, 43],
+        color: (opacity = 1) => `#fe4358`, // optional
+        strokeWidth: 2, // optional
+      },
+    ],
+  };
+  const [time, setTime] = useState([]);
+  const chartConfig = {
+    backgroundGradientFrom: '#fff',
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: '#fff',
+    backgroundGradientToOpacity: 0.5,
+    color: (opacity = 1) => `#fe4358`,
+    strokeWidth: 2, // optional, default 3
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false, // optional
+  };
+  const [countStep, setCountStep] = useState(null);
+  const [countRest, setCountRest] = useState(0);
+  const [countCarlo, setCountCarlo] = useState(0);
+  const [distant, setDistant] = useState(0);
+  const totalCount = 10000;
+  const permissions = [
+    {
+      kind: Fitness.PermissionKinds.Steps,
+      access: Fitness.PermissionAccesses.Read,
+    },
+    {
+      kind: Fitness.PermissionKinds.Calories,
+      access: Fitness.PermissionAccesses.Read,
+    },
+    {
+      kind: Fitness.PermissionKinds.Distances,
+      access: Fitness.PermissionAccesses.Read,
+    },
+  ];
+  const [dataChart, setDataChart] = useState([]);
+  const xAxis = {
+    granularityEnabled: true,
+    granularity: 1,
+    // axisLineWidth: 3,
+    position: 'TOP',
+    labelCount: 7,
+    avoidFirstLastClipping: true,
+  };
+  useEffect(() => {
+    var end = new Date();
+    end.setDate(end.getDate() + 1);
+    var start = new Date();
+    var startLine = new Date();
+    startLine.setDate(new Date().getDate() - 7);
+    var endLine = new Date();
+    endLine.setDate(new Date().getDate() - 1);
+    // let listDate = getListDate(start, end)
 
-        var start = new Date().getTime();
-        var startLine = new Date().setDate(new Date().getDate() - 7);
-        var endLine = new Date().setDate(new Date().getDate() - 1);
+    getPermission(
+      moment(start.getTime())
+        .format('YYYY-MM-DD')
+        .toString(),
+      moment(end.getTime())
+        .format('YYYY-MM-DD')
+        .toString(),
+      moment(startLine.getTime())
+        .format('YYYY-MM-DD')
+        .toString(),
+      moment(endLine.getTime())
+        .format('YYYY-MM-DD')
+        .toString(),
+    );
+  }, []);
+  const getData = (start, end, startLine, endLine) => {
+    // let listDate = getListDate(start, end);
+    // renderDataMap(listDate);
+    onGetSteps(start, end);
+    onGetStepsRealTime(start, end);
+    onGetStepLine(startLine, endLine);
+    onGetCalories(start, end);
+    onGetDistances(start, end);
+  };
+  const getPermission = async (start, end, startLine, endLine) => {
+    try {
+      let resAuth = await Fitness.isAuthorized(permissions);
 
-        // let listDate = getListDate(start, end)
-
-        getPermission(
-            moment(start)
-                .format('YYYY-MM-DD')
-                .toString(),
-            moment(end)
-                .format('YYYY-MM-DD')
-                .toString(),
-            moment(startLine)
-                .format('YYYY-MM-DD')
-                .toString(),
-            moment(endLine)
-                .format('YYYY-MM-DD')
-                .toString(),
-        );
-    }, []);
-    const getPermission = (start, end, startLine, endLine) => {
+      if (resAuth == true) {
+        getData(start, end, startLine, endLine);
+      } else {
+        let resPermissions = await Fitness.requestPermissions(permissions);
         if (Platform.OS === 'android') {
-            Fitness.subscribeToSteps()
-                .then(ress => {
-                    console.log('ress: subscribeToSteps', ress);
-                })
-                .catch(err => {
-                    console.log('err: subscribeToSteps', err);
-                });
+          let res2 = await Fitness.subscribeToSteps();
+          getData(start, end, startLine, endLine);
         }
-        Fitness.isAuthorized(permissions)
-            .then(res => {
-                console.log('res: isAuthorized', res);
+      }
+    } catch (error) {
+      getPermission();
+    }
+  };
+  const renderDataMap = listDate => {
+    let valueDate = [];
+    listDate.map(obj => {
+      valueDate.push({
+        x: obj,
+      });
+    });
+  };
 
-                if (res == true) {
-                    let listDate = getListDate(start, end);
-                    renderDataMap(listDate);
-                    onGetSteps(start, end);
-                    onGetStepsRealTime(start, end);
-                    onGetStepLine(startLine, endLine);
-                    onGetCalories(start, end);
-                    onGetDistances(start, end);
-                }else{
-                    Fitness.requestPermissions(permissions)
-                        .then(res => {
-                            console.log('res: requestPermissions', res);
-
-                        }).catch(err => {
-                            console.log('err:requestPermissions ', err);
-
-                        })
-                }
-            })
-            .catch(err => {
-                Fitness.isAuthorized(permissions)
-                    .then(res => {
-                        console.log('res: isAuthorized', res);
-
-                    }).catch(err => {
-                        console.log('err: isAuthorized', err);
-
-                    })
-                console.log('err: isAuthorized', err);
-            });
-        // Fitness.requestPermissions(permissions).then(res => {
-        //     Fitness.getSteps({ startDate: '2020/12/01', endDate: '2020/12/03' }).then(res => {
-        //
-        //         // setCountStep(res)
-        //         alert(JSON.stringify(res))
-        //     })
-        //
-
-        // }).catch(err => {
-        //     alert(JSON.stringify(err))
-
-        //
-
-        // })
-    };
-    const renderDataMap = listDate => {
-        let valueDate = [];
-        listDate.map(obj => {
+  const onGetStepLine = (start, end) => {
+    var valueDate = [];
+    var valueTime = [];
+    var total = 0;
+    Fitness.getSteps({startDate: start, endDate: end})
+      .then(res => {
+        if (res.length) {
+          res.map(obj => {
+            valueTime.push(moment(obj.endDate).format('MM/DD'));
             valueDate.push({
-                x: obj,
+              marker: obj.quantity,
+              y: obj.quantity,
             });
-        });
-    };
+            total += obj.quantity;
+          });
 
-    const onGetStepLine = (start, end) => {
-        var valueDate = []
-        var valueTime = []
-        var total = 0
-        Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
-            console.log('res: getSteps', res);
+          let dataChart = [
+            {
+              // label: "demo",
+              values: valueDate,
 
-            if (res.length) {
+              // config: {
+              //     color: processColor('#fe4358'),
+              //     drawCircles: true,
+              //     lineWidth: 3,
+              //     drawValues: false,
+              //     axisDependency: 'LEFT',
+              //     circleColor: processColor('#fe4358'),
+              //     circleRadius: 5,
+              //     drawCircleHole: false,
+              //     mode: 'HORIZONTAL_BEZIER',
+              // },
+            },
+          ];
 
-                res.map(obj => {
-                    valueTime.push(
-                        moment(obj.endDate).format('MM/DD'),
-                    )
-                    valueDate.push({
+          setDataChart(dataChart);
+          setTime(valueTime);
+        } else {
+          let dataNull = [
+            {
+              startDate: start,
+              endDate: end,
+              quantity: 0,
+            },
+          ];
+          dataNull.map(obj => {
+            valueTime.push(moment(obj.endDate).format('MM/DD'));
+            valueDate.push({
+              marker: obj.quantity,
+              y: obj.quantity,
+            });
+            total += obj.quantity;
+          });
 
-                        marker: obj.quantity,
-                        y: obj.quantity
-                    })
-                    total += obj.quantity
-                })
+          let dataChart = [
+            {
+              // label: "demo",
+              values: valueDate,
 
+              // config: {
+              //     color: processColor('#fe4358'),
+              //     drawCircles: true,
+              //     lineWidth: 3,
+              //     drawValues: false,
+              //     axisDependency: 'LEFT',
+              //     circleColor: processColor('#fe4358'),
+              //     circleRadius: 5,
+              //     drawCircleHole: false,
+              //     mode: 'HORIZONTAL_BEZIER',
+              // },
+            },
+          ];
 
-                let dataChart = [{
-                    // label: "demo",
-                    values: valueDate,
+          setDataChart(dataChart);
 
-                    // config: {
-                    //     color: processColor('#fe4358'),
-                    //     drawCircles: true,
-                    //     lineWidth: 3,
-                    //     drawValues: false,
-                    //     axisDependency: 'LEFT',
-                    //     circleColor: processColor('#fe4358'),
-                    //     circleRadius: 5,
-                    //     drawCircleHole: false,
-                    //     mode: 'HORIZONTAL_BEZIER',
-                    // },
-                },]
-
-
-                setDataChart(
-                    dataChart
-
-                )
-                setTime(valueTime)
-            } else {
-                let dataNull = [{
-                    startDate: start,
-                    endDate: end,
-                    quantity: 0
-                }]
-                dataNull.map(obj => {
-                    valueTime.push(
-                        moment(obj.endDate).format('MM/DD'),
-                    )
-                    valueDate.push({
-
-                        marker: obj.quantity,
-                        y: obj.quantity
-                    })
-                    total += obj.quantity
-                })
-
-
-                let dataChart = [{
-                    // label: "demo",
-                    values: valueDate,
-
-                    // config: {
-                    //     color: processColor('#fe4358'),
-                    //     drawCircles: true,
-                    //     lineWidth: 3,
-                    //     drawValues: false,
-                    //     axisDependency: 'LEFT',
-                    //     circleColor: processColor('#fe4358'),
-                    //     circleRadius: 5,
-                    //     drawCircleHole: false,
-                    //     mode: 'HORIZONTAL_BEZIER',
-                    // },
-                },]
-
-
-                setDataChart(
-                    dataChart
-
-
-                )
-                console.log('dataChart: ', dataChart);
-                setTime(valueTime)
-                console.log('valueTime: ', valueTime);
-            }
-        }).catch(err => {
-            console.log('err: getSteps', err);
-
-
-        })
-    }
-    const onGetSteps = (start, end) => {
-        Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
-
-            if (res.length) {
-                var total = 0
-                res.map(obj => {
-                    total += obj.quantity
-                })
-                setCountStep(numberWithCommas(total))
-
-                setCountRest(totalCount - total)
-            }
-            else {
-                setCountStep(0),
-                    setCountRest(totalCount - 0)
-            }
-        }).catch(err => {
-
-
-
-        })
-    }
-    const onGetStepsRealTime = (start, end) => {
-        setInterval(() => {
-            Fitness.getSteps({ startDate: start, endDate: end }).then(res => {
-
-                if (res.length) {
-                    var total = 0
-                    res.map(obj => {
-                        total += obj.quantity
-                    })
-                    setCountStep(numberWithCommas(total))
-
-                    setCountRest(totalCount - total)
-                }
-                else {
-                    setCountStep(0),
-                        setCountRest(totalCount - 0)
-                }
-            }).catch(err => {
-
-
-
-            })
-        }, 3000)
-    }
- 
-
-
-    const onGetDistances = (start, end) => {
-        Fitness.getDistances({ startDate: start, endDate: end })
-            .then(res => {
-                //
-                var total = 0;
-                res.map(obj => {
-                    total += obj.quantity;
-                });
-                total = total / 1000;
-                setDistant(total.toFixed(1));
-            })
-            .catch(err => { });
-    };
-    const addDays = (date, days = 1) => {
-        var list = [];
-        const result = new Date(date);
-        result.setDate(result.getDate() + days);
-
-        list.push(result);
-
-        return [...list];
-    };
-
-    const getListDate = (startDate, endDate, range = []) => {
-        var start = new Date(startDate);
-        var end = new Date(endDate);
-
-        if (start > end) {
-            return range;
+          setTime(valueTime);
         }
-        const next = addDays(start, 1);
-        return getListDate(next, end, [...range, start]);
-    };
-    const numberWithCommas = x => {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    };
-    const onGetCalories = (start, end) => {
-        Fitness.getCalories({ startDate: start, endDate: end })
-            .then(res => {
-                //
-                var total = 0;
-                res.map(obj => {
-                    total += obj.quantity;
-                });
-                setCountCarlo(total);
-            })
-            .catch(err => { });
-    };
-    const onBack = () => {
-        try {
-            navigation.pop();
-        } catch (e) { }
-    };
-    const onShowMenu = () => {
-        navigation.openDrawer();
-    };
-    const handleSelect = event => {
-        // let entry = event.nativeEvent;
-        //
-        // if (entry == null) {
-        //     this.setState({
-        //         ...this.state,
-        //         selectedEntry: null,
-        //     });
-        // } else {
-        //     this.setState({
-        //         ...this.state,
-        //         selectedEntry: JSON.stringify(entry),
-        //         year: entry?.data?.year,
-        //     });
-        // }
-    };
-    return (
-        <SafeAreaView style={styles.container}>
-            <StatusBar />
+      })
+      .catch(err => {});
+  };
+  const onGetSteps = (start, end) => {
+    Fitness.getSteps({startDate: start, endDate: end})
+      .then(res => {
+        if (res.length) {
+          var total = 0;
+          res.map(obj => {
+            total += obj.quantity;
+          });
+          setCountStep(numberWithCommas(total));
 
-            <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-                {/* <View>
+          setCountRest(totalCount - total);
+        } else {
+          setCountStep(0), setCountRest(totalCount - 0);
+        }
+      })
+      .catch(err => {});
+  };
+  const onGetStepsRealTime = (start, end) => {
+    setInterval(() => {
+      Fitness.getSteps({
+        startDate: moment(start).toString(),
+        endDate: moment('2020-12-10').toString(),
+      })
+        .then(res => {
+          if (res.length) {
+            var total = 0;
+            res.map(obj => {
+              total += obj.quantity;
+            });
+            setCountStep(numberWithCommas(total));
+
+            setCountRest(totalCount - total);
+          } else {
+            setCountStep(0), setCountRest(totalCount - 0);
+          }
+        })
+        .catch(err => {});
+    }, 3000);
+  };
+
+  const onGetDistances = (start, end) => {
+    Fitness.getDistances({startDate: start, endDate: end})
+      .then(res => {
+        //
+        var total = 0;
+        res.map(obj => {
+          total += obj.quantity;
+        });
+        total = total / 1000;
+        setDistant(total.toFixed(1));
+      })
+      .catch(err => {});
+  };
+  const addDays = (date, days = 1) => {
+    var list = [];
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+
+    list.push(result);
+
+    return [...list];
+  };
+
+  const getListDate = (startDate, endDate, range = []) => {
+    var start = new Date(startDate);
+    var end = new Date(endDate);
+
+    if (start > end) {
+      return range;
+    }
+    const next = addDays(start, 1);
+
+    return getListDate(next, end, [...range, start]);
+  };
+  const numberWithCommas = x => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+  const onGetCalories = (start, end) => {
+    Fitness.getCalories({startDate: start, endDate: end})
+      .then(res => {
+        //
+        var total = 0;
+        res.map(obj => {
+          total += obj.quantity;
+        });
+        setCountCarlo(total);
+      })
+      .catch(err => {});
+  };
+  const onBack = () => {
+    try {
+      navigation.pop();
+    } catch (e) {}
+  };
+  const onShowMenu = () => {
+    navigation.openDrawer();
+  };
+  const handleSelect = event => {
+    // let entry = event.nativeEvent;
+    //
+    // if (entry == null) {
+    //     this.setState({
+    //         ...this.state,
+    //         selectedEntry: null,
+    //     });
+    // } else {
+    //     this.setState({
+    //         ...this.state,
+    //         selectedEntry: JSON.stringify(entry),
+    //         year: entry?.data?.year,
+    //     });
+    // }
+  };
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar />
+
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+        {/* <View>
                     <Text>Thống kê bước chân</Text>
                 </View> */}
-                <Header
-                    onBack={onBack}
-                    colorIcon={'#FE4358'}
-                    title={formatMessage(message.title)}
-                    styleHeader={styles.header}
-                    styleTitle={{
-                        color: '#000',
-                        fontSize: fontSize.bigger,
-                    }}
-                    styleHeader={{ justifyContent: 'space-around' }}
-                    showMenu={true}
-                    onShowMenu={onShowMenu}
-                />
-                <ImageBackground
-                    resizeMode={'stretch'}
-                    source={require('./images/bg_step_count.png')}
-                    style={styles.viewCircular}>
-                    <Text style={styles.txToday}>{formatMessage(message.today)}</Text>
-                    <View style={styles.viewBorderCircular}>
-                        <AnimatedCircularProgress
-                            size={180}
-                            style={styles.circular}
-                            width={6}
-                            rotation={0}
-                            fill={((totalCount - countRest) / totalCount) * 100}
-                            tintColor="#FE4358"
-                            backgroundColor="#e5e5e5">
-                            {fill => (
-                                <View style={styles.viewFill}>
-                                    <Image
-                                        source={require('./images/ic_run.png')}
-                                        resizeMode={'contain'}
-                                        height={30}
-                                    />
-                                    <Text style={styles.txCountStep}>{countStep}</Text>
-                                    <Text style={styles.txCountTarget}>
-                                        {formatMessage(message.target)} {totalCount}
-                                    </Text>
-                                </View>
-                            )}
-                        </AnimatedCircularProgress>
-                    </View>
-                </ImageBackground>
-                <View style={styles.dataHealth}>
-                    <View style={styles.viewImgData}>
-                        <Image
-                            style={styles.img}
-                            source={require('./images/ic_step.png')}
-                        />
-                        <Text style={styles.txData}>{`${formatMessage(
-                            message.stepsToTarget,
-                        )} ${countRest > 0 ? countRest : 0}`}</Text>
-                        <Text style={styles.txUnit}>{`${formatMessage(
-                            message.stepsNormal,
-                        )}`}</Text>
-                    </View>
-                    <View style={styles.viewImgData}>
-                        <Image
-                            style={styles.img}
-                            source={require('./images/ic_distance.png')}
-                        />
-                        <Text style={styles.txData}>{distant}</Text>
-                        <Text style={styles.txUnit}>{`km`}</Text>
-                    </View>
-                    <View style={styles.viewImgData}>
-                        <Image
-                            style={styles.img}
-                            source={require('./images/ic_calories.png')}
-                        />
-                        <Text style={styles.txData}>{countCarlo}</Text>
-                        <Text style={styles.txUnit}>{`kcal`}</Text>
-                    </View>
-                    <View style={styles.viewImgData}>
-                        <Image
-                            style={styles.img}
-                            source={require('./images/ic_time.png')}
-                        />
-
-                        <Text style={styles.txData}>{`50`}</Text>
-                        <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
-                    </View>
+        <Header
+          onBack={onBack}
+          colorIcon={'#FE4358'}
+          title={formatMessage(message.title)}
+          styleHeader={styles.header}
+          styleTitle={{
+            color: '#000',
+            fontSize: fontSize.bigger,
+          }}
+          styleHeader={{justifyContent: 'space-around'}}
+          showMenu={true}
+          onShowMenu={onShowMenu}
+        />
+        <ImageBackground
+          resizeMode={'stretch'}
+          source={require('./images/bg_step_count.png')}
+          style={styles.viewCircular}>
+          <Text style={styles.txToday}>{formatMessage(message.today)}</Text>
+          <View style={styles.viewBorderCircular}>
+            <AnimatedCircularProgress
+              size={180}
+              style={styles.circular}
+              width={6}
+              rotation={0}
+              fill={((totalCount - countRest) / totalCount) * 100}
+              tintColor="#FE4358"
+              backgroundColor="#e5e5e5">
+              {fill => (
+                <View style={styles.viewFill}>
+                  <Image
+                    source={require('./images/ic_run.png')}
+                    resizeMode={'contain'}
+                    height={30}
+                  />
+                  <Text style={styles.txCountStep}>{countStep}</Text>
+                  <Text style={styles.txCountTarget}>
+                    {formatMessage(message.target)} {totalCount}
+                  </Text>
                 </View>
-                <View style={styles.viewLineChart}>
-                    {(dataChart.length && <ChartLine data={dataChart} time={time} />) ||
-                        null}
-                    {/* <LineChart style={styles.chart}
+              )}
+            </AnimatedCircularProgress>
+          </View>
+        </ImageBackground>
+        <View style={styles.dataHealth}>
+          <View style={styles.viewImgData}>
+            <Image
+              style={styles.img}
+              source={require('./images/ic_step.png')}
+            />
+            <Text style={styles.txData}>{`${formatMessage(
+              message.stepsToTarget,
+            )} ${countRest > 0 ? countRest : 0}`}</Text>
+            <Text style={styles.txUnit}>{`${formatMessage(
+              message.stepsNormal,
+            )}`}</Text>
+          </View>
+          <View style={styles.viewImgData}>
+            <Image
+              style={styles.img}
+              source={require('./images/ic_distance.png')}
+            />
+            <Text style={styles.txData}>{distant}</Text>
+            <Text style={styles.txUnit}>{`km`}</Text>
+          </View>
+          <View style={styles.viewImgData}>
+            <Image
+              style={styles.img}
+              source={require('./images/ic_calories.png')}
+            />
+            <Text style={styles.txData}>{countCarlo}</Text>
+            <Text style={styles.txUnit}>{`kcal`}</Text>
+          </View>
+          <View style={styles.viewImgData}>
+            <Image
+              style={styles.img}
+              source={require('./images/ic_time.png')}
+            />
+
+            <Text style={styles.txData}>{`50`}</Text>
+            <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+          </View>
+        </View>
+        <View style={styles.viewLineChart}>
+          {(dataChart.length && <ChartLine data={dataChart} time={time} />) ||
+            null}
+          {/* <LineChart style={styles.chart}
                         data={dataChart}
                         style={styles.chart}
                         // data={this.state.data}
@@ -523,125 +466,122 @@ const StepCount = ({ props, intl, navigation }) => {
                         // ref="chart"
                         onSelect={handleSelect}
                     /> */}
-                </View>
-                <View style={styles.viewHeight} />
-            </ScrollView>
-            <TouchableOpacity
-                style={styles.btnHistory}
-                onPress={() => navigation.navigate('stepHistory')}>
-                <Text style={styles.txHistory}>
-                    {formatMessage(message.viewHistory)}
-                </Text>
-            </TouchableOpacity>
-        </SafeAreaView>
-    );
+        </View>
+        <View style={styles.viewHeight} />
+      </ScrollView>
+      <TouchableOpacity
+        style={styles.btnHistory}
+        onPress={() => navigation.navigate('stepHistory')}>
+        <Text style={styles.txHistory}>
+          {formatMessage(message.viewHistory)}
+        </Text>
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
 };
 const styles = StyleSheet.create({
-    img: {
-    },
-    chart: {
-        flex: 1
-    },
-    viewLineChart: {
-        marginTop: 30
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#fff'
-    },
-    viewHeight: {
-        height: 50
-    },
-    viewImgData: {
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    txData: {
-        color: '#fe4358',
-        fontSize: 14,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginTop: 10,
+  img: {},
+  chart: {
+    flex: 1,
+  },
+  viewLineChart: {
+    marginTop: 30,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  viewHeight: {
+    height: 50,
+  },
+  viewImgData: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  txData: {
+    color: '#fe4358',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  txUnit: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: '#fe4358',
+    marginTop: 5,
+  },
+  dataHealth: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 30,
+    marginTop: 20,
+  },
 
-    },
-    txUnit: {
-        fontSize: 14,
-        textAlign: 'center',
-        color: '#fe4358',
-        marginTop: 5
-    },
-    dataHealth: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginHorizontal: 30,
-        marginTop: 20
-    },
-
-    viewCircular: {
-        paddingBottom: 30,
-        marginTop: 20,
-        alignItems: 'center',
-        marginHorizontal: 20,
-        justifyContent: 'center'
-    },
-    viewBorderCircular: {
-        padding: 10,
-        backgroundColor: '#fff',
-        borderRadius: 200,
-    },
-    circular: {
-        alignSelf: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    viewFill: {
-        alignSelf: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    txCountStep: {
-        color: '#fe4358',
-        fontSize: 37,
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    txCountTarget: {
-        color: '#949494',
-        fontSize: 14
-    },
-    chart: {
-        flex: 1,
-        height: 300,
-    },
-    btnHistory: {
-        alignSelf: 'center',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '70%',
-        height: 41,
-        backgroundColor: '#fe4358',
-        borderRadius: 6,
-        marginBottom: 20
-    },
-    txHistory: {
-        color: '#fff',
-        fontSize: 14
-    },
-    txToday: {
-        color: '#fff',
-        fontSize: 14,
-        marginVertical: 20,
-        textAlign: 'center'
-
-    },
-    header: {
-        backgroundColor: '#ffffff',
-        marginTop: isIPhoneX ? 0 : 20,
-    },
-})
+  viewCircular: {
+    paddingBottom: 30,
+    marginTop: 20,
+    alignItems: 'center',
+    marginHorizontal: 20,
+    justifyContent: 'center',
+  },
+  viewBorderCircular: {
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 200,
+  },
+  circular: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  viewFill: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  txCountStep: {
+    color: '#fe4358',
+    fontSize: 37,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  txCountTarget: {
+    color: '#949494',
+    fontSize: 14,
+  },
+  chart: {
+    flex: 1,
+    height: 300,
+  },
+  btnHistory: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '70%',
+    height: 41,
+    backgroundColor: '#fe4358',
+    borderRadius: 6,
+    marginBottom: 20,
+  },
+  txHistory: {
+    color: '#fff',
+    fontSize: 14,
+  },
+  txToday: {
+    color: '#fff',
+    fontSize: 14,
+    marginVertical: 20,
+    textAlign: 'center',
+  },
+  header: {
+    backgroundColor: '#ffffff',
+    marginTop: isIPhoneX ? 0 : 20,
+  },
+});
 StepCount.propTypes = {
-    intl: intlShape.isRequired,
+  intl: intlShape.isRequired,
 };
 
 export default injectIntl(StepCount);

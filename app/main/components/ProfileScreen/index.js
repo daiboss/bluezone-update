@@ -53,18 +53,24 @@ const ProfileScreen = ({route, intl, navigation}) => {
   const onGoBack = () => navigation.goBack();
   const onSelectGender = gender => setGender(gender);
   const getProfileList = async profiles => {
-    let data = profiles.reduce((r, a) => {
-      r['values'] = r['values'] || [];
-      r['values'].unshift({
-        y: Number(a.weight.substring(0, a.weight.length - 4).replace(',', '.')),
-        marker: a.weight,
-        year: moment(a.date).format('YYYY'),
-      });
-      return r;
-    }, Object.create(null));
+    let data = profiles
+      .sort((a, b) => a.date - b.date)
+      .reduce((r, a) => {
+        r['values'] = r['values'] || [];
+        r['values'].unshift({
+          y: Number(
+            a.weight.substring(0, a.weight.length - 4).replace(',', '.'),
+          ),
+          marker: a.weight,
+          year: moment(a.date).format('YYYY'),
+        });
+        return r;
+      }, Object.create(null));
 
     if (profiles?.length) {
-      let time = profiles.map(e => moment(e.date)?.format('DD/MM'));
+      let time = profiles
+        .sort((a, b) => a.date - b.date)
+        .map(e => moment(e.date)?.format('DD/MM'));
       setListTime(time);
       setListProfile([data]);
     } else {
@@ -109,7 +115,9 @@ const ProfileScreen = ({route, intl, navigation}) => {
 
       let index = profiles.findIndex(
         profile =>
-          getAbsoluteMonths(moment(profile.date)) - getAbsoluteMonths(moment()) == 0,
+          getAbsoluteMonths(moment(profile.date)) -
+            getAbsoluteMonths(moment()) ==
+          0,
       );
 
       let obj = {
