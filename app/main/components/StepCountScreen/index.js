@@ -240,7 +240,7 @@ const StepCount = ({props, intl, navigation}) => {
     setInterval(() => {
       Fitness.getSteps({
         startDate: moment(start).toString(),
-        endDate: moment('2020-12-10').toString(),
+          endDate: moment(end).toString(),
       })
         .then(res => {
           if (res.length) {
