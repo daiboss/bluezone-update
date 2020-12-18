@@ -1,4 +1,4 @@
-package com.mic.bluezone;
+package com.mic.bluezone2;
 
 import com.facebook.react.ReactActivity;
 

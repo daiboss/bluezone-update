@@ -26,7 +26,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.mic.bluezone</string>
+			<string>com.mic.bluezone2</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>mic.bluezone</string>

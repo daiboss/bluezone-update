@@ -70,7 +70,8 @@ const ProfileScreen = ({route, intl, navigation}) => {
     if (profiles?.length) {
       let time = profiles
         .sort((a, b) => a.date - b.date)
-        .map(e => moment(e.date)?.format('DD/MM'));
+        .map(e => moment(e.date)?.format('DD/MM'))
+        .reverse();
       setListTime(time);
       setListProfile([data]);
     } else {
@@ -78,12 +79,15 @@ const ProfileScreen = ({route, intl, navigation}) => {
       // setListProfile([]);
     }
   };
+
   const getListProfile = async () => {
     try {
       let profiles = (await getProfile()) || [];
       getProfileList(profiles);
       let profile = profiles.find(
-        item => moment(item.date).diff(moment(), 'M') == 0,
+        item =>
+          getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) ==
+          0,
       );
 
       if (profile) {
@@ -97,6 +101,36 @@ const ProfileScreen = ({route, intl, navigation}) => {
     setGender(1);
     getListProfile();
   }, []);
+  const updateData = async () => {
+    if (weight) {
+      try {
+        let profiles = (await getProfile()) || [];
+
+        let index = profiles.findIndex(
+          profile =>
+            getAbsoluteMonths(moment(profile.date)) -
+              getAbsoluteMonths(moment()) ==
+            0,
+        );
+
+        let obj = {
+          weight: weight,
+          date: moment()
+            .toDate()
+            .getTime(),
+        };
+        if (index != -1) {
+          profiles.splice(index, 1, obj);
+        } else {
+          profiles.push(obj);
+        }
+        getProfileList(profiles);
+      } catch (error) {}
+    }
+  };
+  useEffect(() => {
+    updateData();
+  }, [weight]);
   function getAbsoluteMonths(momentDate) {
     var months = Number(momentDate.format('MM'));
     var years = Number(momentDate.format('YYYY'));

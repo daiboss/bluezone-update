@@ -49,10 +49,10 @@ import * as msg from './const/log';
 const configuration = {
   PhoneNumber: '',
   LinkQRAndroid:
-    'https://play.google.com/store/apps/details?id=com.mic.bluezone',
+    'https://play.google.com/store/apps/details?id=com.mic.bluezone2',
   LinkQRIOS: 'https://apps.apple.com/us/app/bluezone/id1508062685?ls=1',
   LinkShareAndroid:
-    'https://play.google.com/store/apps/details?id=com.mic.bluezone',
+    'https://play.google.com/store/apps/details?id=com.mic.bluezone2',
   LinkShareIOS: 'https://apps.apple.com/us/app/bluezone/id1508062685?ls=1',
   Introduce: 'https://bluezone.vn',
   Introduce_en: 'https://bluezone.ai',
