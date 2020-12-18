@@ -66,8 +66,16 @@ const StepCount = ({props, intl, navigation}) => {
       access: Fitness.PermissionAccesses.Read,
     },
     {
+      kind: Fitness.PermissionKinds.Calories,
+      access: Fitness.PermissionAccesses.Write,
+    },
+    {
       kind: Fitness.PermissionKinds.Distances,
       access: Fitness.PermissionAccesses.Read,
+    },
+    {
+      kind: Fitness.PermissionKinds.Distances,
+      access: Fitness.PermissionAccesses.Write,
     },
   ];
   const [dataChart, setDataChart] = useState([]);
@@ -115,22 +123,18 @@ const StepCount = ({props, intl, navigation}) => {
   };
   const getPermission = async (start, end, startLine, endLine) => {
     try {
+      let resPermissions = await Fitness.requestPermissions(permissions);
       let resAuth = await Fitness.isAuthorized(permissions);
-      console.log('resAuth: ', resAuth);
 
       if (resAuth == true) {
         getData(start, end, startLine, endLine);
       } else {
-        let resPermissions = await Fitness.requestPermissions(permissions);
-        console.log('resPermissions: ', resPermissions);
         if (Platform.OS === 'android') {
           let res2 = await Fitness.subscribeToSteps();
-          console.log('res2: ', res2);
         }
-        getData(start, end, startLine, endLine);
+        // getData(start, end, startLine, endLine);
       }
     } catch (error) {
-      console.log('error: ', error);
       getPermission();
     }
   };
@@ -303,7 +307,6 @@ const StepCount = ({props, intl, navigation}) => {
   const onGetCalories = (start, end) => {
     Fitness.getCalories({startDate: start, endDate: end})
       .then(res => {
-        console.log('res: getCalories', res);
         //
         var total = 0;
         res.map(obj => {

@@ -54,7 +54,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
   const onSelectGender = gender => setGender(gender);
   const getProfileList = async profiles => {
     let data = profiles
-      .sort((a, b) => a.date - b.date)
+      .sort((a, b) => b.date - a.date)
       .reduce((r, a) => {
         r['values'] = r['values'] || [];
         r['values'].unshift({
@@ -70,8 +70,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
     if (profiles?.length) {
       let time = profiles
         .sort((a, b) => a.date - b.date)
-        .map(e => moment(e.date)?.format('DD/MM'))
-        .reverse();
+        .map(e => moment(e.date)?.format('DD/MM'));
       setListTime(time);
       setListProfile([data]);
     } else {
