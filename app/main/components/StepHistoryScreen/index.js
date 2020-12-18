@@ -28,6 +28,33 @@ import * as fontSize from '../../../core/fontSize';
 import { useRoute } from '@react-navigation/native';
 
 import { objectOf } from 'prop-types';
+Date.prototype.getWeek = function (dowOffset) {
+    /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
+
+    dowOffset = typeof (dowOffset) == 'int' ? dowOffset : 0; //default dowOffset to zero
+    var newYear = new Date(this.getFullYear(), 0, 1);
+    var day = newYear.getDay() - dowOffset; //the day of week the year begins on
+    day = (day >= 0 ? day : day + 7);
+    var daynum = Math.floor((this.getTime() - newYear.getTime() -
+        (this.getTimezoneOffset() - newYear.getTimezoneOffset()) * 60000) / 86400000) + 1;
+    var weeknum;
+    //if the year starts before the middle of a week
+    if (day < 4) {
+        weeknum = Math.floor((daynum + day - 1) / 7) + 1;
+        if (weeknum > 52) {
+            nYear = new Date(this.getFullYear() + 1, 0, 1);
+            nday = nYear.getDay() - dowOffset;
+            nday = nday >= 0 ? nday : nday + 7;
+            /*if the next year starts before the middle of
+              the week, it is week #1 of that year*/
+            weeknum = nday < 4 ? 1 : 53;
+        }
+    }
+    else {
+        weeknum = Math.floor((daynum + day - 1) / 7);
+    }
+    return weeknum;
+};
 const screenWidth = Dimensions.get('window').width;
 const StepCount = ({ props, intl, navigation, }) => {
     
@@ -270,27 +297,42 @@ const StepCount = ({ props, intl, navigation, }) => {
                                 let valueDate = [];
                                 let valueTime = [];
                                 // let total = 0;
-                                let totalInMonth = 0
+                               
                                 res.map(obj => {
-                                    if (moment(obj.endDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
-                                        valueTime.push('d');
-                                    }
-                                    else {
-                                        valueTime.push(moment(obj.endDate).format('MM/DD'));
+                                    let arr = res.filter(obj2 => new Date(obj2.endDate).getWeek() == new Date(obj.endDate).getWeek())
+                                    
+                                    let totalInWeek = 0
+                                    arr.map(obj => {
+                                        totalInWeek += obj.quantity
 
-                                    }
-
+                                    })
+                                    let from = moment(arr[0].startDate).format('DD')
+                                    let to = moment(arr[arr.length - 1].endDate).format('DD/MM/YYYY') == moment(new Date()).format('DD/MM/YYYY') 
+                                    ? 'nay' :
+                                     moment(arr[arr.length-1].endDate).format('DD')
+                                    let month = moment(arr[0].startDate).format('MM')
+                                    valueTime.push(`${from}-${to}\nT${month}`)
+                                    
                                     valueDate.push({
-                                        marker: obj.quantity,
-                                        y: obj.quantity,
+                                        marker: totalInWeek,
+                                        y: totalInWeek,
                                         year: moment(end).format('YYYY'),
-                                    });
+                                        valueFormat: new Date(obj.endDate).getWeek()
+                                    })
+                                    
+                                    // if (moment(obj.endDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
+                                    //     valueTime.push('d');
+                                    // }
+                                    // else {
+                                    //     valueTime.push(moment(obj.endDate).format('MM/DD'));
+
+                                    // }
+
                                     // total += obj.quantity;
 
                                 })
-                            }
-                                // );
-                                setTime(valueTime);
+                                valueDate = formatData(valueDate)
+                                valueTime = formatData(valueTime)
                                 // setCountStep(numberWithCommas(total));
                                 // setCountRest(totalCount - total);
                                 let dataChart = [
@@ -298,7 +340,11 @@ const StepCount = ({ props, intl, navigation, }) => {
                                         values: valueDate,
                                     },
                                 ];
+                                setTime(valueTime);
                                 setDataChart(dataChart);
+                            }
+                                // );
+                                
                                 break
                             case 'month': {
                                 let valueDate = [];
@@ -308,10 +354,10 @@ const StepCount = ({ props, intl, navigation, }) => {
 
                                 res.map(obj => {
 
-                                    let a = res.filter(obj2 => moment(obj.endDate).format('MM/YYYY') === moment(obj2.endDate).format('MM/YYYY'))
+                                    let arr = res.filter(obj2 => moment(obj.endDate).format('MM/YYYY') === moment(obj2.endDate).format('MM/YYYY'))
 
                                     let totalInMonth = 0
-                                    a.map(obj => {
+                                    arr.map(obj => {
                                         totalInMonth += obj.quantity
 
                                     }
@@ -325,13 +371,13 @@ const StepCount = ({ props, intl, navigation, }) => {
                                     }
                                     else {
                                         let itemLabel = moment(obj.endDate).format('MM')
-                                        valueTime.push(`T${itemLabel}`);
+                                        valueTime.push(`Tháng \n${itemLabel}`);
                                     }
                                     valueDate.push({
                                         marker: totalInMonth,
                                         y: totalInMonth,
                                         year: moment(end).format('YYYY'),
-                                        month: moment(obj.endDate).format('MM')
+                                        valueFormat: moment(obj.endDate).format('MM')
                                     });
 
 
@@ -419,6 +465,7 @@ const StepCount = ({ props, intl, navigation, }) => {
                     }
                 })
                 .catch(err => {
+                    
 
 
 
@@ -434,8 +481,8 @@ const StepCount = ({ props, intl, navigation, }) => {
         var dups = []
         var valueDateNew = valueDate.filter(function (el) {
             // If it is not a duplicate, return true
-            if (dups.indexOf(el.month || el) == -1) {
-                dups.push(el.month || el);
+            if (dups.indexOf(el.valueFormat || el) == -1) {
+                dups.push(el.valueFormat || el);
                 return true;
             }
             return false;

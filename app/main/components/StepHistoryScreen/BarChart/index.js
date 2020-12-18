@@ -32,12 +32,13 @@ class ChartLine extends React.Component {
         barPercentage: 0.5,
         strokeWidth: 2,
         barWidth: 1,
-        axisMaximum:7,
         textSize: 14,
+        textAlign:'center',
+        alignSelf:'center',
         // textWidth: 5,
         highlightEnabled: true,
         // drawAxisLines: true,
-        avoidFirstLastClipping: true,
+        // avoidFirstLastClipping: true,
       },
     };
   }
