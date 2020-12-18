@@ -31,14 +31,18 @@ class ChartLine extends React.Component {
         labelCount: 6,
         barPercentage: 0.5,
         strokeWidth: 2,
-        barWidth: 0.1,
+        barWidth: 1,
+        axisMaximum:7,
+        textSize: 14,
+        // textWidth: 5,
+        highlightEnabled: true,
         // drawAxisLines: true,
         avoidFirstLastClipping: true,
       },
     };
   }
   componentDidMount() {
-    console.log('this.props.data: ', this.props.data);
+    console.log(this.refs.chart,'this.refs.chart');
     let newState = update(this.state, {
       data: {
         $set: {
@@ -65,7 +69,6 @@ class ChartLine extends React.Component {
           color: processColor('#a1a1a1'),
           drawCircles: true,
           drawValues: false,
-          barWidth: 5,
           // axisDependency: 'LEFT',
           // circleColor: processColor(red_bluezone),
           // circleRadius: 4,
@@ -80,7 +83,7 @@ class ChartLine extends React.Component {
     return data;
   };
   componentWillReceiveProps = preProps => {
-    console.log('preProps: ', preProps);
+    
     if (this.props.data != preProps.data) {
       let newState = update(this.state, {
         data: {
@@ -104,49 +107,8 @@ class ChartLine extends React.Component {
       }));
     }
   };
-
-  handleChange = event => {
-    // let nativeEvent = event.nativeEvent;
-    // if (nativeEvent.action == 'chartTranslated') {
-    //   let {left, right, centerX} = nativeEvent;
-    //   console.log(
-    //     'data is from ' +
-    //       this.xMin +
-    //       ' to ' +
-    //       this.xMax +
-    //       ' left ' +
-    //       left +
-    //       ' right ' +
-    //       right +
-    //       ' isLoading ' +
-    //       this.isLoading,
-    //   );
-    //   if (!this.isLoading) {
-    //     if (left < 2) {
-    //       this.isLoading = true;
-    //       if (this.timeout) clearTimeout(this.timeout);
-    //       this.timeout = setTimeout(() => {
-    //         this.props.loadMore && this.props.loadMore();
-    //         this.isLoading = false;
-    //       }, 500);
-    //       // Because of the implementation of MpAndroidChart, if the action of setDataAndLockIndex is triggered by user dragging,
-    //       // then the size of new data should be equal to original data, otherwise the calculation of position transition won't be accurate,
-    //       // use may find the chart suddenly blink to another position.
-    //       // This restriction only exists in android, in iOS, we have no such problem.
-    //       // this.mockLoadDataFromServer(
-    //       //   centerX - pageSize,
-    //       //   centerX + pageSize,
-    //       // ).then(data => {
-    //       //   this.refs.chart.setDataAndLockIndex(data);
-    //       //   this.isLoading = false;
-    //       // });
-    //     }
-    //   }
-    // }
-  };
   handleSelect = event => {
     let entry = event.nativeEvent;
-    console.log('entry: ', entry);
 
     if (entry == null) {
       this.setState({
@@ -189,6 +151,7 @@ class ChartLine extends React.Component {
           scaleEnabled={true}
           syncX={true}
           scaleXEnabled={true}
+          dragEnabled = {true}
           legend={{
             enabled: false,
           }}
@@ -203,7 +166,7 @@ class ChartLine extends React.Component {
           dragDecelerationEnabled={false}
           ref="chart"
           onSelect={this.handleSelect}
-        //   autoScalesMinMaxEnabled={true}
+          autoScalesMinMaxEnabled={true}
         // onChange={this.handleChange.bind(this)}
         />
       </View>

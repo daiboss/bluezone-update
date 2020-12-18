@@ -479,7 +479,7 @@ const StepCount = ({props, intl, navigation}) => {
       </ScrollView>
       <TouchableOpacity
         style={styles.btnHistory}
-        onPress={() => navigation.navigate('stepHistory')}>
+        onPress={() => navigation.navigate('stepHistory',{dataHealth: {countStep,countRest,countCarlo,distant}})}>
         <Text style={styles.txHistory}>
           {formatMessage(message.viewHistory)}
         </Text>
