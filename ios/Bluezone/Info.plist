@@ -54,10 +54,10 @@
 	<string>Bluezone sử dụng Bluetooth để ghi nhận thiết bị điện tử của những người dùng khác khi họ ở gần bạn</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Bluezone sử dụng Bluetooth để ghi nhận thiết bị điện tử của những người dùng khác khi họ ở gần bạn</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Cho phép ứng dụng truy cập vị trí, để tìm vị trí gần nhất.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Đọc và hiểu dữ liệu sức khoẻ.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Cho phép ứng dụng truy cập vị trí, để tìm vị trí gần nhất.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -90,6 +90,7 @@
 	<array>
 		<string>bluetooth-central</string>
 		<string>bluetooth-peripheral</string>
+		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
