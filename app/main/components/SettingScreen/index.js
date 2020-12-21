@@ -13,16 +13,38 @@ import Header from '../Header';
 import message from '../../../core/msg/setting';
 import {injectIntl, intlShape} from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
+import * as scheduler from '../../../core/notifyScheduler';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   FCM_CHANNEL_ID,
   FCM_CHANNEL_DES,
   FCM_CHANNEL_NAME,
 } from '../../../const/fcm';
-
+import Fitness from '@ovalmoney/react-native-fitness';
+import moment from 'moment';
+import BackgroundFetch, {
+  BackgroundFetchStatus,
+} from 'react-native-background-fetch';
 import firebase from 'react-native-firebase';
-import BackgroundTask from 'react-native-background-task';
 import AsyncStorage from '@react-native-community/async-storage';
+import {
+  ResultSteps,
+  autoChange,
+  realtime,
+  notiStep,
+  weightWarning,
+} from '../../../const/storage';
+import {
+  getAutoChange,
+  setAutoChange,
+  getRealtime,
+  setRealtime,
+  getNotiStep,
+  setNotiStep,
+  getWeightWarning,
+  setWeightWarning,
+} from '../../../core/storage';
+import {scheduleTask, stopScheduleTask} from '../StepCountScreen';
 
 const SettingScreen = ({intl, navigation}) => {
   const {formatMessage} = intl;
@@ -30,105 +52,72 @@ const SettingScreen = ({intl, navigation}) => {
   const [alertStep, setAlertStep] = useState(false);
   const [alertTarget, setAlertTarget] = useState(false);
   const [alertBmi, setAlertBmi] = useState(false);
-  async function checkStatus() {
-    const status = await BackgroundTask.statusAsync();
-    console.log('status: ', status.available);
-  }
+  const [totalStep, setTotalStep] = useState(0);
   useEffect(() => {
-    BackgroundTask.schedule({
-        period: 30, // Aim to run every 30 mins - more conservative on battery
-      });
-    checkStatus();
+    getStatus();
   }, []);
+  const getStatus = async () => {
+    try {
+      let res = await getAutoChange();
+      setAutoTarget(res);
+      let res1 = (await getRealtime()) || false;
+      setAlertStep(res1);
+
+      let res2 = (await getNotiStep()) || false;
+      setAlertTarget(res2);
+      let res3 = (await getWeightWarning()) || false;
+      setAlertBmi(res3);
+    } catch (error) {}
+  };
   const onBack = () => {
     try {
       navigation.pop();
-    } catch (e) {
-      console.log('e: ', e);
-    }
+    } catch (e) {}
   };
   const onShowMenu = () => {
     navigation.openDrawer();
   };
-  const autoTargetSwitch = () => setAutoTarget(!autoTarget);
-  const alertStepSwitch = () => {
-    onSetAlarm();
-    setAlertStep(!alertStep);
+  const autoTargetSwitch = async value => {
+    setAutoTarget(!autoTarget);
+    setAutoChange(value);
+    if (value) {
+      await scheduleTask(autoChange);
+    } else {
+      await stopScheduleTask(autoChange);
+    }
   };
-  const alertTargetSwitch = () => {
-    setAlertTarget(!alertTarget);
-  };
-  const alertBmiSwitch = () => setAlertBmi(!alertBmi);
-  // const addShortCut = () => {
-
-  //     try {
-  //         let copy = (
-  //             <Icon
-  //                 name="copy"
-  //                 size={30}
-  //                 color="#000000"
-  //                 family={'FontAwesome'}
-  //             />
-  //         );
-
-  //         RNAddShortcuts.AddDynamicShortcut({
-  //             label: 'Copy',
-  //             description: 'Copy Desc',
-  //             icon: 'copy.png',
-  //             link: { url: 'app:copy' },
-  //             onDone: () => {
-  //                 console.log('Shortcut Added');
-  //             },
-  //         });
-  //     } catch (e) {
-  //         console.log('e: ', e);
-
-  //     }
-  // }
-  const onSetAlarm = async () => {
+  const alertStepSwitch = async value => {
     try {
-      const value = await AsyncStorage.getItem('@MySuperStore:times');
-      console.log('value', value);
+      setAlertStep(!alertStep);
+      setRealtime(value);
+      if (value) {
+        await scheduleTask(realtime);
+      } else {
+        await stopScheduleTask(realtime);
+      }
     } catch (error) {}
-    // let fire_date = new Date(
-    //   new Date().setMinutes(new Date().getMinutes() + 1),
-    // ).getTime();
-    // console.log('fire_date: ', fire_date);
-    // let title = 'Lời nhắc, nhấp vào để xem.';
-    // try {
-    //   console.log('try');
-    //   let notification = new firebase.notifications.Notification()
-    //     .setNotificationId(`${1}`)
-    //     .android.setChannelId(FCM_CHANNEL_ID)
-    //     .android.setSmallIcon('ic_launcher')
-    //     .android.setProgress(100, 40, true)
-    //     .setBody(title)
-    //     .setTitle('Bluezone')
-    //     .setSound('default')
-    //     .setData({
-    //       id: 7,
-    //       type: '-2',
-    //     });
-
-    //   firebase.notifications().scheduleNotification(notification, {
-    //     fireDate: fire_date,
-    //     id: 'alarm_notification',
-    //     push_type: 'alarm',
-    //     large_icon: 'ic_launcher',
-    //     vibrate: 500,
-    //     title: 'Hello',
-    //     repeatInterval: 'week',
-    //     sub_text: 'sub text',
-    //     priority: 'high',
-    //     show_in_foreground: true,
-    //     wake_screen: true,
-    //     extra1: {a: 1},
-    //     extra2: 1,
-    //     repeatInterval: 'minute',
-    //   });
-    // } catch (e) {
-    //   console.log('e: ', e);
-    // }
+  };
+  const alertTargetSwitch = async value => {
+    try {
+      setAlertTarget(!alertTarget);
+      setNotiStep(value);
+      if (value) {
+        await scheduleTask(notiStep);
+      } else {
+        await stopScheduleTask(notiStep);
+      }
+    } catch (error) {}
+  };
+  const alertBmiSwitch = async value => {
+    try {
+      setAlertBmi(!alertBmi);
+      setWeightWarning(value);
+      if (value) {
+        await scheduleTask(weightWarning);
+      } else {
+        await stopScheduleTask(weightWarning);
+      }
+    } catch (error) {}
   };
 
   return (
@@ -152,7 +141,7 @@ const SettingScreen = ({intl, navigation}) => {
         <Text style={styles.txLabelGray}>
           {formatMessage(message.stepTarget)}
         </Text>
-        <Text style={styles.txLabelGray}>1000 bước</Text>
+        <Text style={styles.txLabelGray}>{totalStep} bước</Text>
       </View>
       <Text style={styles.txNotification}>Thông báo</Text>
       <View style={[styles.viewTx, styles.borderBottom]}>

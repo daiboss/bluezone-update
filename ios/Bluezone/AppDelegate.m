@@ -14,6 +14,8 @@
 #import <Firebase.h>
 #import "RNFirebaseNotifications.h"
 #import "RNFirebaseMessaging.h"
+#import <TSBackgroundFetch/TSBackgroundFetch.h>
+
 
 @implementation AppDelegate
 
@@ -25,7 +27,7 @@
     [RNFirebaseNotifications configure];
   }
 
-
+ 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"Bluezone"
@@ -42,7 +44,8 @@
   // Define UNUserNotificationCenter
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
-  
+  // [REQUIRED] Register BackgroundFetch
+   [[TSBackgroundFetch sharedInstance] didFinishLaunching];
   return YES;
 }
 

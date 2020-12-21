@@ -257,6 +257,14 @@ const configuration = {
     bigText: 'Bluetooth cần được bật để Bluezone có thể cảnh báo tới bạn.',
     bigTextEn: 'Bluetooth needs to be turned on for Bluezone to send you the alerts.',
   },
+  iOSShowStepNotification: {
+    title: 'Bluezone đang không thể hoạt động chính xác !',
+    titleEn: 'Bluezone not working properly !',
+    message: 'Bluetooth cần được bật để Bluezone có thể cảnh báo tới bạn.',
+    messageEn: 'Bluetooth needs to be turned on for Bluezone to send you the alerts.',
+    bigText: 'Bluetooth cần được bật để Bluezone có thể cảnh báo tới bạn.',
+    bigTextEn: 'Bluetooth needs to be turned on for Bluezone to send you the alerts.',
+  },
   AndroidEnableBluetoothNotification: {
     title: 'Bluezone đang không thể hoạt động chính xác.',
     titleEn: 'Bluezone not working properly.',

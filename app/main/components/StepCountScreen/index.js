@@ -10,13 +10,13 @@ import {
   Image,
   processColor,
   Platform,
+  ScrollView,
 } from 'react-native';
 import Fitness from '@ovalmoney/react-native-fitness';
 import {LineChart} from 'react-native-charts-wrapper';
 import {isIPhoneX} from '../../../core/utils/isIPhoneX';
 import {Dimensions} from 'react-native';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import {ScrollView} from 'react-native-gesture-handler';
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
@@ -24,9 +24,116 @@ import Header from '../../../base/components/Header';
 import message from '../../../core/msg/stepCount';
 import {injectIntl, intlShape} from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
-
+import * as scheduler from '../../../core/notifyScheduler';
+import {
+  getProfile,
+  getResultSteps,
+  setResultSteps,
+  setEvents,
+  getEvents,
+  getTimestamp,
+  getSteps,
+  getStepsTotal,
+  setAutoChange,
+} from '../../../core/storage';
 import ChartLine from './ChartLine';
+import {
+  ResultSteps,
+  autoChange,
+  realtime,
+  notiStep,
+  weightWarning,
+} from '../../../const/storage';
 const screenWidth = Dimensions.get('window').width;
+import BackgroundFetch from 'react-native-background-fetch';
+export const scheduleTask = async name => {
+  try {
+    await BackgroundFetch.scheduleTask({
+      taskId: name,
+      stopOnTerminate: false,
+      enableHeadless: true,
+      delay: 5000, // milliseconds (5s)
+      forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
+      periodic: true, // Fire once only.
+    });
+  } catch (e) {}
+};
+function getAbsoluteMonths(momentDate) {
+  var months = Number(momentDate.format('MM'));
+  var years = Number(momentDate.format('YYYY'));
+  return months + years * 12;
+}
+export const stopScheduleTask = async task => {
+  try {
+    let res = await BackgroundFetch.stop(task);
+    
+  } catch (e) {
+    
+  }
+};
+export const onBackgroundFetchEvent = async taskId => {
+  
+  try {
+    let end = new Date();
+    let start = new Date();
+    end.setDate(end.getDate() + 1);
+    let step = await getSteps(start, end);
+    let today = moment();
+    let resultSteps = await getResultSteps();
+
+    switch (taskId) {
+      case autoChange:
+        if (resultSteps) {
+          let storageDate = moment(resultSteps?.date).format('DD');
+          if (storageDate != today.format('DD')) {
+            getStepsTotal(start, end);
+          }
+        }
+        break;
+      case weightWarning:
+        let profiles = (await getProfile()) || [];
+        let profile = profiles.find(
+          item =>
+            getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
+        );
+        
+        if (profile) {
+          let nextWeek = new Date().getTime();
+          let isWarning = parseInt(
+            (nextWeek - profile?.date) / (1000 * 3600 * 24),
+          );
+          
+          if (isWarning >= 7) {
+            scheduler.createWarnningWeightNotification();
+          }
+        }
+        break;
+      case notiStep:
+        if (resultSteps) {
+          if (today.format('HH') >= 19) {
+            scheduler.createWarnningStepNotification(step?.step);
+          }
+        }
+        break;
+      case realtime:
+        scheduler.createShowStepNotification(step?.step);
+        break;
+      default:
+        break;
+    }
+    if (taskId === 'react-native-background-fetch') {
+      // Test initiating a #scheduleTask when the periodic fetch event is received.
+      await scheduleTask(autoChange);
+      setAutoChange(true);
+    }
+  } catch (e) {
+    
+  }
+  // Required: Signal completion of your task to native code
+  // If you fail to do this, the OS can terminate your app
+  // or assign battery-blame for consuming too much background-time
+  BackgroundFetch.finish(taskId);
+};
 const StepCount = ({props, intl, navigation}) => {
   const {formatMessage} = intl;
 
@@ -88,6 +195,7 @@ const StepCount = ({props, intl, navigation}) => {
     var endLine = new Date();
     endLine.setDate(new Date().getDate() - 1);
     // let listDate = getListDate(start, end)
+    resultSteps();
 
     getPermission(
       moment(start.getTime())
@@ -104,6 +212,41 @@ const StepCount = ({props, intl, navigation}) => {
         .toString(),
     );
   }, []);
+
+  const init = async () => {
+    try {
+      BackgroundFetch.configure(
+        {
+          minimumFetchInterval: 15, // <-- minutes (15 is minimum allowed)
+          // Android options
+          forceAlarmManager: false, // <-- Set true to bypass JobScheduler.
+          stopOnTerminate: false,
+          enableHeadless: true,
+          startOnBoot: true,
+          requiredNetworkType: BackgroundFetch.NETWORK_TYPE_NONE, // Default
+          requiresCharging: false, // Default
+          requiresDeviceIdle: false, // Default
+          requiresBatteryNotLow: false, // Default
+          requiresStorageNotLow: false, // Default
+        },
+        onBackgroundFetchEvent,
+        status => {},
+      );
+      // Turn on the enabled switch.
+      await BackgroundFetch.start();
+      // setEnabled(value);
+      // Load the list with persisted events.
+    } catch (error) {
+      
+    }
+  };
+  const resultSteps = async () => {
+    try {
+      let resultSteps = await getResultSteps(ResultSteps);
+      if (!resultSteps)
+        setResultSteps({step: totalCount, date: new Date().getTime()});
+    } catch (error) {}
+  };
   const getData = (start, end, startLine, endLine) => {
     // let listDate = getListDate(start, end);
     // renderDataMap(listDate);
@@ -116,16 +259,15 @@ const StepCount = ({props, intl, navigation}) => {
   const getPermission = async (start, end, startLine, endLine) => {
     try {
       let resPermissions = await Fitness.requestPermissions(permissions);
-      console.log('resPermissions: ', resPermissions);
+
       let resAuth = await Fitness.isAuthorized(permissions);
-      console.log('resAuth: ', resAuth);
 
       if (resAuth == true) {
+        init();
         getData(start, end, startLine, endLine);
       } else {
         if (Platform.OS === 'android') {
           let res2 = await Fitness.subscribeToSteps();
-          console.log('res2: ', res2);
         }
         // getData(start, end, startLine, endLine);
       }
@@ -228,8 +370,7 @@ const StepCount = ({props, intl, navigation}) => {
       endDate: moment(end).toString(),
     })
       .then(res => {
-          console.log('res: onGetSteps', res);
-          if (res.length) {
+        if (res.length) {
           var total = 0;
           res.map(obj => {
             total += obj.quantity;
@@ -250,7 +391,6 @@ const StepCount = ({props, intl, navigation}) => {
         endDate: moment(end).toString(),
       })
         .then(res => {
-          console.log('res: onGetStepsRealTime', res);
           if (res.length) {
             var total = 0;
             res.map(obj => {
@@ -479,7 +619,11 @@ const StepCount = ({props, intl, navigation}) => {
       </ScrollView>
       <TouchableOpacity
         style={styles.btnHistory}
-        onPress={() => navigation.navigate('stepHistory',{dataHealth: {countStep,countRest,countCarlo,distant}})}>
+        onPress={() =>
+          navigation.navigate('stepHistory', {
+            dataHealth: {countStep, countRest, countCarlo, distant},
+          })
+        }>
         <Text style={styles.txHistory}>
           {formatMessage(message.viewHistory)}
         </Text>

@@ -46,8 +46,14 @@ import {
   DisplayOriginalImg,
   QuestionFAQ,
   Profile,
+  ResultSteps,
+  autoChange,
+  realtime,
+  notiStep,
+  weightWarning,
 } from '../const/storage';
-
+import Fitness from '@ovalmoney/react-native-fitness';
+import moment from 'moment';
 // TODO Can sua de moi du lieu ghi vao storage deu dung JSON.stringify, va lay ra deu dung JSON.parse. Dam bao tuong tich ban cu. thay vi ben ngoai phan tu convert nhu gio.
 const _processInput = input => {
   if (input instanceof Date) {
@@ -300,7 +306,153 @@ const setProfile = (value = '') => {
   AsyncStorage.setItem(Profile, _resource);
 };
 
+const getResultSteps = async () => {
+  const result = await AsyncStorage.getItem(ResultSteps);
+  return _processOutput(result);
+};
+
+const setResultSteps = (value = '') => {
+  const _resource = _processInput(value);
+  AsyncStorage.setItem(ResultSteps, _resource);
+};
+
+const setEvents = async data => {
+  try {
+    return AsyncStorage.setItem(EVENTS_KEY, JSON.stringify(data));
+  } catch (e) {}
+};
+
+const getEvents = async () => {
+  try {
+    const value = await AsyncStorage.getItem(EVENTS_KEY);
+    if (value !== null) {
+      return JSON.parse(value);
+    }
+  } catch (e) {}
+  return Promise.resolve(null);
+};
+const getTimestamp = () =>
+  new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+const getStepsTotal = async (start, end) => {
+  try {
+    let res = await Fitness.getSteps({
+      startDate: moment(start)
+        .format('YYYY-MM-DD')
+        .toString(),
+      endDate: moment(end)
+        .format('YYYY-MM-DD')
+        .toString(),
+    });
+    let result = await getResultSteps(ResultSteps);
+    let totalStep = result?.step || 10000;
+    if (res.length) {
+      let step = res.reduce((current, obj) => current + obj.quantity, 0);
+
+      if (step > totalStep) {
+        let a = parseInt((step / totalStep) * 100);
+
+        if (a >= 150) {
+          let resultNew = totalStep + (20 / 100) * (step - totalStep);
+
+          setResultSteps({
+            step: parseInt(resultNew),
+            date: new Date().getTime(),
+          });
+        } else if (a < 150 && a > 100) {
+          let resultNew = totalStep + (10 / 100) * (step - totalStep);
+
+          setResultSteps({
+            step: parseInt(resultNew),
+            date: new Date().getTime(),
+          });
+        } else {
+          setResultSteps({
+            step: parseInt(totalStep),
+            date: new Date().getTime(),
+          });
+        }
+      } else {
+        let resultNew = totalStep - (20 / 100) * (totalStep - step);
+
+        setResultSteps({step: parseInt(resultNew), date: new Date().getTime()});
+      }
+    }
+  } catch (error) {}
+};
+const getSteps = (start, end) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let res = await Fitness.getSteps({
+        startDate: moment(start)
+          .format('YYYY-MM-DD')
+          .toString(),
+        endDate: moment(end)
+          .format('YYYY-MM-DD')
+          .toString(),
+      });
+
+      let step = res.reduce((current, obj) => current + obj.quantity, 0);
+      resolve({step, data: res});
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const getAutoChange = async () => {
+  const result = await AsyncStorage.getItem(autoChange);
+  return _processOutput(result);
+};
+
+const setAutoChange = (value = '') => {
+  const _resource = _processInput(value);
+  AsyncStorage.setItem(autoChange, _resource);
+};
+
+const getRealtime = async () => {
+  const result = await AsyncStorage.getItem(realtime);
+  return _processOutput(result);
+};
+
+const setRealtime = (value = '') => {
+  const _resource = _processInput(value);
+  AsyncStorage.setItem(realtime, _resource);
+};
+
+const getNotiStep = async () => {
+  const result = await AsyncStorage.getItem(notiStep);
+  return _processOutput(result);
+};
+
+const setNotiStep = (value = '') => {
+  const _resource = _processInput(value);
+  AsyncStorage.setItem(notiStep, _resource);
+};
+
+const getWeightWarning = async () => {
+  const result = await AsyncStorage.getItem(weightWarning);
+  return _processOutput(result);
+};
+
+const setWeightWarning = (value = '') => {
+  const _resource = _processInput(value);
+  AsyncStorage.setItem(weightWarning, _resource);
+};
+
 export {
+  getAutoChange,
+  setAutoChange,
+  getRealtime,
+  setRealtime,
+  getNotiStep,
+  setNotiStep,
+  getWeightWarning,
+  setWeightWarning,
+  getSteps,
+  getStepsTotal,
+  getTimestamp,
+  getEvents,
+  setEvents,
   setProfile,
   getProfile,
   getResourceLanguage,
@@ -346,4 +498,6 @@ export {
   setDisplayOriginalImg,
   getQuestionFAQ,
   setQuestionFAQ,
+  setResultSteps,
+  getResultSteps,
 };

@@ -19,50 +19,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { RemoteMessage } from 'react-native-firebase';
+import {RemoteMessage} from 'react-native-firebase';
+import * as scheduler from './app/core/notifyScheduler';
 
 const _XHR = GLOBAL.originalXMLHttpRequest
   ? GLOBAL.originalXMLHttpRequest
   : (GLOBAL.XMLHttpRequest =
-    GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest);
+      GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest);
 XMLHttpRequest = _XHR;
 
-import { AppRegistry } from 'react-native';
+import {AppRegistry} from 'react-native';
 // import './app/core/log/console';
 
 // Components
 import App from './App';
-import { name as appName } from './app.json';
+import {name as appName} from './app.json';
 
-import { remoteMessageListener } from './app/core/push';
-import { getLanguage } from './app/core/storage';
-import BackgroundTask from 'react-native-background-task';
-import AsyncStorage from '@react-native-community/async-storage'
-function currentTimestamp() {
-  const d = new Date();
-  const z = n => (n.toString().length == 1 ? `0${n}` : n); // Zero pad
-  return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())} ${z(
-    d.getHours(),
-  )}:${z(d.getMinutes())}`;
-}
+import {remoteMessageListener} from './app/core/push';
+import {
+  getEvents,
+  getLanguage,
+  getTimestamp,
+  setEvents,
+} from './app/core/storage';
+import AsyncStorage from '@react-native-community/async-storage';
+import BackgroundFetch from 'react-native-background-fetch';
+import {scheduleTask} from './app/main/components/SettingScreen';
+import {onBackgroundFetchEvent} from './app/main/components/StepCountScreen';
 
-BackgroundTask.define(async () => {
-  console.log('Hello from a background task');
-
-  const value = await AsyncStorage.getItem('@MySuperStore:times');
-  await AsyncStorage.setItem(
-    '@MySuperStore:times',
-    `${value || ''}\n${currentTimestamp()}`,
-  );
-
-  // Or, instead of just setting a timestamp, do an http request
-  /* const response = await fetch('http://worldclockapi.com/api/json/utc/now')
-    const text = await response.text()
-    await AsyncStorage.setItem('@MySuperStore:times', text) */
-
-  BackgroundTask.finish();
-});
-
+BackgroundFetch.registerHeadlessTask(onBackgroundFetchEvent);
 async function handleBackgroundMessage(message: RemoteMessage) {
   const language = await getLanguage();
   await remoteMessageListener(message, language);
