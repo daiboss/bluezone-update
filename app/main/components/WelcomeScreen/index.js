@@ -70,6 +70,7 @@ import {
   setDateOfWelcome,
   getDisplayOriginalImg,
   setDisplayOriginalImg,
+  getProfile,
 } from '../../../core/storage';
 import messageWarning from '../../../core/msg/warning';
 
@@ -178,9 +179,16 @@ class WelcomeScreen extends React.Component {
     } ${chiEn[(year + 8) % 12]} Year`;
   };
 
-  onSelect = () => {
+  onSelect = async () => {
     // this.setState({isVisible: true});
-    this.props.navigation.navigate('Profile')
+    try {
+      let res = await getProfile();
+      if (res) {
+        this.props.navigation.navigate('stepCount');
+      } else {
+        this.props.navigation.navigate('Profile');
+      }
+    } catch (error) {}
   };
 
   onClose = () => {
@@ -235,14 +243,10 @@ class WelcomeScreen extends React.Component {
   };
 
   onChange = () => {
-    const {
-      width,
-      images,
-      setHeight,
-    } = this.state;
-    const heightNatural = width * images.height / images.width;
-    const bars = (HEIGHT_HEADER - setHeight - heightNatural)/HEIGHT_HEADER;
-    if(bars > 0.15) {
+    const {width, images, setHeight} = this.state;
+    const heightNatural = (width * images.height) / images.width;
+    const bars = (HEIGHT_HEADER - setHeight - heightNatural) / HEIGHT_HEADER;
+    if (bars > 0.15) {
       this.setState(prev => {
         const scale = prev.display === 'fit' ? 'full' : 'fit';
         setDisplayOriginalImg(scale);
@@ -295,8 +299,8 @@ class WelcomeScreen extends React.Component {
     const {Language} = configuration;
     const dow = Language === 'vi' ? dayVi : dayEn;
     const dayOfWeek = dow[moment().weekday()];
-    const heightNatural = width * images.height / images.width;
-    const bars = (HEIGHT_HEADER - setHeight - heightNatural)/HEIGHT_HEADER;
+    const heightNatural = (width * images.height) / images.width;
+    const bars = (HEIGHT_HEADER - setHeight - heightNatural) / HEIGHT_HEADER;
     return (
       <View style={styles.container}>
         <StatusBar hidden={true} />
@@ -343,13 +347,15 @@ class WelcomeScreen extends React.Component {
               />
             )}
             <LightText
-                style={[
-                  styles.titleImg,
-                  {
-                    bottom:
-                        display === 'fit' ? (HEIGHT_HEADER - setHeight - heightImg) / 2 + 12 : 12,
-                  },
-                ]}>
+              style={[
+                styles.titleImg,
+                {
+                  bottom:
+                    display === 'fit'
+                      ? (HEIGHT_HEADER - setHeight - heightImg) / 2 + 12
+                      : 12,
+                },
+              ]}>
               {Language === 'vi' ? images.address : images.addressEn}
             </LightText>
           </TouchableOpacity>
@@ -378,8 +384,7 @@ class WelcomeScreen extends React.Component {
           style={styles.maxim}
           activeOpacity={1}
           onPress={this.onChangeImg}
-          disabled={!dev}
-        >
+          disabled={!dev}>
           <Text style={styles.title} onLayout={this.onLayout}>
             {info.content}
           </Text>
@@ -390,14 +395,14 @@ class WelcomeScreen extends React.Component {
             <View style={styles.calendar}>
               <Text style={styles.titleCalendar}>
                 {Language === 'vi'
-                    ? `${dayOfWeek} - ${this.getDate()}`
-                    : `${dayOfWeek}, ${this.getDate()}`}
+                  ? `${dayOfWeek} - ${this.getDate()}`
+                  : `${dayOfWeek}, ${this.getDate()}`}
               </Text>
               <Text style={styles.titleLunar}>{this.getLunar()}</Text>
               <ButtonIconText
-                  text={formatMessage(message.perpetualCalendar)}
-                  onPress={this.onSelect}
-                  styleText={styles.textInvite}
+                text={formatMessage(message.perpetualCalendar)}
+                onPress={this.onSelect}
+                styleText={styles.textInvite}
               />
             </View>
             <View>
