@@ -493,7 +493,6 @@ const StepCount = ({props, intl, navigation}) => {
             color: '#000',
             fontSize: fontSize.bigger,
           }}
-          styleHeader={{justifyContent: 'space-around'}}
           showMenu={true}
           onShowMenu={onShowMenu}
         />
@@ -556,7 +555,7 @@ const StepCount = ({props, intl, navigation}) => {
             <Text style={styles.txData}>{countCarlo}</Text>
             <Text style={styles.txUnit}>{`kcal`}</Text>
           </View>
-          <View style={styles.viewImgData}>
+          {/* <View style={styles.viewImgData}>
             <Image
               style={styles.img}
               source={require('./images/ic_time.png')}
@@ -564,7 +563,7 @@ const StepCount = ({props, intl, navigation}) => {
 
             <Text style={styles.txData}>{`50`}</Text>
             <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
-          </View>
+          </View> */}
         </View>
         <View style={styles.viewLineChart}>
           {(dataChart.length && <ChartLine data={dataChart} time={time} />) ||

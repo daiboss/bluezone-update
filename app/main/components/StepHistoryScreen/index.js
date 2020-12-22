@@ -150,14 +150,16 @@ const StepCount = ({ props, intl, navigation, }) => {
         if (type == 1) {
             let end = new Date();
             let start = new Date(1, 1, new Date().getFullYear());
-            getDataHealth(
-                moment(start.getTime())
-                    .format('YYYY-MM-DD')
-                    .toString(),
-                moment(end.getTime())
-                    .format('YYYY-MM-DD')
-                    .toString(), 'day'
-            );
+            setTimeout(()=>{
+                getDataHealth(
+                    moment(start.getTime())
+                        .format('YYYY-MM-DD')
+                        .toString(),
+                    moment(end.getTime())
+                        .format('YYYY-MM-DD')
+                        .toString(), 'day'
+                );
+            },3000)
             setSelectDate(true);
             setSelectMonth(false);
             setSelectWeek(false);
@@ -166,15 +168,17 @@ const StepCount = ({ props, intl, navigation, }) => {
         if (type == 2) {
             let end = new Date();
             let start = new Date(1, 1, new Date().getFullYear());
-            getDataHealth(
-                moment(start)
-                    .format('YYYY-MM-DD')
-                    .toString(),
-                moment(end)
-                    .format('YYYY-MM-DD')
-                    .toString(),
-                'week'
-            );
+            setTimeout(() => {
+                getDataHealth(
+                    moment(start)
+                        .format('YYYY-MM-DD')
+                        .toString(),
+                    moment(end)
+                        .format('YYYY-MM-DD')
+                        .toString(),
+                    'week'
+                );
+            },3000)
             setSelectDate(false);
             setSelectMonth(false);
             setSelectWeek(true);
@@ -183,15 +187,17 @@ const StepCount = ({ props, intl, navigation, }) => {
         if (type == 3) {
             let end = new Date();
             let start = new Date(1, 1, new Date().getFullYear());
-            getDataHealth(
-                moment(start)
-                    .format('YYYY-MM-DD')
-                    .toString(),
-                moment(end)
-                    .format('YYYY-MM-DD')
-                    .toString(),
-                'month'
-            );
+            setTimeout(()=>{
+                getDataHealth(
+                    moment(start)
+                        .format('YYYY-MM-DD')
+                        .toString(),
+                    moment(end)
+                        .format('YYYY-MM-DD')
+                        .toString(),
+                    'month'
+                );
+            },3000)
             setSelectDate(false);
             setSelectMonth(true);
             setSelectWeek(false);
@@ -551,8 +557,6 @@ const StepCount = ({ props, intl, navigation, }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar />
-
             <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
                 {/* <View>
                     <Text>Thống kê bước chân</Text>
@@ -566,7 +570,6 @@ const StepCount = ({ props, intl, navigation, }) => {
                         color: '#000',
                         fontSize: fontSize.bigger,
                     }}
-                    styleHeader={{ justifyContent: 'space-around' }}
                     showMenu={true}
                     onShowMenu={onShowMenu}
                 />
@@ -681,7 +684,7 @@ const StepCount = ({ props, intl, navigation, }) => {
                         <Text style={styles.txData}>{countCarlo}</Text>
                         <Text style={styles.txUnit}>{`kcal`}</Text>
                     </View>
-                    <View style={styles.viewImgData}>
+                    {/* <View style={styles.viewImgData}>
                         <Image
                             style={styles.img}
                             source={require('./images/ic_time.png')}
@@ -690,7 +693,7 @@ const StepCount = ({ props, intl, navigation, }) => {
                         <Text style={styles.txUnit}>{`${formatMessage(
                             message.minute,
                         )}`}</Text>
-                    </View>
+                    </View> */}
                 </View>
             </ScrollView>
             <View style={styles.viewBtn}>
