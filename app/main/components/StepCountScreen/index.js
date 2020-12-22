@@ -35,6 +35,7 @@ import {
   getSteps,
   getStepsTotal,
   setAutoChange,
+  getAutoChange,
 } from '../../../core/storage';
 import ChartLine from './ChartLine';
 import {
@@ -66,13 +67,9 @@ function getAbsoluteMonths(momentDate) {
 export const stopScheduleTask = async task => {
   try {
     let res = await BackgroundFetch.stop(task);
-    
-  } catch (e) {
-    
-  }
+  } catch (e) {}
 };
 export const onBackgroundFetchEvent = async taskId => {
-  
   try {
     let end = new Date();
     let start = new Date();
@@ -96,13 +93,13 @@ export const onBackgroundFetchEvent = async taskId => {
           item =>
             getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
         );
-        
+
         if (profile) {
           let nextWeek = new Date().getTime();
           let isWarning = parseInt(
             (nextWeek - profile?.date) / (1000 * 3600 * 24),
           );
-          
+
           if (isWarning >= 7) {
             scheduler.createWarnningWeightNotification();
           }
@@ -123,12 +120,13 @@ export const onBackgroundFetchEvent = async taskId => {
     }
     if (taskId === 'react-native-background-fetch') {
       // Test initiating a #scheduleTask when the periodic fetch event is received.
-      await scheduleTask(autoChange);
-      setAutoChange(true);
+      let auto = await getAutoChange();
+      if (auto == undefined || auto == null) {
+        await scheduleTask(autoChange);
+        setAutoChange(true);
+      }
     }
-  } catch (e) {
-    
-  }
+  } catch (e) {}
   // Required: Signal completion of your task to native code
   // If you fail to do this, the OS can terminate your app
   // or assign battery-blame for consuming too much background-time
@@ -236,9 +234,7 @@ const StepCount = ({props, intl, navigation}) => {
       await BackgroundFetch.start();
       // setEnabled(value);
       // Load the list with persisted events.
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   };
   const resultSteps = async () => {
     try {

@@ -48,7 +48,7 @@ import {scheduleTask, stopScheduleTask} from '../StepCountScreen';
 
 const SettingScreen = ({intl, navigation}) => {
   const {formatMessage} = intl;
-  const [autoTarget, setAutoTarget] = useState(false);
+  const [autoTarget, setAutoTarget] = useState(true);
   const [alertStep, setAlertStep] = useState(false);
   const [alertTarget, setAlertTarget] = useState(false);
   const [alertBmi, setAlertBmi] = useState(false);
