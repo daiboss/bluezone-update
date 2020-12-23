@@ -26,6 +26,7 @@ import message from '../../../core/msg/stepCount';
 import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
 import { useRoute } from '@react-navigation/native';
+import dateUtils from "mainam-react-native-date-utils";
 
 import { objectOf } from 'prop-types';
 Date.prototype.getWeek = function (dowOffset) {
@@ -57,9 +58,9 @@ Date.prototype.getWeek = function (dowOffset) {
 };
 const screenWidth = Dimensions.get('window').width;
 const StepCount = ({ props, intl, navigation, }) => {
-    
+
     const route = useRoute();
-    
+
     const { formatMessage } = intl;
 
     const data = {
@@ -75,6 +76,7 @@ const StepCount = ({ props, intl, navigation, }) => {
     const [selectDate, setSelectDate] = useState(true);
     const [selectWeek, setSelectWeek] = useState(false);
     const [selectMonth, setSelectMonth] = useState(false);
+    const offset = new Date().getTimezoneOffset();
     const chartConfig = {
         backgroundGradientFrom: '#fff',
         backgroundGradientFromOpacity: 0,
@@ -127,21 +129,13 @@ const StepCount = ({ props, intl, navigation, }) => {
     useEffect(() => {
         let end = new Date();
         var start = new Date(1, 1, new Date().getFullYear());
-        // let listDate = getListDate(start, end)
-        let currentData = route.params.dataHealth
-        
-        
-        setCountCarlo(currentData.countCarlo)
-        setCountRest(currentData.countRest)
-        setCountStep(currentData.countStep)
-        setDistant(currentData.distant)
         getDataHealth(
-            moment(start)
-                .format('YYYY-MM-DD')
-                .toString(),
-            moment(end)
-                .format('YYYY-MM-DD')
-                .toString(),
+            start
+                .format('yyyy-MM-dd')
+            ,
+            end
+                .format('yyyy-MM-dd')
+            ,
             'day'
         );
     }, []);
@@ -150,16 +144,24 @@ const StepCount = ({ props, intl, navigation, }) => {
         if (type == 1) {
             let end = new Date();
             let start = new Date(1, 1, new Date().getFullYear());
-            setTimeout(()=>{
-                getDataHealth(
-                    moment(start.getTime())
-                        .format('YYYY-MM-DD')
-                        .toString(),
-                    moment(end.getTime())
-                        .format('YYYY-MM-DD')
-                        .toString(), 'day'
-                );
-            },3000)
+            getDataHealth(
+                start
+                    .format('yyyy-MM-dd')
+                ,
+                end
+                    .format('yyyy-MM-dd')
+                , 'day'
+            );
+            onGetDistances(start
+                .format('yyyy-MM-dd')
+                ,
+                end
+                    .format('yyyy-MM-dd'))
+            onGetCalories(start
+                .format('yyyy-MM-dd')
+                ,
+                end
+                    .format('yyyy-MM-dd'))
             setSelectDate(true);
             setSelectMonth(false);
             setSelectWeek(false);
@@ -168,17 +170,15 @@ const StepCount = ({ props, intl, navigation, }) => {
         if (type == 2) {
             let end = new Date();
             let start = new Date(1, 1, new Date().getFullYear());
-            setTimeout(() => {
-                getDataHealth(
-                    moment(start)
-                        .format('YYYY-MM-DD')
-                        .toString(),
-                    moment(end)
-                        .format('YYYY-MM-DD')
-                        .toString(),
-                    'week'
-                );
-            },3000)
+            getDataHealth(
+                start
+                    .format('yyyy-MM-dd')
+                ,
+                end
+                    .format('yyyy-MM-dd')
+                ,
+                'week'
+            );
             setSelectDate(false);
             setSelectMonth(false);
             setSelectWeek(true);
@@ -187,17 +187,15 @@ const StepCount = ({ props, intl, navigation, }) => {
         if (type == 3) {
             let end = new Date();
             let start = new Date(1, 1, new Date().getFullYear());
-            setTimeout(()=>{
-                getDataHealth(
-                    moment(start)
-                        .format('YYYY-MM-DD')
-                        .toString(),
-                    moment(end)
-                        .format('YYYY-MM-DD')
-                        .toString(),
-                    'month'
-                );
-            },3000)
+            getDataHealth(
+                start
+                    .format('yyyy-MM-dd')
+                ,
+                end
+                    .format('yyyy-MM-dd')
+                ,
+                'month'
+            );
             setSelectDate(false);
             setSelectMonth(true);
             setSelectWeek(false);
@@ -214,10 +212,14 @@ const StepCount = ({ props, intl, navigation, }) => {
         return days;
     };
     const getDataHealth = (start, end, type) => {
+
+
         Fitness.isAuthorized(permissions)
             .then(res => {
                 if (res == true) {
-                    onGetSteps(start, end, type);
+                    setInterval(() => {
+                        onGetSteps(start, end, type);
+                    }, 3000)
                     // onGetCalories(start, end, type);
                     // onGetDistances(start, end, type);
                 } else {
@@ -256,41 +258,44 @@ const StepCount = ({ props, intl, navigation, }) => {
     };
     const onGetSteps = (start, end, type) => {
 
-
+console.log('timme out');
         try {
 
             Fitness.getSteps({ startDate: start, endDate: end })
                 .then(res => {
+
                     if (res.length) {
-                        // res.map(obj => {
                         switch (type) {
                             case 'day': {
                                 let valueDate = [];
                                 let valueTime = [];
-                                // let total = 0;
+                                let total = 0;
                                 let totalInMonth = 0
                                 res.map(obj => {
-                                    if (moment(obj.endDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
-                                        valueTime.push('Hôm nay');
 
+                                    let endDate = obj?.endDate?.substring(0, 10)
+                                    if (new Date(endDate).format('yyyy-MM-dd') == new Date().format('yyyy-MM-dd')) {
+
+                                        valueTime.push('Hôm nay');
                                     }
                                     else {
-                                        valueTime.push(moment(obj.endDate).format('MM/DD'));
+                                        valueTime.push(new Date(endDate).format('dd/MM'));
+
                                     }
                                     valueDate.push({
                                         marker: obj.quantity,
                                         y: obj.quantity,
-                                        year: moment(end).format('YYYY'),
+                                        year: new Date(endDate).format('yyyy'),
                                     });
-                                    // total += obj.quantity;
+
+                                })
+                                let arrToday = res.filter(obj => new Date(obj?.endDate?.substring(0, 10)).format('yyyy-MM-dd') == new Date().format('yyyy-MM-dd'))
+                                arrToday.map(obj => {
+                                    total += obj.quantity
                                 })
 
-                                // }
-
-                                // );
                                 setTime(valueTime);
-                                // setCountStep(numberWithCommas(total));
-                                // setCountRest(totalCount - total);
+                                setCountRest(totalCount - total);
                                 let dataChart = [
                                     {
                                         values: valueDate,
@@ -302,45 +307,35 @@ const StepCount = ({ props, intl, navigation, }) => {
                             case 'week': {
                                 let valueDate = [];
                                 let valueTime = [];
-                                // let total = 0;
-                               
+
                                 res.map(obj => {
-                                    let arr = res.filter(obj2 => new Date(obj2.endDate).getWeek() == new Date(obj.endDate).getWeek())
-                                    
+                                    let endDate = obj?.endDate?.substring(0, 10)
+
+                                    let arr = res.filter(obj2 => new Date(endDate).getWeek() == new Date(obj2.endDate?.substring(0, 10)).getWeek())
+
                                     let totalInWeek = 0
                                     arr.map(obj => {
                                         totalInWeek += obj.quantity
 
                                     })
-                                    let from = moment(arr[0].startDate).format('DD')
-                                    let to = moment(arr[arr.length - 1].endDate).format('DD/MM/YYYY') == moment(new Date()).format('DD/MM/YYYY') 
-                                    ? 'nay' :
-                                     moment(arr[arr.length-1].endDate).format('DD')
-                                    let month = moment(arr[0].startDate).format('MM')
+                                    let from = new Date(arr[0].startDate?.substring(0, 10)).format('dd')
+                                    let to = new Date(arr[arr.length - 1].endDate?.substring(0, 10)).format('dd/MM/yyyy') == new Date().format('dd/MM/yyyy')
+                                        ? 'nay' :
+                                        new Date(arr[arr.length - 1].endDate?.substring(0, 10)).format('dd')
+                                    let month = new Date(arr[0].startDate?.substring(0, 10)).format('MM')
                                     valueTime.push(`${from}-${to}\nT${month}`)
-                                    
+
                                     valueDate.push({
                                         marker: totalInWeek,
                                         y: totalInWeek,
-                                        year: moment(end).format('YYYY'),
-                                        valueFormat: new Date(obj.endDate).getWeek()
+                                        year: new Date(end).format('yyyy'),
+                                        valueFormat: new Date(endDate).getWeek()
                                     })
-                                    
-                                    // if (moment(obj.endDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
-                                    //     valueTime.push('d');
-                                    // }
-                                    // else {
-                                    //     valueTime.push(moment(obj.endDate).format('MM/DD'));
 
-                                    // }
-
-                                    // total += obj.quantity;
 
                                 })
                                 valueDate = formatData(valueDate)
                                 valueTime = formatData(valueTime)
-                                // setCountStep(numberWithCommas(total));
-                                // setCountRest(totalCount - total);
                                 let dataChart = [
                                     {
                                         values: valueDate,
@@ -349,8 +344,6 @@ const StepCount = ({ props, intl, navigation, }) => {
                                 setTime(valueTime);
                                 setDataChart(dataChart);
                             }
-                                // );
-                                
                                 break
                             case 'month': {
                                 let valueDate = [];
@@ -359,8 +352,9 @@ const StepCount = ({ props, intl, navigation, }) => {
 
 
                                 res.map(obj => {
+                                    let endDate = obj?.endDate?.substring(0, 10)
 
-                                    let arr = res.filter(obj2 => moment(obj.endDate).format('MM/YYYY') === moment(obj2.endDate).format('MM/YYYY'))
+                                    let arr = res.filter(obj2 => new Date(endDate).format('MM/yyyy') === new Date(obj2?.endDate?.substring(0, 10)).format('MM/yyyy'))
 
                                     let totalInMonth = 0
                                     arr.map(obj => {
@@ -369,49 +363,24 @@ const StepCount = ({ props, intl, navigation, }) => {
                                     }
 
                                     )
-                                    if (moment(obj.endDate).format('MM/YYYY') == moment(new Date()).format('MM/YYYY')) {
+                                    if (new Date(endDate).format('MM/yyyy') == new Date().format('MM/yyyy')) {
                                         valueTime.push('Tháng\nnày');
-
                                         totalInMonth += obj.quantity
 
                                     }
                                     else {
-                                        let itemLabel = moment(obj.endDate).format('MM')
+                                        let itemLabel = new Date(endDate).format('MM')
                                         valueTime.push(`Tháng \n${itemLabel}`);
                                     }
                                     valueDate.push({
                                         marker: totalInMonth,
                                         y: totalInMonth,
-                                        year: moment(end).format('YYYY'),
-                                        valueFormat: moment(obj.endDate).format('MM')
+                                        year: new Date(end).format('yyyy'),
+                                        valueFormat: new Date(endDate).format('MM')
                                     });
-
-
-                                    // let item = {
-
-                                    //     }
-                                    // if (moment(obj.endDate).format('MM/YYYY') == moment(new Date()).format('MM/YYYY')) {
-                                    //     valueTime.push('Tháng này');
-
-                                    //     totalInMonth += obj.quantity
-
-                                    // }
-                                    // else {
-                                    //     valueTime.push(moment(obj.endDate).format('MM/DD'));
-
-
-                                    // }
-
-
-
-
-                                    // total += obj.quantity;
                                 })
-                                // );
 
-                                // setCountStep(numberWithCommas(total));
-                                // setCountRest(totalCount - total);
-                                
+
                                 valueDate = formatData(valueDate)
                                 valueTime = formatData(valueTime)
 
@@ -441,19 +410,18 @@ const StepCount = ({ props, intl, navigation, }) => {
                         ];
 
                         dataNull.map(obj => {
-                            if (moment(obj.endDate).format('MM/DD/YYYY') == moment(new Date()).format('MM/DD/YYYY')) {
+                            if (new Date(obj.endDate).format('MM/dd/yyyy') == new Date(new Date()).format('MM/dd/yyyy')) {
                                 valueTime.push('Hôm nay');
 
                             } else {
-                                valueTime.push(moment(obj.endDate).format('MM/DD'));
+                                valueTime.push(new Date(obj.endDate).format('MM/dd'));
 
                             }
-                            // valueTime.push(moment(obj.endDate).format('MM/DD'));
 
                             valueDate.push({
                                 marker: obj.quantity,
                                 y: obj.quantity,
-                                year: moment(end).format('YYYY'),
+                                year: new Date(end).format('yyyy'),
                             });
                             total += obj.quantity;
                         });
@@ -471,14 +439,10 @@ const StepCount = ({ props, intl, navigation, }) => {
                     }
                 })
                 .catch(err => {
-                    
-
-
-
-
 
                 });
         } catch (e) {
+
 
         }
 
@@ -494,9 +458,12 @@ const StepCount = ({ props, intl, navigation, }) => {
             return false;
 
         });
-        
+
         return valueDateNew
 
+    }
+    const getDateFormat = (date) => {
+        return new Date(new Date(date).getTime() - offset * 60 * 1000)
     }
     const onGetDistances = (start, end) => {
         Fitness.getDistances({ startDate: start, endDate: end })
@@ -537,6 +504,7 @@ const StepCount = ({ props, intl, navigation, }) => {
     const onGetCalories = (start, end) => {
         Fitness.getCalories({ startDate: start, endDate: end })
             .then(res => {
+
                 //
                 var total = 0;
                 res.map(obj => {
