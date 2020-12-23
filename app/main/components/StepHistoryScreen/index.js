@@ -796,8 +796,6 @@ const StepCount = ({ props, intl, navigation, }) => {
                         color: '#000',
                         fontSize: fontSize.bigger,
                     }}
-                    showMenu={true}
-                    onShowMenu={onShowMenu}
                 />
                 <View style={styles.viewLineChart}>
                     {(dataChart.length && <BarChart onGetDataBySelect={(start, end, marker) => onGetDataBySelect(start, end, marker)} data={dataChart} time={time} />) ||
