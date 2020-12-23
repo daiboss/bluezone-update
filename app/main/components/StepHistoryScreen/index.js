@@ -217,9 +217,7 @@ const StepCount = ({ props, intl, navigation, }) => {
         Fitness.isAuthorized(permissions)
             .then(res => {
                 if (res == true) {
-                    setInterval(() => {
                         onGetSteps(start, end, type);
-                    }, 3000)
                     // onGetCalories(start, end, type);
                     // onGetDistances(start, end, type);
                 } else {
@@ -258,7 +256,7 @@ const StepCount = ({ props, intl, navigation, }) => {
     };
     const onGetSteps = (start, end, type) => {
 
-console.log('timme out');
+
         try {
 
             Fitness.getSteps({ startDate: start, endDate: end })
