@@ -387,14 +387,23 @@ const StepCount = ({props, intl, navigation}) => {
         endDate: moment(end).toString(),
       })
         .then(res => {
+          onGetCalories(start, end);
+          onGetDistances(start, end);
+          console.log('res: ', res);
           if (res.length) {
             var total = 0;
             res.map(obj => {
               total += obj.quantity;
             });
-            setCountStep(numberWithCommas(total));
+            if (numberWithCommas(total) !== countStep){
+              setCountStep(numberWithCommas(total));
 
-            setCountRest(totalCount - total);
+            }
+            if (countRest !== (totalCount - total)){
+              setCountRest(totalCount - total);
+            }
+
+            
           } else {
             setCountStep(0), setCountRest(totalCount - 0);
           }

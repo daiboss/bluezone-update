@@ -43,7 +43,7 @@ class ChartLine extends React.Component {
     };
   }
   componentDidMount() {
-    console.log(this.refs.chart,'this.refs.chart');
+    
     let newState = update(this.state, {
       data: {
         $set: {
@@ -109,7 +109,10 @@ class ChartLine extends React.Component {
     }
   };
   handleSelect = event => {
+    
     let entry = event.nativeEvent;
+    
+    
 
     if (entry == null) {
       this.setState({
@@ -122,6 +125,8 @@ class ChartLine extends React.Component {
         selectedEntry: JSON.stringify(entry),
         year: entry?.data?.year,
       });
+      this.props.onGetDataBySelect(entry?.data?.start, entry?.data?.end, entry?.data?.marker)
+      console.log('entry?.data?.start: ', entry?.data?.start);
     }
   };
   render() {
