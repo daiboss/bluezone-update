@@ -93,6 +93,7 @@ const StepCount = ({ props, intl, navigation, }) => {
     const [countCarlo, setCountCarlo] = useState(0);
     const [distant, setDistant] = useState(0);
     const totalCount = 10000;
+    const [intervalNow, setIntervalNow] = useState(null)
     const permissions = [
         {
             kind: Fitness.PermissionKinds.Steps,
@@ -141,6 +142,13 @@ const StepCount = ({ props, intl, navigation, }) => {
     }, []);
 
     const onSetSelect = type => () => {
+        console.log('intervalNow: ', intervalNow);
+        if (intervalNow) {
+
+            console.log('intervalNow: ', intervalNow);
+            clearInterval(intervalNow)
+        }
+
         if (type == 1) {
             let end = new Date();
             let start = new Date(1, 1, new Date().getFullYear());
@@ -216,8 +224,14 @@ const StepCount = ({ props, intl, navigation, }) => {
 
         Fitness.isAuthorized(permissions)
             .then(res => {
+                if(intervalNow){
+                    clearInterval(intervalNow)
+                }
                 if (res == true) {
+                    let intervalNow = setInterval(() => {
                         onGetSteps(start, end, type);
+                    }, 1000)
+                    setIntervalNow(intervalNow)
                     // onGetCalories(start, end, type);
                     // onGetDistances(start, end, type);
                 } else {
@@ -227,6 +241,7 @@ const StepCount = ({ props, intl, navigation, }) => {
                 }
             })
             .catch(err => {
+                console.log('err: ', err);
                 Fitness.requestPermissions(permissions)
                     .then(res => { })
                     .catch(err => { });
@@ -440,6 +455,7 @@ const StepCount = ({ props, intl, navigation, }) => {
 
                 });
         } catch (e) {
+            console.log('e: ', e);
 
 
         }
