@@ -57,7 +57,9 @@ export const scheduleTask = async name => {
       forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
       periodic: true, // Fire once only.
     });
-  } catch (e) {}
+  } catch (e) {
+    console.log('e: 11111', e);
+  }
 };
 function getAbsoluteMonths(momentDate) {
   var months = Number(momentDate.format('MM'));
@@ -70,6 +72,7 @@ export const stopScheduleTask = async task => {
   } catch (e) {}
 };
 export const onBackgroundFetchEvent = async taskId => {
+  console.log('taskId: ', taskId);
   try {
     let end = new Date();
     let start = new Date();
@@ -126,7 +129,9 @@ export const onBackgroundFetchEvent = async taskId => {
         setAutoChange(true);
       }
     }
-  } catch (e) {}
+  } catch (e) {
+    console.log('e: aaaaaaaaaaaaaaaaaaa', e);
+  }
   // Required: Signal completion of your task to native code
   // If you fail to do this, the OS can terminate your app
   // or assign battery-blame for consuming too much background-time
@@ -160,7 +165,7 @@ const StepCount = ({props, intl, navigation}) => {
   const [countRest, setCountRest] = useState(0);
   const [countCarlo, setCountCarlo] = useState(0);
   const [distant, setDistant] = useState(0);
-  const totalCount = 10000;
+  const [totalCount, setTotalCount] = useState(10000);
   const permissions = [
     {
       kind: Fitness.PermissionKinds.Steps,
@@ -228,19 +233,36 @@ const StepCount = ({props, intl, navigation}) => {
           requiresStorageNotLow: false, // Default
         },
         onBackgroundFetchEvent,
-        status => {},
+        status => {
+          switch (status) {
+            case BackgroundFetch.STATUS_RESTRICTED:
+              console.log('BackgroundFetch restricted');
+              break;
+            case BackgroundFetch.STATUS_DENIED:
+              console.log('BackgroundFetch denied');
+              break;
+            case BackgroundFetch.STATUS_AVAILABLE:
+              console.log('BackgroundFetch is enabled');
+              break;
+          }
+        },
       );
       // Turn on the enabled switch.
       await BackgroundFetch.start();
       // setEnabled(value);
       // Load the list with persisted events.
-    } catch (error) {}
+    } catch (error) {
+      console.log('error: ', error);
+    }
   };
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
-      if (!resultSteps)
+      if (!resultSteps) {
         setResultSteps({step: totalCount, date: new Date().getTime()});
+      } else {
+        setTotalCount(resultSteps.step);
+      }
     } catch (error) {}
   };
   const getData = (start, end, startLine, endLine) => {

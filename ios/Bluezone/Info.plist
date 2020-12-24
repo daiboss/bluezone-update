@@ -4,9 +4,11 @@
 <dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.bluezone.steps</string>
+		<string>com.bluezone.weight</string>
 		<string>com.transistorsoft.fetch</string>
 		<string>com.bluezone.realtime</string>
+		<string>com.bluezone.autoChange</string>
+		<string>com.bluezone.notiStep</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
@@ -62,6 +64,8 @@
 	<string>Bluezone sử dụng Bluetooth để ghi nhận thiết bị điện tử của những người dùng khác khi họ ở gần bạn</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Đọc và hiểu dữ liệu sức khoẻ.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Đọc và hiểu dữ liệu sức khoẻ.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Cho phép ứng dụng truy cập vị trí, để tìm vị trí gần nhất.</string>
 	<key>UIAppFonts</key>
@@ -97,6 +101,7 @@
 		<string>bluetooth-central</string>
 		<string>bluetooth-peripheral</string>
 		<string>fetch</string>
+		<string>processing</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

@@ -43,6 +43,7 @@ import {
   setNotiStep,
   getWeightWarning,
   setWeightWarning,
+  getResultSteps
 } from '../../../core/storage';
 import {scheduleTask, stopScheduleTask} from '../StepCountScreen';
 
@@ -58,6 +59,8 @@ const SettingScreen = ({intl, navigation}) => {
   }, []);
   const getStatus = async () => {
     try {
+      let result = await getResultSteps()
+      setTotalStep(result.step)
       let res = await getAutoChange();
       setAutoTarget(res);
       let res1 = (await getRealtime()) || false;
