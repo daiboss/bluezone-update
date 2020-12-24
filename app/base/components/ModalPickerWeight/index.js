@@ -37,6 +37,7 @@ function ModalPicker({
   gender,
   currentWeight,
 }) {
+  console.log('currentWeight: ', currentWeight);
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
   const [weight, setWeight] = useState(gender == 1 ? '65, ' : '50, ');
@@ -78,12 +79,12 @@ function ModalPicker({
           initialSelectedIndex={
             dataWeight.findIndex(
               e =>
-                e.label == currentWeight.substring(0, currentWeight.length - 5),
+                e.label == currentWeight.substring(0, currentWeight.length - 4),
             ) !== -1
               ? dataWeight.findIndex(
                   e =>
                     e.label ==
-                    currentWeight.substring(0, currentWeight.length - 5),
+                    currentWeight.substring(0, currentWeight.length - 4),
                 )
               : gender == 1
               ? 50
@@ -108,7 +109,7 @@ function ModalPicker({
               e =>
                 e.label ==
                 currentWeight.substring(
-                  currentWeight.length - 5,
+                  currentWeight.length - 4,
                   currentWeight.length,
                 ),
             )
@@ -116,7 +117,7 @@ function ModalPicker({
                   e =>
                     e.label ==
                     currentWeight.substring(
-                      currentWeight.length - 5,
+                      currentWeight.length - 4,
                       currentWeight.length,
                     ),
                 )
