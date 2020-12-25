@@ -46,6 +46,7 @@ import {
   getResultSteps
 } from '../../../core/storage';
 import {scheduleTask, stopScheduleTask} from '../StepCountScreen';
+import PushNotification from 'react-native-push-notification';
 
 const SettingScreen = ({intl, navigation}) => {
   const {formatMessage} = intl;
@@ -91,6 +92,7 @@ const SettingScreen = ({intl, navigation}) => {
   };
   const alertStepSwitch = async value => {
     try {
+      PushNotification.requestPermissions()
       setAlertStep(!alertStep);
       setRealtime(value);
       if (value) {

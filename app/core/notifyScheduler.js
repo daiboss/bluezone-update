@@ -454,9 +454,11 @@ const scheduleNotificationSetConfigurationListener = oldConfig => {
 
 // Xử lý thông báo ngay lập tức khi app thiếu chức năng để scan -------------------
 export const createShowStepNotification = async step => {
+  console.log('step: createShowStepNotification', step);
   try {
     const {iOSShowStepNotification} = configuration;
     let total = (await getResultSteps()) || {step: 10000};
+    console.log('total: createShowStepNotification', total);
 
     PushNotification.localNotification({
       /* Android Only Properties */

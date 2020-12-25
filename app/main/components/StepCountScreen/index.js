@@ -56,7 +56,13 @@ export const scheduleTask = async name => {
       delay: 5000, // milliseconds (5s)
       forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
       periodic: true, // Fire once only.
-    });
+    })
+      .then(res => {
+        console.log('res: ', res);
+      })
+      .catch(err => {
+        console.log('err: ', err);
+      });
   } catch (e) {
     console.log('e: 11111', e);
   }
@@ -78,8 +84,10 @@ export const onBackgroundFetchEvent = async taskId => {
     let start = new Date();
     end.setDate(end.getDate() + 1);
     let step = await getSteps(start, end);
+    console.log('step: ', step);
     let today = moment();
     let resultSteps = await getResultSteps();
+    console.log('resultSteps: ', resultSteps);
 
     switch (taskId) {
       case autoChange:
@@ -124,6 +132,7 @@ export const onBackgroundFetchEvent = async taskId => {
     if (taskId === 'react-native-background-fetch') {
       // Test initiating a #scheduleTask when the periodic fetch event is received.
       let auto = await getAutoChange();
+      console.log('auto: ', auto);
       if (auto == undefined || auto == null) {
         await scheduleTask(autoChange);
         setAutoChange(true);
@@ -279,17 +288,18 @@ const StepCount = ({props, intl, navigation}) => {
       let resPermissions = await Fitness.requestPermissions(permissions);
 
       let resAuth = await Fitness.isAuthorized(permissions);
-
+      if (Platform.OS === 'android') {
+        let res2 = await Fitness.subscribeToSteps();
+        console.log('res2: ', res2);
+      }
       if (resAuth == true) {
         init();
         getData(start, end, startLine, endLine);
       } else {
-        if (Platform.OS === 'android') {
-          let res2 = await Fitness.subscribeToSteps();
-        }
         // getData(start, end, startLine, endLine);
       }
     } catch (error) {
+      console.log('error: ', error);
       getPermission();
     }
   };
@@ -411,21 +421,17 @@ const StepCount = ({props, intl, navigation}) => {
         .then(res => {
           onGetCalories(start, end);
           onGetDistances(start, end);
-          console.log('res: ', res);
           if (res.length) {
             var total = 0;
             res.map(obj => {
               total += obj.quantity;
             });
-            if (numberWithCommas(total) !== countStep){
+            if (numberWithCommas(total) !== countStep) {
               setCountStep(numberWithCommas(total));
-
             }
-            if (countRest !== (totalCount - total)){
+            if (countRest !== totalCount - total) {
               setCountRest(totalCount - total);
             }
-
-            
           } else {
             setCountStep(0), setCountRest(totalCount - 0);
           }

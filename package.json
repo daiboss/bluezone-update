@@ -31,7 +31,7 @@
     "@react-native-community/checkbox": "^0.4.2",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/masked-view": "^0.1.7",
-    "@react-native-community/push-notification-ios": "^1.1.1",
+    "@react-native-community/push-notification-ios": "^1.8.0",
     "@react-native-picker/picker": "^1.9.4",
     "@react-navigation/bottom-tabs": "^5.2.7",
     "@react-navigation/compat": "^5.1.14",
