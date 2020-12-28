@@ -520,7 +520,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = L42JWQ62HJ;
+						DevelopmentTeam = 6Y2N8M8DFA;
 						LastSwiftMigration = 1120;
 						ProvisioningStyle = Automatic;
 					};
@@ -1108,7 +1108,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L42JWQ62HJ;
+				DEVELOPMENT_TEAM = 6Y2N8M8DFA;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -1123,7 +1123,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mic.bluezone2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mic.bluezone.inlabs;
 				PRODUCT_NAME = Bluezone;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Scanner/Bluezone-Bridging-Header.h";
@@ -1143,7 +1143,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L42JWQ62HJ;
+				DEVELOPMENT_TEAM = 6Y2N8M8DFA;
 				INFOPLIST_FILE = Bluezone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1153,7 +1153,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mic.bluezone2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mic.bluezone.inlabs;
 				PRODUCT_NAME = Bluezone;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Scanner/Bluezone-Bridging-Header.h";
