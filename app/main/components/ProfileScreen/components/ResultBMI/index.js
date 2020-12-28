@@ -23,6 +23,7 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
+      useNativeDriver: false
     }).start();
   };
   const getPositionDot = () => {
