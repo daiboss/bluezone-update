@@ -27,6 +27,7 @@ import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
 import { useRoute } from '@react-navigation/native';
 import dateUtils from "mainam-react-native-date-utils";
+import BartChartHistory from './BarChart/BartChartHistory'
 
 import { objectOf } from 'prop-types';
 Date.prototype.getWeek = function (dowOffset) {
@@ -800,6 +801,8 @@ const StepCount = ({ props, intl, navigation, }) => {
                 <View style={styles.viewLineChart}>
                     {(dataChart.length && <BarChart onGetDataBySelect={(start, end, marker) => onGetDataBySelect(start, end, marker)} data={dataChart} time={time} />) ||
                         null}
+
+                        <BartChartHistory />
                     {/* <BarChart style={styles.chart}
                         data={dataChart}
                         style={styles.chart}

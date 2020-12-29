@@ -47,7 +47,6 @@ import {
 } from '../../../const/storage';
 const screenWidth = Dimensions.get('window').width;
 import BackgroundFetch from 'react-native-background-fetch';
-import ChartLineStepCounter from './ChartLine/ChartLineStepCounter';
 export const scheduleTask = async name => {
   try {
     await BackgroundFetch.scheduleTask({
@@ -387,14 +386,14 @@ const StepCount = ({ props, intl, navigation }) => {
               startDate: start,
               endDate: end,
               quantity: 1.001,
-            },{
+            }, {
               startDate: start,
               endDate: end,
               quantity: 1.00002,
             },
           ];
           dataNull.map(obj => {
-            console.log('objobjobj',obj)
+            console.log('objobjobj', obj)
             valueTime.push(moment(obj.endDate).format('MM/DD'));
             valueDate.push({
               marker: obj.quantity,
@@ -640,9 +639,8 @@ const StepCount = ({ props, intl, navigation }) => {
           </View> */}
         </View>
         <View style={styles.viewLineChart}>
-          {/* {(dataChart.length && <ChartLine data={dataChart} time={time} />) ||
-            null} */}
-          {(dataChart.length && <ChartLineStepCounter data={dataChart} time={time} />) || null}
+          {(dataChart.length && <ChartLine data={dataChart} time={time} />) ||
+            null}
           {/* <LineChart style={styles.chart}
                         data={dataChart}
                         style={styles.chart}
