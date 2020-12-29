@@ -358,8 +358,43 @@ const StepCount = ({ props, intl, navigation }) => {
               endDate: end,
               quantity: 0,
             },
+            {
+              startDate: start,
+              endDate: end,
+              quantity: 0.5,
+            },
+            {
+              startDate: start,
+              endDate: end,
+              quantity: 0.7,
+            },
+            {
+              startDate: start,
+              endDate: end,
+              quantity: 0.2,
+            },
+            {
+              startDate: start,
+              endDate: end,
+              quantity: 0.5,
+            },
+            {
+              startDate: start,
+              endDate: end,
+              quantity: 1,
+            },
+            {
+              startDate: start,
+              endDate: end,
+              quantity: 1.001,
+            },{
+              startDate: start,
+              endDate: end,
+              quantity: 1.00002,
+            },
           ];
           dataNull.map(obj => {
+            console.log('objobjobj',obj)
             valueTime.push(moment(obj.endDate).format('MM/DD'));
             valueDate.push({
               marker: obj.quantity,
