@@ -12,7 +12,7 @@ import update from 'immutability-helper';
 import styles from './styles/index.css';
 import { LineChart } from 'react-native-charts-wrapper';
 import { red_bluezone ,blue_bluezone} from '../../../../core/color';
-import { VictoryChart,VictoryLine,VictoryTheme,VictoryGroup,VictoryScatter  } from 'victory-native';
+
 const distanceToLoadMore = 10;
 const pageSize = 10;
 class ChartLine extends React.Component {
@@ -53,7 +53,6 @@ class ChartLine extends React.Component {
   }
 
   getDataChart = (dataCharts = []) => {
-    console.log('dataChartsdataChartsdataChartsdataCharts',dataCharts)
     let data = dataCharts.map((e, i) => {
       return {
         values: e.values,
@@ -61,11 +60,11 @@ class ChartLine extends React.Component {
         config: {
           color: processColor(red_bluezone),
           drawCircles: true,
-          lineWidth: 2,
+          lineWidth: 4,
           drawValues: false,
           // axisDependency: 'LEFT',
           circleColor: processColor(red_bluezone),
-          circleRadius: e.values.filter((item ,index) => index == this.state?.selectedX?.x ? 2 : 4 ) ,
+          circleRadius: 4,
           drawCircleHole: true,
           mode: 'HORIZONTAL_BEZIER',
           fillColor: processColor(red_bluezone),
@@ -79,7 +78,6 @@ class ChartLine extends React.Component {
     return data;
   };
   componentWillReceiveProps = preProps => {
-    console.log('prePropsprePropspreProps',preProps)
     if (this.props.data != preProps.data) {
       let newState = update(this.state, {
         data: {
@@ -152,48 +150,56 @@ class ChartLine extends React.Component {
     } else {
       this.setState({
         ...this.state,
-        selectedX:entry,
         selectedEntry: JSON.stringify(entry),
         year: entry?.data?.year,
-      },() => this.getDataChart(this.props.data));
+      });
     }
   };
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.txtYear}>{this.state.year}</Text>
-        <VictoryChart
-        animate={{
-          duration: 1000,
-          onLoad: { duration: 1000 }
-        }}
-          theme={VictoryTheme.material}
-        >
-          <VictoryGroup  data={[
-              { x: 1, y: 2 },
-              { x: 2, y: 3 },
-              { x: 3, y: 5 },
-              { x: 4, y: 4 },
-              { x: 5, y: 7 }
-            ]}>
-          <VictoryLine
-          interpolation="natural"
-            style={{
-              data: { stroke: "#c43a31" },
-              parent: { border: "1px solid #ccc"}
-            }}
-           
-          />
-    <VictoryScatter 
-     style={{
-      data: { stroke: "#c43a31" },
-      parent: { border: "1px solid #ccc"}
-    }}
-    />
-          </VictoryGroup>
-         
-          
-        </VictoryChart>
+        <LineChart
+          style={styles.chart}
+          data={this.state.data}
+          xAxis={this.state.xAxis}
+          // highlights={[{x: 3}, {x: 6}]}
+          animation={{
+            durationY: 1000,
+          }}
+          chartDescription={{
+            text: '',
+          }}
+          yAxis={{
+            left: {
+              enabled: false,
+            },
+            right: {
+              enabled: false,
+            },
+          }}
+          touchEnabled={true} 
+          dragEnabled={true}
+          scaleEnabled={true}
+          syncX={true}
+          scaleXEnabled={true}
+          legend={{
+            enabled: false,
+          }}
+          marker={{
+            enabled: true,
+            markerColor: processColor(red_bluezone),
+            textColor: processColor('#FFF'),
+            markerFontSize: 14,
+          }}
+          scaleYEnabled={true}
+          visibleRange={{ x: { max: 6 } }}
+          dragDecelerationEnabled={false}
+          ref="chart"
+          onSelect={this.handleSelect}
+        //   autoScalesMinMaxEnabled={true}
+        // onChange={this.handleChange.bind(this)}
+        />
       </View>
     );
   }

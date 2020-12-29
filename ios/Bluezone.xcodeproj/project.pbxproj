@@ -1123,7 +1123,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mic.bluezone.inlabs;
+				PRODUCT_BUNDLE_IDENTIFIER = intLabs.bluezone.update;
 				PRODUCT_NAME = Bluezone;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Scanner/Bluezone-Bridging-Header.h";
@@ -1153,7 +1153,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mic.bluezone.inlabs;
+				PRODUCT_BUNDLE_IDENTIFIER = intLabs.bluezone.update;
 				PRODUCT_NAME = Bluezone;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Scanner/Bluezone-Bridging-Header.h";
