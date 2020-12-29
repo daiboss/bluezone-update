@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   SafeAreaView,
@@ -13,16 +13,16 @@ import {
   ScrollView,
 } from 'react-native';
 import Fitness from '@ovalmoney/react-native-fitness';
-import {LineChart} from 'react-native-charts-wrapper';
-import {isIPhoneX} from '../../../core/utils/isIPhoneX';
-import {Dimensions} from 'react-native';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import { LineChart } from 'react-native-charts-wrapper';
+import { isIPhoneX } from '../../../core/utils/isIPhoneX';
+import { Dimensions } from 'react-native';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
 import message from '../../../core/msg/stepCount';
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
 import * as scheduler from '../../../core/notifyScheduler';
 import {
@@ -47,6 +47,7 @@ import {
 } from '../../../const/storage';
 const screenWidth = Dimensions.get('window').width;
 import BackgroundFetch from 'react-native-background-fetch';
+import ChartLineStepCounter from './ChartLine/ChartLineStepCounter';
 export const scheduleTask = async name => {
   try {
     await BackgroundFetch.scheduleTask({
@@ -75,7 +76,7 @@ function getAbsoluteMonths(momentDate) {
 export const stopScheduleTask = async task => {
   try {
     let res = await BackgroundFetch.stop(task);
-  } catch (e) {}
+  } catch (e) { }
 };
 export const onBackgroundFetchEvent = async taskId => {
   console.log('taskId: ', taskId);
@@ -146,8 +147,8 @@ export const onBackgroundFetchEvent = async taskId => {
   // or assign battery-blame for consuming too much background-time
   BackgroundFetch.finish(taskId);
 };
-const StepCount = ({props, intl, navigation}) => {
-  const {formatMessage} = intl;
+const StepCount = ({ props, intl, navigation }) => {
+  const { formatMessage } = intl;
 
   const data = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June'],
@@ -268,11 +269,11 @@ const StepCount = ({props, intl, navigation}) => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
       if (!resultSteps) {
-        setResultSteps({step: totalCount, date: new Date().getTime()});
+        setResultSteps({ step: totalCount, date: new Date().getTime() });
       } else {
         setTotalCount(resultSteps.step);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const getData = (start, end, startLine, endLine) => {
     // let listDate = getListDate(start, end);
@@ -316,8 +317,9 @@ const StepCount = ({props, intl, navigation}) => {
     var valueDate = [];
     var valueTime = [];
     var total = 0;
-    Fitness.getSteps({startDate: start, endDate: end})
+    Fitness.getSteps({ startDate: start, endDate: end })
       .then(res => {
+        console.log('onGetStepLine res', res)
         if (res.length) {
           res.map(obj => {
             valueTime.push(moment(obj.endDate).format('MM/DD'));
@@ -390,7 +392,7 @@ const StepCount = ({props, intl, navigation}) => {
           setTime(valueTime);
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
   const onGetSteps = (start, end) => {
     Fitness.getSteps({
@@ -410,7 +412,7 @@ const StepCount = ({props, intl, navigation}) => {
           setCountStep(0), setCountRest(totalCount - 0);
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
   const onGetStepsRealTime = (start, end) => {
     setInterval(() => {
@@ -436,12 +438,12 @@ const StepCount = ({props, intl, navigation}) => {
             setCountStep(0), setCountRest(totalCount - 0);
           }
         })
-        .catch(err => {});
+        .catch(err => { });
     }, 3000);
   };
 
   const onGetDistances = (start, end) => {
-    Fitness.getDistances({startDate: start, endDate: end})
+    Fitness.getDistances({ startDate: start, endDate: end })
       .then(res => {
         //
         var total = 0;
@@ -451,7 +453,7 @@ const StepCount = ({props, intl, navigation}) => {
         total = total / 1000;
         setDistant(total.toFixed(1));
       })
-      .catch(err => {});
+      .catch(err => { });
   };
   const addDays = (date, days = 1) => {
     var list = [];
@@ -478,7 +480,7 @@ const StepCount = ({props, intl, navigation}) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
   const onGetCalories = (start, end) => {
-    Fitness.getCalories({startDate: start, endDate: end})
+    Fitness.getCalories({ startDate: start, endDate: end })
       .then(res => {
         //
         var total = 0;
@@ -487,12 +489,12 @@ const StepCount = ({props, intl, navigation}) => {
         });
         setCountCarlo(total);
       })
-      .catch(err => {});
+      .catch(err => { });
   };
   const onBack = () => {
     try {
       navigation.pop();
-    } catch (e) {}
+    } catch (e) { }
   };
   const onShowMenu = () => {
     navigation.openDrawer();
@@ -603,8 +605,9 @@ const StepCount = ({props, intl, navigation}) => {
           </View> */}
         </View>
         <View style={styles.viewLineChart}>
-          {(dataChart.length && <ChartLine data={dataChart} time={time} />) ||
-            null}
+          {/* {(dataChart.length && <ChartLine data={dataChart} time={time} />) ||
+            null} */}
+          {(dataChart.length && <ChartLineStepCounter data={dataChart} time={time} />) || null}
           {/* <LineChart style={styles.chart}
                         data={dataChart}
                         style={styles.chart}
@@ -653,7 +656,7 @@ const StepCount = ({props, intl, navigation}) => {
         style={styles.btnHistory}
         onPress={() =>
           navigation.navigate('stepHistory', {
-            dataHealth: {countStep, countRest, countCarlo, distant},
+            dataHealth: { countStep, countRest, countCarlo, distant },
           })
         }>
         <Text style={styles.txHistory}>
