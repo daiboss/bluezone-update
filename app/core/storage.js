@@ -51,6 +51,7 @@ import {
   realtime,
   notiStep,
   weightWarning,
+  stepChange,
 } from '../const/storage';
 import Fitness from '@ovalmoney/react-native-fitness';
 import moment from 'moment';
@@ -398,7 +399,15 @@ const getSteps = (start, end) => {
     }
   });
 };
+const getStepChange = async () => {
+  const result = await AsyncStorage.getItem(stepChange);
+  return _processOutput(result);
+};
 
+const setStepChange = (value = '') => {
+  const _resource = _processInput(value);
+  AsyncStorage.setItem(stepChange, _resource);
+};
 const getAutoChange = async () => {
   const result = await AsyncStorage.getItem(autoChange);
   return _processOutput(result);
@@ -440,6 +449,8 @@ const setWeightWarning = (value = '') => {
 };
 
 export {
+  setStepChange,
+  getStepChange,
   getAutoChange,
   setAutoChange,
   getRealtime,

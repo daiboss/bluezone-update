@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   SafeAreaView,
@@ -13,16 +13,16 @@ import {
   ScrollView,
 } from 'react-native';
 import Fitness from '@ovalmoney/react-native-fitness';
-import { LineChart } from 'react-native-charts-wrapper';
-import { isIPhoneX } from '../../../core/utils/isIPhoneX';
-import { Dimensions } from 'react-native';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import {LineChart} from 'react-native-charts-wrapper';
+import {isIPhoneX} from '../../../core/utils/isIPhoneX';
+import {Dimensions} from 'react-native';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
 import message from '../../../core/msg/stepCount';
-import { injectIntl, intlShape } from 'react-intl';
+import {injectIntl, intlShape} from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
 import * as scheduler from '../../../core/notifyScheduler';
 import {
@@ -36,8 +36,6 @@ import {
   getStepsTotal,
   setAutoChange,
   getAutoChange,
-  setStepChange,
-  getStepChange,
 } from '../../../core/storage';
 import ChartLine from './ChartLine';
 import {
@@ -49,22 +47,6 @@ import {
 } from '../../../const/storage';
 const screenWidth = Dimensions.get('window').width;
 import BackgroundFetch from 'react-native-background-fetch';
-import {
-  accelerometer,
-  gyroscope,
-  setUpdateIntervalForType,
-  SensorTypes,
-} from 'react-native-sensors';
-import {map, filter} from 'rxjs/operators';
-import {
-  getAbsoluteMonths,
-  getDistances,
-  getStepCount,
-  getTimeDate,
-} from '../../../core/steps';
-let count = 0;
-var timeout;
-var data = [];
 export const scheduleTask = async name => {
   try {
     await BackgroundFetch.scheduleTask({
@@ -75,25 +57,37 @@ export const scheduleTask = async name => {
       forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
       periodic: true, // Fire once only.
     })
-      .then(res => {})
-      .catch(err => {});
-  } catch (e) {}
+      .then(res => {
+        console.log('res: ', res);
+      })
+      .catch(err => {
+        console.log('err: ', err);
+      });
+  } catch (e) {
+    console.log('e: 11111', e);
+  }
 };
-
+function getAbsoluteMonths(momentDate) {
+  var months = Number(momentDate.format('MM'));
+  var years = Number(momentDate.format('YYYY'));
+  return months + years * 12;
+}
 export const stopScheduleTask = async task => {
   try {
     let res = await BackgroundFetch.stop(task);
-  } catch (e) { }
+  } catch (e) {}
 };
 export const onBackgroundFetchEvent = async taskId => {
+  console.log('taskId: ', taskId);
   try {
     let end = new Date();
     let start = new Date();
     end.setDate(end.getDate() + 1);
     let step = await getSteps(start, end);
-
+    console.log('step: ', step);
     let today = moment();
     let resultSteps = await getResultSteps();
+    console.log('resultSteps: ', resultSteps);
 
     switch (taskId) {
       case autoChange:
@@ -138,31 +132,47 @@ export const onBackgroundFetchEvent = async taskId => {
     if (taskId === 'react-native-background-fetch') {
       // Test initiating a #scheduleTask when the periodic fetch event is received.
       let auto = await getAutoChange();
-
+      console.log('auto: ', auto);
       if (auto == undefined || auto == null) {
         await scheduleTask(autoChange);
         setAutoChange(true);
       }
     }
-  } catch (e) {}
+  } catch (e) {
+    console.log('e: aaaaaaaaaaaaaaaaaaa', e);
+  }
   // Required: Signal completion of your task to native code
   // If you fail to do this, the OS can terminate your app
   // or assign battery-blame for consuming too much background-time
   BackgroundFetch.finish(taskId);
 };
-function diff_minutes(date2, date1) {
-  var diff = (date2.getTime() - date1.getTime()) / 1000;
-  return Math.abs(Math.round(diff));
-}
 const StepCount = ({props, intl, navigation}) => {
-  const subscription = useRef();
   const {formatMessage} = intl;
 
+  const data = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+    datasets: [
+      {
+        data: [20, 45, 28, 80, 99, 43],
+        color: (opacity = 1) => `#fe4358`, // optional
+        strokeWidth: 2, // optional
+      },
+    ],
+  };
   const [time, setTime] = useState([]);
+  const chartConfig = {
+    backgroundGradientFrom: '#fff',
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: '#fff',
+    backgroundGradientToOpacity: 0.5,
+    color: (opacity = 1) => `#fe4358`,
+    strokeWidth: 2, // optional, default 3
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false, // optional
+  };
   const [countStep, setCountStep] = useState(null);
   const [countRest, setCountRest] = useState(0);
   const [countCarlo, setCountCarlo] = useState(0);
-  const [countTime, setCountTime] = useState(0);
   const [distant, setDistant] = useState(0);
   const [totalCount, setTotalCount] = useState(10000);
   const permissions = [
@@ -180,7 +190,14 @@ const StepCount = ({props, intl, navigation}) => {
     },
   ];
   const [dataChart, setDataChart] = useState([]);
-
+  const xAxis = {
+    granularityEnabled: true,
+    granularity: 1,
+    // axisLineWidth: 3,
+    position: 'TOP',
+    labelCount: 7,
+    avoidFirstLastClipping: true,
+  };
   useEffect(() => {
     var end = new Date();
     end.setDate(end.getDate() + 1);
@@ -191,24 +208,21 @@ const StepCount = ({props, intl, navigation}) => {
     endLine.setDate(new Date().getDate() - 1);
     // let listDate = getListDate(start, end)
     resultSteps();
-    getStepCount();
-    // getPermission(
-    //   moment(start.getTime())
-    //     .format('YYYY-MM-DD')
-    //     .toString(),
-    //   moment(end.getTime())
-    //     .format('YYYY-MM-DD')
-    //     .toString(),
-    //   moment(startLine.getTime())
-    //     .format('YYYY-MM-DD')
-    //     .toString(),
-    //   moment(endLine.getTime())
-    //     .format('YYYY-MM-DD')
-    //     .toString(),
-    // );
-    return () => {
-      subscription.current && subscription.current.unsubscribe();
-    };
+
+    getPermission(
+      moment(start.getTime())
+        .format('YYYY-MM-DD')
+        .toString(),
+      moment(end.getTime())
+        .format('YYYY-MM-DD')
+        .toString(),
+      moment(startLine.getTime())
+        .format('YYYY-MM-DD')
+        .toString(),
+      moment(endLine.getTime())
+        .format('YYYY-MM-DD')
+        .toString(),
+    );
   }, []);
 
   const init = async () => {
@@ -231,10 +245,13 @@ const StepCount = ({props, intl, navigation}) => {
         status => {
           switch (status) {
             case BackgroundFetch.STATUS_RESTRICTED:
+              console.log('BackgroundFetch restricted');
               break;
             case BackgroundFetch.STATUS_DENIED:
+              console.log('BackgroundFetch denied');
               break;
             case BackgroundFetch.STATUS_AVAILABLE:
+              console.log('BackgroundFetch is enabled');
               break;
           }
         },
@@ -243,17 +260,19 @@ const StepCount = ({props, intl, navigation}) => {
       await BackgroundFetch.start();
       // setEnabled(value);
       // Load the list with persisted events.
-    } catch (error) {}
+    } catch (error) {
+      console.log('error: ', error);
+    }
   };
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
       if (!resultSteps) {
-        setResultSteps({ step: totalCount, date: new Date().getTime() });
+        setResultSteps({step: totalCount, date: new Date().getTime()});
       } else {
         setTotalCount(resultSteps.step);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   const getData = (start, end, startLine, endLine) => {
     // let listDate = getListDate(start, end);
@@ -271,6 +290,7 @@ const StepCount = ({props, intl, navigation}) => {
       let resAuth = await Fitness.isAuthorized(permissions);
       if (Platform.OS === 'android') {
         let res2 = await Fitness.subscribeToSteps();
+        console.log('res2: ', res2);
       }
       if (resAuth == true) {
         init();
@@ -279,6 +299,7 @@ const StepCount = ({props, intl, navigation}) => {
         // getData(start, end, startLine, endLine);
       }
     } catch (error) {
+      console.log('error: ', error);
       getPermission();
     }
   };
@@ -295,9 +316,8 @@ const StepCount = ({props, intl, navigation}) => {
     var valueDate = [];
     var valueTime = [];
     var total = 0;
-    Fitness.getSteps({ startDate: start, endDate: end })
+    Fitness.getSteps({startDate: start, endDate: end})
       .then(res => {
-        console.log('onGetStepLine res', res)
         if (res.length) {
           res.map(obj => {
             valueTime.push(moment(obj.endDate).format('MM/DD'));
@@ -336,43 +356,8 @@ const StepCount = ({props, intl, navigation}) => {
               endDate: end,
               quantity: 0,
             },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 0.5,
-            },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 0.7,
-            },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 0.2,
-            },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 0.5,
-            },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 1,
-            },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 1.001,
-            }, {
-              startDate: start,
-              endDate: end,
-              quantity: 1.00002,
-            },
           ];
           dataNull.map(obj => {
-            console.log('objobjobj', obj)
             valueTime.push(moment(obj.endDate).format('MM/DD'));
             valueDate.push({
               marker: obj.quantity,
@@ -405,78 +390,69 @@ const StepCount = ({props, intl, navigation}) => {
           setTime(valueTime);
         }
       })
-      .catch(err => { });
+      .catch(err => {});
   };
-  const getCount = async () => {
-    try {
-      let result = await getDistances();
+  const onGetSteps = (start, end) => {
+    Fitness.getSteps({
+      startDate: moment(start).toString(),
+      endDate: moment(end).toString(),
+    })
+      .then(res => {
+        if (res.length) {
+          var total = 0;
+          res.map(obj => {
+            total += obj.quantity;
+          });
+          setCountStep(numberWithCommas(total));
 
-      setCountRest(totalCount - (result.step || 0));
-      setDistant(parseFloat(result.distance / 1000, 2).toFixed(2));
-      setCountCarlo(parseInt(result.calories / 1000));
-      setCountTime(new Date(result.time).format('mm:ss'));
-      setCountStep(numberWithCommas(result.step || 0));
-    } catch (error) {}
+          setCountRest(totalCount - total);
+        } else {
+          setCountStep(0), setCountRest(totalCount - 0);
+        }
+      })
+      .catch(err => {});
   };
-  const getStepCount = async () => {
-    getCount();
-    subscription.current = accelerometer
-      .pipe(
-        map(({x, y, z}) => x + y + z),
-        filter(speed => speed > 20),
-      )
-      .subscribe(
-        async speed => {
-          try {
-            count++;
-
-            data.push({
-              step: count,
-              time: new Date().getTime(),
-              timeStart: new Date().getTime(),
+  const onGetStepsRealTime = (start, end) => {
+    setInterval(() => {
+      Fitness.getSteps({
+        startDate: moment(start).toString(),
+        endDate: moment(end).toString(),
+      })
+        .then(res => {
+          onGetCalories(start, end);
+          onGetDistances(start, end);
+          if (res.length) {
+            var total = 0;
+            res.map(obj => {
+              total += obj.quantity;
             });
-
-            if (timeout) clearTimeout(timeout);
-            timeout = setTimeout(async () => {
-              let step = (await getStepChange()) || [];
-              let step2 = step.filter(
-                e =>
-                  getTimeDate(e.time, new Date().getTime()) < 1 &&
-                  getTimeDate(e.time, new Date().getTime()) >= 0,
-              );
-
-              let data2 = [];
-              if (step2.length) {
-                data2 = data.map(item => {
-                  return {
-                    ...item,
-                    step: item.step + step2[step2.length - 1].step,
-                    timeEnd: new Date().getTime(),
-                  };
-                });
-              } else {
-                data2 = data.map(item => {
-                  return {
-                    ...item,
-                    timeEnd: new Date().getTime(),
-                  };
-                });
-              }
-              setStepChange(step.concat(step2).concat(data2));
-              data = [];
-              count = 0;
-              getCount();
-            }, 3000);
-          } catch (error) {
-            reject(error);
+            if (numberWithCommas(total) !== countStep) {
+              setCountStep(numberWithCommas(total));
+            }
+            if (countRest !== totalCount - total) {
+              setCountRest(totalCount - total);
+            }
+          } else {
+            setCountStep(0), setCountRest(totalCount - 0);
           }
-        },
-        error => {
-          reject(error);
-        },
-      );
+        })
+        .catch(err => {});
+    }, 3000);
   };
 
+  const onGetDistances = (start, end) => {
+    Fitness.getDistances({startDate: start, endDate: end})
+      .then(res => {
+        //
+        var total = 0;
+        res.map(obj => {
+          total += obj.quantity;
+        });
+        total = total / 1000;
+        setDistant(total.toFixed(1));
+      })
+      .catch(err => {});
+  };
   const addDays = (date, days = 1) => {
     var list = [];
     const result = new Date(date);
@@ -502,7 +478,7 @@ const StepCount = ({props, intl, navigation}) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
   const onGetCalories = (start, end) => {
-    Fitness.getCalories({ startDate: start, endDate: end })
+    Fitness.getCalories({startDate: start, endDate: end})
       .then(res => {
         //
         var total = 0;
@@ -511,12 +487,12 @@ const StepCount = ({props, intl, navigation}) => {
         });
         setCountCarlo(total);
       })
-      .catch(err => { });
+      .catch(err => {});
   };
   const onBack = () => {
     try {
       navigation.pop();
-    } catch (e) { }
+    } catch (e) {}
   };
   const onShowMenu = () => {
     navigation.openDrawer();
@@ -616,15 +592,15 @@ const StepCount = ({props, intl, navigation}) => {
             <Text style={styles.txData}>{countCarlo}</Text>
             <Text style={styles.txUnit}>{`kcal`}</Text>
           </View>
-          <View style={styles.viewImgData}>
+          {/* <View style={styles.viewImgData}>
             <Image
               style={styles.img}
               source={require('./images/ic_time.png')}
             />
 
-            <Text style={styles.txData}>{countTime}</Text>
+            <Text style={styles.txData}>{`50`}</Text>
             <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
-          </View>
+          </View> */}
         </View>
         <View style={styles.viewLineChart}>
           {(dataChart.length && <ChartLine data={dataChart} time={time} />) ||
@@ -677,7 +653,7 @@ const StepCount = ({props, intl, navigation}) => {
         style={styles.btnHistory}
         onPress={() =>
           navigation.navigate('stepHistory', {
-            dataHealth: { countStep, countRest, countCarlo, distant },
+            dataHealth: {countStep, countRest, countCarlo, distant},
           })
         }>
         <Text style={styles.txHistory}>
