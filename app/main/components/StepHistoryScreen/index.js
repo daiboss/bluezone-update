@@ -273,7 +273,7 @@ const StepCount = ({ props, intl, navigation, }) => {
 
             Fitness.getSteps({ startDate: start, endDate: end })
                 .then(res => {
-
+                    console.log(res)
                     if (res.length) {
                         try{
                         switch (type) {
@@ -283,7 +283,7 @@ const StepCount = ({ props, intl, navigation, }) => {
                                 // let total = 0;
                                 // let totalInMonth = 0
                                 res.map(obj => {
-
+                                    
                                     let endDate = obj?.endDate?.substring(0, 10)
                                     let startDate = obj?.startDate?.substring(0, 10)
                                     if (new Date(endDate).format('yyyy-MM-dd') == new Date().format('yyyy-MM-dd')) {
@@ -316,6 +316,7 @@ const StepCount = ({ props, intl, navigation, }) => {
                                         values: valueDate,
                                     },
                                 ];
+
                                 setDataChart(dataChart);
                             }
                                 break

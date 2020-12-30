@@ -7,6 +7,7 @@ import FastImage from 'react-native-fast-image';
 import ModalPickerHeight from '../../../../../base/components/ModalPickerHeight';
 import ModalPickerWeight from '../../../../../base/components/ModalPickerWeight';
 import ChartLine from '../ChartLine';
+import ChartLineV from '../ChartLineV';
 const SelectHeightOrWeight = ({
   intl,
   onSelected,
@@ -60,7 +61,7 @@ const SelectHeightOrWeight = ({
           </View>
         </View>
         {type == 'weight' && listProfile?.length ? (
-          <ChartLine data={listProfile} time={time} />
+          <ChartLineV data={listProfile} time={time} />
         ) : null}
       </View>
       {(error && <Text style={[styles.textError]}>{error}</Text>) || null}

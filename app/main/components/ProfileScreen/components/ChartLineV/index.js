@@ -12,8 +12,8 @@ import {
 import update from 'immutability-helper';
 import styles from './styles/index.css';
 import { LineChart } from 'react-native-charts-wrapper';
-import { red_bluezone, blue_bluezone } from '../../../../core/color';
-import { RFValue } from '../../../../const/multiscreen';
+import { red_bluezone, blue_bluezone } from '../../../../../core/color';
+import { RFValue } from '../../../../../const/multiscreen';
 
 import {
   VictoryChart, VictoryLine, VictoryTheme, VictoryGroup,
@@ -50,21 +50,18 @@ class ChartLine extends React.Component {
         avoidFirstLastClipping: true,
       },
       topLabel: null,
-      maxCounter:0,
       leftLabel: null,
       dataConvert :[]
     };
   }
   componentDidMount() {
-   const datanew = this.props.data[0]?.values.map((it,index)=>{   
+   const datanew = this.props.data[0]?.values.map((it,index)=>{
       return{
         ...it,
         x:index + 1
       }
     })
-    console.log('datanewdatanewdatanewdatanew',this.props)
-    const max = Math.max.apply(Math,datanew.map(i => i.y));
-    this.setState({dataConvert:datanew,maxCounter:max})
+  this.setState({dataConvert:datanew})
   }
 
   getLeftLabel = () => {
@@ -110,47 +107,15 @@ class ChartLine extends React.Component {
                 width: 30, height: 30,
                 position: 'absolute', bottom: -10, alignSelf: 'center'
               }}
-              source={require('../images/down-arrow.png')} />
+              source={require('../../../StepCountScreen/images/down-arrow.png')} />
           </View>
         }
-         <View style={{
-            position: 'absolute',
-            backgroundColor: '#FE4358',
-            zIndex: 1,
-            top: height*0.08,
-            // left: ,
-            alignSelf:'center',
-            paddingHorizontal: RFValue(10),
-            paddingVertical: RFValue(3),
-            borderWidth: 1,
-            borderRadius: 15, borderColor: 'red'
-          }}>
-            <Text style={{
-              color: 'white'
-            }}>10000</Text>
-            <Image
-              style={{
-                zIndex: -1,
-                width: 20, height: 20,
-                position: 'absolute', bottom: -8, alignSelf: 'center'
-              }}
-              source={require('../images/down-arrow.png')} />
-          </View>
-        <View style={{
-        height:1,width:width*0.76,
-        alignSelf:'center',
-        backgroundColor:'white',
-        position:'absolute',
-        top:height*0.12,
-        borderColor:'#FE4358',
-        borderWidth:1,borderStyle:'dashed',
-        borderRadius:1}}/>
 
         <VictoryChart
           // padding=""
-          height={RFValue(200)}
+          height={RFValue(220)}
           minDomain={{ y: 0 }}
-          maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter}}
+          maxDomain={{ y: 300 }}
           theme={VictoryTheme.material}
         >
           <Defs>
@@ -167,8 +132,6 @@ class ChartLine extends React.Component {
           <VictoryAxis
             //  crossAxis dependentAxis
             tickValues={this.props.time}
-            // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
-
             style={{
               grid: { stroke: ({ tick }) => '#C5C5C5' },
               axis: { stroke: 'none' },
@@ -179,17 +142,7 @@ class ChartLine extends React.Component {
 
           <VictoryGroup
             style={{ labels: { fill: 'none' } }}
-            data={this.state.dataConvert}
-            // data = {[
-            //   {x:1,y:3000},
-            //   {x:2,y:4000},
-            //   {x:3,y:5000},
-            //   {x:4,y:3000},
-            //   {x:5,y:6000},
-            //   {x:6,y:10000},
-            //   {x:7,y:3000},
-            // ]}
-            >
+            data={this.state.dataConvert}>
             <VictoryArea
               interpolation="natural"
               style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
@@ -220,7 +173,7 @@ class ChartLine extends React.Component {
                   fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358"
                 }
               }}
-              size={({ datum }) => datum.x === this.state?.valueX ? RFValue(9) : RFValue(6)}
+              size={({ datum }) => datum.x === this.state?.valueX ? 9 : 6}
               labels={() => null}
 
             />
@@ -236,7 +189,7 @@ class ChartLine extends React.Component {
                   fill: "#FE4358"
                 }
               }}
-              size={RFValue(6)}
+              size={6}
               labels={() => null}
 
               events={[{

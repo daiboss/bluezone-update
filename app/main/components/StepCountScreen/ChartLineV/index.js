@@ -49,7 +49,7 @@ class ChartLine extends React.Component {
 
     this.setState({
       xAxis: { ...this.state.xAxis, valueFormatter: this.props.time },
-    });
+    },() => console.log('ahahahaha',this.state.xAxis));
   }
 
   getDataChart = (dataCharts = []) => {
@@ -156,6 +156,7 @@ class ChartLine extends React.Component {
     }
   };
   render() {
+    console.log('dataChartCHart',this.state.data)
     return (
       <View style={styles.container}>
         <Text style={styles.txtYear}>{this.state.year}</Text>

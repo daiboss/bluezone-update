@@ -21,6 +21,7 @@ import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
+import { RFValue } from '../../../const/multiscreen';
 import message from '../../../core/msg/stepCount';
 import {injectIntl, intlShape} from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
@@ -38,6 +39,7 @@ import {
   getAutoChange,
 } from '../../../core/storage';
 import ChartLine from './ChartLine';
+import ChartLineW from './ChartLineV';
 import {
   ResultSteps,
   autoChange,
@@ -320,7 +322,7 @@ const StepCount = ({props, intl, navigation}) => {
       .then(res => {
         if (res.length) {
           res.map(obj => {
-            valueTime.push(moment(obj.endDate).format('MM/DD'));
+            valueTime.push(moment(obj.endDate).format('DD/MM'));
             valueDate.push({
               marker: obj.quantity,
               y: obj.quantity,
@@ -356,40 +358,40 @@ const StepCount = ({props, intl, navigation}) => {
               endDate: end,
               quantity: 0,
             },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 0.5,
-            },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 0.7,
-            },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 0.2,
-            },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 0.5,
-            },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 1,
-            },
-            {
-              startDate: start,
-              endDate: end,
-              quantity: 1.001,
-            },{
-              startDate: start,
-              endDate: end,
-              quantity: 1.00002,
-            },
+            // {
+            //   startDate: start,
+            //   endDate: end,
+            //   quantity: 0.5,
+            // },
+            // {
+            //   startDate: start,
+            //   endDate: end,
+            //   quantity: 0.7,
+            // },
+            // {
+            //   startDate: start,
+            //   endDate: end,
+            //   quantity: 0.2,
+            // },
+            // {
+            //   startDate: start,
+            //   endDate: end,
+            //   quantity: 0.5,
+            // },
+            // {
+            //   startDate: start,
+            //   endDate: end,
+            //   quantity: 1,
+            // },
+            // {
+            //   startDate: start,
+            //   endDate: end,
+            //   quantity: 1.001,
+            // },{
+            //   startDate: start,
+            //   endDate: end,
+            //   quantity: 1.00002,
+            // },
           ];
           dataNull.map(obj => {
             console.log('objobjobj',obj)
@@ -419,6 +421,7 @@ const StepCount = ({props, intl, navigation}) => {
               // },
             },
           ];
+          console.log('dataChartdataChart',dataChart)
 
           setDataChart(dataChart);
 
@@ -682,7 +685,7 @@ const StepCount = ({props, intl, navigation}) => {
                         onSelect={handleSelect}
                     /> */}
         </View>
-        <View style={styles.viewHeight} />
+        {/* <View style={styles.viewHeight} /> */}
       </ScrollView>
       <TouchableOpacity
         style={styles.btnHistory}

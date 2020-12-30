@@ -13,26 +13,26 @@
  */
 'use strict';
 
-import { StyleSheet } from 'react-native';
-import * as fontSize from '../../../../../core/fontSize';
-import { blue_bluezone, red_bluezone } from '../../../../../core/color';
-import { heightPercentageToDP } from '../../../../../core/utils/dimension';
+import {StyleSheet} from 'react-native';
+import * as fontSize from '../../../../../../core/fontSize';
+import {blue_bluezone, red_bluezone} from '../../../../../../core/color';
+import {heightPercentageToDP} from '../../../../../../core/utils/dimension';
 
 const styles = StyleSheet.create({
   container: {
+    // height:heightPercentageToDP(23),
     backgroundColor: '#FFF',
     borderTopWidth: 1,
     borderTopColor: '#00000030',
-    // paddingTop: 20,
+    paddingTop: 20,
   },
   chart: {
     height: heightPercentageToDP(20),
-    marginHorizontal: 10
   },
   txtYear: {
     fontSize: fontSize.normal,
     fontWeight: 'bold',
-    paddingBottom: 5
+    paddingBottom:5
   },
 });
 
