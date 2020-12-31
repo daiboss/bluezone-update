@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   View,
   SafeAreaView,
@@ -12,25 +12,27 @@ import {
 } from 'react-native';
 import Fitness from '@ovalmoney/react-native-fitness';
 // import { BarChart } from 'react-native-charts-wrapper';
-import {isIPhoneX} from '../../../core/utils/isIPhoneX';
+import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 
-import {Dimensions} from 'react-native';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import {ScrollView} from 'react-native-gesture-handler';
+import { Dimensions } from 'react-native';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { ScrollView } from 'react-native-gesture-handler';
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
 import BarChart from './BarChart';
 import message from '../../../core/msg/stepCount';
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
-import {useRoute} from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import dateUtils from 'mainam-react-native-date-utils';
 import BartChartHistory from './BarChart/BartChartHistory';
+import BarChartConvert from './BarChart/BarChartConvert';
 
-import {objectOf} from 'prop-types';
-Date.prototype.getWeek = function(dowOffset) {
+import { objectOf } from 'prop-types';
+import { DATA_STEPS } from './BarChart/data';
+Date.prototype.getWeek = function (dowOffset) {
   /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
 
   dowOffset = typeof dowOffset == 'int' ? dowOffset : 0; //default dowOffset to zero
@@ -42,7 +44,7 @@ Date.prototype.getWeek = function(dowOffset) {
       (this.getTime() -
         newYear.getTime() -
         (this.getTimezoneOffset() - newYear.getTimezoneOffset()) * 60000) /
-        86400000,
+      86400000,
     ) + 1;
   var weeknum;
   //if the year starts before the middle of a week
@@ -62,10 +64,14 @@ Date.prototype.getWeek = function(dowOffset) {
   return weeknum;
 };
 const screenWidth = Dimensions.get('window').width;
-const StepCount = ({props, intl, navigation}) => {
+const StepCount = ({ props, intl, navigation }) => {
   const route = useRoute();
 
-  const {formatMessage} = intl;
+  const { formatMessage } = intl;
+
+  const [maxDomain, setMaxDomain] = useState(10000)
+
+  const [widthChart, setWidthChart] = useState(screenWidth)
 
   const [selectDate, setSelectDate] = useState(true);
   const [selectWeek, setSelectWeek] = useState(false);
@@ -161,14 +167,14 @@ const StepCount = ({props, intl, navigation}) => {
           onGetDistances(start, end, type);
         } else {
           Fitness.requestPermissions(permissions)
-            .then(res => {})
-            .catch(err => {});
+            .then(res => { })
+            .catch(err => { });
         }
       })
       .catch(err => {
         Fitness.requestPermissions(permissions)
-          .then(res => {})
-          .catch(err => {});
+          .then(res => { })
+          .catch(err => { });
       });
     // Fitness.requestPermissions(permissions).then(res => {
     //     Fitness.getSteps({ startDate: '2020/12/01', endDate: '2020/12/03' }).then(res => {
@@ -198,79 +204,89 @@ const StepCount = ({props, intl, navigation}) => {
   const getDataChart = (data, type) => {
     let list = [];
     if (type == 'day') {
+      let currentDay = moment(new Date())
       list = data.map(item => ({
-        x: new Date(item.endDate).format('dd/MM'),
+        x: moment(item.startDate).isAfter(currentDay) ? 'Hôm nay' : moment(item.startDate).format('DD/MM'),
         y: Number(item.quantity),
       }));
     } else if (type == 'month') {
-      list = data
-        .map(item => item.startDate)
-        .filter((item, i, ar) => ar.indexOf(item) == i)
-        .map(obj => {
-          let newList = data.filter(item =>
-            moment(obj).isBetween(
-              moment(item.startDate).startOf('month'),
-              moment(item.startDate).endOf('month'),
-            ),
-          );
-          let step = newList.reduce((acc, item) => acc + item.quantity, 0);
-          let text = `Tháng ${moment(obj).format('MM')}`;
-          return {
-            x: text,
-            y: step,
-          };
-        });
+      let currentMonth = moment(new Date()).month();
+      const groups = data.reduce((acc, current) => {
+        const monthYear = moment(current.startDate).month();
+        if (!acc[monthYear]) {
+          acc[monthYear] = [];
+        }
+        acc[monthYear].push(current);
+        return acc;
+      }, {});
+
+      for (const [key, value] of Object.entries(groups)) {
+        let steps = value.reduce((t, v) => t + v.quantity, 0)
+        let label = `Tháng\n${key < currentMonth ? (parseInt(key) + 1) : 'này'}`
+        list.push({
+          x: label,
+          y: steps
+        })
+      }
     } else if (type == 'week') {
-      list = data
-        .map(item => item.startDate)
-        .filter((item, i, ar) => ar.indexOf(item) == i)
-        .map(obj => {
-          let newList = data.filter(item =>
-            moment(obj).isBetween(
-              moment(item.startDate).startOf('isoWeek'),
-              moment(item.startDate).endOf('isoWeek'),
-            ),
-          );
+      const groups = data.reduce((acc, current) => {
+        const yearWeek = moment(current.startDate).week();
+        if (!acc[yearWeek]) {
+          acc[yearWeek] = [];
+        }
+        acc[yearWeek].push(current);
+        return acc;
+      }, {});
 
-          let step = newList.reduce((acc, item) => acc + item.quantity, 0);
-
-          let start = moment(obj).startOf('isoWeek');
-          let end = moment(obj).endOf('isoWeek');
-          let isToday = moment(obj).isAfter(moment());
-          let text = `${start.format('DD')} - ${
-            isToday ? 'nay' : end.format('DD')
-          }\nT${start.format('MM')}`;
-          return {
-            x: text,
-            y: step,
-          };
-        });
+      let currentTime = moment(new Date());
+      for (const [key, value] of Object.entries(groups)) {
+        let steps = value.reduce((t, v) => t + v.quantity, 0)
+        let startWeek = moment(value[0].startDate).startOf('isoWeek')
+        let endWeek = moment(value[0].startDate).endOf('isoWeek')
+        let valueEnd = endWeek.isAfter(currentTime) ? 'nay' : `${endWeek.format('DD')}`
+        let label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
+        list.push({
+          x: label,
+          y: steps
+        })
+      }
     }
-
     return list;
-  };
+  }
+
   const onGetSteps = (start, end, type) => {
     try {
-      Fitness.getSteps({startDate: start, endDate: end})
-        .then(res => {
+      Fitness.getSteps({ startDate: start, endDate: end })
+        .then(ddd => {
+          let res = DATA_STEPS
           if (res.length) {
             try {
-              setDataChart(getDataChart(res, type));
-            } catch (e) {}
+              let listDataChart = getDataChart(res, type)
+              let max = Math.max.apply(Math, listDataChart.map(function (o) { return o.y; }))
+              setMaxDomain(max + 1000)
+              if (listDataChart.length <= 7) {
+                setWidthChart(screenWidth)
+              } else {
+                let tmp = (screenWidth - (type == 'month' ? 30 : type == 'day' ? 80 : 60)) / 6;
+                let widthTmp = tmp * (listDataChart.length - 1)
+                setWidthChart(widthTmp)
+              }
+              setDataChart(listDataChart);
+            } catch (e) { }
           }
         })
-        .catch(err => {});
-    } catch (e) {}
+        .catch(err => { });
+    } catch (e) { }
   };
   const onGetDistances = (start, end) => {
-    Fitness.getDistances({startDate: start, endDate: end})
+    Fitness.getDistances({ startDate: start, endDate: end })
       .then(res => {
         //
         var total = res.reduce((acc, obj) => acc + obj.quantity, 0);
         total = total / 1000;
         setDistant(total.toFixed(1));
       })
-      .catch(err => {});
+      .catch(err => { });
   };
   const addDays = (date, days = 1) => {
     var list = [];
@@ -296,31 +312,31 @@ const StepCount = ({props, intl, navigation}) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
   const onGetCalories = (start, end) => {
-    Fitness.getCalories({startDate: start, endDate: end})
+    Fitness.getCalories({ startDate: start, endDate: end })
       .then(res => {
         let total = res.reduce((acc, obj) => acc + obj.quantity, 0);
         setCountCarlo(total);
       })
-      .catch(err => {});
+      .catch(err => { });
   };
   const onBack = () => {
     try {
       navigation.pop();
-    } catch (e) {}
+    } catch (e) { }
   };
   const onShowMenu = () => {
     navigation.openDrawer();
   };
   const onGetStepsRealTime = (start, end, type) => {
     try {
-      Fitness.getSteps({startDate: start, endDate: end})
+      Fitness.getSteps({ startDate: start, endDate: end })
         .then(res => {
           if (res.length) {
             setDataChart(getDataChart(res, type));
           }
         })
-        .catch(err => {});
-    } catch (e) {}
+        .catch(err => { });
+    } catch (e) { }
   };
   const onGetDataBySelect = (start, end, maker) => {
     setCountStep(maker);
@@ -329,6 +345,18 @@ const StepCount = ({props, intl, navigation}) => {
     onGetCalories(start, end);
     onGetDistances(start, end);
   };
+
+  const renderChart = useMemo(() => {
+    if (dataChart.length) {
+      return (
+        <BarChartConvert
+          data={dataChart}
+          maxDomain={maxDomain}
+          widthChart={widthChart} />
+      )
+    }
+  }, [dataChart])
+
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -357,7 +385,7 @@ const StepCount = ({props, intl, navigation}) => {
           )) ||
             null} */}
 
-          {dataChart?.length ? <BartChartHistory data={dataChart} /> : null}
+          {renderChart}
         </View>
 
         <View style={styles.dataHealth}>
