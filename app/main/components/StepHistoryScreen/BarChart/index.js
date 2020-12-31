@@ -112,8 +112,6 @@ class ChartLine extends React.Component {
     
     let entry = event.nativeEvent;
     
-    
-
     if (entry == null) {
       this.setState({
         ...this.state,

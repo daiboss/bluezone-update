@@ -112,6 +112,7 @@ import ResultBmiScreen from './app/main/components/ProfileScreen/ResultBmiScreen
 
 // animation transaction
 import { TransitionSpecs, HeaderStyleInterpolators } from '@react-navigation/stack';
+import { Platform } from 'react-native';
 
 const MyTransition = {
   gestureDirection: 'horizontal',
@@ -139,7 +140,7 @@ const MyTransition = {
           {
             translateY: current.progress.interpolate({
               inputRange: [0, 1],
-              outputRange: [layouts.screen.height / 2 - 104, 0], // marginbottom = 27, height = 50
+              outputRange: Platform.OS == 'ios' ? [layouts.screen.height / 2 - 104, 0] : [layouts.screen.height / 2 - 64, 0], // marginbottom = 27, height = 50
             }),
           },
           {
