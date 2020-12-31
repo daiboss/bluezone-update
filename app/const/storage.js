@@ -46,3 +46,4 @@ export const autoChange = 'com.bluezone.autoChange';
 export const realtime = 'com.bluezone.realtime';
 export const notiStep = 'com.bluezone.notiStep';
 export const weightWarning = 'com.bluezone.weight';
+export const stepChange = 'com.bluezone.stepChange';
