@@ -257,8 +257,8 @@ const StepCount = ({ props, intl, navigation }) => {
   const onGetSteps = (start, end, type) => {
     try {
       Fitness.getSteps({ startDate: start, endDate: end })
-        .then(ddd => {
-          let res = DATA_STEPS
+        .then(res => {
+          // let res = DATA_STEPS
           if (res.length) {
             try {
               let listDataChart = getDataChart(res, type)

@@ -75,7 +75,6 @@ const BarChartConvert = ({
                     animate={{
                         duration: 1000,
                         onLoad: { duration: 1000 },
-                        animationWhitelist: ["style", "data"],
                     }}
                 >
                     <VictoryAxis
