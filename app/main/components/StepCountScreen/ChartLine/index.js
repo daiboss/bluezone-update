@@ -86,6 +86,10 @@ class ChartLine extends React.Component {
     }
   }
   render() {
+    const xOffsets = [50, 100,150,200,250,300,350];
+    const colors = ["black", "red", "blue"];
+    const tickPadding = [ 0, 0, -15 ];
+const anchors = ["end", "end", "start"];
     return (
       <View style={styles.container}>
         <Text style={styles.txtYear}>{this.state.year}</Text>
@@ -151,7 +155,7 @@ class ChartLine extends React.Component {
           height={RFValue(200)}
           minDomain={{ y: 0 }}
           maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter}}
-          theme={VictoryTheme.material}
+          // theme={VictoryTheme.material}
         >
           <Defs>
             <LinearGradient id="gradientStroke"
@@ -168,14 +172,32 @@ class ChartLine extends React.Component {
             //  crossAxis dependentAxis
             tickValues={this.props.time}
             // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
-
+            // offsetX={this.props.time.map((d,i) => xOffsets[i])}
             style={{
-              grid: { stroke: ({ tick }) => '#C5C5C5' },
+              grid: { stroke:  '#C5C5C5',strokeWidth:0.5},
               axis: { stroke: 'none' },
               tickLabels: { fill: "black" }
             }}
             orientation="top"
           />
+            {/* {this.props.time.map((d, i) => (
+            <VictoryAxis
+            dependentAxis
+              key={i}
+              offsetX={xOffsets[i]}
+              style={{
+            
+                // axis: { stroke: colors[i] },
+                // ticks: { padding: tickPadding[i] },
+                // tickLabels: { fill: colors[i], textAnchor: anchors[i] }
+              }}
+              // Use normalized tickValues (0 - 1)
+              tickValues={[]}
+              // orientation="top"
+              // Re-scale ticks by multiplying by correct maxima
+            />
+          ))} */}
+
 
           <VictoryGroup
             style={{ labels: { fill: 'none' } }}
@@ -252,7 +274,8 @@ class ChartLine extends React.Component {
                             topLabel: props.y,
                             leftLabel: props.x,
                             value: JSON.stringify(props.datum.y),
-                            valueX: props?.datum?.x
+                            valueX: props?.datum?.x,
+                            // year: props?.datum?.year
                           })
                         }
                       }

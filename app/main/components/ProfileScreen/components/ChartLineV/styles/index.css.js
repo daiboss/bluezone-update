@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderTopWidth: 1,
     borderTopColor: '#00000030',
-    paddingTop: 20,
+    // paddingTop: 20,
   },
   chart: {
     height: heightPercentageToDP(20),

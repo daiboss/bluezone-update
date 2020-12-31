@@ -55,6 +55,7 @@ class ChartLine extends React.Component {
     };
   }
   componentDidMount() {
+    console.log('parammrmarmamra',this.props)
    const datanew = this.props.data[0]?.values.map((it,index)=>{
       return{
         ...it,
@@ -66,25 +67,21 @@ class ChartLine extends React.Component {
 
   getLeftLabel = () => {
     const value = this.state?.value?.length
+    console.log('topLabelbaelbel',this.state.leftLabel,value)
+
     if (value == 1) {
-      return this.state.leftLabel - width * 0.04
+      return this.state.leftLabel - width * 0.12
     }
     if (value == 2) {
-      return this.state.leftLabel - width * 0.05
+      return this.state.leftLabel - width * 0.138
     }
     if (value == 3) {
-      return this.state.leftLabel - width * 0.055
-    }
-    if (value == 4) {
-      return this.state.leftLabel - width * 0.07
-    }
-    if (value == 5) {
-      return this.state.leftLabel - width * 0.08
+      return this.state.leftLabel - width * 0.15
     }
   }
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container,]}>
         <Text style={styles.txtYear}>{this.state.year}</Text>
         {this.state.topLabel && this.state.leftLabel &&
           <View style={{
@@ -112,11 +109,12 @@ class ChartLine extends React.Component {
         }
 
         <VictoryChart
+        style={{parent:{alignSelf:'center'}}}
           // padding=""
           height={RFValue(220)}
-          minDomain={{ y: 0 }}
+          // minDomain={{ y: 0 }}
           maxDomain={{ y: 300 }}
-          theme={VictoryTheme.material}
+          // theme={VictoryTheme.material}
         >
           <Defs>
             <LinearGradient id="gradientStroke"
@@ -132,6 +130,8 @@ class ChartLine extends React.Component {
           <VictoryAxis
             //  crossAxis dependentAxis
             tickValues={this.props.time}
+            // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
+
             style={{
               grid: { stroke: ({ tick }) => '#C5C5C5' },
               axis: { stroke: 'none' },
@@ -142,7 +142,17 @@ class ChartLine extends React.Component {
 
           <VictoryGroup
             style={{ labels: { fill: 'none' } }}
-            data={this.state.dataConvert}>
+            data={this.state.dataConvert}
+            //    data = {[
+            //   {x:1,y:65},
+            //   {x:2,y:67},
+            //   {x:3,y:1},
+            //   {x:4,y:69},
+            //   {x:5,y:68},
+            //   {x:6,y:66},
+            //   {x:7,y:300},
+            // ]}
+            >
             <VictoryArea
               interpolation="natural"
               style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
@@ -205,7 +215,8 @@ class ChartLine extends React.Component {
                             topLabel: props.y,
                             leftLabel: props.x,
                             value: JSON.stringify(props.datum.y),
-                            valueX: props?.datum?.x
+                            valueX: props?.datum?.x,
+                            year: props?.datum?.year
                           })
                         }
                       }
