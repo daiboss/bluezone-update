@@ -240,7 +240,7 @@ const StepCount = ({props, intl, navigation}) => {
       let data = step
         .map(item => item.time)
         .filter((item, i, arr) => arr.indexOf(item) == i)
-        .map(item => {
+        .map((item,index) => {
           let newList = step.filter(e => e.time == item);
 
           let value = newList.reduce(
@@ -250,9 +250,12 @@ const StepCount = ({props, intl, navigation}) => {
           return {
             x: item,
             y: value,
-            label: value,
+            // label: value,
           };
         });
+      const times = data.map(it => it.x)
+      console.log('datadatadatadatadata',times)
+      setTime(times)
       setDataChart(data);
     } catch (error) {}
   };
@@ -417,7 +420,7 @@ const StepCount = ({props, intl, navigation}) => {
           </View>
         </View>
         <View style={styles.viewLineChart}>
-          {(dataChart.length && <ChartLine data={dataChart} />) || null}
+          {(dataChart.length && <ChartLineV data={dataChart} time = {time} />) || null}
           {/* <LineChart style={styles.chart}
                         data={dataChart}
                         style={styles.chart}
