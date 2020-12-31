@@ -63,8 +63,8 @@ class ChartLine extends React.Component {
         x:index + 1
       }
     })
+    console.log('datanewdatanewdatanewdatanew',datanew)
     const max = Math.max.apply(Math,datanew.map(i => i.y));
-    console.log('datanewdatanewdatanewdatanew',max)
     this.setState({dataConvert:datanew,maxCounter:max})
   }
 
@@ -146,8 +146,8 @@ class ChartLine extends React.Component {
         borderColor:'#FE4358',
         borderWidth:1,borderStyle:'dashed',
         borderRadius:1}}/>
-
-        <VictoryChart
+<Svg>
+<VictoryChart
           // padding=""
           height={RFValue(200)}
           minDomain={{ y: 0 }}
@@ -219,7 +219,6 @@ class ChartLine extends React.Component {
               }}
               size={({ datum }) => datum.x === this.state?.valueX ? RFValue(9) : RFValue(6)}
               labels={() => null}
-
             />
             <VictoryScatter
               style={{
@@ -244,7 +243,6 @@ class ChartLine extends React.Component {
                       {
                         target: "data",
                         mutation: (props) => {
-                          console.log('propsosoossoos', props)
                           this.setState({
                             topLabel: props.y,
                             leftLabel: props.x,
@@ -265,6 +263,8 @@ class ChartLine extends React.Component {
 
 
         </VictoryChart>
+</Svg>
+        
       </View>
     );
   }
