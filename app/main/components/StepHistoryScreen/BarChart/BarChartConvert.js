@@ -4,9 +4,10 @@ import {
     VictoryChart,
     VictoryBar,
     VictoryTheme,
-    VictoryAxis
+    VictoryAxis,
+    VictoryLabel
 } from 'victory-native'
-import moment from 'moment'
+import { DATA_STEPS } from './data'
 import { red_bluezone } from '../../../../core/color';
 
 const { width, height } = Dimensions.get('screen')
@@ -47,7 +48,7 @@ const BarChartConvert = ({
                 datum: tmpList[tmpList.length - 1]
             })
         }
-    }, [data, time])
+    }, [data])
 
     useEffect(() => {
         if (dataChart.length <= 7) {
@@ -67,15 +68,15 @@ const BarChartConvert = ({
     }, [selectedEntry])
 
     useEffect(() => {
-        if (refScroll.current) {
-            scrollToEnd()
-        }
-    }, [widthChart, dataChart, maxDomain, refScroll])
+        scrollToEnd()
+    }, [widthChart, dataChart])
 
     const scrollToEnd = () => {
-        setTimeout(() => {
-            refScroll.current.scrollToEnd()
-        }, 1000)
+        if (refScroll.current) {
+            setTimeout(() => {
+                refScroll.current.scrollToEnd()
+            }, 1000)
+        }
     }
 
     const clickEntry = (entry) => {
@@ -92,7 +93,10 @@ const BarChartConvert = ({
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             {
                 loadingData &&
-                <View style={{ position: 'absolute' }}><ActivityIndicator color={'#f66'} /></View>
+                <View style={{
+                    position: 'absolute',
+                    zIndex: 999
+                }}><ActivityIndicator color={'#f66'} /></View>
             }
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
@@ -101,17 +105,13 @@ const BarChartConvert = ({
                 showsVerticalScrollIndicator={false} >
 
                 <VictoryChart
-                    domainPadding={1}
-                    sharedEvents={(e) => console.log('e', e)}
                     width={widthChart}
                     domain={{ y: [0, maxDomain] }}
                     padding={{ left: 40, right: 40, top: 50, bottom: 50 }}
                 >
                     <VictoryAxis
                         theme={VictoryTheme.material}
-                        // standalone={false}
                         orientation="top"
-                        active={false}
                         style={{
                             axis: {
                                 stroke: "none",
@@ -133,7 +133,7 @@ const BarChartConvert = ({
                                 fill: (e) => {
                                     return e?.index == selectedEntry?.index ? red_bluezone : '#a1a1a1'
                                 },
-                            }
+                            },
                         }}
                     />
                     <VictoryBar
@@ -169,7 +169,6 @@ const BarChartConvert = ({
                             bottom: () => 7,
                             top: () => 7
                         }}
-                    // standalone={false}
                     />
                 </VictoryChart>
             </ScrollView>

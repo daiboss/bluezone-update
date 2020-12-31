@@ -214,7 +214,6 @@ const StepCount = ({ props, intl, navigation, }) => {
     };
     const getDataHealth = (start, end, type) => {
 
-
         Fitness.isAuthorized(permissions)
             .then(res => {
 
@@ -270,6 +269,7 @@ const StepCount = ({ props, intl, navigation, }) => {
         });
     };
     const onGetSteps = (start, end, type) => {
+        setIsLoading(true)
 
 
         try {
@@ -320,6 +320,7 @@ const StepCount = ({ props, intl, navigation, }) => {
                                         },
                                     ];
                                     setDataChart(dataChart);
+                                    setIsLoading(false)
                                 }
                                     break
                                 case 'week': {
@@ -363,6 +364,7 @@ const StepCount = ({ props, intl, navigation, }) => {
                                     ];
                                     setTime(valueTime);
                                     setDataChart(dataChart);
+                                    setIsLoading(false)
                                 }
                                     break
                                 case 'month': {
@@ -417,7 +419,7 @@ const StepCount = ({ props, intl, navigation, }) => {
                                     ];
                                     setDataChart(dataChart);
                                     setTime(valueTime);
-
+                                    setIsLoading(false)
                                 }
 
                                     break
@@ -472,7 +474,7 @@ const StepCount = ({ props, intl, navigation, }) => {
 
                 });
         } catch (e) {
-
+            setIsLoading(false)
 
 
         }
@@ -554,6 +556,9 @@ const StepCount = ({ props, intl, navigation, }) => {
     const onShowMenu = () => {
         navigation.openDrawer();
     };
+
+    const [isLoading, setIsLoading] = useState(false)
+
     const onGetStepsRealTime = (start, end) => {
 
 
@@ -631,7 +636,7 @@ const StepCount = ({ props, intl, navigation, }) => {
                                             ? 'nay' :
                                             new Date(arr[arr.length - 1].endDate?.substring(0, 10)).format('dd')
                                         let month = new Date(arr[0].startDate?.substring(0, 10)).format('MM')
-                                        valueTime.push(`${from}-${to}\nT${month}`)
+                                        valueTime.push(`${from} - ${to}\nT${month}`)
 
                                         valueDate.push({
                                             marker: totalInWeek,
@@ -806,10 +811,12 @@ const StepCount = ({ props, intl, navigation, }) => {
                     {/* {(dataChart.length && <BarChart onGetDataBySelect={(start, end, marker) => onGetDataBySelect(start, end, marker)} data={dataChart} time={time} />) ||
                         null} */}
 
-                    <BarChartConvert
+                    {(dataChart.length && <BarChartConvert
+                        loadingData={isLoading}
                         onGetDataBySelect={(start, end, marker) => onGetDataBySelect(start, end, marker)}
                         data={dataChart}
-                        time={time} />
+                        time={time} />) || null
+                    }
                     {/* <BarChart style={styles.chart}
                         data={dataChart}
                         style={styles.chart}
