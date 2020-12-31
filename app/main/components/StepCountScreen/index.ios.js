@@ -263,12 +263,10 @@ const StepCount = ({props, intl, navigation}) => {
           let data = res.map((obj,index) => ({
             x: obj.quantity,
             y: obj.quantity,
-            // label: new Date(obj.startDate).format('dd/MM')
           }));
           let timeLine = res.map(obj => {
             return new Date(obj.startDate).format('dd/MM')
           })
-          console.log('timeLinetimeLinetimeLinetimeLinetimeLine',timeLine)
           setDataChart(data);
           setTime(timeLine)
         } else {
