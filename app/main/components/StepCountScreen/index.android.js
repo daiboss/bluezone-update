@@ -39,6 +39,7 @@ import {
   getStepChange,
 } from '../../../core/storage';
 import ChartLine from './ChartLine';
+import ChartLineV from './ChartLineV';
 import {
   ResultSteps,
   autoChange,
