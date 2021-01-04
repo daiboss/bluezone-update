@@ -146,7 +146,8 @@ const SettingScreen = ({ intl, navigation }) => {
   const getListShortcut = () => {
     MyShortcut.GetAllShortcut({
       onDone: shortcuts => {
-        if (shortcuts.length > 0) {
+        // console.log('shortcutsshortcuts', JSON.parse(shortcuts))
+        if (shortcuts.toString().length > 2) {
           Toast.show('Đã thêm lối tắt vào màn hình chính', Toast.SHORT);
         } else {
           showAlertAddShortcut()

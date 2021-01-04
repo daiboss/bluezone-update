@@ -44,7 +44,8 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getAllShortcut(final Callback onDone, final Callback onCancel) {
         if (Build.VERSION.SDK_INT < 26) {
-            onCancel.invoke(null);
+            HashMap<String, String> shortcutMap = new HashMap<>();
+            onDone.invoke(shortcutMap);
 
         } else {
             List<ShortcutInfo> shortcuts = getReactApplicationContext().getSystemService(ShortcutManager.class)
