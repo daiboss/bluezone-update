@@ -49,8 +49,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="mic.bluezone" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
                 <data android:host="bluezone" />
             </intent-filter>
       </activity>

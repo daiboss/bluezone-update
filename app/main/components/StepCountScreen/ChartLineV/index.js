@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AppRegistry,
   StyleSheet,
@@ -43,22 +43,22 @@ class ChartLine extends React.Component {
         avoidFirstLastClipping: true,
       },
       topLabel: null,
-      maxCounter:0,
+      maxCounter: 0,
       leftLabel: null,
-      dataConvert :[]
+      dataConvert: []
     };
   }
   componentDidMount() {
-    console.log('propsopropsopropsorps',this.props)
-   const datanew = this.props.data.map((it,index)=>{   
-      return{
+    console.log('propsopropsopropsorps', this.props)
+    const datanew = this.props.data.map((it, index) => {
+      return {
         ...it,
-        x:index + 1
+        x: index + 1
       }
     })
-    console.log('datanewdatanewdatanewdatanew',datanew)
-    const max = Math.max.apply(Math,datanew.map(i => i.y));
-    this.setState({dataConvert:datanew,maxCounter:max})
+    console.log('datanewdatanewdatanewdatanew', datanew)
+    const max = Math.max.apply(Math, datanew.map(i => i.y));
+    this.setState({ dataConvert: datanew, maxCounter: max })
   }
 
   getLeftLabel = () => {
@@ -80,7 +80,7 @@ class ChartLine extends React.Component {
     }
   }
   render() {
-    console.log('hehehehehe',height)
+    console.log('hehehehehe', height)
     return (
       <View style={styles.container}>
         <Text style={styles.txtYear}>{this.state.year}</Text>
@@ -108,45 +108,46 @@ class ChartLine extends React.Component {
               source={require('../images/down-arrow.png')} />
           </View>
         }
-         <View style={{
-            position: 'absolute',
-            backgroundColor: '#FE4358',
-            zIndex: 1,
-            top: height*0.08,
-            // left: ,
-            alignSelf:'center',
-            paddingHorizontal: RFValue(10),
-            paddingVertical: RFValue(3),
-            borderWidth: 1,
-            borderRadius: 15, borderColor: 'red'
-          }}>
-            <Text style={{
-              color: 'white'
-            }}>{this.props.totalCount}</Text>
-            <Image
-              style={{
-                zIndex: -1,
-                width: RFValue(20), height: RFValue(20),
-                position: 'absolute', bottom: RFValue(-8), alignSelf: 'center'
-              }}
-              source={require('../images/down-arrow.png')} />
-          </View>
         <View style={{
-        height:1,width:width*0.76,
-        alignSelf:'center',
-        backgroundColor:'white',
-        position:'absolute',
-        top:height*0.12,
-        borderColor:'#FE4358',
-        borderWidth:1,borderStyle:'dashed',
-        borderRadius:1}}/>
-<Svg>
-<VictoryChart
+          position: 'absolute',
+          backgroundColor: '#FE4358',
+          zIndex: 1,
+          top: height * 0.08,
+          // left: ,
+          alignSelf: 'center',
+          paddingHorizontal: RFValue(10),
+          paddingVertical: RFValue(3),
+          borderWidth: 1,
+          borderRadius: 15, borderColor: 'red'
+        }}>
+          <Text style={{
+            color: 'white'
+          }}>{this.props.totalCount}</Text>
+          <Image
+            style={{
+              zIndex: -1,
+              width: RFValue(20), height: RFValue(20),
+              position: 'absolute', bottom: RFValue(-8), alignSelf: 'center'
+            }}
+            source={require('../images/down-arrow.png')} />
+        </View>
+        <View style={{
+          height: 1, width: width * 0.76,
+          alignSelf: 'center',
+          backgroundColor: 'white',
+          position: 'absolute',
+          top: height * 0.12,
+          borderColor: '#FE4358',
+          borderWidth: 1, borderStyle: 'dashed',
+          borderRadius: 1
+        }} />
+        {/* <Svg> */}
+        <VictoryChart
           // padding=""
           height={RFValue(200)}
           minDomain={{ y: 0 }}
-          maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter}}
-          // theme={VictoryTheme.material}
+          maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
+        // theme={VictoryTheme.material}
         >
           <Defs>
             <LinearGradient id="gradientStroke"
@@ -159,42 +160,60 @@ class ChartLine extends React.Component {
               <Stop offset="70%" stopColor="#FE4358" stopOpacity="0.1" />
             </LinearGradient>
           </Defs>
-       
+
+
+
           <VictoryAxis
             // tickValues={this.props.time}
-            tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
+            tickValues={['10/11', '11/11', '12/11', '13/11', '14/11', '15/11', '16/11']}
 
             style={{
-              grid: { stroke: ({tick,index}) => this.state.valueX == index + 1 ? '#FE4358' : 'gray' ,strokeWidth:0.5},
+              grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
               axis: { stroke: 'none' },
-              tickLabels: { fill:({tick,index}) => this.state.valueX == index + 1 ? '#FE4358' : 'black'}
+              tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'black' }
             }}
             orientation="top"
           />
-          
+
+
+          <VictoryAxis
+            theme={VictoryTheme.material}
+            standalone
+            key='axis-target'
+            dependentAxis
+            tickFormat={() => ''}
+            tickValues={[100000]}
+            style={{
+              axis: { stroke: "none" },
+              grid: { stroke: ({ tick }) => 'blue' },
+            }}
+          />
+
+
           <VictoryGroup
             style={{ labels: { fill: 'none' } }}
             // data={this.state.dataConvert}
-            data = {[
-              {x:1,y:3000},
-              {x:2,y:4000},
-              {x:3,y:5000},
-              {x:4,y:3000},
-              {x:5,y:6000},
-              {x:6,y:10000},
-              {x:7,y:3000},
+            data={[
+              { x: 1, y: 3000 },
+              { x: 2, y: 4000 },
+              { x: 3, y: 5000 },
+              { x: 4, y: 3000 },
+              { x: 5, y: 6000 },
+              { x: 6, y: 10000 },
+              { x: 7, y: 3000 },
             ]}
-            >
+          >
             <VictoryArea
               interpolation="natural"
               style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
             // data={sampleData}
             />
+
             <VictoryLine
-             animate={{
-              duration: 1000,
-              onLoad: { duration: 1000 }
-            }}
+              animate={{
+                duration: 1000,
+                onLoad: { duration: 1000 }
+              }}
               interpolation="natural"
               style={{
                 data: { stroke: "#FE4358" },
@@ -256,14 +275,14 @@ class ChartLine extends React.Component {
               }]}
 
             />
-      
+
 
           </VictoryGroup>
 
 
         </VictoryChart>
-</Svg>
-        
+        {/* </Svg> */}
+
       </View>
     );
   }

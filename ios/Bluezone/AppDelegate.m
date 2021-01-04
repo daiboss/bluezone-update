@@ -15,7 +15,6 @@
 #import "RNFirebaseNotifications.h"
 #import "RNFirebaseMessaging.h"
 #import <TSBackgroundFetch/TSBackgroundFetch.h>
-#import <React/RCTLinkingManager.h>
 
 
 @implementation AppDelegate

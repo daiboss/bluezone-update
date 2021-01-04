@@ -434,6 +434,7 @@ const StepCount = ({props, intl, navigation}) => {
         <View style={styles.viewLineChart}>
           {(dataChart.length && <ChartLineV data={dataChart} time={time} />) ||
             null}
+            <ChartLineV data={dataChart} time={time} />
         </View>
         {/* <View style={styles.viewHeight} /> */}
       </ScrollView>

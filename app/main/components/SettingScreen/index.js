@@ -145,7 +145,6 @@ const SettingScreen = ({ intl, navigation }) => {
   const getListShortcut = () => {
     RNAddShortcuts.GetDynamicShortcuts({
       onDone: shortcuts => {
-        console.log('Shortcuts: ' + shortcuts, shortcuts.length);
         if (shortcuts.length > 0) {
           Toast.show('Đã thêm lối tắt vào màn hình chính', Toast.SHORT);
         } else {
