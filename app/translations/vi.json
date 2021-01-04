@@ -291,10 +291,13 @@
     "bluezone.settings.stepTarget": "Số bước mục tiêu",
     "bluezone.settings.showNotification ": "Hiển thị thông báo",
     "bluezone.settings.enterStepTarget": "Bạn vui lòng nhập số bước mục tiêu",
-    "bluezone.settings.stepRecommends": "Bộ y tế khuyến cáo nên đi bộ 10000 bước mỗi ngày",
+    "bluezone.settings.stepRecommends": "Bộ y tế khuyến cáo nên đi bộ",
     "bluezone.settings.allowStep": "Cho phép gửi thông báo để Bluezone thông báo số bước chân của bạn hàng ngày.",
     "bluezone.settings.allowSendNotifications": "`Bluezone` Muốn gửi thông báo cho bạn",
     "bluezone.settings.completeTarget": "Cảnh báo hoàn thành mục tiêu",
     "bluezone.settings.youHave": "Bạn còn",
-    "bluezone.settings.stepToAccomplish": "bước để hoàn thành mục tiêu ngày hôm nay"
+    "bluezone.settings.stepToAccomplish": "bước để hoàn thành mục tiêu ngày hôm nay",
+    "bluezone.settings.step": "bước",
+    "bluezone.settings.stepADay": "bước mỗi ngày",
+    "bluezone.settings.save": "Lưu"
 }

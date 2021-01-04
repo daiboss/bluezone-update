@@ -47,6 +47,7 @@ import {
   QuestionFAQ,
   Profile,
   ResultSteps,
+  ResultStepsTarget,
   autoChange,
   realtime,
   notiStep,
@@ -241,7 +242,7 @@ const multiGet = async keys => {
   const _keys = await AsyncStorage.multiGet(keys);
   const result = {};
   _keys.forEach(item => {
-    Object.assign(result, {[item[0]]: _processOutput(item[1])});
+    Object.assign(result, { [item[0]]: _processOutput(item[1]) });
   });
 
   return result;
@@ -320,7 +321,7 @@ const setResultSteps = (value = '') => {
 const setEvents = async data => {
   try {
     return AsyncStorage.setItem(EVENTS_KEY, JSON.stringify(data));
-  } catch (e) {}
+  } catch (e) { }
 };
 
 const getEvents = async () => {
@@ -329,7 +330,7 @@ const getEvents = async () => {
     if (value !== null) {
       return JSON.parse(value);
     }
-  } catch (e) {}
+  } catch (e) { }
   return Promise.resolve(null);
 };
 const getTimestamp = () =>
@@ -375,10 +376,10 @@ const getStepsTotal = async (start, end) => {
       } else {
         let resultNew = totalStep - (20 / 100) * (totalStep - step);
 
-        setResultSteps({step: parseInt(resultNew), date: new Date().getTime()});
+        setResultSteps({ step: parseInt(resultNew), date: new Date().getTime() });
       }
     }
-  } catch (error) {}
+  } catch (error) { }
 };
 const getSteps = (start, end) => {
   return new Promise(async (resolve, reject) => {
@@ -393,7 +394,7 @@ const getSteps = (start, end) => {
       });
 
       let step = res.reduce((current, obj) => current + obj.quantity, 0);
-      resolve({step, data: res});
+      resolve({ step, data: res });
     } catch (error) {
       reject(error);
     }

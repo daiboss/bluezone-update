@@ -83,5 +83,17 @@ export default defineMessages({
         id: 'bluezone.settings.profile',
         defaultMessage: 'bluezone.settings.profile',
     },
+    steps: {
+        id: 'bluezone.settings.step',
+        defaultMessage: 'bluezone.settings.step'
+    },
+    stepsADay: {
+        id: 'bluezone.settings.stepADay',
+        defaultMessage: 'bluezone.settings.stepADay'
+    },
+    Save: {
+        id: 'bluezone.settings.save',
+        defaultMessage: 'bluezone.settings.save'
+    },
    
 })
