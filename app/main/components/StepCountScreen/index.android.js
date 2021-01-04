@@ -254,7 +254,8 @@ const StepCount = ({props, intl, navigation}) => {
           };
         });
       const times = data.map(it => it.x)
-      console.log('datadatadatadatadata',times)
+      // console.log('datadatadatadatadata',times)
+      console.log('datadatadatadataNgoai',data)
       setTime(times)
       setDataChart(data);
     } catch (error) {}
@@ -463,7 +464,7 @@ const StepCount = ({props, intl, navigation}) => {
                         onSelect={handleSelect}
                     /> */}
         </View>
-        <View style={styles.viewHeight} />
+        {/* <View style={styles.viewHeight} /> */}
       </ScrollView>
       <TouchableOpacity
         style={styles.btnHistory}
@@ -485,7 +486,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   viewLineChart: {
-    marginTop: 30,
+    // marginTop: 30,
   },
   container: {
     flex: 1,

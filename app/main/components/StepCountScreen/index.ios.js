@@ -259,14 +259,15 @@ const StepCount = ({props, intl, navigation}) => {
     Fitness.getSteps({startDate: start, endDate: end})
       .then(res => {
         if (res.length) {
-          res.pop()
+          // res.pop()
           let data = res.map((obj,index) => ({
             x: obj.quantity,
             y: obj.quantity,
           }));
-          let timeLine = res.map(obj => {
+          let timeLine = res.pop().map(obj => {
             return new Date(obj.startDate).format('dd/MM')
           })
+          data.pop()
           setDataChart(data);
           setTime(timeLine)
         } else {

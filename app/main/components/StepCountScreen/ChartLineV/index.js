@@ -25,13 +25,6 @@ const distanceToLoadMore = 10;
 const pageSize = 10;
 const { width, height } = Dimensions.get('window')
 
-export const CustomLabel = () => {
-  return (
-    <View style={{ width: 20, height: 20, backgroundColor: 'red' }}>
-      <Text>abc</Text>
-    </View>
-  )
-}
 class ChartLine extends React.Component {
   constructor(props) {
     super(props);
@@ -132,8 +125,8 @@ class ChartLine extends React.Component {
             <Image
               style={{
                 zIndex: -1,
-                width: 20, height: 20,
-                position: 'absolute', bottom: -8, alignSelf: 'center'
+                width: RFValue(20), height: RFValue(20),
+                position: 'absolute', bottom: RFValue(-8), alignSelf: 'center'
               }}
               source={require('../images/down-arrow.png')} />
           </View>
@@ -167,10 +160,12 @@ class ChartLine extends React.Component {
           </Defs>
           <VictoryAxis
             tickValues={this.props.time}
+            // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
+
             style={{
-              grid: { stroke:  '#C5C5C5',strokeWidth:0.5},
+              grid: { stroke: ({tick,index}) => this.state.valueX == index + 1 ? '#FE4358' : 'gray' ,strokeWidth:0.5},
               axis: { stroke: 'none' },
-              tickLabels: { fill: "black" }
+              tickLabels: { fill:({tick,index}) => this.state.valueX == index + 1 ? '#FE4358' : 'black'}
             }}
             orientation="top"
           />

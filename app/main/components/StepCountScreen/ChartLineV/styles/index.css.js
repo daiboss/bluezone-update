@@ -22,8 +22,6 @@ const styles = StyleSheet.create({
   container: {
     // height:heightPercentageToDP(23),
     backgroundColor: '#FFF',
-    borderTopWidth: 1,
-    borderTopColor: '#00000030',
   },
   chart: {
     height: heightPercentageToDP(20),
@@ -32,7 +30,7 @@ const styles = StyleSheet.create({
   txtYear: {
     fontSize: fontSize.normal,
     fontWeight: 'bold',
-    paddingBottom: 5
+    paddingBottom: 0
   },
 });
 

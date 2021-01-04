@@ -25,13 +25,6 @@ const distanceToLoadMore = 10;
 const pageSize = 10;
 const { width, height } = Dimensions.get('window')
 
-export const CustomLabel = () => {
-  return (
-    <View style={{ width: 20, height: 20, backgroundColor: 'red' }}>
-      <Text>abc</Text>
-    </View>
-  )
-}
 class ChartLine extends React.Component {
   constructor(props) {
     super(props);
@@ -107,9 +100,8 @@ class ChartLine extends React.Component {
               source={require('../../../StepCountScreen/images/down-arrow.png')} />
           </View>
         }
-
-        <VictoryChart
-        style={{parent:{alignSelf:'center'}}}
+  <Svg style={{height:RFValue(220),alignSelf:'center'}}>
+  <VictoryChart
           // padding=""
           height={RFValue(220)}
           // minDomain={{ y: 0 }}
@@ -131,11 +123,11 @@ class ChartLine extends React.Component {
             //  crossAxis dependentAxis
             tickValues={this.props.time}
             // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
-
+          
             style={{
-              grid: { stroke: ({ tick }) => '#C5C5C5' },
+              grid: { stroke: ({tick,index}) => this.state.valueX == index + 1 ? '#FE4358' : 'gray',strokeWidth:0.5 },
               axis: { stroke: 'none' },
-              tickLabels: { fill: "black" }
+              tickLabels: { fill:({tick,index}) => this.state.valueX == index + 1 ? '#FE4358' : 'black'}
             }}
             orientation="top"
           />
@@ -226,11 +218,10 @@ class ChartLine extends React.Component {
               }]}
 
             />
-
           </VictoryGroup>
-
-
         </VictoryChart>
+  </Svg>
+       
       </View>
     );
   }
