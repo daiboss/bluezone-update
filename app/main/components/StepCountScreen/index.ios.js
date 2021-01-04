@@ -12,6 +12,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import Fitness from '@ovalmoney/react-native-fitness';
 import {LineChart} from 'react-native-charts-wrapper';
 import {isIPhoneX} from '../../../core/utils/isIPhoneX';
@@ -223,6 +224,11 @@ const StepCount = ({props, intl, navigation}) => {
       // Load the list with persisted events.
     } catch (error) {}
   };
+  useFocusEffect(
+    React.useCallback(() => {
+      resultSteps();
+    }, [])
+  );
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
@@ -267,7 +273,7 @@ const StepCount = ({props, intl, navigation}) => {
           let timeLine = res.pop().map(obj => {
             return new Date(obj.startDate).format('dd/MM')
           })
-          data.pop()
+          data.length !== 0 && data.pop()
           setDataChart(data);
           setTime(timeLine)
         } else {

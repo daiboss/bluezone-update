@@ -14,6 +14,8 @@ import {
 } from 'react-native';
 import Fitness from '@ovalmoney/react-native-fitness';
 import {LineChart} from 'react-native-charts-wrapper';
+import { useFocusEffect } from '@react-navigation/native';
+
 import {isIPhoneX} from '../../../core/utils/isIPhoneX';
 import {Dimensions} from 'react-native';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
@@ -206,10 +208,15 @@ const StepCount = ({props, intl, navigation}) => {
       // Load the list with persisted events.
     } catch (error) {}
   };
+  useFocusEffect(
+    React.useCallback(() => {
+      resultSteps();
+    }, [])
+  );
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
-
+      console.log('resultStepsresultSteps',resultSteps)
       if (!resultSteps) {
         setResultSteps({step: totalCount, date: new Date().getTime()});
       } else {
@@ -421,7 +428,7 @@ const StepCount = ({props, intl, navigation}) => {
           </View>
         </View>
         <View style={styles.viewLineChart}>
-          {(dataChart.length && <ChartLineV data={dataChart} time = {time} />) || null}
+          {(dataChart.length && <ChartLineV totalCount={totalCount} data={dataChart} time = {time} />) || null}
           {/* <LineChart style={styles.chart}
                         data={dataChart}
                         style={styles.chart}
