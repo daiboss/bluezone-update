@@ -8,9 +8,9 @@ import {
   Text,
   TouchableOpacity,
   Platform,
+  NativeModules
 } from 'react-native';
 import Header from '../Header';
-import { RNAddShortcuts } from 'react-native-add-shortcuts'
 import message from '../../../core/msg/setting';
 import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
@@ -55,6 +55,7 @@ import ModalPickerStepsTarget from './../../../base/components/ModalPickerStepsT
 
 import ImgStep from './../StepCountScreen/images/ic_step.png'
 import ModalAddShortcut from '../../../base/components/ModalAddShortcut';
+import MyShortcut from './CreateShortcut'
 
 Number.prototype.format = function (n, x) {
   var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
@@ -143,13 +144,16 @@ const SettingScreen = ({ intl, navigation }) => {
   };
 
   const getListShortcut = () => {
-    RNAddShortcuts.GetDynamicShortcuts({
+    MyShortcut.GetAllShortcut({
       onDone: shortcuts => {
         if (shortcuts.length > 0) {
           Toast.show('Đã thêm lối tắt vào màn hình chính', Toast.SHORT);
         } else {
           showAlertAddShortcut()
         }
+      },
+      onCancel: e => {
+        console.log('shortcutsshortcuts error', e)
       }
     });
   }
@@ -166,7 +170,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const closeAlertAddShortcut = () => setIsShowModalShortcut(false)
 
   const createShortcut = () => {
-    RNAddShortcuts.AddDynamicShortcut({
+    MyShortcut.AddPinnedShortcut({
       label: 'Sức khoẻ Bluezone',
       description: 'Sức khoẻ Bluezone',
       icon: ImgStep,
