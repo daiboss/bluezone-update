@@ -287,12 +287,15 @@
     "bluezone.settings.stepTarget ": "Step target",
     "bluezone.settings.showNotification ": "Show notification",
     "bluezone.settings.enterStepTarget": "Please enter your step target",
-    "bluezone.settings.stepRecommends": "The Ministry of Health recommends 10,000 steps a day",
+    "bluezone.settings.stepRecommends": "The Ministry of Health recommends",
     "bluezone.settings.allowStep": "Allow Bluezone to send notifications about your steps daily.",
     "bluezone.settings.allowSendNotifications": "Bluezone wants to send you notifications",
     "bluezone.settings.completeTarget": "Target completion notification",
     "bluezone.settings.youHave": "You have",
-    "bluezone.settings.stepToAccomplish": "steps left to accomplish your target today"
+    "bluezone.settings.stepToAccomplish": "steps left to accomplish your target today",
+    "bluezone.settings.step": "steps",
+    "bluezone.settings.stepADay": "steps a day",
+    "bluezone.settings.save": "Save"
     
 
 }
