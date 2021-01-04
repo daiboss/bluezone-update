@@ -295,7 +295,8 @@
     "bluezone.settings.stepToAccomplish": "steps left to accomplish your target today",
     "bluezone.settings.step": "steps",
     "bluezone.settings.stepADay": "steps a day",
-    "bluezone.settings.save": "Save"
+    "bluezone.settings.save": "Save",
+    "bluezone.settings.addShortcut": "Add shortcut to the main screen",
     
 
 }

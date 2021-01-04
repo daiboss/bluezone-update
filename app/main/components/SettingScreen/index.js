@@ -7,9 +7,10 @@ import {
   Switch,
   Text,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import Header from '../Header';
-// import { RNAddShortcuts } from 'react-native-add-shortcuts'
+import { RNAddShortcuts } from 'react-native-add-shortcuts'
 import message from '../../../core/msg/setting';
 import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
@@ -21,7 +22,7 @@ import {
   FCM_CHANNEL_NAME,
 } from '../../../const/fcm';
 import Fitness from '@ovalmoney/react-native-fitness';
-import moment from 'moment';
+import moment, { duration } from 'moment';
 import BackgroundFetch, {
   BackgroundFetchStatus,
 } from 'react-native-background-fetch';
@@ -48,8 +49,12 @@ import {
 } from '../../../core/storage';
 import { scheduleTask, stopScheduleTask } from '../StepCountScreen';
 import PushNotification from 'react-native-push-notification';
+import Toast from 'react-native-simple-toast';
 
 import ModalPickerStepsTarget from './../../../base/components/ModalPickerStepsTarget'
+
+import ImgStep from './../StepCountScreen/images/ic_step.png'
+import ModalAddShortcut from '../../../base/components/ModalAddShortcut';
 
 Number.prototype.format = function (n, x) {
   var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
@@ -64,6 +69,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const [alertBmi, setAlertBmi] = useState(false);
   const [totalStep, setTotalStep] = useState(0);
   const [isShowModalTarget, setIsShowModalTarget] = useState(false)
+  const [isShowModalShortcut, setIsShowModalShortcut] = useState(false)
 
   useEffect(() => {
     getStatus();
@@ -136,12 +142,41 @@ const SettingScreen = ({ intl, navigation }) => {
     } catch (error) { }
   };
 
+  const getListShortcut = () => {
+    RNAddShortcuts.GetDynamicShortcuts({
+      onDone: shortcuts => {
+        console.log('Shortcuts: ' + shortcuts, shortcuts.length);
+        if (shortcuts.length > 0) {
+          Toast.show('Đã thêm lối tắt vào màn hình chính', Toast.SHORT);
+        } else {
+          showAlertAddShortcut()
+        }
+      }
+    });
+  }
+
   const openModalTarget = () => setIsShowModalTarget(true)
   const closeModalTarget = () => setIsShowModalTarget(false)
 
   const saveStepsTarget = (steps) => {
     setTotalStep(steps)
     setResultSteps({ step: steps })
+  }
+
+  const showAlertAddShortcut = () => setIsShowModalShortcut(true)
+  const closeAlertAddShortcut = () => setIsShowModalShortcut(false)
+
+  const createShortcut = () => {
+    RNAddShortcuts.AddDynamicShortcut({
+      label: 'Sức khoẻ Bluezone',
+      description: 'Sức khoẻ Bluezone',
+      icon: ImgStep,
+      link: { url: 'mic.bluezone://bluezone/HomeStack/stepCount' },
+      onDone: () => {
+        closeAlertAddShortcut()
+        Toast.show('Đã thêm lối tắt vào màn hình chính', Toast.SHORT);
+      },
+    });
   }
 
   return (
@@ -153,6 +188,13 @@ const SettingScreen = ({ intl, navigation }) => {
         onCloseModal={closeModalTarget}
         currentSteps={totalStep}
         isVisibleModal={isShowModalTarget} />
+
+      <ModalAddShortcut
+        intl={intl}
+        onSelected={createShortcut}
+        onCloseModal={closeAlertAddShortcut}
+        isVisibleModal={isShowModalShortcut}
+      />
       <Header onBack={onBack} onShowMenu={onShowMenu} title={'Cài đặt'} />
       <View style={styles.viewTx}>
         <Text style={styles.txLabel}>
@@ -213,11 +255,19 @@ const SettingScreen = ({ intl, navigation }) => {
           value={alertBmi}
         />
       </View>
-      {/* <TouchableOpacity >
-                <Text>
-                    Thêm tiện ích
-                </Text>
-            </TouchableOpacity> */}
+      {
+        Platform.OS == 'android' && (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={getListShortcut}
+            style={[styles.viewTx, styles.borderBottom]}>
+            <Text
+              style={styles.txLabel}>
+              {formatMessage(message.AddShortcut)}
+            </Text>
+          </TouchableOpacity>
+        )
+      }
     </SafeAreaView>
   );
 };

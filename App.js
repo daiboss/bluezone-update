@@ -447,7 +447,7 @@ class App extends React.Component {
             ...MyTransition
           }} />
         <Stack.Screen name="Profile2" component={ProfileScreen} />
-        <Stack.Screen name={'stepCount'} component={StepCount} />
+        <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
         <Stack.Screen name={'stepHistory'} component={StepHistory} />
         <Stack.Screen name={'settingScreen'} component={SettingScreen} />
       </Stack.Navigator>
@@ -504,7 +504,7 @@ class App extends React.Component {
             <Stack.Screen name="FAQScreen">
               {props => <FAQScreen {...props} showBack={true} />}
             </Stack.Screen>
-            <Stack.Screen name={'stepCount'} component={StepCount} />
+            <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
             <Stack.Screen name={'stepHistory'} component={StepHistory} />
             <Stack.Screen name={'settingScreen'} component={SettingScreen} />
 
@@ -529,6 +529,7 @@ class App extends React.Component {
         drawerContent={props => <CustomDrawerContent {...props} />}>
         {/* <Home /> */}
         <Drawer.Screen
+          path={'HomeStack'}
           name={'HomeStack'}
           currentComponent={props.currentComponent}
           component={this.HomeStack(props)}
@@ -536,13 +537,17 @@ class App extends React.Component {
       </Drawer.Navigator>
     );
   };
-
+  // npx uri-scheme open mic.bluezone://bluezone/HomeStack/stepCount --android
   render() {
     const { translationMessagesState, loading, isHome } = this.state;
+    const linking = {
+      prefixes: ['http://bluezone.mic', 'https://bluezone.mic', 'mic.bluezone://bluezone'],
+    };
+
     return (
       <ContextProvider>
         <LanguageProvider messages={translationMessagesState}>
-          <NavigationContainer ref={navigationRef}>
+          <NavigationContainer ref={navigationRef} linking={linking}>
             <this.RightDrawer currentComponent={this} />
           </NavigationContainer>
         </LanguageProvider>

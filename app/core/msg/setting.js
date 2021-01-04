@@ -95,5 +95,9 @@ export default defineMessages({
         id: 'bluezone.settings.save',
         defaultMessage: 'bluezone.settings.save'
     },
+    AddShortcut: {
+        id: 'bluezone.settings.addShortcut',
+        defaultMessage: 'bluezone.settings.addShortcut'
+    },
    
 })

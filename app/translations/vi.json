@@ -23,7 +23,7 @@
   "bluezone.home.inviteButton": "Đồng ý",
   "bluezone.home.textWhy": "Tại sao 2 máy cạnh nhau, số liệu khác nhau?",
   "bluezone.home.textWhy1": "Tại sao hai máy cạnh nhau, số liệu khác nhau? Bạn có thể thấy hai máy để gần nhau, nhưng số liệu “Người dùng quanh bạn” khác nhau.",
-  "bluezone.home.textWhy2": "Điều này là do các máy không quét liên tục, mà có chu kỳ nghỉ luân phiên để tiết kiệm năng lượng. Các máy khác nhau có khoảng thời gian hoạt động và nghỉ khác nhau. Tại thời điểm máy nghỉ không quét thì sẽ không ghi nhận thêm các máy khác cho đến khi máy hoạt động trở lại.",
+  "bluezone.home.textWhy2": "Điều này là do các máy không quét liên tục, mà có chu kỳ nghỉ luân phiên để tiết kiệm năng lượng. Các máy khác nhau có khoảng thời gian hoạt động và nghỉ khác nhau. Tại thời điểm máy nghỉ không quét thì sẽ không ghi nhận vacác máy khác cho đến khi máy hoạt động trở lại.",
   "bluezone.home.textWhy3": "Tuy nhiên dù số liệu hiển thị giữa các máy có thể khác nhau, nhưng các tiếp xúc gần vẫn được ghi nhận đầy đủ. Tiếp xúc gần được định nghĩa là việc 2 người gặp nhau trong một khoảng thời gian đủ dài, để virus có thể lây nhiễm.",
   "bluezone.home.agree": "Đồng ý",
   "bluezone.home.utilities": "Tiện ích",
@@ -299,5 +299,6 @@
     "bluezone.settings.stepToAccomplish": "bước để hoàn thành mục tiêu ngày hôm nay",
     "bluezone.settings.step": "bước",
     "bluezone.settings.stepADay": "bước mỗi ngày",
-    "bluezone.settings.save": "Lưu"
+    "bluezone.settings.save": "Lưu",
+    "bluezone.settings.addShortcut": "Thêm vào màn hình chính",
 }
