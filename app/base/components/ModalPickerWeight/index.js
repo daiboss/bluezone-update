@@ -37,7 +37,6 @@ function ModalPicker({
   gender,
   currentWeight,
 }) {
-  console.log('currentWeight: ', currentWeight);
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
   const [weight, setWeight] = useState(gender == 1 ? '65, ' : '50, ');

@@ -20,9 +20,10 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
     handleAnim();
   }, [height, weight]);
   const handleAnim = () => {
+    fadeAnim.setValue(0)
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 1000,
+      duration: 2000,
       useNativeDriver: false
     }).start();
   };
@@ -44,7 +45,9 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
     return per;
   };
   return (
-    <View style={[styles.container2]}>
+    <View style={[styles.container2, {
+      overflow: 'hidden'
+    }]}>
       {resultScreen ? (
         <View style={[styles.empty]} />
       ) : (

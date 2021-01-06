@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import * as PropTypes from 'prop-types';
 import {
   SafeAreaView,
@@ -12,13 +12,13 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from 'react-native';
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 
 import Header from '../../../base/components/Header';
 import ButtonIconText from '../../../base/components/ButtonIconText';
 import ModalBase from '../../../base/components/ModalBase';
 
-import {blue_bluezone, red_bluezone} from '../../../core/color';
+import { blue_bluezone, red_bluezone } from '../../../core/color';
 import message from '../../../core/msg/bmi';
 
 // Styles
@@ -26,10 +26,10 @@ import styles from './styles/index.css';
 import * as fontSize from '../../../core/fontSize';
 import SelectGender from './components/SelectGender';
 import SelectHeightOrWeight from './components/SelectHeightOrWeight';
-import {getProfile, setProfile} from '../../../core/storage';
+import { getProfile, setProfile } from '../../../core/storage';
 const TIMEOUT_LOADING = 800;
 import moment from 'moment';
-import {ButtonClose} from '../../../base/components/ButtonText/ButtonModal';
+import { ButtonClose } from '../../../base/components/ButtonText/ButtonModal';
 import ResultBMI from './components/ResultBMI';
 import ResultBmiProgress from './components/ResultBmiProgress';
 const visibleModal = {
@@ -40,9 +40,9 @@ const visibleModal = {
   isVisibleVerifyError: false,
 };
 
-const ResultBmiScreen = ({route, intl, navigation}) => {
+const ResultBmiScreen = ({ route, intl, navigation }) => {
   console.log('route: ', route);
-  const {formatMessage} = intl;
+  const { formatMessage } = intl;
   const [gender, setGender] = useState(1);
   const [listProfile, setListProfile] = useState([]);
   const [listTime, setListTime] = useState([]);
@@ -81,6 +81,13 @@ const ResultBmiScreen = ({route, intl, navigation}) => {
       <ScrollView>
         <View style={styles.group}>
           <View>
+            <View style={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'transparent',
+              position: 'absolute',
+              zIndex: 999
+            }} />
             <ResultBmiProgress bmi={bmi} />
             <SelectHeightOrWeight
               label={formatMessage(message.height)}
