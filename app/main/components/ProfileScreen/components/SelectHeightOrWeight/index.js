@@ -1,7 +1,7 @@
-import {injectIntl, intlShape} from 'react-intl';
-import React, {useState} from 'react';
+import { injectIntl, intlShape } from 'react-intl';
+import React, { useEffect, useState } from 'react';
 import styles from './styles/index.css';
-import {View, TouchableOpacity, Text} from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import message from '../../../../../core/msg/profile';
 import FastImage from 'react-native-fast-image';
 import ModalPickerHeight from '../../../../../base/components/ModalPickerHeight';
@@ -20,10 +20,12 @@ const SelectHeightOrWeight = ({
   gender,
   currentHeight,
   currentWeight,
+  visiHeight = false,
+  visiWeight = false
 }) => {
-  const {formatMessage} = intl;
-  const [isVisibleHeight, setIsVisibleHeight] = useState(false);
-  const [isVisibleWeight, setIsVisibleWeight] = useState(false);
+  const { formatMessage } = intl;
+  const [isVisibleHeight, setIsVisibleHeight] = useState(visiHeight);
+  const [isVisibleWeight, setIsVisibleWeight] = useState(visiWeight);
   const selectGender = () => {
     // onSelected && onSelected(gender);
     if (type == 'height') {
@@ -32,6 +34,12 @@ const SelectHeightOrWeight = ({
       setIsVisibleWeight(true);
     }
   };
+
+  useEffect(() => {
+    setIsVisibleHeight(visiHeight)
+    setIsVisibleWeight(visiWeight)
+  }, [visiHeight, visiWeight])
+
   return (
     <>
       <View style={[styles.container2, error ? styles.borderError : {}]}>
@@ -44,7 +52,7 @@ const SelectHeightOrWeight = ({
               <Text
                 style={[
                   styles.textGender,
-                  value?.substr(0, value?.length - 2) ? {color: '#000'} : {},
+                  value?.substr(0, value?.length - 2) ? { color: '#000' } : {},
                 ]}>
                 {value}
               </Text>
@@ -53,7 +61,7 @@ const SelectHeightOrWeight = ({
                 style={[
                   styles.iconNext,
                   type == 'weight' && listProfile?.length
-                    ? {transform: [{rotate: '90deg'}]}
+                    ? { transform: [{ rotate: '90deg' }] }
                     : {},
                 ]}
               />

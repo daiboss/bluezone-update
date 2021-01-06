@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import * as PropTypes from 'prop-types';
 import {
   SafeAreaView,
@@ -12,13 +12,13 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from 'react-native';
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 
 import Header from '../../../base/components/Header';
 import ButtonIconText from '../../../base/components/ButtonIconText';
 import ModalBase from '../../../base/components/ModalBase';
 
-import {blue_bluezone, red_bluezone} from '../../../core/color';
+import { blue_bluezone, red_bluezone } from '../../../core/color';
 import message from '../../../core/msg/bmi';
 import FastImage from 'react-native-fast-image';
 // Styles
@@ -26,10 +26,10 @@ import styles from './styles/index.css';
 import * as fontSize from '../../../core/fontSize';
 import SelectGender from './components/SelectGender';
 import SelectHeightOrWeight from './components/SelectHeightOrWeight';
-import {getProfile, setProfile} from '../../../core/storage';
+import { getProfile, setProfile } from '../../../core/storage';
 const TIMEOUT_LOADING = 800;
 import moment from 'moment';
-import {ButtonClose} from '../../../base/components/ButtonText/ButtonModal';
+import { ButtonClose } from '../../../base/components/ButtonText/ButtonModal';
 import ResultBMI from './components/ResultBMI';
 const visibleModal = {
   isProcessing: false,
@@ -39,13 +39,15 @@ const visibleModal = {
   isVisibleVerifyError: false,
 };
 
-const BmiScreen = ({route, intl, navigation}) => {
-  const {formatMessage} = intl;
+const BmiScreen = ({ route, intl, navigation }) => {
+  const { formatMessage } = intl;
   const [heightError, setHeightError] = useState(null);
   const [weightError, setWeightError] = useState(null);
   const [isVisibleVerifyError, setisVisibleVerifyError] = useState(false);
   const [height, setHeight] = useState(null);
   const [weight, setWeight] = useState(null);
+  const [autoOpen, setAutoOpen] = useState(-1)
+
   const onGoBack = () => navigation.goBack();
   const onConfirm = async () => {
     try {
@@ -59,13 +61,19 @@ const BmiScreen = ({route, intl, navigation}) => {
       navigation.navigate('resultBmi', {
         height,
         weight,
+        backAndOpenModal: backAndOpenModal
       });
     } catch (error) {
       setisVisibleVerifyError(true);
     }
   };
-  const validateProfile = () => {};
+  const validateProfile = () => { };
   const onCloseModalProfile = () => setisVisibleVerifyError(false);
+
+  const backAndOpenModal = (type) => {
+    setAutoOpen(type)
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -92,23 +100,35 @@ const BmiScreen = ({route, intl, navigation}) => {
             </View>
           </View>
           <SelectHeightOrWeight
+            visiWeight={autoOpen == 0}
             label={formatMessage(message.height)}
             value={height ? height : 'cm'}
             type="height"
             error={heightError ? formatMessage(message.heightError2) : null}
             onSelected={height => {
-              setHeightError(false);
-              setHeight(height);
+              if (height.includes('cm')) {
+                setHeightError(false);
+                setHeight(height);
+              } else {
+                setWeightError(false);
+                setWeight(height);
+              }
             }}
           />
           <SelectHeightOrWeight
+            visiHeight={autoOpen == 1}
             label={formatMessage(message.weight)}
             value={weight ? weight : 'kg'}
             error={weightError ? formatMessage(message.weightError2) : null}
             type="weight"
             onSelected={weight => {
-              setWeightError(false);
-              setWeight(weight);
+              if (weight.includes('cm')) {
+                setHeightError(false);
+                setHeight(weight);
+              } else {
+                setWeightError(false);
+                setWeight(weight);
+              }
             }}
           />
         </View>
@@ -117,7 +137,7 @@ const BmiScreen = ({route, intl, navigation}) => {
             onPress={onConfirm}
             text={formatMessage(message.finish)}
             styleBtn={[styles.colorButtonConfirm]}
-            styleText={{fontSize: fontSize.normal, fontWeight: 'bold'}}
+            styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
           />
         </View>
       </View>

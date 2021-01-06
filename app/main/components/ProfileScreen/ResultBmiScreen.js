@@ -81,40 +81,61 @@ const ResultBmiScreen = ({ route, intl, navigation }) => {
       <ScrollView>
         <View style={styles.group}>
           <View>
-            <View style={{
-              width: '100%',
-              height: '100%',
-              backgroundColor: 'transparent',
-              position: 'absolute',
-              zIndex: 999
-            }} />
             <ResultBmiProgress bmi={bmi} />
-            <SelectHeightOrWeight
-              label={formatMessage(message.height)}
-              value={height ? height : 'cm'}
-              gender={gender}
-              currentHeight={height}
-              type="height"
-              error={heightError ? formatMessage(message.heightError2) : null}
-              onSelected={height => {
-                setHeightError(false);
-                setHeight(height);
-              }}
-            />
-            <SelectHeightOrWeight
-              label={formatMessage(message.weight)}
-              value={weight ? weight : 'kg'}
-              error={weightError ? formatMessage(message.weightError2) : null}
-              currentWeight={weight}
-              type="weight"
-              gender={gender}
-              listProfile={listProfile}
-              time={listTime}
-              onSelected={weight => {
-                setWeightError(false);
-                setWeight(weight);
-              }}
-            />
+            <View>
+              <SelectHeightOrWeight
+                label={formatMessage(message.height)}
+                value={height ? height : 'cm'}
+                gender={gender}
+                currentHeight={height}
+                type="height"
+                error={heightError ? formatMessage(message.heightError2) : null}
+                onSelected={height => {
+                  setHeightError(false);
+                  setHeight(height);
+                }}
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  route?.params?.backAndOpenModal(1)
+                  navigation.goBack()
+                }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'transparent',
+                  position: 'absolute',
+                  zIndex: 999
+                }} />
+            </View>
+            <View>
+              <SelectHeightOrWeight
+                label={formatMessage(message.weight)}
+                value={weight ? weight : 'kg'}
+                error={weightError ? formatMessage(message.weightError2) : null}
+                currentWeight={weight}
+                type="weight"
+                gender={gender}
+                listProfile={listProfile}
+                time={listTime}
+                onSelected={weight => {
+                  setWeightError(false);
+                  setWeight(weight);
+                }}
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  route?.params?.backAndOpenModal(0)
+                  navigation.goBack()
+                }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'transparent',
+                  position: 'absolute',
+                  zIndex: 999
+                }} />
+            </View>
             <ResultBMI height={height} weight={weight} resultScreen={true} />
           </View>
         </View>
