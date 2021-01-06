@@ -265,15 +265,15 @@ const StepCount = ({props, intl, navigation}) => {
     Fitness.getSteps({startDate: start, endDate: end})
       .then(res => {
         if (res.length) {
-          // res.pop()
+          res.pop()
           let data = res.map((obj,index) => ({
             x: obj.quantity,
             y: obj.quantity,
           }));
-          let timeLine = res.pop().map(obj => {
+          let timeLine = res.map(obj => {
             return new Date(obj.startDate).format('dd/MM')
           })
-          data.length !== 0 && data.pop()
+          // data.length !== 0 && data.pop()
           setDataChart(data);
           setTime(timeLine)
         } else {
@@ -432,9 +432,8 @@ const StepCount = ({props, intl, navigation}) => {
           </View> */}
         </View>
         <View style={styles.viewLineChart}>
-          {(dataChart.length && <ChartLineV data={dataChart} time={time} />) ||
+          {(dataChart.length && <ChartLineV totalCount={totalCount} data={dataChart} time={time} />) ||
             null}
-            <ChartLineV data={dataChart} time={time} />
         </View>
         {/* <View style={styles.viewHeight} /> */}
       </ScrollView>

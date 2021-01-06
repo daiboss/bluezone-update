@@ -9,7 +9,10 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import Header from '../Header';
+// import Header from '../Header';
+import Header from '../../../base/components/Header';
+import {isIPhoneX} from '../../../core/utils/isIPhoneX';
+
 import { RNAddShortcuts } from 'react-native-add-shortcuts'
 import message from '../../../core/msg/setting';
 import { injectIntl, intlShape } from 'react-intl';
@@ -194,7 +197,19 @@ const SettingScreen = ({ intl, navigation }) => {
         onCloseModal={closeAlertAddShortcut}
         isVisibleModal={isShowModalShortcut}
       />
-      <Header onBack={onBack} onShowMenu={onShowMenu} title={'Cài đặt'} />
+      <Header 
+      onBack={onBack} 
+      onShowMenu={onShowMenu}
+      title={'Cài đặt'}
+      colorIcon={'#FE4358'}
+      styleHeader={styles.header}
+      styleTitle={{
+        color: '#000',
+        fontSize: fontSize.bigger,
+      }}
+      // showMenu={true}
+      onShowMenu={onShowMenu}
+      />
       <View style={styles.viewTx}>
         <Text style={styles.txLabel}>
           {formatMessage(message.autoAdjustTarget)}
@@ -328,7 +343,11 @@ const styles = StyleSheet.create({
   txLabelRed: {
     color: '#fe4358',
     fontSize: 14,
-  }
+  },
+  header: {
+    // backgroundColor: '#ffffff',
+    marginTop: isIPhoneX ? 0 : 20,
+  },
 });
 SettingScreen.propTypes = {
   intl: intlShape.isRequired,
