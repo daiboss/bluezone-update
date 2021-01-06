@@ -50,7 +50,6 @@
     "react": "16.11.0",
     "react-intl": "^2.7.1",
     "react-native": "0.62.2",
-    "react-native-add-shortcuts": "^1.0.2",
     "react-native-android-location-enabler": "^1.2.1",
     "react-native-background-fetch": "^3.1.0",
     "react-native-bluetooth-scan": "git+https://github.com/BluezoneGlobal/react-native-bluetooth-scan.git",
