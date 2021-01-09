@@ -14,7 +14,7 @@ import {
 import Header from '../../../base/components/Header';
 import {isIPhoneX} from '../../../core/utils/isIPhoneX';
 
-import { RNAddShortcuts } from 'react-native-add-shortcuts'
+// import { RNAddShortcuts } from 'react-native-add-shortcuts'
 import message from '../../../core/msg/setting';
 import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';

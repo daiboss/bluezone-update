@@ -55,7 +55,11 @@ class ChartLine extends React.Component {
         x:index + 1
       }
     })
-  this.setState({dataConvert:datanew})
+   let b = datanew.slice(0,7)
+   console.log('bbbbbbb',b)
+  this.setState({dataConvert:b},() => {
+    console.log('dâtttatatata',this.state.dataConvert)
+  })
   }
 
   getLeftLabel = () => {
@@ -242,7 +246,7 @@ class ChartLine extends React.Component {
           <VictoryAxis
             //  crossAxis dependentAxis
             tickValues={this.props.time}
-            // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
+            // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11',]}
           
             style={{
               grid: { stroke: ({tick,index}) => this.state.valueX == index + 1 ? '#FE4358' : 'gray',strokeWidth:0.5 },

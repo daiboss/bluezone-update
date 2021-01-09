@@ -81,7 +81,6 @@ class ChartLine extends React.Component {
     }
   }
   render() {
-    console.log('hdahdadhasdhasdas',this.state.maxCounter)
     return (
       <View style={styles.container}>
         <Text style={styles.txtYear}>{this.state.year}</Text>
