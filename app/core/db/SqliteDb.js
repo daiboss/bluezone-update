@@ -21,10 +21,10 @@
 
 'use strict';
 
-import {Platform} from 'react-native';
+import { Platform } from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
 
-import {dev} from '../apis/server';
+import { dev } from '../apis/server';
 
 // TODO: Bo sung close db moi khi open:
 // https://www.djamware.com/post/5caec76380aca754f7a9d1f1/react-native-tutorial-sqlite-offline-androidios-mobile-app
@@ -36,9 +36,9 @@ if (dev) {
 SQLite.enablePromise(false);
 
 const database_name = 'app_db_2.db';
-const database_version = '3.3';
+const database_version = '3.4';
 const database_displayname = 'Bluezone database';
-const database_size = 20 * 1024 * 1024;
+const database_size = 30 * 1024 * 1024;
 
 let db = null;
 
@@ -52,8 +52,8 @@ const open = () => {
       database_version,
       database_displayname,
       database_size,
-      () => {},
-      () => {},
+      () => { },
+      () => { },
     );
   } else {
     db = SQLite.openDatabase({
@@ -76,11 +76,11 @@ const close = () => {
 
 const initDatabase = (success, failure) => {
   db = open();
-  db.transaction(function(txn) {
+  db.transaction(function (txn) {
     txn.executeSql(
       "SELECT name FROM sqlite_master WHERE type='table' AND name='notify'",
       [],
-      function(tx, res) {
+      function (tx, res) {
         if (res.rows.length === 0) {
           tx.executeSql('DROP TABLE IF EXISTS notify');
           tx.executeSql(
@@ -95,11 +95,39 @@ const initDatabase = (success, failure) => {
     txn.executeSql(
       "SELECT name FROM sqlite_master WHERE type='table' AND name='devLog'",
       [],
-      function(tx, res) {
+      function (tx, res) {
         if (res.rows.length === 0) {
           tx.executeSql('DROP TABLE IF EXISTS devLog');
           tx.executeSql(
             'CREATE TABLE IF NOT EXISTS devLog(id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp REAL, key TEXT, data TEXT)',
+          );
+        }
+      },
+    );
+    // Step Counter
+    txn.executeSql(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='stepcounter'",
+      [],
+      function (tx, res) {
+        if (res.rows.length === 0) {
+          tx.executeSql(
+            'CREATE TABLE IF NOT EXISTS stepcounter(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, starttime INTEGER, endtime INTEGER, step INTEGER)',
+            [],
+            (tx, results) => {
+              console.log("Query completed", results);
+            }
+          );
+        }
+      },
+    );
+
+    txn.executeSql(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='historyStepcounter'",
+      [],
+      function (tx, res) {
+        if (res.rows.length === 0) {
+          tx.executeSql(
+            'CREATE TABLE IF NOT EXISTS historyStepcounter(id INTEGER PRIMARY KEY AUTOINCREMENT, starttime INTEGER, resultStep TEXT)',
           );
         }
       },
@@ -109,7 +137,7 @@ const initDatabase = (success, failure) => {
 
 const replaceNotify = (notify, success, failure) => {
   db = open();
-  db.transaction(function(txn) {
+  db.transaction(function (txn) {
     txn.executeSql(
       'REPLACE INTO notify(notifyId, smallIcon, largeIcon, title, text, bigText, titleEn, textEn, bigTextEn, _group, timestamp, unRead, data) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
       [
@@ -135,7 +163,7 @@ const replaceNotify = (notify, success, failure) => {
 
 const mergeNotify = (notify, success, failure) => {
   db = open();
-  db.transaction(function(txn) {
+  db.transaction(function (txn) {
     txn.executeSql(
       `SELECT * FROM notify WHERE notifyId ="${notify.data.notifyId}"`,
       [],
@@ -168,7 +196,7 @@ const mergeNotify = (notify, success, failure) => {
 
 const readNotify = (notifyId, success, failure) => {
   db = open();
-  db.transaction(function(txn) {
+  db.transaction(function (txn) {
     txn.executeSql(
       'UPDATE notify SET unRead = ? WHERE notifyId = ?',
       [1, notifyId],
@@ -180,7 +208,7 @@ const readNotify = (notifyId, success, failure) => {
 
 const deleteNotify = (notifyId, success, failure) => {
   db = open();
-  db.transaction(function(txn) {
+  db.transaction(function (txn) {
     txn.executeSql(
       'DELETE FROM notify WHERE notifyId = ?',
       [notifyId],
@@ -233,7 +261,7 @@ const getCountNotification = (timestamp, callback) => {
 
 const addDevLog = log => {
   db = open();
-  db.transaction(function(txn) {
+  db.transaction(function (txn) {
     txn.executeSql('INSERT INTO devLog(timestamp, key, data ) VALUES (?,?,?)', [
       log.time || new Date().getTime(),
       log.key,
@@ -242,7 +270,7 @@ const addDevLog = log => {
   });
 };
 
-const getAllDevLog = (success = () => {}, failure = () => {}) => {
+const getAllDevLog = (success = () => { }, failure = () => { }) => {
   db = open();
   db.transaction(tx => {
     tx.executeSql(
@@ -266,8 +294,8 @@ const getAllDevLog = (success = () => {}, failure = () => {}) => {
 
 const getPartialDevLog = (
   timestamp,
-  success = () => {},
-  failure = () => {},
+  success = () => { },
+  failure = () => { },
   limit = 20,
 ) => {
   let SQL_QUERY = timestamp
@@ -371,6 +399,99 @@ const getCountBluezoneByDays = (timestamp, success, failure) => {
   });
 };
 
+const removeAllStepDay = (time, success, failure) => {
+  db = open();
+  db.transaction(function (txn) {
+    txn.executeSql(
+      'delete from stepcounter where starttime <= ?',
+      [time],
+      success,
+      failure,
+    );
+  });
+}
+
+export const removeAllStep = (success, failure) => {
+  db = open();
+  db.transaction(function (txn) {
+    txn.executeSql(
+      'delete from stepcounter',
+      [],
+      success,
+      failure,
+    );
+  });
+}
+
+const getListStepDay = async () => {
+  let SQL_QUERY = 'SELECT * FROM stepcounter';
+
+  return new Promise((resolve, reject) => {
+    db = open();
+    db.transaction(tx => {
+      tx.executeSql(
+        SQL_QUERY,
+        [],
+        (txTemp, results) => {
+          let temp = [];
+          if (results.rows.length > 0) {
+            for (let i = 0; i < results.rows.length; ++i) {
+              temp.push(results.rows.item(i));
+            }
+          }
+          resolve(temp);
+        },
+        () => {
+          resolve([]);
+        },
+      );
+    })
+  })
+};
+
+const getListHistory = (start, to, callback) => {
+  db = open();
+  db.transaction(function (txn) {
+    txn.executeSql(
+      'select * from historyStepcounter where starttime >= ? and starttime <= ?',
+      [start, to],
+      (txTemp, results) => {
+        let temp = [];
+        if (results.rows.length > 0) {
+          for (let i = 0; i < results.rows.length; ++i) {
+            temp.push(results.rows.item(i));
+          }
+        }
+        callback(temp);
+      },
+      () => {
+        callback([]);
+      },
+    );
+  });
+}
+
+const addHistory = (value) => {
+  db = open();
+  db.transaction(function (txn) {
+    txn.executeSql('INSERT INTO historyStepcounter(starttime, resultStep) VALUES (?,?)', [
+      new Date().getTime(),
+      JSON.stringify(value),
+    ]);
+  });
+}
+
+const addStepCounter = (start, end, steps) => {
+  db = open();
+  db.transaction(function (txn) {
+    txn.executeSql('INSERT INTO stepcounter(starttime, endtime, step) VALUES (?,?,?)', [
+      start,
+      end,
+      steps
+    ]);
+  });
+}
+
 export {
   open,
   close,
@@ -386,4 +507,9 @@ export {
   getAllDevLog,
   clearDevLog,
   getCountBluezoneByDays,
+  removeAllStepDay,
+  getListHistory,
+  getListStepDay,
+  addHistory,
+  addStepCounter
 };

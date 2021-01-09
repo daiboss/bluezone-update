@@ -14,6 +14,7 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import com.mic.bluezone2.services.BackgroundActionsPackage;
 import com.scan.TraceCovidPackage;
 
 import android.content.IntentFilter;
@@ -46,6 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
                     packages.add(new RNFirebaseNotificationsPackage());
                     packages.add(new LottiePackage());
                     packages.add(new ShortcutPackage());
+                    packages.add(new BackgroundActionsPackage());
                     return packages;
                 }
 

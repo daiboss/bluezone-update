@@ -21,52 +21,57 @@ const ResultBmiProgress = ({ bmi, intl }) => {
     if (bmi < 18.5) {
       color = '#015CD0';
       setListColorBackground([
-        'rgb(23, 1, 208)',
+        '#015CD0',
         'rgb(76, 39, 216)',
         'rgb(23, 1, 208)',
+        '#015CD0',
         '#015CD0',
       ])
       status = message.skinny;
     } else if (bmi <= 22.9 && bmi >= 18.5) {
       color = '#00B67E';
       setListColorBackground([
-        'rgb(0, 165, 182)',
+        '#00B67E',
         'rgb(76, 39, 216)',
         '#015CD0',
         'rgb(0, 165, 182)',
+        '#00B67E',
         '#00B67E',
       ])
       status = message.fit;
     } else if (bmi <= 24.9 && bmi >= 23) {
       color = '#FFD500';
       setListColorBackground([
-        'rgb(180, 255, 0)',
+        '#FFD500',
         'rgb(76, 39, 216)',
         '#015CD0',
         '#00B67E',
         'rgb(180, 255, 0)',
+        '#FFD500',
         '#FFD500',
       ])
       status = message.overWeight;
     } else if (bmi <= 29.9 && bmi >= 25) {
       color = '#FF8E30';
       setListColorBackground([
-        'rgb(255, 191, 48)',
+        '#FF8E30',
         '#015CD0',
         '#00B67E',
         '#FFD500',
+        '#FF8E30',
         '#FF8E30',
       ])
       status = message.classOneObesity;
     } else if (bmi >= 30) {
       color = '#FE4358';
       setListColorBackground([
-        '#FF8E30',
+        '#FE4358',
         '#015CD0',
         '#00B67E',
         '#FFD500',
         '#FF8E30',
-        '#FE4358'
+        '#FE4358',
+        '#FE4358',
       ])
       status = message.classTwoObesity;
     }
@@ -147,8 +152,8 @@ const ResultBmiProgress = ({ bmi, intl }) => {
             }
 
             <View style={{
-              width: 170,
-              height: 170,
+              width: 185,
+              height: 185,
               backgroundColor: '#fff',
               borderRadius: 100,
               position: 'absolute',
@@ -169,7 +174,10 @@ const ResultBmiProgress = ({ bmi, intl }) => {
                 ]}
                 value={bmi} />
 
-              <Text style={styles.textStatus}>{formatMessage(status)}</Text>
+              <Text style={[styles.textStatus, {
+                width: '100%',
+                textAlign: 'center'
+              }]}>{formatMessage(status)}</Text>
 
             </View>
           </View>

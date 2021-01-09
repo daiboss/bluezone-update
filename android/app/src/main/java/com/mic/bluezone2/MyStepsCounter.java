@@ -22,38 +22,56 @@ import java.util.List;
 public class MyStepsCounter implements SensorEventListener {
     private static final String EVENT_STEP_CHANGE = "EVENT_STEP_CHANGE";
 
-    private Activity activity;
     private ReactContext mReactContext;
     private SensorManager mSensorManager;
     private Sensor mStepCounter;
     private long lastUpdate = 0;
     private int delay;
+    private boolean isTypeCounter;
 
     private static final String TAG = "StepCounter";
 
-    public MyStepsCounter(ReactContext reactContext, Activity activity) {
+    public MyStepsCounter(ReactContext reactContext) {
         this.mReactContext = reactContext;
-        this.activity = activity;
-        Toast.makeText(reactContext, "Nay vao step counter", Toast.LENGTH_SHORT).show();
-        boolean stepCounter = hasStepCounter();
+        Log.e(TAG, "Nay vao step counter");
+        boolean stepCounter = false;
+
+        PackageManager pm = reactContext.getPackageManager();
+
+        int currentApiVersion = Build.VERSION.SDK_INT;
+        // Check that the device supports the step counter and detector sensors
+        isTypeCounter = currentApiVersion >= 19
+                && pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)
+                && pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR);
+
+        if (!isTypeCounter) {
+            isTypeCounter = pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
+            if (isTypeCounter) {
+                stepCounter = true;
+            }
+        } else {
+            stepCounter = true;
+        }
+
         Log.e(TAG, "hasStepCounter: " + stepCounter);
 
         if (stepCounter) {
             mSensorManager = (SensorManager) reactContext.getSystemService(reactContext.SENSOR_SERVICE);
         }
     }
-
-    public boolean hasStepCounter() {
-
-        PackageManager pm = activity.getPackageManager();
-
-        int currentApiVersion = Build.VERSION.SDK_INT;
-        // Check that the device supports the step counter and detector sensors
-        return currentApiVersion >= 19
-                && pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)
-                && pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR);
-
-    }
+//
+//    public boolean hasStepCounter() {
+//
+//        PackageManager pm = activity.getPackageManager();
+//
+//        int currentApiVersion = Build.VERSION.SDK_INT;
+//        // Check that the device supports the step counter and detector sensors
+//        return currentApiVersion >= 19
+//                && pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_COUNTER)
+//                && pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR)
+//                && pm.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
+//
+//    }
 
     public int start(int delay) {
         List<Sensor> l = mSensorManager.getSensorList(Sensor.TYPE_ALL);
@@ -83,14 +101,16 @@ public class MyStepsCounter implements SensorEventListener {
                 map.putDouble("steps", sensorEvent.values[0]);
                 sendEvent(this.mReactContext, EVENT_STEP_CHANGE, map);
 
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(mReactContext.getApplicationContext(), "" + o, Toast.LENGTH_SHORT).show();
-                    }
-                });
+//                mReactContext.getCurrentActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(mReactContext.getApplicationContext(), "" + o, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
                 lastUpdate = curTime;
             }
+        } else if (!isTypeCounter && mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+
         }
     }
 

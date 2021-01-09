@@ -61,7 +61,6 @@ class AnimatedGradient extends Component {
   }
 
   componentDidMount = () => {
-    console.log('componentDidMountcomponentDidMount')
     this.startAnimation();
   }
   startAnimation = () => {
@@ -73,9 +72,10 @@ class AnimatedGradient extends Component {
       [color0, color1].map(animatedColor => {
         return Animated.timing(animatedColor, {
           toValue: customColors.length,
-          duration: speed / (customColors.length - 1),
+          duration: 200,
           easing: Easing.linear,
-          useNativeDriver: false
+          useNativeDriver: false,
+          delay: 300
         })
       })
     )

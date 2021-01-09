@@ -53,6 +53,7 @@ import {
   notiStep,
   weightWarning,
   stepChange,
+  IsShowNotification
 } from '../const/storage';
 import Fitness from '@ovalmoney/react-native-fitness';
 import moment from 'moment';
@@ -318,6 +319,16 @@ const setResultSteps = (value = '') => {
   AsyncStorage.setItem(ResultSteps, _resource);
 };
 
+const getIsShowNotification = async () => {
+  const result = await AsyncStorage.getItem(IsShowNotification);
+  return _processOutput(result);
+};
+
+const setIsShowNotification = (value = false) => {
+  const _resource = _processInput(value);
+  AsyncStorage.setItem(IsShowNotification, _resource);
+};
+
 const setEvents = async data => {
   try {
     return AsyncStorage.setItem(EVENTS_KEY, JSON.stringify(data));
@@ -512,4 +523,6 @@ export {
   setQuestionFAQ,
   setResultSteps,
   getResultSteps,
+  getIsShowNotification,
+  setIsShowNotification
 };

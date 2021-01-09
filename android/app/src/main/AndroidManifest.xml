@@ -1,20 +1,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.mic.bluezone2">
+    package="com.mic.bluezone2">
 
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
-    <uses-permission android:name="android.gms.permission.ACTIVITY_RECOGNITION"/>
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.gms.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
@@ -23,47 +27,52 @@
 
     <!-- < Only if you're using GCM or localNotificationSchedule() > -->
     <permission
-            android:name="${applicationId}.permission.C2D_MESSAGE"
-            android:protectionLevel="signature" />
+        android:name="${applicationId}.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
     <!-- < Only if you're using GCM or localNotificationSchedule() > -->
 
     <application
-            android:name=".MainApplication"
-            android:label="@string/app_name"
-            android:icon="@mipmap/icon_bluezone"
-            android:roundIcon="@mipmap/icon_bluezone"
-            android:allowBackup="false"
-            android:largeHeap="true"
-            android:theme="@style/AppTheme">
-        <activity
-        android:name=".MainActivity"
+        android:name=".MainApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/icon_bluezone"
         android:label="@string/app_name"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
-        android:launchMode="singleTop"
-        android:screenOrientation="nosensor"
-        android:windowSoftInputMode="adjustResize">
+        android:largeHeap="true"
+        android:roundIcon="@mipmap/icon_bluezone"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="nosensor"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="mic.bluezone" />
                 <data android:host="bluezone" />
             </intent-filter>
-      </activity>
-      <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+        </activity>
+        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
-        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_name"
-                    android:value="Bluezone Local Channel"/>
-        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_description"
-                    android:value="Bluezone Local Notification"/>
+        <meta-data
+            android:name="com.dieam.reactnativepushnotification.notification_channel_name"
+            android:value="Bluezone Local Channel" />
+        <meta-data
+            android:name="com.dieam.reactnativepushnotification.notification_channel_description"
+            android:value="Bluezone Local Notification" />
         <!-- Change the resource name to your App's accent color - or any other color you want -->
-        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
-                    android:resource="@android:color/white"/>
+        <meta-data
+            android:name="com.dieam.reactnativepushnotification.notification_color"
+            android:resource="@android:color/white" />
 
         <!-- < Only if you're using GCM or localNotificationSchedule() > -->
 
@@ -73,7 +82,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationRegistrationService"/>
+
+        <service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationRegistrationService" />
 
         <!-- </ Only if you're using GCM or localNotificationSchedule() > -->
 
@@ -86,29 +96,39 @@
 
         <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService" />
 
-        <receiver android:name="io.invertase.firebase.notifications.RNFirebaseNotificationReceiver"/>
+        <receiver android:name="io.invertase.firebase.notifications.RNFirebaseNotificationReceiver" />
 
-        <receiver android:enabled="true" android:exported="true"  android:name="io.invertase.firebase.notifications.RNFirebaseNotificationsRebootReceiver">
+        <receiver
+            android:name="io.invertase.firebase.notifications.RNFirebaseNotificationsRebootReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 
-        <service android:name="com.scan.ServiceTraceCovid" android:exported="true"/>
+        <service
+            android:name="com.scan.ServiceTraceCovid"
+            android:exported="true" />
 
-        <service android:name="com.scan.backup.BackupDatabaseService"/>
+        <service android:name="com.scan.backup.BackupDatabaseService" />
 
         <receiver android:name="com.scan.notification.NotificationReceiver" />
 
+        <service
+            android:name=".services.RNBackgroundActionsTask"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <receiver android:name=".BootStartReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-</application>
+    </application>
 
 </manifest>

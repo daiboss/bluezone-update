@@ -8,7 +8,6 @@ import {
   Text,
   TouchableOpacity,
   Platform,
-  NativeModules
 } from 'react-native';
 import Header from '../Header';
 import message from '../../../core/msg/setting';
@@ -45,7 +44,9 @@ import {
   getWeightWarning,
   setWeightWarning,
   getResultSteps,
-  setResultSteps
+  setResultSteps,
+  getIsShowNotification,
+  setIsShowNotification
 } from '../../../core/storage';
 import { scheduleTask, stopScheduleTask } from '../StepCountScreen';
 import PushNotification from 'react-native-push-notification';
@@ -57,15 +58,18 @@ import ImgStep from './../StepCountScreen/images/ic_step.png'
 import ModalAddShortcut from '../../../base/components/ModalAddShortcut';
 import MyShortcut from './CreateShortcut'
 
+import BackgroundJob from './../../../core/service_stepcounter'
+
 Number.prototype.format = function (n, x) {
   var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
   return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&.');
 };
 
 const SettingScreen = ({ intl, navigation }) => {
+
   const { formatMessage } = intl;
-  const [autoTarget, setAutoTarget] = useState(true);
-  const [alertStep, setAlertStep] = useState(false);
+  const [autoTarget, setAutoTarget] = useState(false);
+  const [alertStep, setAlertStep] = useState(undefined);
   const [alertTarget, setAlertTarget] = useState(false);
   const [alertBmi, setAlertBmi] = useState(false);
   const [totalStep, setTotalStep] = useState(0);
@@ -77,8 +81,10 @@ const SettingScreen = ({ intl, navigation }) => {
   }, []);
   const getStatus = async () => {
     try {
+      let isShowStep = await getIsShowNotification();
+      setAutoTarget(isShowStep || false)
+
       let result = await getResultSteps()
-      console.log('resssss', result)
       setTotalStep(parseInt(result.step))
       let res = await getAutoChange();
       setAutoTarget(res);
@@ -142,6 +148,18 @@ const SettingScreen = ({ intl, navigation }) => {
       }
     } catch (error) { }
   };
+
+  useEffect(() => {
+    if(alertStep == undefined){
+      return;
+    }
+    if (alertStep) {
+      setIsShowNotification(true);
+    } else {
+      setIsShowNotification(false)
+    }
+    BackgroundJob.updateTypeNotification()
+  }, [alertStep])
 
   const getListShortcut = () => {
     MyShortcut.GetAllShortcut({
@@ -209,7 +227,7 @@ const SettingScreen = ({ intl, navigation }) => {
           thumbColor={autoTarget ? '#fe4358' : '#a5a5a5'}
           ios_backgroundColor="#fff"
           onValueChange={autoTargetSwitch}
-          value={autoTarget}
+          value={autoTarget || false}
         />
       </View>
       <Text style={styles.txContent}>{formatMessage(message.content)}</Text>
@@ -232,7 +250,7 @@ const SettingScreen = ({ intl, navigation }) => {
           thumbColor={alertStep ? '#fe4358' : '#a5a5a5'}
           ios_backgroundColor="#fff"
           onValueChange={alertStepSwitch}
-          value={alertStep}
+          value={alertStep || false}
         />
       </View>
       <View style={[styles.viewTx, styles.borderBottom]}>

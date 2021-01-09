@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   SafeAreaView,
@@ -8,23 +8,23 @@ import {
   StyleSheet,
   ImageBackground,
   Image,
-  processColor,
+  DeviceEventEmitter,
   Platform,
   ScrollView,
+
 } from 'react-native';
-import Fitness from '@ovalmoney/react-native-fitness';
-import {LineChart} from 'react-native-charts-wrapper';
+import { LineChart } from 'react-native-charts-wrapper';
 import { useFocusEffect } from '@react-navigation/native';
 
-import {isIPhoneX} from '../../../core/utils/isIPhoneX';
-import {Dimensions} from 'react-native';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import { isIPhoneX } from '../../../core/utils/isIPhoneX';
+import { Dimensions } from 'react-native';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
 import message from '../../../core/msg/stepCount';
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
 import * as scheduler from '../../../core/notifyScheduler';
 import {
@@ -39,6 +39,7 @@ import {
   getAutoChange,
   setStepChange,
   getStepChange,
+  getIsShowNotification
 } from '../../../core/storage';
 import ChartLine from './ChartLine';
 import ChartLineV from './ChartLineV';
@@ -57,17 +58,53 @@ import {
   setUpdateIntervalForType,
   SensorTypes,
 } from 'react-native-sensors';
-import {map, filter} from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
+// import {
+//   getAbsoluteMonths,
+//   getDistances,
+//   getStepCount,
+//   getStepsTotal,
+//   getTimeDate,
+// } from '../../../core/steps';
+
 import {
   getAbsoluteMonths,
   getDistances,
   getStepCount,
   getStepsTotal,
   getTimeDate,
-} from '../../../core/steps';
+} from '../../../core/calculation_steps';
+
 let count = 0;
 var timeout;
 var data = [];
+
+import BackgroundJob from './../../../core/service_stepcounter'
+import {
+  addStepCounter,
+  getListStepDay,
+  removeAllStepDay,
+  removeAllStep
+} from './../../../core/db/SqliteDb'
+
+
+const options = {
+  taskName: 'Bluezone',
+  taskTitle: 'Bluezone - Tiện ích sức khoẻ',
+  taskDesc: 'Bluezone đếm bước chân',
+  taskIcon: {
+    name: 'icon_bluezone',
+    type: 'mipmap',
+  },
+  linkingURI: 'mic.bluezone://bluezone/HomeStack/stepCount',
+  parameters: {
+    delay: 1000,
+  },
+  targetStep: 10000,
+  currentStep: 0,
+  isShowStep: true
+};
+
 export const scheduleTask = async name => {
   try {
     await BackgroundFetch.scheduleTask({
@@ -78,16 +115,17 @@ export const scheduleTask = async name => {
       forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
       periodic: true, // Fire once only.
     })
-      .then(res => {})
-      .catch(err => {});
-  } catch (e) {}
+      .then(res => { })
+      .catch(err => { });
+  } catch (e) { }
 };
 
 export const stopScheduleTask = async task => {
   try {
     let res = await BackgroundFetch.stop(task);
-  } catch (e) {}
+  } catch (e) { }
 };
+
 export const onBackgroundFetchEvent = async taskId => {
   try {
     let end = new Date();
@@ -146,15 +184,90 @@ export const onBackgroundFetchEvent = async taskId => {
         setAutoChange(true);
       }
     }
-  } catch (e) {}
+  } catch (e) { }
   // Required: Signal completion of your task to native code
   // If you fail to do this, the OS can terminate your app
-  // or assign battery-blame for consuming too much background-time
+  // or assign battery-blame for consuming too tiêuh background-time
   BackgroundFetch.finish(taskId);
 };
-const StepCount = ({props, intl, navigation}) => {
-  const subscription = useRef();
-  const {formatMessage} = intl;
+
+const StepCount = ({ props, intl, navigation }) => {
+
+  // useEffect(() => {
+  //   // removeAllStepDay(moment(new Date()).unix());
+  //   // removeAllStep()
+  //   getStepsTotal()
+  //   getResultBindingUI()
+
+  // }, [])
+
+
+  useEffect(() => {
+    observerStepDrawUI();
+  }, [])
+
+  const observerStepDrawUI = () => {
+    getResultBindingUI()
+    BackgroundJob.observerStep(steps => {
+      // console.log('STEP------->>>', steps)
+      getResultBindingUI()
+    })
+  }
+
+  const getResultBindingUI = async () => {
+    let result = await getDistances();
+    // console.log('========<<<<<>>>>>>>>>>=======', result)
+    let time = moment().seconds(result?.time || 0).format('mm');
+    setDistant(result?.distance || 0);
+    setCountCarlo(result?.calories || 0);
+    setCountTime(time);
+    setCountStep(numberWithCommas(result?.step || 0));
+  }
+
+  useEffect(() => {
+    let isRun = BackgroundJob.isRunning();
+    if (!isRun) {
+      BackgroundJob.start(taskStepCounter, options);
+    } else {
+      BackgroundJob.stop();
+    }
+  }, [BackgroundJob])
+
+  const taskStepCounter = async () => {
+    await new Promise(async () => {
+      // let idididid = BackgroundJob.setTimeout(() => {
+      //   console.log('TIMEEEEEOUTTTTT')
+      // }, 8000)
+      // console.log('SETTTTTTTTDIIDDIDIDI', idididid)
+
+
+      getStepsTotal(async total => {
+        let targetSteps = await getResultSteps();
+        let isShowStep = await getIsShowNotification()
+        // console.log('isShowStepisShowStepisShowStep', isShowStep)
+        BackgroundJob.updateNotification({ ...options, currentStep: total || 0, targetStep: targetSteps, isShowStep: isShowStep })
+      })
+
+      BackgroundJob.observerStep(async steps => {
+        let targetSteps = await getResultSteps();
+        let isShowStep = await getIsShowNotification()
+        // console.log('STEP------->>>', steps, targetSteps, isShowStep)
+
+        getStepsTotal(total => {
+          BackgroundJob.updateNotification({ ...options, currentStep: total || 0, targetStep: targetSteps, isShowStep: isShowStep })
+        })
+        if (steps.stepCounter) {
+          addStepCounter(steps?.startTime, steps?.endTime, steps?.stepCounter)
+        }
+      })
+    })
+
+    scheduleLastDay = () => {
+      console.log('<<<<>>>>>>>>>')
+    }
+  }
+
+  const { formatMessage } = intl;
 
   const [time, setTime] = useState([]);
   const [countStep, setCountStep] = useState(null);
@@ -165,172 +278,39 @@ const StepCount = ({props, intl, navigation}) => {
   const [totalCount, setTotalCount] = useState(10000);
   const [dataChart, setDataChart] = useState([]);
 
-  useEffect(() => {
-    resultSteps();
-    getStepCount();
-    init();
-    return () => {
-      subscription.current && subscription.current.unsubscribe();
-    };
-  }, []);
-
-  const init = async () => {
-    try {
-      BackgroundFetch.configure(
-        {
-          minimumFetchInterval: 15, // <-- minutes (15 is minimum allowed)
-          // Android options
-          forceAlarmManager: false, // <-- Set true to bypass JobScheduler.
-          stopOnTerminate: false,
-          enableHeadless: true,
-          startOnBoot: true,
-          requiredNetworkType: BackgroundFetch.NETWORK_TYPE_NONE, // Default
-          requiresCharging: false, // Default
-          requiresDeviceIdle: false, // Default
-          requiresBatteryNotLow: false, // Default
-          requiresStorageNotLow: false, // Default
-        },
-        onBackgroundFetchEvent,
-        status => {
-          switch (status) {
-            case BackgroundFetch.STATUS_RESTRICTED:
-              break;
-            case BackgroundFetch.STATUS_DENIED:
-              break;
-            case BackgroundFetch.STATUS_AVAILABLE:
-              break;
-          }
-        },
-      );
-      // Turn on the enabled switch.
-      await BackgroundFetch.start();
-      // setEnabled(value);
-      // Load the list with persisted events.
-    } catch (error) {}
-  };
   useFocusEffect(
     React.useCallback(() => {
       resultSteps();
     }, [])
   );
+
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
-      console.log('resultStepsresultSteps',resultSteps)
+      // console.log('resultStepsresultSteps', resultSteps)
       if (!resultSteps) {
-        setResultSteps({step: totalCount, date: new Date().getTime()});
+        setResultSteps({ step: totalCount, date: new Date().getTime() });
       } else {
         setTotalCount(resultSteps.step);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
-  const getCount = async () => {
-    try {
-      let result = await getDistances();
-      let time = result?.time
-        ? result.time > 60 * 1000 * 60
-          ? new Date(result.time).format('HH:mm')
-          : new Date(result.time).format('mm:ss')
-        : 0;
-      setDistant(result?.distance || 0);
-      setCountCarlo(result?.calories || 0);
-      setCountTime(time);
-      setCountStep(numberWithCommas(result?.step || 0));
-    } catch (error) {}
-  };
-  const getDataChart = async () => {
-    try {
-      let step = ((await getStepChange()) || []).map(item => ({
-        ...item,
-        time: new Date(item.time).format('dd/MM'),
-      }));
-      let data = step
-        .map(item => item.time)
-        .filter((item, i, arr) => arr.indexOf(item) == i)
-        .map((item,index) => {
-          let newList = step.filter(e => e.time == item);
 
-          let value = newList.reduce(
-            (acc, item) => (acc > item.step ? acc : item.step),
-            0,
-          );
-          return {
-            x: item,
-            y: value,
-            // label: value,
-          };
-        });
-      const times = data.map(it => it.x)
-      // console.log('datadatadatadatadata',times)
-      console.log('datadatadatadataNgoai',data)
-      setTime(times)
-      setDataChart(data);
-    } catch (error) {}
-  };
-  const getStepCount = async () => {
-    getCount();
-    getDataChart();
-    subscription.current = accelerometer
-      .pipe(
-        map(({x, y, z}) => x + y + z),
-        filter(speed => speed > 20),
-      )
-      .subscribe(
-        async speed => {
-          try {
-            count++;
-
-            data.push({
-              step: count,
-              time: new Date().getTime(),
-              timeStart: new Date().getTime(),
-            });
-
-            if (timeout) clearTimeout(timeout);
-            timeout = setTimeout(async () => {
-              let step = (await getStepChange()) || [];
-              let step2 = step.filter(
-                e => new Date(e.time).compareDate(new Date()) == 0,
-              );
-
-              let data2 = [];
-              if (step2.length) {
-                data2 = data.map(item => {
-                  return {
-                    ...item,
-                    step: item.step + step2[step2.length - 1].step,
-                    timeEnd: new Date().getTime(),
-                  };
-                });
-              } else {
-                data2 = data.map(item => {
-                  return {
-                    ...item,
-                    timeEnd: new Date().getTime(),
-                  };
-                });
-              }
-              setStepChange(step.concat(step2).concat(data2));
-              data = [];
-              count = 0;
-            }, 3000);
-            getCount();
-          } catch (error) {}
-        },
-        error => {},
-      );
-  };
   const numberWithCommas = x => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
+
   const onBack = () => {
     try {
-      navigation.pop();
-    } catch (e) {}
+      if (navigation.canGoBack())
+        navigation.pop();
+    } catch (e) { }
   };
+
   const onShowMenu = () => {
     navigation.openDrawer();
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar />
@@ -394,9 +374,8 @@ const StepCount = ({props, intl, navigation}) => {
             />
             <Text style={styles.txData}>{`${formatMessage(
               message.stepsToTarget,
-            )} ${
-              totalCount - countStep > 0 ? totalCount - countStep : 0
-            }`}</Text>
+            )} ${totalCount - countStep > 0 ? totalCount - countStep : 0
+              }`}</Text>
             <Text style={styles.txUnit}>{`${formatMessage(
               message.stepsNormal,
             )}`}</Text>
@@ -428,7 +407,7 @@ const StepCount = ({props, intl, navigation}) => {
           </View>
         </View>
         <View style={styles.viewLineChart}>
-          {(dataChart.length && <ChartLineV totalCount={totalCount} data={dataChart} time = {time} />) || null}
+          {(dataChart.length && <ChartLineV totalCount={totalCount} data={dataChart} time={time} />) || null}
           {/* <LineChart style={styles.chart}
                         data={dataChart}
                         style={styles.chart}
@@ -477,7 +456,7 @@ const StepCount = ({props, intl, navigation}) => {
         style={styles.btnHistory}
         onPress={() =>
           navigation.navigate('stepHistory', {
-            dataHealth: {countStep, countRest, countCarlo, distant},
+            dataHealth: { countStep, countRest, countCarlo, distant },
           })
         }>
         <Text style={styles.txHistory}>
