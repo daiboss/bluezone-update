@@ -399,28 +399,47 @@ const getCountBluezoneByDays = (timestamp, success, failure) => {
   });
 };
 
-const removeAllStepDay = (time, success, failure) => {
-  db = open();
-  db.transaction(function (txn) {
-    txn.executeSql(
-      'delete from stepcounter where starttime <= ?',
-      [time],
-      success,
-      failure,
-    );
-  });
+const removeAllStepDay = async (time) => {
+  return new Promise((success, failure) => {
+    db = open();
+    db.transaction(function (txn) {
+      txn.executeSql(
+        'delete from stepcounter where starttime <= ?',
+        [time],
+        success,
+        failure,
+      );
+    });
+  })
+
 }
 
-export const removeAllStep = (success, failure) => {
-  db = open();
-  db.transaction(function (txn) {
-    txn.executeSql(
-      'delete from stepcounter',
-      [],
-      success,
-      failure,
-    );
-  });
+export const removeAllHistory = async () => {
+  return new Promise((resolve, reject) => {
+    db = open();
+    db.transaction(function (txn) {
+      txn.executeSql(
+        'delete from historyStepcounter',
+        [],
+        resolve,
+        reject,
+      );
+    })
+  })
+}
+
+export const removeAllStep = async () => {
+  return new Promise((resolve, reject) => {
+    db = open();
+    db.transaction(function (txn) {
+      txn.executeSql(
+        'delete from stepcounter',
+        [],
+        resolve,
+        reject,
+      );
+    })
+  })
 }
 
 const getListStepDay = async () => {
@@ -449,36 +468,44 @@ const getListStepDay = async () => {
   })
 };
 
-const getListHistory = (start, to, callback) => {
-  db = open();
-  db.transaction(function (txn) {
-    txn.executeSql(
-      'select * from historyStepcounter where starttime >= ? and starttime <= ?',
-      [start, to],
-      (txTemp, results) => {
-        let temp = [];
-        if (results.rows.length > 0) {
-          for (let i = 0; i < results.rows.length; ++i) {
-            temp.push(results.rows.item(i));
+const getListHistory = async (start, to) => {
+  return new Promise((resolve, reject) => {
+    db = open();
+    db.transaction(function (txn) {
+      txn.executeSql(
+        'select * from historyStepcounter where starttime >= ? and starttime <= ?',
+        [start, to],
+        (txTemp, results) => {
+          let temp = [];
+          if (results.rows.length > 0) {
+            for (let i = 0; i < results.rows.length; ++i) {
+              temp.push(results.rows.item(i));
+            }
           }
-        }
-        callback(temp);
-      },
-      () => {
-        callback([]);
-      },
-    );
-  });
+          resolve(temp);
+        },
+        () => {
+          resolve([]);
+        },
+      );
+    });
+  })
+
 }
 
-const addHistory = (value) => {
-  db = open();
-  db.transaction(function (txn) {
-    txn.executeSql('INSERT INTO historyStepcounter(starttime, resultStep) VALUES (?,?)', [
-      new Date().getTime(),
-      JSON.stringify(value),
-    ]);
-  });
+const addHistory = async (time, value) => {
+  return new Promise((resolve, reject) => {
+    db = open();
+    db.transaction(function (txn) {
+      txn.executeSql('INSERT INTO historyStepcounter(starttime, resultStep) VALUES (?,?)', [
+        time,
+        JSON.stringify(value),
+      ],
+        (txTemp, results) => resolve(results),
+        () => reject());
+    });
+  })
+
 }
 
 const addStepCounter = (start, end, steps) => {

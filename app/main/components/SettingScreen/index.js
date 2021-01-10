@@ -20,7 +20,6 @@ import {
   FCM_CHANNEL_DES,
   FCM_CHANNEL_NAME,
 } from '../../../const/fcm';
-import Fitness from '@ovalmoney/react-native-fitness';
 import moment, { duration } from 'moment';
 import BackgroundFetch, {
   BackgroundFetchStatus,
@@ -81,14 +80,11 @@ const SettingScreen = ({ intl, navigation }) => {
   }, []);
   const getStatus = async () => {
     try {
-      let isShowStep = await getIsShowNotification();
-      setAutoTarget(isShowStep || false)
-
       let result = await getResultSteps()
       setTotalStep(parseInt(result.step))
       let res = await getAutoChange();
       setAutoTarget(res);
-      let res1 = (await getRealtime()) || false;
+      let res1 = (await getIsShowNotification()) || false;
       setAlertStep(res1);
 
       let res2 = (await getNotiStep()) || false;

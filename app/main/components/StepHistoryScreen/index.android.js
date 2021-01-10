@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   SafeAreaView,
@@ -10,29 +10,30 @@ import {
   Image,
   processColor,
 } from 'react-native';
-import Fitness from '@ovalmoney/react-native-fitness';
 // import { BarChart } from 'react-native-charts-wrapper';
-import {isIPhoneX} from '../../../core/utils/isIPhoneX';
+import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 
-import {Dimensions} from 'react-native';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import {ScrollView} from 'react-native-gesture-handler';
+import { Dimensions } from 'react-native';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { ScrollView } from 'react-native-gesture-handler';
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
 import BarChart from './BarChart';
 import message from '../../../core/msg/stepCount';
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
-import {useRoute} from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import dateUtils from 'mainam-react-native-date-utils';
 import BartChartHistory from './BarChart/BartChartHistory';
 
-import {objectOf} from 'prop-types';
-import {getProfile, getStepChange} from '../../../core/storage';
-import {getAbsoluteMonths, getAllDistance, gender} from '../../../core/steps';
-Date.prototype.getWeek = function(dowOffset) {
+import { objectOf } from 'prop-types';
+import { getProfile, getStepChange } from '../../../core/storage';
+import { getAbsoluteMonths, getAllDistance, gender } from '../../../core/calculation_steps';
+import { getListHistory, removeAllHistory } from '../../../core/db/SqliteDb';
+import BarChartConvert from './BarChart/BarChartConvert';
+Date.prototype.getWeek = function (dowOffset) {
   /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
 
   dowOffset = typeof dowOffset == 'int' ? dowOffset : 0; //default dowOffset to zero
@@ -44,7 +45,7 @@ Date.prototype.getWeek = function(dowOffset) {
       (this.getTime() -
         newYear.getTime() -
         (this.getTimezoneOffset() - newYear.getTimezoneOffset()) * 60000) /
-        86400000,
+      86400000,
     ) + 1;
   var weeknum;
   //if the year starts before the middle of a week
@@ -64,10 +65,10 @@ Date.prototype.getWeek = function(dowOffset) {
   return weeknum;
 };
 const screenWidth = Dimensions.get('window').width;
-const StepCount = ({props, intl, navigation}) => {
+const StepCount = ({ props, intl, navigation }) => {
   const route = useRoute();
 
-  const {formatMessage} = intl;
+  const { formatMessage } = intl;
 
   const [selectDate, setSelectDate] = useState(true);
   const [selectWeek, setSelectWeek] = useState(false);
@@ -79,33 +80,55 @@ const StepCount = ({props, intl, navigation}) => {
   const [countCarlo, setCountCarlo] = useState(0);
   const [distant, setDistant] = useState(0);
   const [dataChart, setDataChart] = useState([]);
+  const [maxDomain, setMaxDomain] = useState(10000)
+
+  const [widthChart, setWidthChart] = useState(screenWidth)
 
   useEffect(() => {
-    let end = new Date();
-    var start = new Date(new Date().getFullYear(), 0, 1);
-    getDataHealth(start.format('yyyy-MM-dd'), end.format('yyyy-MM-dd'), 'day');
+    let end = new moment().unix();
+    let start = new moment().startOf('month').unix();
+    getDataHealth(
+      start,
+      // 1638291600,
+      end,
+      'day',
+    );
+    // let endTime = new moment()
+    // let startTime = endTime.clone().startOf('month')
+    // let listData = await getListHistory(startTime.unix(), endTime.unix())
+    // console.log('LISTTTDARAADA', listData)
+    setSelectDate(true);
+    setSelectMonth(false);
+    setSelectWeek(false);
   }, []);
 
-  const onSetSelect = type => () => {
+  const onSetSelect = type => async () => {
     if (type == 1) {
-      let end = new Date();
-      let start = new Date(new Date().getFullYear(), 0, 1);
+      let end = new moment().unix();
+      let start = new moment().startOf('month').unix();
       getDataHealth(
-        start.format('yyyy-MM-dd'),
-        end.format('yyyy-MM-dd'),
+        start,
+        // 1638291600,
+        end,
         'day',
       );
+      // let endTime = new moment()
+      // let startTime = endTime.clone().startOf('month')
+      // let listData = await getListHistory(startTime.unix(), endTime.unix())
+      // console.log('LISTTTDARAADA', listData)
       setSelectDate(true);
       setSelectMonth(false);
       setSelectWeek(false);
       return;
     }
     if (type == 2) {
-      let end = new Date();
-      let start = new Date(new Date().getFullYear(), 0, 1);
+      let end = new moment().unix();
+      let start = new moment().startOf('year').unix();
       getDataHealth(
-        start.format('yyyy-MM-dd'),
-        end.format('yyyy-MM-dd'),
+        // start.format('yyyy-MM-dd'),
+        // end.format('yyyy-MM-dd'),
+        start,
+        end,
         'week',
       );
       setSelectDate(false);
@@ -114,11 +137,13 @@ const StepCount = ({props, intl, navigation}) => {
       return;
     }
     if (type == 3) {
-      let end = new Date();
-      let start = new Date(new Date().getFullYear(), 0, 1);
+      let end = new moment().unix();
+      let start = new moment().startOf('year').unix();
       getDataHealth(
-        start.format('yyyy-MM-dd'),
-        end.format('yyyy-MM-dd'),
+        // start.format('yyyy-MM-dd'),
+        // end.format('yyyy-MM-dd'),
+        start,
+        end,
         'month',
       );
       setSelectDate(false);
@@ -128,121 +153,134 @@ const StepCount = ({props, intl, navigation}) => {
     }
   };
   const getDataHealth = async (start, end, type) => {
+    // await removeAllHistory()
+    // end = end + 31536000
     try {
-      let step = (await getStepChange()) || [];
-      let profiles = (await getProfile()) || [];
-      let profile = profiles.find(
-        item =>
-          getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) ==
-          0,
-      );
-      let sex = gender[profile?.gender || 0];
-      let height = profile?.height?.substring(0, profile?.height?.length - 3);
-      let weight = Number(
-        profile?.weight
-          ?.substring(0, profile?.weight?.length - 3)
-          .replace(', ', '.'),
-      );
-
-      let result = getAllDistance(step, sex, height, weight);
+      // start = start/1000;
+      // end = end/1000;
+      // let step = (await getStepChange()) || [];
+      let step = await getListHistory(start, end)
+      if(!step || step.length <= 0){
+        return
+      }
+      // console.log('stepppp', step)
+      let result = step.reduce((t, item) => {
+        let tmp = JSON.parse(item?.resultStep || {})
+        return {
+          step: (t?.step || 0) + (tmp?.step || 0),
+          distance: (t?.distance || 0) + (tmp?.distance || 0),
+          calories: (t?.calories || 0) + (tmp?.calories || 0),
+          time: (t?.time || 0) + (tmp?.time || 0),
+        }
+      }, {})
+      let time = result?.time || 0;
+      let h = parseInt(time / 3600)
+      let m = parseInt((time % 3600) / 60)
+      let timeString = ''
+      if (h > 0) {
+        timeString += `${h} - Giờ`
+        if (m > 0) {
+          timeString += `,\n${m} - Phút`
+        }
+      } else
+        timeString += `${m}\nPhút`
 
       setDistant(result?.distance);
       setCountCarlo(result?.calories);
-      setTime(moment(result?.time).format('mm:ss'));
-      let data = step
-        .map(item => new Date(item.time).format('dd/MM/yyyy'))
-        .filter((item, i, arr) => arr.indexOf(item) == i)
-        .map(obj => {
-          let newList = step.filter(
-            item => new Date(item.time).format('dd/MM/yyyy') == obj,
-          );
-          let step2 = Math.max.apply(Math, newList.map(item => item.step));
-          return {
-            time: obj,
-            step: step2,
-          };
-        }, []);
-      let totalStep = data.reduce((acc, item) => acc + item.step, 0);
-
-      setCountStep(totalStep);
+      setTime(timeString);
+      setCountStep(result?.step);
 
       let list = [];
       if (type == 'day') {
-        list = data.map(item => ({
-          x: moment(item.time, 'DD/MM/YYYY').format('DD/MM'),
-          y: item.step,
-        }));
-      } else if (type == 'month') {
-        list = data
-          .map(item => item.time)
-          .filter((item, i, ar) => ar.indexOf(item) == i)
-          .map(obj => {
-            let newList = data.filter(item =>
-              moment(obj, 'DD/MM/YYYY').isBetween(
-                moment(item.time, 'DD/MM/YYYY').startOf('month'),
-                moment(item.time, 'DD/MM/YYYY').endOf('month'),
-              ),
-            );
-            let step = newList.reduce((acc, item) => acc + item.step, 0);
-            let isToday = moment(obj, 'DD/MM/YYYY').isBetween(
-              moment().startOf('month'),
-              moment().endOf('month'),
-              'month',
-              '[]',
-            );
-            let text = `Tháng \n${
-              isToday ? 'này' : moment(obj, 'DD/MM/YYYY').format('MM')
-            }`;
-            return {
-              x: text,
-              y: step,
-            };
-          });
+        list = step.map(item => {
+          let tmp = JSON.parse(item?.resultStep || {})
+          return {
+            x: moment.unix(item?.starttime).format('DD/MM'),
+            y: tmp?.step,
+          }
+        });
+      }
+      else if (type == 'month') {
+        let currentMonth = moment().month();
+        const groups = step.reduce((acc, current) => {
+          const monthYear = moment.unix(current?.starttime).month();
+          if (!acc[monthYear]) {
+            acc[monthYear] = [];
+          }
+          acc[monthYear].push(current);
+          return acc;
+        }, {});
+
+        for (const [key, value] of Object.entries(groups)) {
+          let steps = value.reduce((t, v) => {
+            let tmp = JSON.parse(v?.resultStep)
+            return (t + tmp.step)
+          }, 0)
+          // let label = `Tháng\n${parseInt(key) + 1}`
+          let label = `Tháng\n${key < currentMonth ? (parseInt(key) + 1) : 'này'}`
+          list.push({
+            x: label,
+            y: steps
+          })
+        }
       } else if (type == 'week') {
-        list = data
-          .map(item => item.time)
-          .filter((item, i, ar) => ar.indexOf(item) == i)
-          .map(obj => {
-            let newList = data.filter(item =>
-              moment(obj, 'DD/MM/YYYY').isBetween(
-                moment(item.time, 'DD/MM/YYYY').startOf('isoWeek'),
-                moment(item.time, 'DD/MM/YYYY').endOf('isoWeek'),
-                'isoWeek',
-                '[]',
-              ),
-            );
+        const groups = step.reduce((acc, current) => {
+          const yearWeek = moment.unix(current?.starttime).week();
+          if (!acc[yearWeek]) {
+            acc[yearWeek] = [];
+          }
+          acc[yearWeek].push(current);
+          return acc;
+        }, {});
 
-            let step = newList.reduce((acc, item) => acc + item.step, 0);
-
-            let start = moment(obj, 'DD/MM/YYYY').startOf('isoWeek');
-            let end = moment(obj, 'DD/MM/YYYY').endOf('isoWeek');
-            let isToday = moment(obj, 'DD/MM/YYYY').isBetween(
-              moment().startOf('isoWeek'),
-              moment().endOf('isoWeek'),
-              'isoWeek',
-              '[]',
-            );
-
-            let text = `${start.format('DD')} - ${
-              isToday ? 'nay' : end.format('DD')
-            }\nT${start.format('MM')}`;
-            return {
-              x: text,
-              y: step,
-            };
-          });
+        let currentTime = moment();
+        for (const [key, value] of Object.entries(groups)) {
+          let steps = value.reduce((t, v) => {
+            let tmp = JSON.parse(v?.resultStep || {})
+            return (t + tmp?.step)
+          }, 0)
+          let startWeek = moment.unix(value[0]?.starttime).startOf('isoWeek')
+          let endWeek = moment.unix(value[0]?.starttime).endOf('isoWeek')
+          let valueEnd = endWeek.isAfter(currentTime) ? 'nay' : `${endWeek.format('DD')}`
+          let label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
+          list.push({
+            x: label,
+            y: steps
+          })
+        }
+      }
+      let max = Math.max.apply(Math, list.map(function (o) { return o.y; }))
+      setMaxDomain(max + 1000)
+      if (list.length <= 7) {
+        setWidthChart(screenWidth)
+      } else {
+        let tmp = (screenWidth - (type == 'month' ? 30 : type == 'day' ? 80 : 60)) / 6;
+        let widthTmp = tmp * (list.length - 1)
+        setWidthChart(widthTmp)
       }
       setDataChart(list);
-    } catch (error) {}
+    } catch (error) { }
   };
   const onBack = () => {
     try {
       navigation.pop();
-    } catch (e) {}
+    } catch (e) { }
   };
   const onShowMenu = () => {
     navigation.openDrawer();
   };
+
+  const renderChart = useMemo(() => {
+    if (dataChart.length) {
+      return (
+        <BarChartConvert
+          data={dataChart}
+          maxDomain={maxDomain}
+          widthChart={widthChart} />
+      )
+    }
+  }, [dataChart])
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
@@ -257,7 +295,9 @@ const StepCount = ({props, intl, navigation}) => {
           }}
         />
         <View style={styles.viewLineChart}>
-          {dataChart?.length ? <BartChartHistory data={dataChart} /> : null}
+          {/* {dataChart?.length ? <BartChartHistory
+            data={dataChart} /> : null} */}
+          {renderChart}
         </View>
 
         <View style={styles.dataHealth}>
@@ -276,7 +316,7 @@ const StepCount = ({props, intl, navigation}) => {
               style={styles.img}
               source={require('./images/ic_distance.png')}
             />
-            <Text style={styles.txData}>{distant}</Text>
+            <Text style={styles.txData}>{parseFloat(distant).toFixed(3)}</Text>
             <Text style={styles.txUnit}>{`km`}</Text>
           </View>
           <View style={styles.viewImgData}>
@@ -293,9 +333,9 @@ const StepCount = ({props, intl, navigation}) => {
               source={require('./images/ic_time.png')}
             />
             <Text style={styles.txData}>{time}</Text>
-            <Text style={styles.txUnit}>{`${formatMessage(
+            {/* <Text style={styles.txUnit}>{`${formatMessage(
               message.minute,
-            )}`}</Text>
+            )}`}</Text> */}
           </View>
         </View>
       </ScrollView>

@@ -39,7 +39,7 @@ export const getTimeDate = (date1, date2) => {
 
 export const getAllDistance = (data, sex, height, weight) => {
     let data2 = data.map((item, i) => {
-        let time = item?.endtime - item?.starttime;
+        let time = (item?.endtime - item?.starttime) || 0;
         if (time <= 0) {
             time = 1000;
         }
@@ -67,7 +67,7 @@ export const getAllDistance = (data, sex, height, weight) => {
     let totalStep = data2.reduce((acc, e) => acc + e?.step, 0);
     return {
         step: totalStep,
-        distance: distance ? parseFloat(distance / 1000).toFixed(3) : 0,
+        distance: distance ? parseFloat(distance / 1000) : 0,
         calories: parseInt(calories / 1000),
         time: time,
     };
@@ -97,7 +97,7 @@ export const getDistances = async () => {
                 step: result?.step,
                 distance: result?.distance,
                 calories: result?.calories,
-                time: result?.time,
+                time: result?.time || 1,
             };
         }
         return {};

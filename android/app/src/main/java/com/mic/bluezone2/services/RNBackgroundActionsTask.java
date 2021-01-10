@@ -219,12 +219,10 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                     map.putDouble(EVENT_COUNTER, numberStep - lastStepCounter);
                     map.putDouble(TOTAL_STEP, numberStep);
                     double tmpStep = (Math.abs(numberStep - lastStepCounter) / 3) * 1000;
-                    double tmpTime = Math.abs((int) (curTime - tmpStep));
-                    if (tmpTime < 1000) {
-                        tmpTime = 1000;
+                    if (tmpStep < 1000) {
+                        tmpStep = 1000;
                     }
-                    double timeBefore = (double) curTime - tmpTime;
-//                    Log.e("TAGGGGG", "curTime: " + curTime+ " , tmpTime: " + tmpTime + " , timeBefore: " + timeBefore + " ,curTime: " + curTime + " , tmpStep: " + tmpStep);
+                    double timeBefore = curTime - tmpStep;
                     map.putDouble(START_TIME, timeBefore);
                 } else {
 
@@ -236,7 +234,6 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                     map.putDouble(END_TIME, curTime);
                     map.putDouble(EVENT_COUNTER, numberStep - lastStepCounter);
                     map.putDouble(TOTAL_STEP, numberStep);
-//                    Log.e("TAGGGGG", "DUOI 3000: " + " - " + (numberStep - lastStepCounter) + " - " + numberStep + " - " +(curTime - timeTmp) + " - " + curTime);
                 }
                 emitValue(map);
             }

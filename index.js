@@ -19,23 +19,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {RemoteMessage} from 'react-native-firebase';
+import { RemoteMessage } from 'react-native-firebase';
 import * as scheduler from './app/core/notifyScheduler';
 
 const _XHR = GLOBAL.originalXMLHttpRequest
   ? GLOBAL.originalXMLHttpRequest
   : (GLOBAL.XMLHttpRequest =
-      GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest);
+    GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest);
 XMLHttpRequest = _XHR;
 
-import {AppRegistry} from 'react-native';
+import { AppRegistry, Platform } from 'react-native';
 // import './app/core/log/console';
 
 // Components
 import App from './App';
-import {name as appName} from './app.json';
+import { name as appName } from './app.json';
 
-import {remoteMessageListener} from './app/core/push';
+import { remoteMessageListener } from './app/core/push';
 import {
   getAutoChange,
   getEvents,
@@ -50,7 +50,7 @@ import {
 } from './app/core/storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import BackgroundFetch from 'react-native-background-fetch';
-import {scheduleTask} from './app/main/components/SettingScreen';
+import { scheduleTask } from './app/main/components/SettingScreen';
 import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
@@ -93,7 +93,7 @@ PushNotification.configure({
   // },
 
   // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
-  onRegistrationError: function(err) {
+  onRegistrationError: function (err) {
     // console.error(err.message, err);
   },
 
@@ -144,7 +144,8 @@ const onBackgroundFetchEvent = async taskId => {
         if (resultSteps) {
           let storageDate = moment(resultSteps?.date).format('DD');
           if (storageDate != today.format('DD')) {
-            getStepsTotal(start, end);
+            if (Platform.OS == 'ios')
+              getStepsTotal(start, end);
           }
         }
         break;

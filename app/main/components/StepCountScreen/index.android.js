@@ -39,7 +39,7 @@ import {
   getAutoChange,
   setStepChange,
   getStepChange,
-  getIsShowNotification
+  getIsShowNotification,
 } from '../../../core/storage';
 import ChartLine from './ChartLine';
 import ChartLineV from './ChartLineV';
@@ -84,8 +84,13 @@ import {
   addStepCounter,
   getListStepDay,
   removeAllStepDay,
-  removeAllStep
+  removeAllStep,
+  getListHistory,
+  addHistory,
+  removeAllHistory
 } from './../../../core/db/SqliteDb'
+
+import KKK from './lll'
 
 
 const options = {
@@ -140,7 +145,7 @@ export const onBackgroundFetchEvent = async taskId => {
         if (resultSteps) {
           let storageDate = moment(resultSteps?.date).format('DD');
           if (storageDate != today.format('DD')) {
-            getStepsTotal();
+            // getStepsTotal();
           }
         }
         break;
@@ -193,17 +198,21 @@ export const onBackgroundFetchEvent = async taskId => {
 
 const StepCount = ({ props, intl, navigation }) => {
 
-  // useEffect(() => {
-  //   // removeAllStepDay(moment(new Date()).unix());
-  //   // removeAllStep()
-  //   getStepsTotal()
-  //   getResultBindingUI()
+  useEffect(() => {
+    // removeAllStepDay(moment(new Date()).unix());
+    // removeAllStep()
+    // console.log('dasdasda')
+    // getStepsTotal()
+    // getResultBindingUI()
 
-  // }, [])
+  }, [])
 
 
   useEffect(() => {
+    // removeAllStep()
+    // removeAllHistory()
     observerStepDrawUI();
+    getListHistoryChart();
   }, [])
 
   const observerStepDrawUI = () => {
@@ -214,13 +223,34 @@ const StepCount = ({ props, intl, navigation }) => {
     })
   }
 
+  const getListHistoryChart = async () => {
+    let start = new moment().subtract(8, 'days').unix()
+    let end = new moment().unix()
+    let steps = await getListHistory(start, end)
+    let list = steps.map(item => {
+      let tmp = JSON.parse(item?.resultStep || {})
+      return {
+        x: moment.unix(item?.starttime).format('DD/MM'),
+        y: tmp?.step || 0,
+      }
+    });
+    console.log('List hiustory', list, steps)
+    setDataChart(list)
+  }
+
   const getResultBindingUI = async () => {
     let result = await getDistances();
-    // console.log('========<<<<<>>>>>>>>>>=======', result)
-    let time = moment().seconds(result?.time || 0).format('mm');
+    let time = result?.time || 0;
+    let h = parseInt(time / 3600)
+    let m = parseInt((time % 3600) / 60)
+    let timeString = ''
+    if (h > 0) {
+      timeString += `${h} - Giờ,\n${m} - Phút`
+    } else
+      timeString += `${m}\nPhút`
     setDistant(result?.distance || 0);
     setCountCarlo(result?.calories || 0);
-    setCountTime(time);
+    setCountTime(timeString);
     setCountStep(numberWithCommas(result?.step || 0));
   }
 
@@ -235,11 +265,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const taskStepCounter = async () => {
     await new Promise(async () => {
-      // let idididid = BackgroundJob.setTimeout(() => {
-      //   console.log('TIMEEEEEOUTTTTT')
-      // }, 8000)
-      // console.log('SETTTTTTTTDIIDDIDIDI', idididid)
-
+      scheduleLastDay()
 
       getStepsTotal(async total => {
         let targetSteps = await getResultSteps();
@@ -251,7 +277,7 @@ const StepCount = ({ props, intl, navigation }) => {
       BackgroundJob.observerStep(async steps => {
         let targetSteps = await getResultSteps();
         let isShowStep = await getIsShowNotification()
-        // console.log('STEP------->>>', steps, targetSteps, isShowStep)
+        // console.log('STEP------->>>', steps)
 
         getStepsTotal(total => {
           BackgroundJob.updateNotification({ ...options, currentStep: total || 0, targetStep: targetSteps, isShowStep: isShowStep })
@@ -261,10 +287,78 @@ const StepCount = ({ props, intl, navigation }) => {
         }
       })
     })
+  }
 
-    scheduleLastDay = () => {
-      console.log('<<<<>>>>>>>>>')
+  const scheduleLastDay = () => {
+    let currentTime = new moment()
+    let tomorow = new moment(currentTime).add(1, 'days')
+    tomorow.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    let timeDiff = tomorow.diff(currentTime, 'seconds')
+    BackgroundJob.setTimeout(() => {
+      saveHistory();
+    }, 1000)
+  }
+
+  const autoChangeStepsTarget = async () => {
+    let auto = await getAutoChange();
+    if (!auto) {
+      return
     }
+    let startDay = new moment().subtract(4).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    let listHistory = await getListHistory(startDay.unix(), new moment().unix())
+    if (listHistory?.length < 3) {
+      return
+    }
+    startDay = new moment().subtract(1).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    listHistory = await getListHistory(startDay.unix(), new moment().unix())
+
+    let stepTarget = await getResultSteps()
+    if (!stepTarget || stepTarget <= 0) {
+      stepTarget = 10000;
+    }
+    let totalSteps = listHistory.reduce((t, e) => {
+      return t + e.step
+    }, 0)
+    let tmp = totalSteps / stepTarget * 100;
+    let configurationStep = stepTarget;
+    let stepDifferen = Math.abs(totalSteps - stepTarget)
+    if (tmp >= 150) {
+      configurationStep += parseInt(stepDifferen * 0.2)
+    } else if (tmp >= 100) {
+      configurationStep += parseInt(stepDifferen * 0.1)
+    } else {
+      configurationStep -= parseInt(stepDifferen * 0.2)
+    }
+    await setResultSteps(configurationStep)
+    BackgroundJob.updateTypeNotification()
+  }
+
+  const saveHistory = async () => {
+    // await removeAllHistory()
+    let tmp = new moment().subtract(1, 'days')
+    let yesterdayStart = tmp.clone().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+    let yesterdayEnd = tmp.clone().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix()
+    let listHistory = await getListHistory(yesterdayStart, yesterdayEnd)
+    if (listHistory?.length > 0) {
+      return
+    }
+    let result = await getDistances();
+    if (Object.keys(result).length <= 0) {
+      return;
+    }
+
+    await addHistory(yesterdayStart, result)
+
+    await removeAllStep()
+    BackgroundJob.updateTypeNotification()
+
+    await autoChangeStepsTarget()
+
+
+    // save data example
+    // KKK.forEach(async element => {
+    //   await addHistory(element.starttime, element?.resultStep || {})
+    // });
   }
 
   const { formatMessage } = intl;
@@ -385,7 +479,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_distance.png')}
             />
-            <Text style={styles.txData}>{distant}</Text>
+            <Text style={styles.txData}>{distant.toFixed(3)}</Text>
             <Text style={styles.txUnit}>{`km`}</Text>
           </View>
           <View style={styles.viewImgData}>
@@ -403,7 +497,7 @@ const StepCount = ({ props, intl, navigation }) => {
             />
 
             <Text style={styles.txData}>{countTime}</Text>
-            <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+            {/* <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text> */}
           </View>
         </View>
         <View style={styles.viewLineChart}>
