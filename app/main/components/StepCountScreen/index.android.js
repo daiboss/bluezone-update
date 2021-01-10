@@ -199,16 +199,6 @@ export const onBackgroundFetchEvent = async taskId => {
 const StepCount = ({ props, intl, navigation }) => {
 
   useEffect(() => {
-    // removeAllStepDay(moment(new Date()).unix());
-    // removeAllStep()
-    // console.log('dasdasda')
-    // getStepsTotal()
-    // getResultBindingUI()
-
-  }, [])
-
-
-  useEffect(() => {
     // removeAllStep()
     // removeAllHistory()
     observerStepDrawUI();
@@ -234,7 +224,7 @@ const StepCount = ({ props, intl, navigation }) => {
         y: tmp?.step || 0,
       }
     });
-    console.log('List hiustory', list, steps)
+    // console.log('List hiustory', list, steps)
     setDataChart(list)
   }
 
@@ -296,7 +286,7 @@ const StepCount = ({ props, intl, navigation }) => {
     let timeDiff = tomorow.diff(currentTime, 'seconds')
     BackgroundJob.setTimeout(() => {
       saveHistory();
-    }, 1000)
+    }, timeDiff)
   }
 
   const autoChangeStepsTarget = async () => {
@@ -313,15 +303,14 @@ const StepCount = ({ props, intl, navigation }) => {
     listHistory = await getListHistory(startDay.unix(), new moment().unix())
 
     let stepTarget = await getResultSteps()
-    if (!stepTarget || stepTarget <= 0) {
-      stepTarget = 10000;
+    if (!listHistory || listHistory.length <= 0) {
+      return
     }
-    let totalSteps = listHistory.reduce((t, e) => {
-      return t + e.step
-    }, 0)
-    let tmp = totalSteps / stepTarget * 100;
-    let configurationStep = stepTarget;
-    let stepDifferen = Math.abs(totalSteps - stepTarget)
+    let tm = JSON.parse(listHistory[0]?.resultStep)
+    let totalSteps = tm?.step || 0
+    let tmp = totalSteps / (stepTarget?.step || 10000) * 100;
+    let configurationStep = stepTarget?.step || 10000;
+    let stepDifferen = Math.abs(totalSteps - (stepTarget?.step || 10000))
     if (tmp >= 150) {
       configurationStep += parseInt(stepDifferen * 0.2)
     } else if (tmp >= 100) {
@@ -329,12 +318,16 @@ const StepCount = ({ props, intl, navigation }) => {
     } else {
       configurationStep -= parseInt(stepDifferen * 0.2)
     }
-    await setResultSteps(configurationStep)
+    await setResultSteps({
+      step: configurationStep,
+      date: new moment().unix()
+    })
     BackgroundJob.updateTypeNotification()
   }
 
   const saveHistory = async () => {
     // await removeAllHistory()
+
     let tmp = new moment().subtract(1, 'days')
     let yesterdayStart = tmp.clone().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     let yesterdayEnd = tmp.clone().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix()

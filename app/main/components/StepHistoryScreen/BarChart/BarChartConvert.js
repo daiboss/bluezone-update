@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator, Platform } from 'react-native'
 import {
     VictoryChart,
     VictoryBar,
@@ -8,6 +8,7 @@ import {
     VictoryLabel
 } from 'victory-native'
 import { red_bluezone } from '../../../../core/color';
+import { Svg } from 'react-native-svg';
 
 const { width } = Dimensions.get('screen')
 const widthItemChart = 14
@@ -21,9 +22,11 @@ const BarChartConvert = ({
     const refScroll = useRef(null)
 
     const [selectedEntry, setSelectedEntry] = useState({ index: -1 })
+    const [isAnim, setIsAnim] = useState(false)
 
     useEffect(() => {
         if (data.length) {
+            setIsAnim(true)
             setSelectedEntry({
                 index: data.length - 1,
                 datum: data[data.length - 1]
@@ -32,9 +35,9 @@ const BarChartConvert = ({
     }, [data])
 
     useEffect(() => {
-        if (selectedEntry.index >= 0 && selectedEntry.index < data[0]?.values?.length) {
-            let entry = data[0]?.values[selectedEntry.index]
-            onGetDataBySelect(entry?.start, entry?.end, entry?.marker)
+        if (selectedEntry.index >= 0 && selectedEntry.index < data?.length) {
+            let entry = data[selectedEntry.index]
+            onGetDataBySelect(entry?.results || {})
         }
     }, [selectedEntry])
 
@@ -48,6 +51,9 @@ const BarChartConvert = ({
                 refScroll.current.scrollToEnd({ animated: true })
             }
         }, 1000)
+        setTimeout(() => {
+            setIsAnim(false)
+        }, 2000)
     }
 
     const clickEntry = (entry) => {
@@ -60,6 +66,74 @@ const BarChartConvert = ({
         }
     }
 
+    const renderMainChart = () => {
+        return (
+            <VictoryChart
+                width={widthChart}
+                domain={{ y: [0, maxDomain] }}
+                padding={{ left: 40, right: 40, top: 50, bottom: 50 }}
+                animate={{
+                    duration: isAnim ? 1000 : 0,
+                    onLoad: { duration: isAnim ? 1000 : 0 },
+                }}
+            >
+                <VictoryAxis
+                    // theme={VictoryTheme.material}
+                    orientation="top"
+                    style={{
+                        axis: {
+                            stroke: "none",
+                        },
+                        grid: {
+                            stroke: '#a1a1a1',
+                        },
+                        ticks: {
+                            size: 0,
+                        },
+                        tickLabels: {
+                            fontSize: 11,
+                            padding: 15,
+                            fill: (e) => {
+                                return e?.index == selectedEntry?.index ? red_bluezone : '#a1a1a1'
+                            },
+                        },
+                    }}
+                />
+                <VictoryBar
+                    barWidth={widthItemChart}
+
+                    events={[{
+                        target: "data",
+                        eventHandlers: {
+                            onPress: (e) => {
+                                return [
+                                    {
+                                        target: "data",
+                                        mutation: clickEntry
+                                    }
+                                ];
+                            }
+                        }
+                    }]}
+                    style={{
+                        data: {
+                            fill: ({ datum }) => {
+                                if (datum?.x == selectedEntry?.datum?.x)
+                                    return red_bluezone
+                                return '#a1a1a1'
+                            }
+                        },
+                    }}
+                    data={data}
+                    cornerRadius={{
+                        bottom: () => 7,
+                        top: () => 7
+                    }}
+                />
+            </VictoryChart>
+        )
+    }
+
     return (
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <ScrollView
@@ -67,70 +141,16 @@ const BarChartConvert = ({
                 ref={refScroll}
                 horizontal
                 showsVerticalScrollIndicator={false} >
-
-                <VictoryChart
-                    width={widthChart}
-                    domain={{ y: [0, maxDomain] }}
-                    padding={{ left: 40, right: 40, top: 50, bottom: 50 }}
-                    animate={{
-                        duration: 1000,
-                        onLoad: { duration: 1000 },
-                    }}
-                >
-                    <VictoryAxis
-                        // theme={VictoryTheme.material}
-                        orientation="top"
-                        style={{
-                            axis: {
-                                stroke: "none",
-                            },
-                            grid: {
-                                stroke: '#a1a1a1',
-                            },
-                            ticks: {
-                                size: 0,
-                            },
-                            tickLabels: {
-                                fontSize: 11,
-                                padding: 15,
-                                fill: (e) => {
-                                    return e?.index == selectedEntry?.index ? red_bluezone : '#a1a1a1'
-                                },
-                            },
-                        }}
-                    />
-                    <VictoryBar
-                        barWidth={widthItemChart}
-
-                        events={[{
-                            target: "data",
-                            eventHandlers: {
-                                onPress: (e) => {
-                                    return [
-                                        {
-                                            target: "data",
-                                            mutation: clickEntry
-                                        }
-                                    ];
-                                }
+                {
+                    Platform.OS == 'android' ? (
+                        <Svg>
+                            {
+                                renderMainChart()
                             }
-                        }]}
-                        style={{
-                            data: {
-                                fill: ({ datum }) => {
-                                    if (datum?.x == selectedEntry?.datum?.x)
-                                        return red_bluezone
-                                    return '#a1a1a1'
-                                }
-                            },
-                        }}
-                        data={data}
-                        cornerRadius={{
-                            bottom: () => 7,
-                            top: () => 7
-                        }}
-                    />
-                </VictoryChart>
+                        </Svg>
+                    ) : renderMainChart()
+                }
+
             </ScrollView>
         </View>
     )

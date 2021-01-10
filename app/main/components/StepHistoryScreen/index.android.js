@@ -160,35 +160,9 @@ const StepCount = ({ props, intl, navigation }) => {
       // end = end/1000;
       // let step = (await getStepChange()) || [];
       let step = await getListHistory(start, end)
-      if(!step || step.length <= 0){
+      if (!step || step.length <= 0) {
         return
       }
-      // console.log('stepppp', step)
-      let result = step.reduce((t, item) => {
-        let tmp = JSON.parse(item?.resultStep || {})
-        return {
-          step: (t?.step || 0) + (tmp?.step || 0),
-          distance: (t?.distance || 0) + (tmp?.distance || 0),
-          calories: (t?.calories || 0) + (tmp?.calories || 0),
-          time: (t?.time || 0) + (tmp?.time || 0),
-        }
-      }, {})
-      let time = result?.time || 0;
-      let h = parseInt(time / 3600)
-      let m = parseInt((time % 3600) / 60)
-      let timeString = ''
-      if (h > 0) {
-        timeString += `${h} - Giờ`
-        if (m > 0) {
-          timeString += `,\n${m} - Phút`
-        }
-      } else
-        timeString += `${m}\nPhút`
-
-      setDistant(result?.distance);
-      setCountCarlo(result?.calories);
-      setTime(timeString);
-      setCountStep(result?.step);
 
       let list = [];
       if (type == 'day') {
@@ -197,6 +171,7 @@ const StepCount = ({ props, intl, navigation }) => {
           return {
             x: moment.unix(item?.starttime).format('DD/MM'),
             y: tmp?.step,
+            results: tmp
           }
         });
       }
@@ -212,15 +187,21 @@ const StepCount = ({ props, intl, navigation }) => {
         }, {});
 
         for (const [key, value] of Object.entries(groups)) {
-          let steps = value.reduce((t, v) => {
+          let results = value.reduce((t, v) => {
             let tmp = JSON.parse(v?.resultStep)
-            return (t + tmp.step)
-          }, 0)
+            return {
+              steps: (t?.steps || 0) + (tmp?.step || 0),
+              calories: (t?.calories || 0) + (tmp?.calories || 0),
+              distance: (t?.distance || 0) + (tmp?.distance || 0),
+              time: (t?.time || 0) + (tmp?.time || 0),
+            }
+          }, {})
           // let label = `Tháng\n${parseInt(key) + 1}`
           let label = `Tháng\n${key < currentMonth ? (parseInt(key) + 1) : 'này'}`
           list.push({
             x: label,
-            y: steps
+            y: results?.steps || 0,
+            results: results
           })
         }
       } else if (type == 'week') {
@@ -235,17 +216,23 @@ const StepCount = ({ props, intl, navigation }) => {
 
         let currentTime = moment();
         for (const [key, value] of Object.entries(groups)) {
-          let steps = value.reduce((t, v) => {
-            let tmp = JSON.parse(v?.resultStep || {})
-            return (t + tmp?.step)
-          }, 0)
+          let results = value.reduce((t, v) => {
+            let tmp = JSON.parse(v?.resultStep)
+            return {
+              steps: (t?.steps || 0) + (tmp?.step || 0),
+              calories: (t?.calories || 0) + (tmp?.calories || 0),
+              distance: (t?.distance || 0) + (tmp?.distance || 0),
+              time: (t?.time || 0) + (tmp?.time || 0),
+            }
+          }, {})
           let startWeek = moment.unix(value[0]?.starttime).startOf('isoWeek')
           let endWeek = moment.unix(value[0]?.starttime).endOf('isoWeek')
           let valueEnd = endWeek.isAfter(currentTime) ? 'nay' : `${endWeek.format('DD')}`
           let label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
           list.push({
             x: label,
-            y: steps
+            y: results?.steps || 0,
+            results: results
           })
         }
       }
@@ -266,9 +253,27 @@ const StepCount = ({ props, intl, navigation }) => {
       navigation.pop();
     } catch (e) { }
   };
-  const onShowMenu = () => {
-    navigation.openDrawer();
-  };
+
+  const updateDistance = (result) => {
+    console.log('updateDistance', result)
+    let time = result?.time || 0;
+    let h = parseInt(time / 3600)
+    let m = parseInt((time % 3600) / 60)
+    let timeString = ''
+    if (h > 0) {
+      timeString += `${h} - Giờ`
+      if (m > 0) {
+        timeString += `,\n${m} - Phút`
+      }
+    } else
+      timeString += `${m}\nPhút`
+
+    setDistant(result?.distance);
+    setCountCarlo(result?.calories);
+    setTime(timeString);
+    setCountStep(result?.steps);
+
+  }
 
   const renderChart = useMemo(() => {
     if (dataChart.length) {
@@ -276,6 +281,7 @@ const StepCount = ({ props, intl, navigation }) => {
         <BarChartConvert
           data={dataChart}
           maxDomain={maxDomain}
+          onGetDataBySelect={updateDistance}
           widthChart={widthChart} />
       )
     }

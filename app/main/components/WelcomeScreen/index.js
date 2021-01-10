@@ -221,8 +221,10 @@ class WelcomeScreen extends React.Component {
     //   return;
     // }
 
-    this.props.navigation.navigate('stepCount');
+    // this.props.navigation.navigate('stepCount');
     // return true;
+
+    this.onSelect()
   };
 
   onLoad = e => {
