@@ -153,20 +153,20 @@ const StepCount = ({ props, intl, navigation }) => {
   const [countCarlo, setCountCarlo] = useState(0);
   const [distant, setDistant] = useState(0);
   const [totalCount, setTotalCount] = useState(10000);
-  const permissions = [
-    {
-      kind: Fitness.PermissionKinds.Steps,
-      access: Fitness.PermissionAccesses.Read,
-    },
-    {
-      kind: Fitness.PermissionKinds.Calories,
-      access: Fitness.PermissionAccesses.Read,
-    },
-    {
-      kind: Fitness.PermissionKinds.Distances,
-      access: Fitness.PermissionAccesses.Read,
-    },
-  ];
+  // const permissions = [
+  //   {
+  //     kind: Fitness.PermissionKinds.Steps,
+  //     access: Fitness.PermissionAccesses.Read,
+  //   },
+  //   {
+  //     kind: Fitness.PermissionKinds.Calories,
+  //     access: Fitness.PermissionAccesses.Read,
+  //   },
+  //   {
+  //     kind: Fitness.PermissionKinds.Distances,
+  //     access: Fitness.PermissionAccesses.Read,
+  //   },
+  // ];
   const [dataChart, setDataChart] = useState([]);
   useEffect(() => {
     var end = new Date();
@@ -179,20 +179,20 @@ const StepCount = ({ props, intl, navigation }) => {
     // let listDate = getListDate(start, end)
     resultSteps();
 
-    getPermission(
-      moment(start.getTime())
-        .format('YYYY-MM-DD')
-        .toString(),
-      moment(end.getTime())
-        .format('YYYY-MM-DD')
-        .toString(),
-      moment(startLine.getTime())
-        .format('YYYY-MM-DD')
-        .toString(),
-      moment(endLine.getTime())
-        .format('YYYY-MM-DD')
-        .toString(),
-    );
+    // getPermission(
+    //   moment(start.getTime())
+    //     .format('YYYY-MM-DD')
+    //     .toString(),
+    //   moment(end.getTime())
+    //     .format('YYYY-MM-DD')
+    //     .toString(),
+    //   moment(startLine.getTime())
+    //     .format('YYYY-MM-DD')
+    //     .toString(),
+    //   moment(endLine.getTime())
+    //     .format('YYYY-MM-DD')
+    //     .toString(),
+    // );
     return () => {
       timeInterval.current && clearInterval(timeInterval.current);
     };
@@ -253,42 +253,42 @@ const StepCount = ({ props, intl, navigation }) => {
     onGetCalories(start, end);
     onGetDistances(start, end);
   };
-  const getPermission = async (start, end, startLine, endLine) => {
-    try {
-      let resPermissions = await Fitness.requestPermissions(permissions);
+  // const getPermission = async (start, end, startLine, endLine) => {
+  //   try {
+  //     let resPermissions = await Fitness.requestPermissions(permissions);
 
-      let resAuth = await Fitness.isAuthorized(permissions);
-      if (resAuth == true) {
-        init();
-        getData(start, end, startLine, endLine);
-      }
-    } catch (error) {
-      getPermission();
-    }
-  };
-  const onGetStepLine = () => {
-    let start = new Date();
-    let end = new Date();
-    start.setDate(start.getDate() - 7);
-    Fitness.getSteps({ startDate: start, endDate: end })
-      .then(res => {
-        if (res.length) {
-          res.pop()
-          let data = res.map((obj, index) => ({
-            x: obj.quantity,
-            y: obj.quantity,
-          }));
-          let timeLine = res.map(obj => {
-            return new Date(obj.startDate).format('dd/MM')
-          })
-          // data.length !== 0 && data.pop()
-          setDataChart(data);
-          setTime(timeLine)
-        } else {
-        }
-      })
-      .catch(err => { });
-  };
+  //     let resAuth = await Fitness.isAuthorized(permissions);
+  //     if (resAuth == true) {
+  //       init();
+  //       getData(start, end, startLine, endLine);
+  //     }
+  //   } catch (error) {
+  //     getPermission();
+  //   }
+  // };
+  // const onGetStepLine = () => {
+  //   let start = new Date();
+  //   let end = new Date();
+  //   start.setDate(start.getDate() - 7);
+  //   Fitness.getSteps({ startDate: start, endDate: end })
+  //     .then(res => {
+  //       if (res.length) {
+  //         res.pop()
+  //         let data = res.map((obj, index) => ({
+  //           x: obj.quantity,
+  //           y: obj.quantity,
+  //         }));
+  //         let timeLine = res.map(obj => {
+  //           return new Date(obj.startDate).format('dd/MM')
+  //         })
+  //         // data.length !== 0 && data.pop()
+  //         setDataChart(data);
+  //         setTime(timeLine)
+  //       } else {
+  //       }
+  //     })
+  //     .catch(err => { });
+  // };
   // const onGetStepsRealTime = (start, end) => {
   //   timeInterval.current = setInterval(() => {
   //     Fitness.getSteps({
@@ -511,19 +511,19 @@ const StepCount = ({ props, intl, navigation }) => {
   const numberWithCommas = x => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
-  const onGetCalories = (start, end) => {
-    Fitness.getCalories({ startDate: start, endDate: end })
-      .then(res => {
-        console.log('ressresresres', res)
-        //
-        var total = 0;
-        res.map(obj => {
-          total += obj.quantity;
-        });
-        setCountCarlo(total);
-      })
-      .catch(err => { });
-  };
+  // const onGetCalories = (start, end) => {
+  //   Fitness.getCalories({ startDate: start, endDate: end })
+  //     .then(res => {
+  //       console.log('ressresresres', res)
+  //       //
+  //       var total = 0;
+  //       res.map(obj => {
+  //         total += obj.quantity;
+  //       });
+  //       setCountCarlo(total);
+  //     })
+  //     .catch(err => { });
+  // };
   const onBack = () => {
     try {
       navigation.pop();
