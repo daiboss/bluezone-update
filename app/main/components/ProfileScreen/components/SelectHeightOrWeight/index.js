@@ -1,5 +1,6 @@
 import { injectIntl, intlShape } from 'react-intl';
 import React, { useEffect, useState } from 'react';
+import AppleHealthKit from 'rn-apple-healthkit';
 import styles from './styles/index.css';
 import { View, TouchableOpacity, Text } from 'react-native';
 import message from '../../../../../core/msg/profile';
@@ -23,6 +24,7 @@ const SelectHeightOrWeight = ({
   visiHeight = false,
   visiWeight = false
 }) => {
+  console.log('listProfilelistProfilelistProfilelistProfile',listProfile,time)
   const { formatMessage } = intl;
   const [isVisibleHeight, setIsVisibleHeight] = useState(visiHeight);
   const [isVisibleWeight, setIsVisibleWeight] = useState(visiWeight);

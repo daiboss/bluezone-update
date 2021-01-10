@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   SafeAreaView,
@@ -10,21 +10,26 @@ import {
   Image,
   processColor,
   Platform,
+  NativeAppEventEmitter,
   ScrollView,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import Fitness from '@ovalmoney/react-native-fitness';
-import {LineChart} from 'react-native-charts-wrapper';
-import {isIPhoneX} from '../../../core/utils/isIPhoneX';
-import {Dimensions} from 'react-native';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import AppleHealthKit from 'rn-apple-healthkit';
+import { LineChart } from 'react-native-charts-wrapper';
+import { isIPhoneX } from '../../../core/utils/isIPhoneX';
+import { Dimensions } from 'react-native';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+
+//db
+
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
 import { RFValue } from '../../../const/multiscreen';
 import message from '../../../core/msg/stepCount';
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
 import * as scheduler from '../../../core/notifyScheduler';
 import {
@@ -50,115 +55,118 @@ import {
 } from '../../../const/storage';
 const screenWidth = Dimensions.get('window').width;
 import BackgroundFetch from 'react-native-background-fetch';
-import {getAbsoluteMonths} from '../../../core/steps';
-export const scheduleTask = async name => {
-  try {
-    await BackgroundFetch.scheduleTask({
-      taskId: name,
-      stopOnTerminate: false,
-      enableHeadless: true,
-      delay: 5000, // milliseconds (5s)
-      forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
-      periodic: true, // Fire once only.
-    })
-      .then(res => {})
-      .catch(err => {});
-  } catch (e) {}
-};
+import { getAbsoluteMonths } from '../../../core/steps';
+const PERMS = AppleHealthKit.Constants.Permissions;
+// export const scheduleTask = async name => {
+//   try {
+//     await BackgroundFetch.scheduleTask({
+//       taskId: name,
+//       stopOnTerminate: false,
+//       enableHeadless: true,
+//       delay: 5000, // milliseconds (5s)
+//       forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
+//       periodic: true, // Fire once only.
+//     })
+//       .then(res => { })
+//       .catch(err => { });
+//   } catch (e) { }
+// };
 
-export const stopScheduleTask = async task => {
-  try {
-    let res = await BackgroundFetch.stop(task);
-  } catch (e) {}
-};
-export const onBackgroundFetchEvent = async taskId => {
-  try {
-    let end = new Date();
-    let start = new Date();
-    end.setDate(end.getDate() + 1);
-    let step = await getSteps(start, end);
+// export const stopScheduleTask = async task => {
+//   try {
+//     let res = await BackgroundFetch.stop(task);
+//   } catch (e) { }
+// };
+// export const onBackgroundFetchEvent = async taskId => {
+//   try {
+//     let end = new Date();
+//     let start = new Date();
+//     end.setDate(end.getDate() + 1);
+//     let step = await getSteps(start, end);
 
-    let today = moment();
-    let resultSteps = await getResultSteps();
+//     let today = moment();
+//     let resultSteps = await getResultSteps();
 
-    switch (taskId) {
-      case autoChange:
-        if (resultSteps) {
-          let storageDate = moment(resultSteps?.date).format('DD');
-          if (storageDate != today.format('DD')) {
-            getStepsTotal(start, end);
-          }
-        }
-        break;
-      case weightWarning:
-        let profiles = (await getProfile()) || [];
-        let profile = profiles.find(
-          item =>
-            getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
-        );
+//     switch (taskId) {
+//       case autoChange:
+//         if (resultSteps) {
+//           let storageDate = moment(resultSteps?.date).format('DD');
+//           if (storageDate != today.format('DD')) {
+//             getStepsTotal(start, end);
+//           }
+//         }
+//         break;
+//       case weightWarning:
+//         let profiles = (await getProfile()) || [];
+//         let profile = profiles.find(
+//           item =>
+//             getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
+//         );
 
-        if (profile) {
-          let nextWeek = new Date().getTime();
-          let isWarning = parseInt(
-            (nextWeek - profile?.date) / (1000 * 3600 * 24),
-          );
+//         if (profile) {
+//           let nextWeek = new Date().getTime();
+//           let isWarning = parseInt(
+//             (nextWeek - profile?.date) / (1000 * 3600 * 24),
+//           );
 
-          if (isWarning >= 7) {
-            scheduler.createWarnningWeightNotification();
-          }
-        }
-        break;
-      case notiStep:
-        if (resultSteps) {
-          if (today.format('HH') >= 19) {
-            scheduler.createWarnningStepNotification(step?.step);
-          }
-        }
-        break;
-      case realtime:
-        scheduler.createShowStepNotification(step?.step);
-        break;
-      default:
-        break;
-    }
-    if (taskId === 'react-native-background-fetch') {
-      // Test initiating a #scheduleTask when the periodic fetch event is received.
-      let auto = await getAutoChange();
+//           if (isWarning >= 7) {
+//             scheduler.createWarnningWeightNotification();
+//           }
+//         }
+//         break;
+//       case notiStep:
+//         if (resultSteps) {
+//           if (today.format('HH') >= 19) {
+//             scheduler.createWarnningStepNotification(step?.step);
+//           }
+//         }
+//         break;
+//       case realtime:
+//         scheduler.createShowStepNotification(step?.step);
+//         break;
+//       default:
+//         break;
+//     }
+//     if (taskId === 'react-native-background-fetch') {
+//       // Test initiating a #scheduleTask when the periodic fetch event is received.
+//       let auto = await getAutoChange();
 
-      if (auto == undefined || auto == null) {
-        await scheduleTask(autoChange);
-        setAutoChange(true);
-      }
-    }
-  } catch (e) {}
-  // Required: Signal completion of your task to native code
-  // If you fail to do this, the OS can terminate your app
-  // or assign battery-blame for consuming too much background-time
-  BackgroundFetch.finish(taskId);
-};
-const StepCount = ({props, intl, navigation}) => {
+//       if (auto == undefined || auto == null) {
+//         await scheduleTask(autoChange);
+//         setAutoChange(true);
+//       }
+//     }
+//   } catch (e) { }
+//   // Required: Signal completion of your task to native code
+//   // If you fail to do this, the OS can terminate your app
+//   // or assign battery-blame for consuming too much background-time
+//   BackgroundFetch.finish(taskId);
+// };
+const StepCount = ({ props, intl, navigation }) => {
   const timeInterval = useRef();
-  const {formatMessage} = intl;
+  let sex
+  const { formatMessage } = intl;
   const [time, setTime] = useState([]);
+  const [countTime,setCountTime] = useState(0)
   const [countStep, setCountStep] = useState(null);
   const [countRest, setCountRest] = useState(0);
   const [countCarlo, setCountCarlo] = useState(0);
   const [distant, setDistant] = useState(0);
   const [totalCount, setTotalCount] = useState(10000);
-  const permissions = [
-    {
-      kind: Fitness.PermissionKinds.Steps,
-      access: Fitness.PermissionAccesses.Read,
-    },
-    {
-      kind: Fitness.PermissionKinds.Calories,
-      access: Fitness.PermissionAccesses.Read,
-    },
-    {
-      kind: Fitness.PermissionKinds.Distances,
-      access: Fitness.PermissionAccesses.Read,
-    },
-  ];
+  // const permissions = [
+  //   {
+  //     kind: Fitness.PermissionKinds.Steps,
+  //     access: Fitness.PermissionAccesses.Read,
+  //   },
+  //   {
+  //     kind: Fitness.PermissionKinds.Calories,
+  //     access: Fitness.PermissionAccesses.Read,
+  //   },
+  //   {
+  //     kind: Fitness.PermissionKinds.Distances,
+  //     access: Fitness.PermissionAccesses.Read,
+  //   },
+  // ];
   const [dataChart, setDataChart] = useState([]);
   useEffect(() => {
     var end = new Date();
@@ -171,20 +179,20 @@ const StepCount = ({props, intl, navigation}) => {
     // let listDate = getListDate(start, end)
     resultSteps();
 
-    getPermission(
-      moment(start.getTime())
-        .format('YYYY-MM-DD')
-        .toString(),
-      moment(end.getTime())
-        .format('YYYY-MM-DD')
-        .toString(),
-      moment(startLine.getTime())
-        .format('YYYY-MM-DD')
-        .toString(),
-      moment(endLine.getTime())
-        .format('YYYY-MM-DD')
-        .toString(),
-    );
+    // getPermission(
+    //   moment(start.getTime())
+    //     .format('YYYY-MM-DD')
+    //     .toString(),
+    //   moment(end.getTime())
+    //     .format('YYYY-MM-DD')
+    //     .toString(),
+    //   moment(startLine.getTime())
+    //     .format('YYYY-MM-DD')
+    //     .toString(),
+    //   moment(endLine.getTime())
+    //     .format('YYYY-MM-DD')
+    //     .toString(),
+    // );
     return () => {
       timeInterval.current && clearInterval(timeInterval.current);
     };
@@ -222,7 +230,7 @@ const StepCount = ({props, intl, navigation}) => {
       await BackgroundFetch.start();
       // setEnabled(value);
       // Load the list with persisted events.
-    } catch (error) {}
+    } catch (error) { }
   };
   useFocusEffect(
     React.useCallback(() => {
@@ -233,11 +241,11 @@ const StepCount = ({props, intl, navigation}) => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
       if (!resultSteps) {
-        setResultSteps({step: totalCount, date: new Date().getTime()});
+        setResultSteps({ step: totalCount, date: new Date().getTime() });
       } else {
         setTotalCount(resultSteps.step);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const getData = (start, end, startLine, endLine) => {
     onGetStepLine();
@@ -245,102 +253,281 @@ const StepCount = ({props, intl, navigation}) => {
     onGetCalories(start, end);
     onGetDistances(start, end);
   };
-  const getPermission = async (start, end, startLine, endLine) => {
-    try {
-      let resPermissions = await Fitness.requestPermissions(permissions);
+  // const getPermission = async (start, end, startLine, endLine) => {
+  //   try {
+  //     let resPermissions = await Fitness.requestPermissions(permissions);
 
-      let resAuth = await Fitness.isAuthorized(permissions);
-      if (resAuth == true) {
-        init();
-        getData(start, end, startLine, endLine);
-      }
-    } catch (error) {
-      getPermission();
-    }
-  };
-  const onGetStepLine = () => {
-    let start = new Date();
-    let end = new Date();
-    start.setDate(start.getDate() - 7);
-    Fitness.getSteps({startDate: start, endDate: end})
-      .then(res => {
-        if (res.length) {
-          // res.pop()
-          let data = res.map((obj,index) => ({
-            x: obj.quantity,
-            y: obj.quantity,
-          }));
-          let timeLine = res.pop().map(obj => {
-            return new Date(obj.startDate).format('dd/MM')
-          })
-          data.length !== 0 && data.pop()
-          setDataChart(data);
-          setTime(timeLine)
-        } else {
+  //     let resAuth = await Fitness.isAuthorized(permissions);
+  //     if (resAuth == true) {
+  //       init();
+  //       getData(start, end, startLine, endLine);
+  //     }
+  //   } catch (error) {
+  //     getPermission();
+  //   }
+  // };
+  // const onGetStepLine = () => {
+  //   let start = new Date();
+  //   let end = new Date();
+  //   start.setDate(start.getDate() - 7);
+  //   Fitness.getSteps({ startDate: start, endDate: end })
+  //     .then(res => {
+  //       if (res.length) {
+  //         res.pop()
+  //         let data = res.map((obj, index) => ({
+  //           x: obj.quantity,
+  //           y: obj.quantity,
+  //         }));
+  //         let timeLine = res.map(obj => {
+  //           return new Date(obj.startDate).format('dd/MM')
+  //         })
+  //         // data.length !== 0 && data.pop()
+  //         setDataChart(data);
+  //         setTime(timeLine)
+  //       } else {
+  //       }
+  //     })
+  //     .catch(err => { });
+  // };
+  // const onGetStepsRealTime = (start, end) => {
+  //   timeInterval.current = setInterval(() => {
+  //     Fitness.getSteps({
+  //       startDate: moment(start).toString(),
+  //       endDate: moment(end).toString(),
+  //     })
+  //       .then(res => {
+  //         onGetCalories(start, end);
+  //         onGetDistances(start, end);
+  //         if (res.length) {
+  //           let total = res.reduce((acc, obj) => {
+  //             return acc + obj.quantity;
+  //           }, 0);
+  //           if (numberWithCommas(total) !== countStep) {
+  //             setCountStep(numberWithCommas(total));
+  //           }
+  //           if (countRest !== totalCount - total) {
+  //             setCountRest(totalCount - total);
+  //           }
+  //         } else {
+  //           setCountStep(0), setCountRest(totalCount - 0);
+  //         }
+  //       })
+  //       .catch(err => {});
+  //   }, 3000);
+  // };
+
+  useEffect(() => {
+    getSex()
+    getStepsRealTime()
+    return NativeAppEventEmitter.removeListener('change:steps')
+  }, [])
+
+  const getSex = async () => {
+    let profiles = (await getProfile()) || [];
+        console.log('proorororororfile',profiles)
+        // sex = profiles.gender
+        if(profiles){
+          sex = profiles[0].gender
         }
-      })
-      .catch(err => {});
-  };
-  const onGetStepsRealTime = (start, end) => {
-    timeInterval.current = setInterval(() => {
-      Fitness.getSteps({
-        startDate: moment(start).toString(),
-        endDate: moment(end).toString(),
-      })
-        .then(res => {
-          onGetCalories(start, end);
-          onGetDistances(start, end);
-          if (res.length) {
-            let total = res.reduce((acc, obj) => {
-              return acc + obj.quantity;
-            }, 0);
-            if (numberWithCommas(total) !== countStep) {
-              setCountStep(numberWithCommas(total));
-            }
-            if (countRest !== totalCount - total) {
-              setCountRest(totalCount - total);
-            }
-          } else {
-            setCountStep(0), setCountRest(totalCount - 0);
-          }
-        })
-        .catch(err => {});
-    }, 3000);
-  };
+       
+  }
+  const getStepsRealTime = () => {
+    const healthKitOptions = {
+      permissions: {
+        read: [
+          PERMS.DateOfBirth,
+          PERMS.Weight,
+          PERMS.StepCount,
+          PERMS.ActiveEnergyBurned
+        ],
+        write: [
+          PERMS.StepCount
+        ]
+      }
+    };
+    AppleHealthKit.initHealthKit(healthKitOptions, (err, res) => {
+      let heightUser
+      let weightUser
+      if (err) {
+        console.log('errr', err)
+        return;
+      }
+      // get Ditance
+      let optionsDistance = {
+        date: (moment()).toISOString(), // optional; default now
+      };
+      AppleHealthKit.getDistanceWalkingRunning(optionsDistance, (err, results) => {
+        if (err) {
+          console.log('errerrerrerrerrerr', err)
+          return;
+        }
+        const total = results.value / 1000;
+        setDistant(total.toFixed(2));
+      });
+      //get Sex
+      // get to localStorage or get to redux
+      //get Height
+      const optionsHeight = {
+        unit: 'cm'
+      }
+      AppleHealthKit.getLatestHeight(optionsHeight, (err, results) => {
+        if (err) {
+          console.log("error getting latest height: ", err);
+          return;
+        }
+        heightUser = results.value
+        // console.log('optionsHeightoptionsHeight',results)
+      });
 
-  const onGetDistances = (start, end) => {
-    Fitness.getDistances({startDate: start, endDate: end})
-      .then(res => {
-        //
-        var total = 0;
-        res.map(obj => {
-          total += obj.quantity;
-        });
-        total = total / 1000;
-        setDistant(total.toFixed(1));
-      })
-      .catch(err => {});
-  };
+      // get weight
+      let optionsWeight = {
+        unit: 'kg'
+      };
+      AppleHealthKit.getLatestWeight(optionsWeight, (err, results) => {
+        if (err) {
+          console.log("error getting latest weight: ", err);
+          return;
+        }
+        weightUser = results.value
+      });
+      //get calo and time
+      let optionsAll = {
+        startDate: (moment().startOf('day')).toISOString(),
+        endDate: (new Date()).toISOString(),
+        type: 'Walking', // one of: ['Walking', 'StairClimbing', 'Running', 'Cycling', 'Workout']
+      };
+      AppleHealthKit.getSamples(optionsAll, (err, results) => {
+        if (err) {
+          return;
+        }
+        let timeInit = 0
+        let initialValue = 0
+        const a = results.reduce((k, i) => {
+          const timeStart = moment(i.start).unix()
+          const timeEnd = moment(i.end).unix()
+          const timeS = timeEnd - timeStart
+          const tb = timeS / i.quantity
+          return k + tb
+        }, initialValue)
+        //get time
+          const timeUse = results.reduce((k, i) => {
+            const timeStart = moment(i.start).unix()
+            const timeEnd = moment(i.end).unix()
+            const timeT = timeEnd - timeStart
+            return k + timeT
+          }, timeInit)
+          console.log('timeUsetimeUsetimeUsetimeUsetimeUse',timeUse)
+          const timePush = timeUse/60
+          setCountTime(timePush.toFixed(2))
+        //get calo
+
+        const stepRate = a / results.length
+        let stepRateFactor
+        if (stepRate < 1.6)
+          stepRateFactor = 0.82;
+        else if ((stepRate >= 1.6) && (stepRate < 1.8))
+          stepRateFactor = 0.88;
+        else if ((stepRate >= 1.8) && (stepRate < 2.0))
+          stepRateFactor = 0.96;
+        else if ((stepRate >= 2.0) && (stepRate < 2.35))
+          stepRateFactor = 1.06;
+        else if ((stepRate >= 2.35) && (stepRate < 2.6))
+          stepRateFactor = 1.35;
+        else if ((stepRate >= 2.6) && (stepRate < 2.8))
+          stepRateFactor = 1.55;
+        else if ((stepRate >= 2.8) && (stepRate < 4.0))
+          stepRateFactor = 1.85;
+        else if (stepRate >= 4.0)
+          stepRateFactor = 2.30;
+        //get sex
+        
+        let sexValue
+        if(sex == 1) sexValue = 0.415
+        else sexValue = 0.413
+        let distanceInStep = sexValue * heightUser * stepRateFactor
+        let speed = distanceInStep * stepRate * 3.6
+        let calo
+        if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+        else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+        setCountCarlo(calo.toFixed(2))
+      });
+
+
+      AppleHealthKit.initStepCountObserver({}, () => { });
+      NativeAppEventEmitter.addListener(
+        'change:steps',
+        (evt) => {
+          fetchStepCountData();
+        }
+      );
+      fetchStepCountData();
+    });
+  }
+
+
+  const fetchStepCountData = () => {
+
+    const today = new Date()
+
+    const options = {
+      startDate: today.toISOString(true),
+      endDate: moment().toISOString()
+    }
+
+    AppleHealthKit.getStepCount({
+      date: options.startDate
+    }, (err, results) => {
+      if (err) {
+        console.log(err)
+        return
+      }
+
+      const steps = (typeof results === 'object')
+        ? Math.floor(results.value)
+        : 0
+
+      if (steps > 0) {
+        setCountStep(steps)
+        const countR = totalCount - steps
+        setCountRest(countR)
+      }
+    })
+  }
+
+  // const onGetDistances = (start, end) => {
+  //   Fitness.getDistances({startDate: start, endDate: end})
+  //     .then(res => {
+  //       //
+  //       var total = 0;
+  //       res.map(obj => {
+  //         total += obj.quantity;
+  //       });
+  //       total = total / 1000;
+  //       setDistant(total.toFixed(1));
+  //     })
+  //     .catch(err => {});
+  // };
 
   const numberWithCommas = x => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
-  const onGetCalories = (start, end) => {
-    Fitness.getCalories({startDate: start, endDate: end})
-      .then(res => {
-        //
-        var total = 0;
-        res.map(obj => {
-          total += obj.quantity;
-        });
-        setCountCarlo(total);
-      })
-      .catch(err => {});
-  };
+  // const onGetCalories = (start, end) => {
+  //   Fitness.getCalories({ startDate: start, endDate: end })
+  //     .then(res => {
+  //       console.log('ressresresres', res)
+  //       //
+  //       var total = 0;
+  //       res.map(obj => {
+  //         total += obj.quantity;
+  //       });
+  //       setCountCarlo(total);
+  //     })
+  //     .catch(err => { });
+  // };
   const onBack = () => {
     try {
       navigation.pop();
-    } catch (e) {}
+    } catch (e) { }
   };
   const onShowMenu = () => {
     navigation.openDrawer();
@@ -421,20 +608,19 @@ const StepCount = ({props, intl, navigation}) => {
             <Text style={styles.txData}>{countCarlo}</Text>
             <Text style={styles.txUnit}>{`kcal`}</Text>
           </View>
-          {/* <View style={styles.viewImgData}>
+          <View style={styles.viewImgData}>
             <Image
               style={styles.img}
               source={require('./images/ic_time.png')}
             />
 
-            <Text style={styles.txData}>{`50`}</Text>
+            <Text style={styles.txData}>{countTime}</Text>
             <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
-          </View> */}
+          </View>
         </View>
         <View style={styles.viewLineChart}>
-          {(dataChart.length && <ChartLineV data={dataChart} time={time} />) ||
+          {(dataChart.length && <ChartLineV totalCount={totalCount} data={dataChart} time={time} />) ||
             null}
-            <ChartLineV data={dataChart} time={time} />
         </View>
         {/* <View style={styles.viewHeight} /> */}
       </ScrollView>
@@ -442,7 +628,7 @@ const StepCount = ({props, intl, navigation}) => {
         style={styles.btnHistory}
         onPress={() =>
           navigation.navigate('stepHistory', {
-            dataHealth: {countStep, countRest, countCarlo, distant},
+            dataHealth: { countStep, countRest, countCarlo, distant },
           })
         }>
         <Text style={styles.txHistory}>

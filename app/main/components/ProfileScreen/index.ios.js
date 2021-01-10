@@ -13,11 +13,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {injectIntl, intlShape} from 'react-intl';
-
+import AppleHealthKit from 'rn-apple-healthkit';
 import Header from '../../../base/components/Header';
 import ButtonIconText from '../../../base/components/ButtonIconText';
 import ModalBase from '../../../base/components/ModalBase';
-
 import {blue_bluezone, red_bluezone} from '../../../core/color';
 import message from '../../../core/msg/profile';
 
@@ -38,6 +37,26 @@ const visibleModal = {
   isVisibleVerifyOTPInvalid: false,
   isVisibleVerifyError: false,
 };
+let options = {
+    permissions: {
+        read: ["Height", "Weight","BiologicalSex"],
+        write: ["Height", "Weight","BiologicalSex"]
+    }
+};
+let optionsWeight = {
+    unit: 'kg', // optional; default 'pound'
+    startDate: (new Date(2016,4,27)).toISOString(), // required
+    endDate: (new Date()).toISOString(), // optional; default now
+    ascending: false,	// optional; default false
+    // limit:10, // optional; default no limit
+  };
+  let optionsHeight = {
+        unit: 'cm', // optional; default 'inch'
+        startDate: (new Date(2016,4,27)).toISOString(), // required
+        endDate: (new Date()).toISOString(), // optional; default now
+        ascending: false, // optional; default false
+        limit:10, // optional; default no limit
+  }
 
 const ProfileScreen = ({route, intl, navigation}) => {
   const {formatMessage} = intl;
@@ -52,7 +71,140 @@ const ProfileScreen = ({route, intl, navigation}) => {
   const [weight, setWeight] = useState(null);
   const onGoBack = () => navigation.goBack();
   const onSelectGender = gender => setGender(gender);
+
+  useEffect(() => {
+    AppleHealthKit.initHealthKit(options, (err, results) => {
+        if (err) {
+            console.log("error initializing Healthkit: ", err);
+            return;
+        }
+     
+        // Height Example
+        AppleHealthKit.getDateOfBirth(null, (err, results) => {
+          console.log('HeightHeight',results)
+        });
+        getCurrentWeight()
+        getWeightUser()
+        getSex()
+        getHeightUser()
+    });
+   
+  },[])
+  const getCurrentWeight = () => {
+      const filter = {
+          unit:'kg'
+      }
+    AppleHealthKit.getLatestWeight(filter, (err, results) => {
+        if (err) {
+          console.log("error getting latest weight: ", err);
+          return;
+        }
+        setWeight(`${results.value} kg`)
+        console.log('getLatestWeightgetLatestWeightgetLatestWeight',results)
+      });
+  }
+  const getWeightUser = () => {
+      console.log('vaovoaova')
+    AppleHealthKit.getWeightSamples(optionsWeight, (err, results) => {
+        if (err) {
+            console.log('resultsresultsresultsresultsERR',err)
+        }
+        // set
+        console.log('resultsresultsresultsresults',results)
+        let newArray = results.reverse().map((item) => {
+            console.log('iteiteitietie',item)
+            // const time = moment(item.startDate).format('DD/MM')
+            // if(time)
+            const year = moment(item.startDate).format('DD/MM')
+            return {
+                y:item.value,
+                marker:item.value,
+                year:year
+            }
+        })
+        let b = []
+        newArray.forEach(item => {
+            if(b.some(e => e.year == item.year)) b.push(item)
+        })
+        let listTime = results.map((item) => {
+            const time = moment(item.startDate).format('DD/MM')
+            return time
+        })
+        console.log('listTimelistTimelistTimelistTimelistTime',listTime)
+
+        let newData = new Set(listTime)
+        let newDataArray = [...newData]
+        // const newArrayCV = new Set
+        const dataCV = {values:b}
+        console.log('newDataArraynewDataArraynewDataArraynewDataArray',newDataArray)
+        setListTime(newDataArray)
+        console.log('resultsresultsresultsresultsCOVBERTETETE',dataCV)
+        setListProfile([dataCV])
+      });
+  }
+  const getSex = () => {
+    AppleHealthKit.getBiologicalSex(null, (err, results) => {
+        if (err) {
+            console.log('getBiologicalSex',err)
+          return;
+        }
+        if(results.value == "female") setGender(0)
+        else setGender(1)
+        console.log('getBiologicalSexgetBiologicalSexgetBiologicalSexSUCCESS',results)
+    });
+  }
+  const getHeightUser = () => {
+    AppleHealthKit.getLatestHeight(optionsHeight, (err, results) => {
+        if (err) {
+            console.log("error getting latest height: ", err);
+            return;
+        }
+        console.log('results,r',results)
+        setHeight(`${results.value} cm`)
+    });
+  }
+  const saveWeightUser = () => {
+      const cv1 = weight.replace('kg','')
+      const cv2 = cv1.replace(',','.')
+      const cv3 = cv2.replaceAll(' ','')
+      let weightOp = {
+        unit:'kg',
+        value: cv3
+      }
+    AppleHealthKit.saveWeight(weightOp,(err, results) => {
+        if (err) {
+            console.log("error saving weight to Healthkit: ", err);
+            return;
+        }
+        console.log('saveWeightUsersaveWeightUsersaveWeightUser',results)
+        // Done
+    });
+  }
+  const saveHeightUser = () => {
+      let heightOp = {
+          unit:'cm',
+          value:height
+      }
+    AppleHealthKit.saveHeight(heightOp, (err, results) => {
+        if (err) {
+          return;
+        }
+        // height successfully saved
+        console.log('saveHeightUsersaveHeightUsersaveHeightUser',results)
+        
+      });
+  }
+
+
+
+
+
+
+
+
+
   const getProfileList = async profiles => {
+      console.log('profilesprofilesprofilesprofiles',profiles)
     let data = profiles
       .sort((a, b) => b.date - a.date)
       .reduce((r, a) => {
@@ -71,13 +223,17 @@ const ProfileScreen = ({route, intl, navigation}) => {
       let time = profiles
         .sort((a, b) => a.date - b.date)
         .map(e => moment(e.date)?.format('DD/MM'));
-      setListTime(time);
-      setListProfile([data]);
+        console.log('timetimetimetimetimetimeCURENT',time)
+    //   setListTime(time);
+      console.log('daldladladladladladladla',data)
+    //   setListProfile([data]);
     } else {
       // setListTime([]);
       // setListProfile([]);
     }
   };
+  
+  
 
   const getListProfile = async () => {
     try {
@@ -123,7 +279,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
         } else {
           profiles.push(obj);
         }
-        getProfileList(profiles);
+        // getProfileList(profiles);
       } catch (error) {}
     }
   };
@@ -144,29 +300,33 @@ const ProfileScreen = ({route, intl, navigation}) => {
         setWeightError(true);
       }
       if (!height || !weight) return;
-      let profiles = (await getProfile()) || [];
 
-      let index = profiles.findIndex(
-        profile =>
-          getAbsoluteMonths(moment(profile.date)) -
-            getAbsoluteMonths(moment()) ==
-          0,
-      );
+      saveHeightUser()
+      saveWeightUser()
+    //   let profiles = (await getProfile()) || [];
 
-      let obj = {
-        gender,
-        height,
-        weight,
-        date: moment()
-          .toDate()
-          .getTime(),
-      };
-      if (index != -1) {
-        profiles.splice(index, 1, obj);
-      } else {
-        profiles.push(obj);
-      }
-      setProfile(profiles);
+    //   let index = profiles.findIndex(
+    //     profile =>
+    //       getAbsoluteMonths(moment(profile.date)) -
+    //         getAbsoluteMonths(moment()) ==
+    //       0,
+    //   );
+
+    //   let obj = {
+    //     gender,
+    //     height,
+    //     weight,
+    //     date: moment()
+    //       .toDate()
+    //       .getTime(),
+    //   };
+    //   if (index != -1) {
+    //     profiles.splice(index, 1, obj);
+    //   } else {
+    //     profiles.push(obj);
+    //   }
+    //   setProfile(profiles);
+
       navigation.navigate('stepCount');
     } catch (error) {
       console.log('error: ', error);
@@ -196,9 +356,10 @@ const ProfileScreen = ({route, intl, navigation}) => {
       } else {
         profiles.push(obj);
       }
-      getProfileList(profiles);
+    //   getProfileList(profiles);
     } catch (error) {}
   };
+  console.log('litslitslitslitsProfile',listProfile,gender,weight,height)
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -222,10 +383,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
               type="height"
               currentHeight={height}
               error={heightError ? formatMessage(message.heightError2) : null}
-              onSelected={height => {
-                setHeightError(false);
-                setHeight(height);
-              }}
+              onSelected={(t) => setHeight(t)}
             />
             <SelectHeightOrWeight
               label={formatMessage(message.weight)}
@@ -236,7 +394,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
               gender={gender}
               listProfile={listProfile}
               time={listTime}
-              onSelected={onSelectWeight}
+              onSelected={(v) => setWeight(v)}
             />
             {height && weight ? (
               <ResultBMI height={height} weight={weight} />
