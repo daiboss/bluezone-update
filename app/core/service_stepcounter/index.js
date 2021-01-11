@@ -7,7 +7,10 @@ import {
 } from 'react-native';
 import { getIsShowNotification } from '../storage';
 import RNBackgroundActions from './ServiceStepCounter';
-const Emitter = new NativeEventEmitter(RNBackgroundActions);
+let Emitter = undefined
+if(Platform.OS == 'android'){
+    Emitter = new NativeEventEmitter(RNBackgroundActions);
+}
 /**
  * @typedef {{taskName: string,
  *            taskTitle: string,
@@ -37,7 +40,7 @@ class BackgroundServer {
         this.uniqueId = 0;
         this.callbacks = {};
 
-        Emitter.addListener('EMIT_EVENT_TIMEOUT', (id) => {
+        Emitter?.addListener('EMIT_EVENT_TIMEOUT', (id) => {
             if (this.callbacks[id]) {
                 const callbackById = this.callbacks[id];
                 const { callback } = callbackById;

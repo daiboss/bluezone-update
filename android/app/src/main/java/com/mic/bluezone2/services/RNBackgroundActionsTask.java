@@ -218,7 +218,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                     map.putDouble(END_TIME, curTime);
                     map.putDouble(EVENT_COUNTER, numberStep - lastStepCounter);
                     map.putDouble(TOTAL_STEP, numberStep);
-                    double tmpStep = (Math.abs(numberStep - lastStepCounter) / 3) * 1000;
+                    double tmpStep = (Math.abs(numberStep - lastStepCounter) / 1.8) * 1000;
                     if (tmpStep < 1000) {
                         tmpStep = 1000;
                     }

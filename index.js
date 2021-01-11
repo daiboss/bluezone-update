@@ -20,7 +20,6 @@
  */
 
 import { RemoteMessage } from 'react-native-firebase';
-import * as scheduler from './app/core/notifyScheduler';
 
 const _XHR = GLOBAL.originalXMLHttpRequest
   ? GLOBAL.originalXMLHttpRequest
@@ -50,7 +49,7 @@ import {
 } from './app/core/storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import BackgroundFetch from 'react-native-background-fetch';
-import { scheduleTask } from './app/main/components/SettingScreen';
+// import { scheduleTask } from './app/main/components/SettingScreen';
 import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
@@ -123,83 +122,83 @@ function getAbsoluteMonths(momentDate) {
   var years = Number(momentDate.format('YYYY'));
   return months + years * 12;
 }
-const onBackgroundFetchEvent = async taskId => {
-  console.log('taskId: ', taskId?.taskId);
-  try {
-    let end = new Date();
-    let start = new Date();
-    end.setDate(end.getDate() + 1);
-    let resPermissions = await Fitness.requestPermissions(permissions);
-    console.log('resPermissions: ', resPermissions);
-    if (Platform.OS == 'ios') {
-      let resAuth = await Fitness.isAuthorized(permissions);
-      console.log('resAuth: ', resAuth);
-    }
-    let step = await getSteps(start, end);
-    console.log('step: ', step);
-    let today = moment();
-    let resultSteps = await getResultSteps();
-    console.log('resultSteps: ', resultSteps);
+// const onBackgroundFetchEvent = async taskId => {
+//   // console.log('taskId: ', taskId?.taskId);
+//   try {
+//     let end = new Date();
+//     let start = new Date();
+//     end.setDate(end.getDate() + 1);
+//     if (Platform.OS == 'ios') {
+//     let resPermissions = await Fitness.requestPermissions(permissions);
+//     console.log('resPermissions: ', resPermissions);
+//       let resAuth = await Fitness.isAuthorized(permissions);
+//       console.log('resAuth: ', resAuth);
+//     }
+//     let step = await getSteps(start, end);
+//     console.log('step: ', step);
+//     let today = moment();
+//     let resultSteps = await getResultSteps();
+//     console.log('resultSteps: ', resultSteps);
 
-    switch (taskId?.taskId) {
-      case autoChange:
-        if (resultSteps) {
-          let storageDate = moment(resultSteps?.date).format('DD');
-          if (storageDate != today.format('DD')) {
-            if (Platform.OS == 'ios')
-              getStepsTotal(start, end);
-          }
-        }
-        break;
-      case weightWarning:
-        let profiles = (await getProfile()) || [];
-        let profile = profiles.find(
-          item =>
-            getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
-        );
+//     switch (taskId?.taskId) {
+//       case autoChange:
+//         if (resultSteps) {
+//           let storageDate = moment(resultSteps?.date).format('DD');
+//           if (storageDate != today.format('DD')) {
+//             if (Platform.OS == 'ios')
+//               getStepsTotal(start, end);
+//           }
+//         }
+//         break;
+//       case weightWarning:
+//         let profiles = (await getProfile()) || [];
+//         let profile = profiles.find(
+//           item =>
+//             getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
+//         );
 
-        if (profile) {
-          let nextWeek = new Date().getTime();
-          let isWarning = parseInt(
-            (nextWeek - profile?.date) / (1000 * 3600 * 24),
-          );
+//         if (profile) {
+//           let nextWeek = new Date().getTime();
+//           let isWarning = parseInt(
+//             (nextWeek - profile?.date) / (1000 * 3600 * 24),
+//           );
 
-          if (isWarning >= 7) {
-            scheduler.createWarnningWeightNotification();
-          }
-        }
-        break;
-      case notiStep:
-        if (resultSteps) {
-          if (today.format('HH') >= 19) {
-            scheduler.createWarnningStepNotification(step?.step);
-          }
-        }
-        break;
-      case realtime:
-        scheduler.createShowStepNotification(step?.step);
-        break;
-      default:
-        break;
-    }
-    if (taskId?.taskId === 'react-native-background-fetch') {
-      // Test initiating a #scheduleTask when the periodic fetch event is received.
-      let auto = await getAutoChange();
-      console.log('auto: ', auto);
-      if (auto == undefined || auto == null) {
-        await scheduleTask(autoChange);
-        setAutoChange(true);
-      }
-    }
-  } catch (e) {
-    console.log('e: aaaaaaaaaaaaaaaaaaa', e);
-  }
-  // Required: Signal completion of your task to native code
-  // If you fail to do this, the OS can terminate your app
-  // or assign battery-blame for consuming too much background-time
-  BackgroundFetch.finish(taskId?.taskId);
-};
-BackgroundFetch.registerHeadlessTask(onBackgroundFetchEvent);
+//           if (isWarning >= 7) {
+//             scheduler.createWarnningWeightNotification();
+//           }
+//         }
+//         break;
+//       case notiStep:
+//         if (resultSteps) {
+//           if (today.format('HH') >= 19) {
+//             scheduler.createWarnningStepNotification(step?.step);
+//           }
+//         }
+//         break;
+//       case realtime:
+//         scheduler.createShowStepNotification(step?.step);
+//         break;
+//       default:
+//         break;
+//     }
+//     if (taskId?.taskId === 'react-native-background-fetch') {
+//       // Test initiating a #scheduleTask when the periodic fetch event is received.
+//       let auto = await getAutoChange();
+//       console.log('auto: ', auto);
+//       if (auto == undefined || auto == null) {
+//         await scheduleTask(autoChange);
+//         setAutoChange(true);
+//       }
+//     }
+//   } catch (e) {
+//     console.log('e: aaaaaaaaaaaaaaaaaaa', e);
+//   }
+//   // Required: Signal completion of your task to native code
+//   // If you fail to do this, the OS can terminate your app
+//   // or assign battery-blame for consuming too much background-time
+//   BackgroundFetch.finish(taskId?.taskId);
+// };
+// BackgroundFetch.registerHeadlessTask(onBackgroundFetchEvent);
 async function handleBackgroundMessage(message: RemoteMessage) {
   const language = await getLanguage();
   await remoteMessageListener(message, language);

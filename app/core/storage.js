@@ -58,6 +58,7 @@ import {
 import Fitness from '@ovalmoney/react-native-fitness';
 import moment from 'moment';
 import { parse } from 'react-native-svg';
+import { Platform } from 'react-native';
 // TODO Can sua de moi du lieu ghi vao storage deu dung JSON.stringify, va lay ra deu dung JSON.parse. Dam bao tuong tich ban cu. thay vi ben ngoai phan tu convert nhu gio.
 const _processInput = input => {
   if (input instanceof Date) {
@@ -318,9 +319,9 @@ const getResultSteps = async () => {
   return _processOutput(result);
 };
 
-const setResultSteps = (value = '') => {
+const setResultSteps = async (value = '') => {
   const _resource = _processInput(value);
-  AsyncStorage.setItem(ResultSteps, _resource);
+  await AsyncStorage.setItem(ResultSteps, _resource);
 };
 
 const getIsShowNotification = async () => {
@@ -397,6 +398,8 @@ const getStepsTotal = async (start, end) => {
   } catch (error) { }
 };
 const getSteps = (start, end) => {
+  if(Platform.OS == 'android')
+  return []
   return new Promise(async (resolve, reject) => {
     try {
       let res = await Fitness.getSteps({
