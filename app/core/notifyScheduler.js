@@ -518,7 +518,7 @@ export const createWarnningStepNotification = async step => {
       autoCancel: true, // (optional) default: true
       largeIcon: 'icon_bluezone', // (optional) default: "icon_bluezone". Use "" for no large icon.
       smallIcon: 'icon_bluezone', // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
-      vibrate: false, // (optional) default: true
+      vibrate: true, // (optional) default: true
       priority: 'max', // (optional) set notification priority, default: high
       visibility: 'private', // (optional) set notification visibility, default: private
       ignoreInForeground: false, // (optional) if true, the notification will not be visible when the app is in the foreground (useful for parity with how iOS notifications appear). should be used in combine with `com.dieam.reactnativepushnotification.notification_foreground` setting
@@ -540,7 +540,7 @@ export const createWarnningStepNotification = async step => {
         (total?.step - step) +
         ' bước để hoàn thành mục tiêu ngày hôm nay', // (required)
       userInfo: {}, // (optional) default: {} (using null throws a JSON value '<null>' error)
-      playSound: false, // (optional) default: true
+      playSound: true, // (optional) default: true
       soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
       number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
       repeatType: 'time', // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
@@ -562,7 +562,7 @@ export const createWarnningStepNotification = async step => {
     // );
   } catch (error) {}
 };
-export const createWarnningWeightNotification = async step => {
+export const createWarnningWeightNotification = async () => {
   try {
     const {iOSShowStepNotification} = configuration;
 
@@ -572,7 +572,7 @@ export const createWarnningWeightNotification = async step => {
       autoCancel: true, // (optional) default: true
       largeIcon: 'icon_bluezone', // (optional) default: "icon_bluezone". Use "" for no large icon.
       smallIcon: 'icon_bluezone', // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
-      vibrate: false, // (optional) default: true
+      vibrate: true, // (optional) default: true
       priority: 'max', // (optional) set notification priority, default: high
       visibility: 'private', // (optional) set notification visibility, default: private
       ignoreInForeground: false, // (optional) if true, the notification will not be visible when the app is in the foreground (useful for parity with how iOS notifications appear). should be used in combine with `com.dieam.reactnativepushnotification.notification_foreground` setting

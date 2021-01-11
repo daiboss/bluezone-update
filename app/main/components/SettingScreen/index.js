@@ -71,7 +71,7 @@ Number.prototype.format = function (n, x) {
 const SettingScreen = ({ intl, navigation }) => {
 
   const { formatMessage } = intl;
-  const [autoTarget, setAutoTarget] = useState(false);
+  const [autoTarget, setAutoTarget] = useState(undefined);
   const [alertStep, setAlertStep] = useState(undefined);
   const [alertTarget, setAlertTarget] = useState(false);
   const [alertBmi, setAlertBmi] = useState(false);
@@ -87,6 +87,9 @@ const SettingScreen = ({ intl, navigation }) => {
       let result = await getResultSteps()
       setTotalStep(parseInt(result.step))
       let res = await getAutoChange();
+      if (res == undefined) {
+        res = true;
+      }
       setAutoTarget(res);
       let res1 = (await getIsShowNotification()) || false;
       setAlertStep(res1);
@@ -107,45 +110,51 @@ const SettingScreen = ({ intl, navigation }) => {
   };
   const autoTargetSwitch = async value => {
     setAutoTarget(!autoTarget);
-    setAutoChange(value);
-    if (value) {
-      await scheduleTask(autoChange);
-    } else {
-      await stopScheduleTask(autoChange);
-    }
+    // if (value) {
+    //   await scheduleTask(autoChange);
+    // } else {
+    //   await stopScheduleTask(autoChange);
+    // }
   };
+
+  useEffect(() => {
+    if (autoTarget != undefined) {
+      setAutoChange(autoTarget);
+    }
+  }, [autoTarget])
+
   const alertStepSwitch = async value => {
     try {
       PushNotification.requestPermissions()
       setAlertStep(!alertStep);
       setRealtime(value);
-      if (value) {
-        await scheduleTask(realtime);
-      } else {
-        await stopScheduleTask(realtime);
-      }
+      // if (value) {
+      //   await scheduleTask(realtime);
+      // } else {
+      //   await stopScheduleTask(realtime);
+      // }
     } catch (error) { }
   };
   const alertTargetSwitch = async value => {
     try {
       setAlertTarget(!alertTarget);
       setNotiStep(value);
-      if (value) {
-        await scheduleTask(notiStep);
-      } else {
-        await stopScheduleTask(notiStep);
-      }
+      // if (value) {
+      //   await scheduleTask(notiStep);
+      // } else {
+      //   await stopScheduleTask(notiStep);
+      // }
     } catch (error) { }
   };
   const alertBmiSwitch = async value => {
     try {
       setAlertBmi(!alertBmi);
       setWeightWarning(value);
-      if (value) {
-        await scheduleTask(weightWarning);
-      } else {
-        await stopScheduleTask(weightWarning);
-      }
+      // if (value) {
+      //   await scheduleTask(weightWarning);
+      // } else {
+      //   await stopScheduleTask(weightWarning);
+      // }
     } catch (error) { }
   };
 
@@ -158,7 +167,8 @@ const SettingScreen = ({ intl, navigation }) => {
     } else {
       setIsShowNotification(false)
     }
-    BackgroundJob.updateTypeNotification()
+    if (Platform.OS == 'android')
+      BackgroundJob.updateTypeNotification()
   }, [alertStep])
 
   const getListShortcut = () => {
@@ -183,7 +193,9 @@ const SettingScreen = ({ intl, navigation }) => {
   const saveStepsTarget = async (steps) => {
     setTotalStep(steps)
     await setResultSteps({ step: steps })
-    BackgroundJob.updateTypeNotification()
+    if (Platform.OS == 'android') {
+      BackgroundJob.updateTypeNotification()
+    }
   }
 
   const showAlertAddShortcut = () => setIsShowModalShortcut(true)

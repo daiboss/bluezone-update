@@ -68,7 +68,7 @@ export const getAllDistance = (data, sex, height, weight) => {
     return {
         step: totalStep,
         distance: distance ? parseFloat(distance / 1000) : 0,
-        calories: parseInt(calories / 1000),
+        calories: parseInt(calories / 100),
         time: time,
     };
 };

@@ -40,6 +40,9 @@ import {
   setStepChange,
   getStepChange,
   getIsShowNotification,
+  getNotiStep,
+  getWeightWarning,
+  getLastWeight
 } from '../../../core/storage';
 import ChartLine from './ChartLine';
 import ChartLineV from './ChartLineV';
@@ -117,6 +120,7 @@ const StepCount = ({ props, intl, navigation }) => {
     // removeAllHistory()
     observerStepDrawUI();
     getListHistoryChart();
+
   }, [])
 
   const observerStepDrawUI = () => {
@@ -161,42 +165,67 @@ const StepCount = ({ props, intl, navigation }) => {
     setDistant(result?.distance || 0);
     setCountCarlo(result?.calories || 0);
     setCountTime(timeString);
-    setCountStep(numberWithCommas(result?.step || 0));
+    setCountStep(result?.step || 0);
   }
 
   useEffect(() => {
     let isRun = BackgroundJob.isRunning();
     if (!isRun) {
       BackgroundJob.start(taskStepCounter, options);
-    } else {
-      // BackgroundJob.stop();
     }
+    // else {
+    //   BackgroundJob.stop();
+    // }
   }, [BackgroundJob])
 
   const taskStepCounter = async () => {
     await new Promise(async () => {
       scheduleLastDay()
+      schedule7PM();
 
       getStepsTotal(async total => {
         let targetSteps = await getResultSteps();
         let isShowStep = await getIsShowNotification()
         // console.log('isShowStepisShowStepisShowStep', isShowStep)
-        BackgroundJob.updateNotification({ ...options, currentStep: total || 0, targetStep: targetSteps, isShowStep: isShowStep })
+        BackgroundJob.updateNotification({ ...options, currentStep: total || 0, targetStep: targetSteps?.step || 10000, isShowStep: isShowStep })
       })
 
       BackgroundJob.observerStep(async steps => {
         let targetSteps = await getResultSteps();
         let isShowStep = await getIsShowNotification()
+        // console.log('isShowStepisShowStepisShowStep', targetSteps, ' - ', targetSteps?.step)
+
         // console.log('STEP------->>>', steps)
 
         getStepsTotal(total => {
-          BackgroundJob.updateNotification({ ...options, currentStep: total || 0, targetStep: targetSteps, isShowStep: isShowStep })
+          // console.log('>>>>>>>>>>>>>>>>>>', targetSteps, ' - ', targetSteps?.step)
+          BackgroundJob.updateNotification({
+            ...options,
+            currentStep: total || 0,
+            targetStep: parseInt(targetSteps?.step || 10000),
+            isShowStep: isShowStep
+          })
         })
         if (steps.stepCounter) {
-          addStepCounter(steps?.startTime, steps?.endTime, steps?.stepCounter)
+          addStepCounter(steps?.startTime,
+            steps?.endTime,
+            steps?.stepCounter)
         }
       })
     })
+  }
+
+  const schedule7PM = async () => {
+    let currentTime = new moment()
+    let timePush = new moment(currentTime).set({ hour: 19, minute: 0, second: 0, millisecond: 0 })
+    if (timePush.isBefore(currentTime)) {
+      timePush.add(1, 'days')
+    }
+    let timeDiff = timePush.diff(currentTime, 'milliseconds')
+    BackgroundJob.setTimeout(() => {
+      pushNotificationWarning()
+      schedule7PM()
+    }, timeDiff)
   }
 
   const scheduleLastDay = () => {
@@ -208,6 +237,22 @@ const StepCount = ({ props, intl, navigation }) => {
       saveHistory();
       scheduleLastDay();
     }, timeDiff)
+  }
+
+  const pushNotificationWarning = async () => {
+    let tmpStep = await getNotiStep()
+    if (tmpStep) {
+      let totalStep = await getStepsTotal();
+      scheduler.createWarnningStepNotification(totalStep || 0)
+    }
+    let tmpWeight = await getWeightWarning()
+    if (tmpWeight) {
+      let lastUpdate = await getLastWeight()
+      let preDay = new moment().subtract(7, 'days')
+      if (preDay.isSame(new moment.unix(lastUpdate))) {
+        scheduler.createWarnningWeightNotification()
+      }
+    }
   }
 
   const autoChangeStepsTarget = async () => {
@@ -248,8 +293,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const saveHistory = async () => {
     // await removeAllHistory()
-    console.log('SAVEHISTORYYYYY')
-
     let tmp = new moment().subtract(1, 'days')
     let yesterdayStart = tmp.clone().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     let yesterdayEnd = tmp.clone().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix()
@@ -366,9 +409,9 @@ const StepCount = ({ props, intl, navigation }) => {
                     resizeMode={'contain'}
                     height={30}
                   />
-                  <Text style={styles.txCountStep}>{countStep}</Text>
+                  <Text style={styles.txCountStep}>{numberWithCommas(countStep || 0)}</Text>
                   <Text style={styles.txCountTarget}>
-                    {formatMessage(message.target)} {totalCount}
+                    {formatMessage(message.target)} {numberWithCommas(totalCount || 0)}
                   </Text>
                 </View>
               )}
@@ -383,8 +426,7 @@ const StepCount = ({ props, intl, navigation }) => {
             />
             <Text style={styles.txData}>{`${formatMessage(
               message.stepsToTarget,
-            )} ${totalCount - countStep > 0 ? totalCount - countStep : 0
-              }`}</Text>
+            )} ${numberWithCommas((totalCount - countStep) > 0 ? (totalCount - countStep) : 0)}`}</Text>
             <Text style={styles.txUnit}>{`${formatMessage(
               message.stepsNormal,
             )}`}</Text>

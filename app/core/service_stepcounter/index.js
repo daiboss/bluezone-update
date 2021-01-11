@@ -73,6 +73,7 @@ class BackgroundServer {
      * }}
      */
     async updateNotification(taskData) {
+        console.log('taskDatataskData', taskData)
         if (Platform.OS !== 'android') return;
         if (!this.isRunning())
             throw new Error('A BackgroundAction must be running before updating the notification');
