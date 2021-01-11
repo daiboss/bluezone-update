@@ -131,8 +131,10 @@ const onBackgroundFetchEvent = async taskId => {
     end.setDate(end.getDate() + 1);
     let resPermissions = await Fitness.requestPermissions(permissions);
     console.log('resPermissions: ', resPermissions);
-    let resAuth = await Fitness.isAuthorized(permissions);
-    console.log('resAuth: ', resAuth);
+    if (Platform.OS == 'ios') {
+      let resAuth = await Fitness.isAuthorized(permissions);
+      console.log('resAuth: ', resAuth);
+    }
     let step = await getSteps(start, end);
     console.log('step: ', step);
     let today = moment();

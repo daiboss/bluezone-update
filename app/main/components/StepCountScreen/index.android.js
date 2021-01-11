@@ -224,8 +224,14 @@ const StepCount = ({ props, intl, navigation }) => {
         y: tmp?.step || 0,
       }
     });
-    // console.log('List hiustory', list, steps)
+    // console.log('List hiustory', list, start, end)
+    let listTime = []
+    list.forEach(e => {
+      listTime.push(e?.x)
+    });
     setDataChart(list)
+    console.log('listTime', listTime)
+    setTime(listTime)
   }
 
   const getResultBindingUI = async () => {
@@ -286,6 +292,7 @@ const StepCount = ({ props, intl, navigation }) => {
     let timeDiff = tomorow.diff(currentTime, 'seconds')
     BackgroundJob.setTimeout(() => {
       saveHistory();
+      scheduleLastDay();
     }, timeDiff)
   }
 
