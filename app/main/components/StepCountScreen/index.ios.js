@@ -390,6 +390,7 @@ const StepCount = ({ props, intl, navigation }) => {
         }
         weightUser = results.value
       });
+     
       //get calo and time
       let optionsAll = {
         startDate: (moment().startOf('day')).toISOString(),
@@ -418,7 +419,7 @@ const StepCount = ({ props, intl, navigation }) => {
           }, timeInit)
           console.log('timeUsetimeUsetimeUsetimeUsetimeUse',timeUse)
           const timePush = timeUse/60
-          setCountTime(timePush.toFixed(2))
+          setCountTime(timePush.toFixed(0))
         //get calo
 
         const stepRate = a / results.length
