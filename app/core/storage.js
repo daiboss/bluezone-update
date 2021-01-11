@@ -53,7 +53,8 @@ import {
   notiStep,
   weightWarning,
   stepChange,
-  IsShowNotification
+  IsShowNotification,
+  lastWeightWarning
 } from '../const/storage';
 import Fitness from '@ovalmoney/react-native-fitness';
 import moment from 'moment';
@@ -398,8 +399,8 @@ const getStepsTotal = async (start, end) => {
   } catch (error) { }
 };
 const getSteps = (start, end) => {
-  if(Platform.OS == 'android')
-  return []
+  if (Platform.OS == 'android')
+    return []
   return new Promise(async (resolve, reject) => {
     try {
       let res = await Fitness.getSteps({
@@ -432,7 +433,7 @@ const getAutoChange = async () => {
   return _processOutput(result);
 };
 
-const setAutoChange = (value = '') => {
+const setAutoChange = (value = true) => {
   const _resource = _processInput(value);
   AsyncStorage.setItem(autoChange, _resource);
 };
@@ -454,12 +455,24 @@ const getNotiStep = async () => {
 
 const setNotiStep = (value = '') => {
   const _resource = _processInput(value);
+  setLastWeight()
   AsyncStorage.setItem(notiStep, _resource);
 };
 
 const getWeightWarning = async () => {
   const result = await AsyncStorage.getItem(weightWarning);
   return _processOutput(result);
+};
+
+const getLastWeight = async () => {
+  const result = await AsyncStorage.getItem(lastWeightWarning);
+  return _processOutput(result || new moment().unix());
+}
+
+const setLastWeight = () => {
+  let value = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+  const _resource = _processInput(value);
+  AsyncStorage.setItem(lastWeightWarning, _resource);
 };
 
 const setWeightWarning = (value = '') => {
@@ -531,5 +544,6 @@ export {
   setResultSteps,
   getResultSteps,
   getIsShowNotification,
-  setIsShowNotification
+  setIsShowNotification,
+  getLastWeight
 };

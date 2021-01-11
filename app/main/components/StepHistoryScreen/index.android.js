@@ -30,7 +30,7 @@ import BartChartHistory from './BarChart/BartChartHistory';
 
 import { objectOf } from 'prop-types';
 import { getProfile, getStepChange } from '../../../core/storage';
-import { getAbsoluteMonths, getAllDistance, gender } from '../../../core/calculation_steps';
+import { getAbsoluteMonths, getAllDistance, gender, getDistances } from '../../../core/calculation_steps';
 import { getListHistory, removeAllHistory } from '../../../core/db/SqliteDb';
 import BarChartConvert from './BarChart/BarChartConvert';
 Date.prototype.getWeek = function (dowOffset) {
@@ -81,22 +81,17 @@ const StepCount = ({ props, intl, navigation }) => {
   const [distant, setDistant] = useState(0);
   const [dataChart, setDataChart] = useState([]);
   const [maxDomain, setMaxDomain] = useState(10000)
+  const [startTime, setStartTime] = useState(new moment(new Date()).startOf('year').unix())
+  const [endTime, setEndTime] = useState(new moment(new Date()).unix())
+  const [listStepToday, setListStepToday] = useState(undefined)
+  const [listTotalSteps, setListTotalSteps] = useState([])
 
   const [widthChart, setWidthChart] = useState(screenWidth)
 
   useEffect(() => {
-    let end = new moment().unix();
-    let start = new moment().startOf('month').unix();
     getDataHealth(
-      start,
-      // 1638291600,
-      end,
       'day',
     );
-    // let endTime = new moment()
-    // let startTime = endTime.clone().startOf('month')
-    // let listData = await getListHistory(startTime.unix(), endTime.unix())
-    // console.log('LISTTTDARAADA', listData)
     setSelectDate(true);
     setSelectMonth(false);
     setSelectWeek(false);
@@ -104,31 +99,16 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const onSetSelect = type => async () => {
     if (type == 1) {
-      let end = new moment().unix();
-      let start = new moment().startOf('month').unix();
       getDataHealth(
-        start,
-        // 1638291600,
-        end,
         'day',
       );
-      // let endTime = new moment()
-      // let startTime = endTime.clone().startOf('month')
-      // let listData = await getListHistory(startTime.unix(), endTime.unix())
-      // console.log('LISTTTDARAADA', listData)
       setSelectDate(true);
       setSelectMonth(false);
       setSelectWeek(false);
       return;
     }
     if (type == 2) {
-      let end = new moment().unix();
-      let start = new moment().startOf('year').unix();
       getDataHealth(
-        // start.format('yyyy-MM-dd'),
-        // end.format('yyyy-MM-dd'),
-        start,
-        end,
         'week',
       );
       setSelectDate(false);
@@ -137,13 +117,7 @@ const StepCount = ({ props, intl, navigation }) => {
       return;
     }
     if (type == 3) {
-      let end = new moment().unix();
-      let start = new moment().startOf('year').unix();
       getDataHealth(
-        // start.format('yyyy-MM-dd'),
-        // end.format('yyyy-MM-dd'),
-        start,
-        end,
         'month',
       );
       setSelectDate(false);
@@ -152,14 +126,36 @@ const StepCount = ({ props, intl, navigation }) => {
       return;
     }
   };
-  const getDataHealth = async (start, end, type) => {
+  const getDataHealth = async (type) => {
     // await removeAllHistory()
-    // end = end + 31536000
+
+    let stepToday = listStepToday
+    let step = [...listTotalSteps]
+
+    if (!stepToday) {
+      let result = await getDistances();
+      let time = result?.time || 0;
+
+      let start = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+      let jj = JSON.stringify({
+        step: result?.step || 0,
+        distance: result?.distance || 0,
+        calories: result?.calories || 0,
+        time: time
+      })
+      stepToday = {
+        starttime: start,
+        resultStep: jj
+      }
+      setListStepToday(stepToday)
+    }
+    if (step.length == 0) {
+      step = await getListHistory(startTime, endTime)
+      step.push(stepToday)
+      setListTotalSteps(step)
+    }
+
     try {
-      // start = start/1000;
-      // end = end/1000;
-      // let step = (await getStepChange()) || [];
-      let step = await getListHistory(start, end)
       if (!step || step.length <= 0) {
         return
       }
@@ -169,7 +165,9 @@ const StepCount = ({ props, intl, navigation }) => {
         list = step.map(item => {
           let tmp = JSON.parse(item?.resultStep || {})
           return {
-            x: moment.unix(item?.starttime).format('DD/MM'),
+            x: (new moment().isSame(new moment.unix(endTime), 'days')) ?
+              'Hôm nay' :
+              moment.unix(item?.starttime).format('DD/MM'),
             y: tmp?.step,
             results: tmp
           }
@@ -227,12 +225,12 @@ const StepCount = ({ props, intl, navigation }) => {
           }, {})
           let startWeek = moment.unix(value[0]?.starttime).startOf('isoWeek')
           let endWeek = moment.unix(value[0]?.starttime).endOf('isoWeek')
-          let valueEnd = endWeek.isAfter(currentTime) ? 'nay' : `${endWeek.format('DD')}`
+          let valueEnd = (endWeek.isAfter(currentTime) || endWeek.isSame(currentTime)) ? 'nay' : `${endWeek.format('DD')}`
           let label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
           list.push({
             x: label,
             y: results?.steps || 0,
-            results: results
+            results: results,
           })
         }
       }
@@ -255,7 +253,6 @@ const StepCount = ({ props, intl, navigation }) => {
   };
 
   const updateDistance = (result) => {
-    console.log('updateDistance', result)
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
     let m = parseInt((time % 3600) / 60)
@@ -271,18 +268,26 @@ const StepCount = ({ props, intl, navigation }) => {
     setDistant(result?.distance);
     setCountCarlo(result?.calories);
     setTime(timeString);
-    setCountStep(result?.steps);
+    setCountStep(result?.steps || result?.step || 0);
 
   }
 
   const renderChart = useMemo(() => {
     if (dataChart.length) {
       return (
-        <BarChartConvert
-          data={dataChart}
-          maxDomain={maxDomain}
-          onGetDataBySelect={updateDistance}
-          widthChart={widthChart} />
+        <View>
+          <Text style={{
+            fontSize: 16,
+            fontWeight: '600',
+            textAlign: 'center',
+            marginBottom: 14
+          }}>{new moment().format('YYYY')}</Text>
+          <BarChartConvert
+            data={dataChart}
+            maxDomain={maxDomain}
+            onGetDataBySelect={updateDistance}
+            widthChart={widthChart} />
+        </View>
       )
     }
   }, [dataChart])
@@ -300,7 +305,7 @@ const StepCount = ({ props, intl, navigation }) => {
             fontSize: fontSize.bigger,
           }}
         />
-        <View style={styles.viewLineChart}>
+        <View style={[styles.viewLineChart, { marginTop: 16 }]}>
           {/* {dataChart?.length ? <BartChartHistory
             data={dataChart} /> : null} */}
           {renderChart}

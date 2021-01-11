@@ -96,8 +96,8 @@ public final class BackgroundTaskOptions {
         return extras.getBundle("progressBar");
     }
 
-    public double getStepsTarget() {
-        return extras.getDouble("targetStep");
+    public int getStepsTarget() {
+        return extras.getInt("targetStep");
     }
 
     public double getCurrentSteps() {
