@@ -133,16 +133,16 @@ class ChartLine extends React.Component {
 
         <VictoryGroup
           style={{ labels: { fill: 'none' } }}
-          // data={this.state.dataConvert}
-          data={[
-            { x: 1, y: 3000 },
-            { x: 2, y: 4000 },
-            { x: 3, y: 5000 },
-            { x: 4, y: 3000 },
-            { x: 5, y: 6000 },
-            { x: 6, y: 10000 },
-            { x: 7, y: 3000 },
-          ]}
+          data={this.state.dataConvert}
+          // data={[
+          //   { x: 1, y: 3000 },
+          //   { x: 2, y: 4000 },
+          //   { x: 3, y: 5000 },
+          //   { x: 4, y: 3000 },
+          //   { x: 5, y: 6000 },
+          //   { x: 6, y: 10000 },
+          //   { x: 7, y: 3000 },
+          // ]}
         >
           <VictoryArea
             interpolation="natural"

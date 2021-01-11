@@ -11,13 +11,13 @@ import {
 } from 'react-native';
 // import Header from '../Header';
 import Header from '../../../base/components/Header';
-import {isIPhoneX} from '../../../core/utils/isIPhoneX';
+import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 
 // import { RNAddShortcuts } from 'react-native-add-shortcuts'
 import message from '../../../core/msg/setting';
 import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
-import * as scheduler from '../../../core/notifyScheduler';
+// import * as scheduler from '../../../core/notifyScheduler';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
 import {
   FCM_CHANNEL_ID,
@@ -150,7 +150,7 @@ const SettingScreen = ({ intl, navigation }) => {
   };
 
   useEffect(() => {
-    if(alertStep == undefined){
+    if (alertStep == undefined) {
       return;
     }
     if (alertStep) {
@@ -180,9 +180,10 @@ const SettingScreen = ({ intl, navigation }) => {
   const openModalTarget = () => setIsShowModalTarget(true)
   const closeModalTarget = () => setIsShowModalTarget(false)
 
-  const saveStepsTarget = (steps) => {
+  const saveStepsTarget = async (steps) => {
     setTotalStep(steps)
-    setResultSteps({ step: steps })
+    await setResultSteps({ step: steps })
+    BackgroundJob.updateTypeNotification()
   }
 
   const showAlertAddShortcut = () => setIsShowModalShortcut(true)
@@ -217,18 +218,18 @@ const SettingScreen = ({ intl, navigation }) => {
         onCloseModal={closeAlertAddShortcut}
         isVisibleModal={isShowModalShortcut}
       />
-      <Header 
-      onBack={onBack} 
-      onShowMenu={onShowMenu}
-      title={'Cài đặt'}
-      colorIcon={'#FE4358'}
-      styleHeader={styles.header}
-      styleTitle={{
-        color: '#000',
-        fontSize: fontSize.bigger,
-      }}
-      // showMenu={true}
-      onShowMenu={onShowMenu}
+      <Header
+        onBack={onBack}
+        onShowMenu={onShowMenu}
+        title={'Cài đặt'}
+        colorIcon={'#FE4358'}
+        styleHeader={styles.header}
+        styleTitle={{
+          color: '#000',
+          fontSize: fontSize.bigger,
+        }}
+        // showMenu={true}
+        onShowMenu={onShowMenu}
       />
       <View style={styles.viewTx}>
         <Text style={styles.txLabel}>

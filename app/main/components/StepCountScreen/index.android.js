@@ -110,92 +110,6 @@ const options = {
   isShowStep: true
 };
 
-export const scheduleTask = async name => {
-  try {
-    await BackgroundFetch.scheduleTask({
-      taskId: name,
-      stopOnTerminate: false,
-      enableHeadless: true,
-      delay: 5000, // milliseconds (5s)
-      forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
-      periodic: true, // Fire once only.
-    })
-      .then(res => { })
-      .catch(err => { });
-  } catch (e) { }
-};
-
-export const stopScheduleTask = async task => {
-  try {
-    let res = await BackgroundFetch.stop(task);
-  } catch (e) { }
-};
-
-export const onBackgroundFetchEvent = async taskId => {
-  try {
-    let end = new Date();
-    let start = new Date();
-    end.setDate(end.getDate() + 1);
-
-    let today = moment();
-    let resultSteps = await getResultSteps();
-
-    switch (taskId) {
-      case autoChange:
-        if (resultSteps) {
-          let storageDate = moment(resultSteps?.date).format('DD');
-          if (storageDate != today.format('DD')) {
-            // getStepsTotal();
-          }
-        }
-        break;
-      case weightWarning:
-        let profiles = (await getProfile()) || [];
-        let profile = profiles.find(
-          item =>
-            getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
-        );
-
-        if (profile) {
-          let nextWeek = new Date().getTime();
-          let isWarning = parseInt(
-            (nextWeek - profile?.date) / (1000 * 3600 * 24),
-          );
-
-          if (isWarning >= 7) {
-            scheduler.createWarnningWeightNotification();
-          }
-        }
-        break;
-      case notiStep:
-        if (resultSteps) {
-          if (today.format('HH') >= 19) {
-            // scheduler.createWarnningStepNotification(step?.step);
-          }
-        }
-        break;
-      case realtime:
-        // scheduler.createShowStepNotification(step?.step);
-        break;
-      default:
-        break;
-    }
-    if (taskId === 'react-native-background-fetch') {
-      // Test initiating a #scheduleTask when the periodic fetch event is received.
-      let auto = await getAutoChange();
-
-      if (auto == undefined || auto == null) {
-        await scheduleTask(autoChange);
-        setAutoChange(true);
-      }
-    }
-  } catch (e) { }
-  // Required: Signal completion of your task to native code
-  // If you fail to do this, the OS can terminate your app
-  // or assign battery-blame for consuming too tiêuh background-time
-  BackgroundFetch.finish(taskId);
-};
-
 const StepCount = ({ props, intl, navigation }) => {
 
   useEffect(() => {
@@ -230,7 +144,7 @@ const StepCount = ({ props, intl, navigation }) => {
       listTime.push(e?.x)
     });
     setDataChart(list)
-    console.log('listTime', listTime)
+    // console.log('listTime', listTime)
     setTime(listTime)
   }
 
@@ -255,7 +169,7 @@ const StepCount = ({ props, intl, navigation }) => {
     if (!isRun) {
       BackgroundJob.start(taskStepCounter, options);
     } else {
-      BackgroundJob.stop();
+      // BackgroundJob.stop();
     }
   }, [BackgroundJob])
 
@@ -289,7 +203,7 @@ const StepCount = ({ props, intl, navigation }) => {
     let currentTime = new moment()
     let tomorow = new moment(currentTime).add(1, 'days')
     tomorow.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-    let timeDiff = tomorow.diff(currentTime, 'seconds')
+    let timeDiff = tomorow.diff(currentTime, 'milliseconds')
     BackgroundJob.setTimeout(() => {
       saveHistory();
       scheduleLastDay();
@@ -334,6 +248,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const saveHistory = async () => {
     // await removeAllHistory()
+    console.log('SAVEHISTORYYYYY')
 
     let tmp = new moment().subtract(1, 'days')
     let yesterdayStart = tmp.clone().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
