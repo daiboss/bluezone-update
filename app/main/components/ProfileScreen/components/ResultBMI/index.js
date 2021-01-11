@@ -14,7 +14,7 @@ const ResultBMI = ({height, weight, intl, resultScreen}) => {
       let w = weight.substring(0, weight.length - 4).replace(',', '.');
       console.log('w: ', w);
       let totalBmi = parseFloat(w / (h * h)).toFixed(1);
-      console.log('totalBmi: ', totalBmi);
+      console.log('totalBmiiiiiiiiiiii: ', totalBmi);
       setBmi(totalBmi);
     }
     handleAnim();

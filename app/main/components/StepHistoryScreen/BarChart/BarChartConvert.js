@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator, Platform } from 'react-native'
+import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator,Platform } from 'react-native'
 import {
     VictoryChart,
     VictoryBar,
@@ -20,7 +20,6 @@ const BarChartConvert = ({
     widthChart = width
 }) => {
     const refScroll = useRef(null)
-
     const [selectedEntry, setSelectedEntry] = useState({ index: -1 })
     const [isAnim, setIsAnim] = useState(false)
 
@@ -34,10 +33,19 @@ const BarChartConvert = ({
         }
     }, [data])
 
+    // useEffect(() => {
+    //     console.log('vaovaovaovaova22',selectedEntry,data[0])
+    //     if (selectedEntry.index >= 0 && selectedEntry.index < data[0]?.values?.length) {
+    //         console.log('vaovaovaovaova')
+    //         let entry = data[0]?.values[selectedEntry.index]
+    //         onGetDataBySelect(entry?.start, entry?.end, entry?.marker)
+    //     }
+    // }, [selectedEntry])
+
     useEffect(() => {
         if (selectedEntry.index >= 0 && selectedEntry.index < data?.length) {
             let entry = data[selectedEntry.index]
-            onGetDataBySelect(entry?.results || {})
+            Platform.OS == 'android' ? onGetDataBySelect(entry?.results || {}) : onGetDataBySelect(entry || {})
         }
     }, [selectedEntry])
 

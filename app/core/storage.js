@@ -57,6 +57,7 @@ import {
 } from '../const/storage';
 import Fitness from '@ovalmoney/react-native-fitness';
 import moment from 'moment';
+import { parse } from 'react-native-svg';
 // TODO Can sua de moi du lieu ghi vao storage deu dung JSON.stringify, va lay ra deu dung JSON.parse. Dam bao tuong tich ban cu. thay vi ben ngoai phan tu convert nhu gio.
 const _processInput = input => {
   if (input instanceof Date) {
@@ -71,10 +72,12 @@ const _processOutput = output => {
   }
   let result;
   try {
-    result = JSON.parse(output);
+    result = JSON.parse(output.toString());
+    // return JSON.parse(output)
   } catch (e) {
     // Cac truong hop string duoc luu thang vao storage ma khong qua JSON.stringify truoc day se tam thoi nhay vao catch nay.
-    result = output;
+    result = output
+    // return output;
   }
   return result;
 };
@@ -301,6 +304,7 @@ const setQuestionFAQ = (value = '') => {
 
 const getProfile = async () => {
   const result = await AsyncStorage.getItem(Profile);
+  // console.log('resultresultresultresult',result)
   return _processOutput(result);
 };
 

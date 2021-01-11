@@ -68,6 +68,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
       }, Object.create(null));
 
     if (profiles?.length) {
+      console.log('profilesprofilesprofilesprofiles',profiles)
       let time = profiles
         .sort((a, b) => a.date - b.date)
         .map(e => moment(e.date)?.format('DD/MM'));
@@ -128,9 +129,9 @@ const ProfileScreen = ({route, intl, navigation}) => {
       } catch (error) {}
     }
   };
-  useEffect(() => {
-    updateData();
-  }, [weight]);
+  // useEffect(() => {
+  //   updateData();
+  // }, [weight]);
   function getAbsoluteMonths(momentDate) {
     var months = Number(momentDate.format('MM'));
     var years = Number(momentDate.format('YYYY'));

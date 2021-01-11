@@ -5,6 +5,7 @@ import {
   StatusBar,
   Text,
   TouchableOpacity,
+  NativeAppEventEmitter,
   StyleSheet,
   ImageBackground,
   Image,
@@ -17,6 +18,7 @@ import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 import { Dimensions } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { ScrollView } from 'react-native-gesture-handler';
+import AppleHealthKit from 'rn-apple-healthkit';
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
@@ -29,9 +31,13 @@ import { useRoute } from '@react-navigation/native';
 import dateUtils from 'mainam-react-native-date-utils';
 import BartChartHistory from './BarChart/BartChartHistory';
 import BarChartConvert from './BarChart/BarChartConvert';
-
+import {
+  getProfile,
+} from '../../../core/storage';
 import { objectOf } from 'prop-types';
 import { DATA_STEPS } from './BarChart/data';
+const PERMS = AppleHealthKit.Constants.Permissions;
+
 Date.prototype.getWeek = function (dowOffset) {
   /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
 
@@ -65,6 +71,7 @@ Date.prototype.getWeek = function (dowOffset) {
 };
 const screenWidth = Dimensions.get('window').width;
 const StepCount = ({ props, intl, navigation }) => {
+  let sex
   const route = useRoute();
 
   const { formatMessage } = intl;
@@ -72,7 +79,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const [maxDomain, setMaxDomain] = useState(10000)
 
   const [widthChart, setWidthChart] = useState(screenWidth)
-
+  const [countTime,setCountTime] = useState(0)
   const [selectDate, setSelectDate] = useState(true);
   const [selectWeek, setSelectWeek] = useState(false);
   const [selectMonth, setSelectMonth] = useState(false);
@@ -159,6 +166,7 @@ const StepCount = ({ props, intl, navigation }) => {
     return days;
   };
   const getDataHealth = (start, end, type) => {
+    console.log('dadatatatata',start, end, type)
     Fitness.isAuthorized(permissions)
       .then(res => {
         if (res == true) {
@@ -254,6 +262,145 @@ const StepCount = ({ props, intl, navigation }) => {
     return list;
   }
 
+  useEffect(() => {
+    getSex()
+    getStepsRealTime()
+  }, [])
+
+  const getSex = async () => {
+    let profiles = (await getProfile()) || [];
+        console.log('proorororororfile',profiles)
+        // sex = profiles.gender
+        if(profiles){
+          sex = profiles[0].gender
+        }
+       
+  }
+
+  const getStepsRealTime = () => {
+    const healthKitOptions = {
+      permissions: {
+        read: [
+          PERMS.DateOfBirth,
+          PERMS.Weight,
+          PERMS.StepCount,
+          PERMS.ActiveEnergyBurned
+        ],
+        write: [
+          PERMS.StepCount
+        ]
+      }
+    };
+    AppleHealthKit.initHealthKit(healthKitOptions, (err, res) => {
+      let heightUser
+      let weightUser
+      if (err) {
+        console.log('errr', err)
+        return;
+      }
+      // get Ditance
+      let optionsDistance = {
+        date: (moment()).toISOString(), // optional; default now
+      };
+      AppleHealthKit.getDistanceWalkingRunning(optionsDistance, (err, results) => {
+        if (err) {
+          console.log('errerrerrerrerrerr', err)
+          return;
+        }
+        const total = results.value / 1000;
+        setDistant(total.toFixed(2));
+      });
+      //get Sex
+      // get to localStorage or get to redux
+      //get Height
+      const optionsHeight = {
+        unit: 'cm'
+      }
+      AppleHealthKit.getLatestHeight(optionsHeight, (err, results) => {
+        if (err) {
+          console.log("error getting latest height: ", err);
+          return;
+        }
+        heightUser = results.value
+        // console.log('optionsHeightoptionsHeight',results)
+      });
+
+      // get weight
+      let optionsWeight = {
+        unit: 'kg'
+      };
+      AppleHealthKit.getLatestWeight(optionsWeight, (err, results) => {
+        if (err) {
+          console.log("error getting latest weight: ", err);
+          return;
+        }
+        weightUser = results.value
+      });
+      //get calo and time
+      let optionsAll = {
+        startDate: (moment().startOf('day')).toISOString(),
+        endDate: (new Date()).toISOString(),
+        type: 'Walking', // one of: ['Walking', 'StairClimbing', 'Running', 'Cycling', 'Workout']
+      };
+      AppleHealthKit.getSamples(optionsAll, (err, results) => {
+        if (err) {
+          return;
+        }
+        let timeInit = 0
+        let initialValue = 0
+        const a = results.reduce((k, i) => {
+          const timeStart = moment(i.start).unix()
+          const timeEnd = moment(i.end).unix()
+          const timeS = timeEnd - timeStart
+          const tb = timeS / i.quantity
+          return k + tb
+        }, initialValue)
+        //get time
+          const timeUse = results.reduce((k, i) => {
+            const timeStart = moment(i.start).unix()
+            const timeEnd = moment(i.end).unix()
+            const timeT = timeEnd - timeStart
+            return k + timeT
+          }, timeInit)
+          console.log('timeUsetimeUsetimeUsetimeUsetimeUse',timeUse)
+          const timePush = timeUse/60
+          setCountTime(timePush.toFixed(2))
+        //get calo
+
+        const stepRate = a / results.length
+        let stepRateFactor
+        if (stepRate < 1.6)
+          stepRateFactor = 0.82;
+        else if ((stepRate >= 1.6) && (stepRate < 1.8))
+          stepRateFactor = 0.88;
+        else if ((stepRate >= 1.8) && (stepRate < 2.0))
+          stepRateFactor = 0.96;
+        else if ((stepRate >= 2.0) && (stepRate < 2.35))
+          stepRateFactor = 1.06;
+        else if ((stepRate >= 2.35) && (stepRate < 2.6))
+          stepRateFactor = 1.35;
+        else if ((stepRate >= 2.6) && (stepRate < 2.8))
+          stepRateFactor = 1.55;
+        else if ((stepRate >= 2.8) && (stepRate < 4.0))
+          stepRateFactor = 1.85;
+        else if (stepRate >= 4.0)
+          stepRateFactor = 2.30;
+        //get sex
+        
+        let sexValue
+        if(sex == 1) sexValue = 0.415
+        else sexValue = 0.413
+        let distanceInStep = sexValue * heightUser * stepRateFactor
+        let speed = distanceInStep * stepRate * 3.6
+        let calo
+        if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+        else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+        setCountCarlo(calo.toFixed(2))
+      });
+
+    });
+  }
+
   const onGetSteps = (start, end, type) => {
     try {
       Fitness.getSteps({ startDate: start, endDate: end })
@@ -279,6 +426,7 @@ const StepCount = ({ props, intl, navigation }) => {
     } catch (e) { }
   };
   const onGetDistances = (start, end) => {
+    console.log('onGetDistancesonGetDistancesonGetDistances',start,end)
     Fitness.getDistances({ startDate: start, endDate: end })
       .then(res => {
         //
@@ -327,29 +475,43 @@ const StepCount = ({ props, intl, navigation }) => {
   const onShowMenu = () => {
     navigation.openDrawer();
   };
-  const onGetStepsRealTime = (start, end, type) => {
-    try {
-      Fitness.getSteps({ startDate: start, endDate: end })
-        .then(res => {
-          if (res.length) {
-            setDataChart(getDataChart(res, type));
-          }
-        })
-        .catch(err => { });
-    } catch (e) { }
-  };
-  const onGetDataBySelect = (start, end, maker) => {
-    setCountStep(maker);
+  // const onGetStepsRealTime = (start, end, type) => {
+  //   try {
+  //     Fitness.getSteps({ startDate: start, endDate: end })
+  //       .then(res => {
+  //         if (res.length) {
+  //           setDataChart(getDataChart(res, type));
+  //         }
+  //       })
+  //       .catch(err => { });
+  //   } catch (e) { }
+  // };
+  const onGetDataBySelect = (result) => {
+    console.log('updateDistance', result)
+    let time = result?.time || 0;
+    let h = parseInt(time / 3600)
+    let m = parseInt((time % 3600) / 60)
+    let timeString = ''
+    if (h > 0) {
+      timeString += `${h} - Giờ`
+      if (m > 0) {
+        timeString += `,\n${m} - Phút`
+      }
+    } else
+      timeString += `${m}\nPhút`
 
-    // onGetStepsBySelect(start,end)
-    onGetCalories(start, end);
-    onGetDistances(start, end);
+    setDistant(result?.distance);
+    setCountCarlo(result?.calories);
+    setTime(timeString);
+    setCountStep(result?.y);
+
   };
 
   const renderChart = useMemo(() => {
     if (dataChart.length) {
       return (
         <BarChartConvert
+          onGetDataBySelect={onGetDataBySelect}
           data={dataChart}
           maxDomain={maxDomain}
           widthChart={widthChart} />
@@ -357,6 +519,26 @@ const StepCount = ({ props, intl, navigation }) => {
     }
   }, [dataChart])
 
+  const updateDistance = (result) => {
+    console.log('updateDistance', result)
+    let time = result?.time || 0;
+    let h = parseInt(time / 3600)
+    let m = parseInt((time % 3600) / 60)
+    let timeString = ''
+    if (h > 0) {
+      timeString += `${h} - Giờ`
+      if (m > 0) {
+        timeString += `,\n${m} - Phút`
+      }
+    } else
+      timeString += `${m}\nPhút`
+
+    setDistant(result?.distance);
+    setCountCarlo(result?.calories);
+    setTime(timeString);
+    setCountStep(result?.steps);
+
+  }
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -415,7 +597,7 @@ const StepCount = ({ props, intl, navigation }) => {
             <Text style={styles.txData}>{countCarlo}</Text>
             <Text style={styles.txUnit}>{`kcal`}</Text>
           </View>
-          {/* <View style={styles.viewImgData}>
+          <View style={styles.viewImgData}>
                         <Image
                             style={styles.img}
                             source={require('./images/ic_time.png')}
@@ -424,7 +606,7 @@ const StepCount = ({ props, intl, navigation }) => {
                         <Text style={styles.txUnit}>{`${formatMessage(
                             message.minute,
                         )}`}</Text>
-                    </View> */}
+                    </View>
         </View>
       </ScrollView>
       <View style={styles.viewBtn}>
