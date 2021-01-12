@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, memo } from 'react';
 import { View, Text, Animated } from 'react-native';
 import styles from './styles/index.css';
 import message from '../../../../../core/msg/profile';
@@ -133,4 +133,4 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
   );
 };
 
-export default injectIntl(ResultBMI);
+export default injectIntl(memo(ResultBMI));

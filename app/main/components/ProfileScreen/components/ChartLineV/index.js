@@ -99,8 +99,9 @@ class ChartLine extends React.Component {
             <Image
               style={{
                 zIndex: -1,
-                width: 30, height: 30,
-                position: 'absolute', bottom: -10, alignSelf: 'center'
+                width: 24, height: 24,
+                position: 'absolute', bottom: -10, alignSelf: 'center',
+                tintColor: '#FE4358'
               }}
               source={require('../../../StepCountScreen/images/down-arrow.png')} />
           </View>

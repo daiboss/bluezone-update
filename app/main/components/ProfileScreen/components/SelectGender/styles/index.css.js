@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical:7,
     paddingHorizontal: 15,
+    overflow: 'hidden'
   },
   backgroundColorGenderSelected: {
     backgroundColor: red_bluezone,

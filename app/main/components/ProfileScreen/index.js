@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import * as PropTypes from 'prop-types';
 import {
   SafeAreaView,
@@ -12,13 +12,13 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from 'react-native';
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 
 import Header from '../../../base/components/Header';
 import ButtonIconText from '../../../base/components/ButtonIconText';
 import ModalBase from '../../../base/components/ModalBase';
 
-import {blue_bluezone, red_bluezone} from '../../../core/color';
+import { blue_bluezone, red_bluezone } from '../../../core/color';
 import message from '../../../core/msg/profile';
 
 // Styles
@@ -26,11 +26,12 @@ import styles from './styles/index.css';
 import * as fontSize from '../../../core/fontSize';
 import SelectGender from './components/SelectGender';
 import SelectHeightOrWeight from './components/SelectHeightOrWeight';
-import {getProfile, setProfile} from '../../../core/storage';
+import { getProfile, setProfile } from '../../../core/storage';
 const TIMEOUT_LOADING = 800;
 import moment from 'moment';
-import {ButtonClose} from '../../../base/components/ButtonText/ButtonModal';
+import { ButtonClose } from '../../../base/components/ButtonText/ButtonModal';
 import ResultBMI from './components/ResultBMI';
+
 const visibleModal = {
   isProcessing: false,
   isVisibleVerifySuccess: false,
@@ -39,8 +40,8 @@ const visibleModal = {
   isVisibleVerifyError: false,
 };
 
-const ProfileScreen = ({route, intl, navigation}) => {
-  const {formatMessage} = intl;
+const ProfileScreen = ({ route, intl, navigation }) => {
+  const { formatMessage } = intl;
   const [gender, setGender] = useState(0);
   const [listProfile, setListProfile] = useState([]);
   const [listTime, setListTime] = useState([]);
@@ -68,7 +69,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
       }, Object.create(null));
 
     if (profiles?.length) {
-      console.log('profilesprofilesprofilesprofiles',profiles)
+      console.log('profilesprofilesprofilesprofiles', profiles)
       let time = profiles
         .sort((a, b) => a.date - b.date)
         .map(e => moment(e.date)?.format('DD/MM'));
@@ -91,12 +92,12 @@ const ProfileScreen = ({route, intl, navigation}) => {
       );
 
       if (profile) {
-        console.log('profileprofileprofile',profile)
+        console.log('profileprofileprofile', profile)
         setGender(profile.gender);
         setHeight(profile.height);
         setWeight(profile.weight);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   useEffect(() => {
     setGender(1);
@@ -110,7 +111,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
         let index = profiles.findIndex(
           profile =>
             getAbsoluteMonths(moment(profile.date)) -
-              getAbsoluteMonths(moment()) ==
+            getAbsoluteMonths(moment()) ==
             0,
         );
 
@@ -126,7 +127,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
           profiles.push(obj);
         }
         getProfileList(profiles);
-      } catch (error) {}
+      } catch (error) { }
     }
   };
   // useEffect(() => {
@@ -151,7 +152,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
       let index = profiles.findIndex(
         profile =>
           getAbsoluteMonths(moment(profile.date)) -
-            getAbsoluteMonths(moment()) ==
+          getAbsoluteMonths(moment()) ==
           0,
       );
 
@@ -199,7 +200,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
         profiles.push(obj);
       }
       getProfileList(profiles);
-    } catch (error) {}
+    } catch (error) { }
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -213,7 +214,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
           fontSize: fontSize.bigger,
         }}
       />
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.group}>
           <View>
             <SelectGender gender={gender} onSelectGender={onSelectGender} />
@@ -249,7 +250,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
               onPress={onConfirm}
               text={formatMessage(message.finish)}
               styleBtn={[styles.colorButtonConfirm]}
-              styleText={{fontSize: fontSize.normal, fontWeight: 'bold'}}
+              styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
             />
           </View>
         </View>

@@ -152,12 +152,12 @@ const StepCount = ({ props, intl, navigation }) => {
 
   useEffect(() => {
     let isRun = BackgroundJob.isRunning();
-    if (isRun) {
-    //   BackgroundJob.start(taskStepCounter, options);
-    // }
-    // else {
-      BackgroundJob.stop();
+    if (!isRun) {
+      BackgroundJob.start(taskStepCounter, options);
     }
+    // else {
+    //   BackgroundJob.stop();
+    // }
   }, [BackgroundJob])
 
   const taskStepCounter = async () => {
@@ -387,7 +387,10 @@ const StepCount = ({ props, intl, navigation }) => {
                   <Image
                     source={require('./images/ic_run.png')}
                     resizeMode={'contain'}
-                    height={30}
+                    style={{
+                      width: 30,
+                      height: 30
+                    }}
                   />
                   <Text style={styles.txCountStep}>{numberWithCommas(countStep || 0)}</Text>
                   <Text style={styles.txCountTarget}>
@@ -498,7 +501,10 @@ const StepCount = ({ props, intl, navigation }) => {
   );
 };
 const styles = StyleSheet.create({
-  img: {},
+  img: {
+    width: 64,
+    height: 64
+  },
   chart: {
     flex: 1,
   },

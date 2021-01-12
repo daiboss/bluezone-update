@@ -9,23 +9,20 @@ import {
 } from 'react-native-wheel-picker-android';
 // Components
 import Text from '../Text';
-import DynamicallySelectedPicker from '../DynamicallySelectedPicker/DynamicallySelectedPicker';
+import CustomSelect from './../../../main/components/ProfileScreen/components/SelectHeightOrWeight/CustomSelect'
 // Styles
 import styles from './styles/index.css';
 import ModalComponent from '../ModalComponent';
 import message from './../../../core/msg/setting'
 const windowWidth = Dimensions.get('window').width;
 let dataSteps = [];
-let i = 0;
+let i = 1000;
 Number.prototype.format = function (n, x) {
   var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
   return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&.');
 };
 for (i; i <= 100000; i += 250) {
-  dataSteps.push({
-    label: i.format() + ' bước',
-    value: i,
-  });
+  dataSteps.push(i.format() + ' bước');
 }
 function ModalPickerStepsTarget({
   isVisibleModal,
@@ -39,7 +36,7 @@ function ModalPickerStepsTarget({
     if (currentSteps) {
       return currentSteps;
     } else {
-      return 165;
+      return 10000;
     }
   })
 
@@ -47,6 +44,11 @@ function ModalPickerStepsTarget({
     onSelected && onSelected(steps);
     onCloseModal();
   };
+
+  const changeStep = (t) => {
+    let k = parseInt(t.replace('bước', '').replace('step', '').replace('steps', '').replace('.', ''))
+    setSteps(k)
+  }
 
   return (
     <ModalComponent
@@ -61,18 +63,17 @@ function ModalPickerStepsTarget({
       <View style={styles.content}>
         <View style={styles.body}>
 
-          <DynamicallySelectedPicker
-            items={dataSteps}
-            initialSelectedIndex={
-              dataSteps.findIndex(e => e.value == currentSteps) != -1
-                ? dataSteps.findIndex(e => e.value == currentSteps)
-                : 10000
+          <CustomSelect
+            onValueChange={changeStep}
+            dataSource={dataSteps}
+            selectedIndex={
+              dataSteps.findIndex(e => e == `${currentSteps.format() + ' bước'}`) != -1
+                ? dataSteps.findIndex(e => e == `${currentSteps.format() + ' bước'}`) : 0
             }
-            onScroll={({ index, item }) => {
-              setSteps(item.value);
+            containerStyle={{
+              marginVertical: 30,
+              width: '100%'
             }}
-            height={300}
-            width={'100%'}
           />
 
           <TouchableOpacity
