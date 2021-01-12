@@ -5,6 +5,7 @@ import {
   StatusBar,
   Text,
   TouchableOpacity,
+  NativeAppEventEmitter,
   StyleSheet,
   ImageBackground,
   Image,
@@ -17,6 +18,7 @@ import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 import { Dimensions } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { ScrollView } from 'react-native-gesture-handler';
+import AppleHealthKit from 'rn-apple-healthkit';
 // import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
@@ -29,9 +31,13 @@ import { useRoute } from '@react-navigation/native';
 import dateUtils from 'mainam-react-native-date-utils';
 import BartChartHistory from './BarChart/BartChartHistory';
 import BarChartConvert from './BarChart/BarChartConvert';
-
+import {
+  getProfile,
+} from '../../../core/storage';
 import { objectOf } from 'prop-types';
 import { DATA_STEPS } from './BarChart/data';
+const PERMS = AppleHealthKit.Constants.Permissions;
+
 Date.prototype.getWeek = function (dowOffset) {
   /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
 
@@ -65,14 +71,19 @@ Date.prototype.getWeek = function (dowOffset) {
 };
 const screenWidth = Dimensions.get('window').width;
 const StepCount = ({ props, intl, navigation }) => {
+  let sex
   const route = useRoute();
 
   const { formatMessage } = intl;
 
   const [maxDomain, setMaxDomain] = useState(10000)
-
+  const [year,setYear] = useState(moment().format('YYYY'))
   const [widthChart, setWidthChart] = useState(screenWidth)
 
+  const [heightUser,setHeightUser] = useState(0)
+  const [weightUser,setWeightUser] = useState(0)
+
+  const [countTime,setCountTime] = useState(0)
   const [selectDate, setSelectDate] = useState(true);
   const [selectWeek, setSelectWeek] = useState(false);
   const [selectMonth, setSelectMonth] = useState(false);
@@ -123,11 +134,12 @@ const StepCount = ({ props, intl, navigation }) => {
       return;
     }
     if (type == 2) {
-      let end = new Date();
-      let start = new Date(new Date().getFullYear(), 0, 1);
+      let end = moment();
+      let start = moment('2000/01/01','yyyy/MM/DD');
+      console.log('starttaraatta',start.format('YYYY-MM-DD'))
       getDataHealth(
-        start.format('yyyy-MM-dd'),
-        end.format('yyyy-MM-dd'),
+        start.format('yyyy-MM-DD'),
+        end.format('yyyy-MM-DD'),
         'week',
       );
       setSelectDate(false);
@@ -136,11 +148,11 @@ const StepCount = ({ props, intl, navigation }) => {
       return;
     }
     if (type == 3) {
-      let end = new Date();
-      let start = new Date(new Date().getFullYear(), 0, 1);
+      let end = moment();
+      let start = moment('2000/01/01','yyyy/MM/DD');
       getDataHealth(
-        start.format('yyyy-MM-dd'),
-        end.format('yyyy-MM-dd'),
+        start.format('yyyy-MM-DD'),
+        end.format('yyyy-MM-DD'),
         'month',
       );
       setSelectDate(false);
@@ -159,6 +171,7 @@ const StepCount = ({ props, intl, navigation }) => {
     return days;
   };
   const getDataHealth = (start, end, type) => {
+    console.log('dadatatatata',start, end, type)
     Fitness.isAuthorized(permissions)
       .then(res => {
         if (res == true) {
@@ -202,15 +215,20 @@ const StepCount = ({ props, intl, navigation }) => {
     }, 3000);
   };
   const getDataChart = (data, type) => {
+    console.log('vaovaovoaoavvaovaov',data,type)
     let list = [];
     if (type == 'day') {
       let currentDay = moment(new Date())
       list = data.map(item => ({
         x: moment(item.startDate).isAfter(currentDay) ? 'Hôm nay' : moment(item.startDate).format('DD/MM'),
         y: Number(item.quantity),
+        start:moment(item.startDate).format('YYYY/DD/MM'),
+        end:moment(item.startDate).format('YYYY/DD/MM'),
+        year:moment(item.startDate).format('YYYY')
       }));
     } else if (type == 'month') {
       let currentMonth = moment(new Date()).month();
+      console.log('dadadadhsuadhusahdusahduasd',currentMonth)
       const groups = data.reduce((acc, current) => {
         const monthYear = moment(current.startDate).month();
         if (!acc[monthYear]) {
@@ -219,14 +237,24 @@ const StepCount = ({ props, intl, navigation }) => {
         acc[monthYear].push(current);
         return acc;
       }, {});
-
+      console.log('groupsgroupsgroups',groups,currentMonth)
       for (const [key, value] of Object.entries(groups)) {
         let steps = value.reduce((t, v) => t + v.quantity, 0)
-        let label = `Tháng\n${key < currentMonth ? (parseInt(key) + 1) : 'này'}`
+        let startMonth = moment(value[0].startDate).startOf('month')
+        let endMonth = moment(value[0].startDate).endOf('month')
+        console.log('dhasudhsauhdsauhdusahdusansabcyhfu',key)
+        let label = `Tháng\n${key > currentMonth ? (parseInt(key) + 1) : 'này'}`
+        console.log('djadhasdhsuahdusadas',label)
         list.push({
           x: label,
-          y: steps
+          y: steps,
+          start:startMonth.format('YYYY/DD/MM'),
+          end:endMonth.format('YYYY/DD/MM'),
+          year:startMonth.format('YYYY')
+          // year:moment(item.startDate).format('YYYY')
         })
+        console.log('hfhshfusahfusahfuhsaufhsauhfsa',list)
+        // list.reverse()
       }
     } else if (type == 'week') {
       const groups = data.reduce((acc, current) => {
@@ -243,22 +271,176 @@ const StepCount = ({ props, intl, navigation }) => {
         let steps = value.reduce((t, v) => t + v.quantity, 0)
         let startWeek = moment(value[0].startDate).startOf('isoWeek')
         let endWeek = moment(value[0].startDate).endOf('isoWeek')
+        console.log('startWeekstartWeekstartWeekstartWeek',startWeek.format('YYYY/DD/MM'),endWeek.format('YYYY/DD/MM'))
         let valueEnd = endWeek.isAfter(currentTime) ? 'nay' : `${endWeek.format('DD')}`
         let label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
         list.push({
           x: label,
-          y: steps
+          y: steps,
+          start:startWeek.format('YYYY/DD/MM'),
+          end:endWeek.format('YYYY/DD/MM'),
+          year:startWeek.format('YYYY')
         })
       }
     }
+
     return list;
   }
+
+  useEffect(() => {
+    getSex()
+    // getStepsRealTime()
+  }, [])
+
+  const getSex = async () => {
+    let profiles = (await getProfile()) || [];
+        console.log('proorororororfile',profiles)
+        // sex = profiles.gender
+        if(profiles){
+          sex = profiles[0].gender
+        }
+  }
+  useEffect(() => {
+    getWeightHeight()
+  },[weightUser,heightUser])
+
+  const getWeightHeight = async () => {
+    let profiles = (await getProfile()) || [];
+    console.log('profilesprofilesprofilesprofiles',profiles)
+    const weight = profiles[0].weight || 0
+    const weightCV = weight.replace('kg','').replace(',','.').replace(' ','')
+    console.log('weightweightweightweight',weightCV)
+    const height = profiles[0].height || 0
+    const heightCV = height.replace('cm','').replace(' ','')
+    console.log('heightCVheightCVheightCV',heightCV)
+    setWeightUser(weightCV)
+    setHeightUser(heightCV)
+
+  }
+  const getStepsRealTime = (result) => {
+    console.log('getStepsRealTimegetStepsRealTimegetStepsRealTime',result)
+    const healthKitOptions = {
+      permissions: {
+        read: [
+          PERMS.DateOfBirth,
+          PERMS.Weight,
+          PERMS.StepCount,
+          PERMS.ActiveEnergyBurned
+        ],
+        write: [
+          PERMS.StepCount
+        ]
+      }
+    };
+    AppleHealthKit.initHealthKit(healthKitOptions, (err, res) => {
+      if (err) {
+        console.log('errr', err)
+        return;
+      }
+
+      //distance 
+      let options = {
+        unit: 'mile', // optional; default 'meter'
+        startDate:(moment(`${result.start},'YYYY/DD/MM`).startOf('day')).toISOString(),
+        endDate: (moment(`${result.end},'YYYY/DD/MM`).endOf('day')).toISOString(), // optional; default now
+      };
+      AppleHealthKit.getDistanceWalkingRunning(options, (err, results) => {
+        if (err) {
+          return;
+        }
+        console.log("resultsresults",results)
+    });
+      // get Ditance
+      //get Sex
+      // get to localStorage or get to redux
+      //get calo and time
+      // const timeSet = `${result.year}/${result.x}`
+      // console.log('timeSettimeSettimeSet',timeSet)
+      let optionsAll = {
+        startDate: (moment(`${result.start}`,'YYYY/DD/MM').startOf('day')).toISOString(),
+        endDate: (moment(`${result.end}`,'YYYY/DD/MM').endOf('day')).toISOString(),
+        type: 'Walking', // one of: ['Walking', 'StairClimbing', 'Running', 'Cycling', 'Workout']
+      };
+      AppleHealthKit.getSamples(optionsAll, (err, results) => {
+        if (err) {
+          return;
+        }
+        console.log('resulltssss',results)
+        let timeInit = 0
+        let initialValue = 0
+        
+        const a = results.reduce((k, i) => {
+          const timeStart = moment(i.start).unix()
+          const timeEnd = moment(i.end).unix()
+          const timeS = timeEnd - timeStart
+          const tb = timeS / i.quantity
+          return k + tb
+        }, initialValue)
+        //get time
+          const timeUse = results.reduce((k, i) => {
+            const timeStart = moment(i.start).unix()
+            const timeEnd = moment(i.end).unix()
+            const timeT = timeEnd - timeStart
+            return k + timeT
+          }, timeInit)
+          console.log('timeUsetimeUsetimeUsetimeUsetimeUse',timeUse)
+          let timeT
+          const timePush = (timeUse/60).toFixed(0)
+          // if(timePush > 60) {
+          //  const h = timePush/60
+          //  const m = timePush - h*60
+          //  timeT = `${h.toFixed(0)}:${m}`
+          //  return timeT
+          // }
+          // else timeT = timePush
+          setCountTime(timePush)
+        //get calo
+  
+        const stepRate = a / results.length
+        let stepRateFactor
+        if (stepRate < 1.6)
+          stepRateFactor = 0.82;
+        else if ((stepRate >= 1.6) && (stepRate < 1.8))
+          stepRateFactor = 0.88;
+        else if ((stepRate >= 1.8) && (stepRate < 2.0))
+          stepRateFactor = 0.96;
+        else if ((stepRate >= 2.0) && (stepRate < 2.35))
+          stepRateFactor = 1.06;
+        else if ((stepRate >= 2.35) && (stepRate < 2.6))
+          stepRateFactor = 1.35;
+        else if ((stepRate >= 2.6) && (stepRate < 2.8))
+          stepRateFactor = 1.55;
+        else if ((stepRate >= 2.8) && (stepRate < 4.0))
+          stepRateFactor = 1.85;
+        else if (stepRate >= 4.0)
+          stepRateFactor = 2.30;
+        //get sex
+        
+        let sexValue
+        if(sex == 1) sexValue = 0.415
+        else sexValue = 0.413
+        let distanceInStep = sexValue * heightUser * stepRateFactor
+        const distanceUser = (distanceInStep*result.y/100000).toFixed(2)
+        setDistant(distanceUser)
+        let speed = distanceInStep * stepRate * 3.6
+        let calo
+        if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+        else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+        setCountCarlo(calo.toFixed(2))
+      });
+  
+    
+    });
+  }
+
 
   const onGetSteps = (start, end, type) => {
     try {
       Fitness.getSteps({ startDate: start, endDate: end })
         .then(res => {
           // let res = DATA_STEPS
+          console.log('onGetStepsonGetStepsonGetStepsonGetSteps',start,end,type)
+          console.log('resresresresresresresresresresres',res)
           if (res.length) {
             try {
               let listDataChart = getDataChart(res, type)
@@ -271,23 +453,33 @@ const StepCount = ({ props, intl, navigation }) => {
                 let widthTmp = tmp * (listDataChart.length - 1)
                 setWidthChart(widthTmp)
               }
+              console.log('listDataChartlistDataChartlistDataChart',listDataChart)
+              // type == 'month' && listDataChart.reverse() //: listDataChart
+              if(type == 'month'){
+                let firtItem = listDataChart[0]
+                listDataChart.splice(0,1)
+                listDataChart.push(firtItem)
+                console.log('iteitneijfiaufhsauhfusahfushafsa',listDataChart)
+              }
               setDataChart(listDataChart);
-            } catch (e) { }
+            } catch (e) {
+              console.log('errrrrerererere',e)
+            }
           }
         })
         .catch(err => { });
     } catch (e) { }
   };
-  const onGetDistances = (start, end) => {
-    Fitness.getDistances({ startDate: start, endDate: end })
-      .then(res => {
-        //
-        var total = res.reduce((acc, obj) => acc + obj.quantity, 0);
-        total = total / 1000;
-        setDistant(total.toFixed(1));
-      })
-      .catch(err => { });
-  };
+  // const onGetDistances = (start, end) => {
+  //   Fitness.getDistances({ startDate: start, endDate: end })
+  //     .then(res => {
+  //       //
+  //       var total = res.reduce((acc, obj) => acc + obj.quantity, 0);
+  //       total = total / 1000;
+  //       setDistant(total.toFixed(1));
+  //     })
+  //     .catch(err => { });
+  // };
   const addDays = (date, days = 1) => {
     var list = [];
     const result = new Date(date);
@@ -327,29 +519,44 @@ const StepCount = ({ props, intl, navigation }) => {
   const onShowMenu = () => {
     navigation.openDrawer();
   };
-  const onGetStepsRealTime = (start, end, type) => {
-    try {
-      Fitness.getSteps({ startDate: start, endDate: end })
-        .then(res => {
-          if (res.length) {
-            setDataChart(getDataChart(res, type));
-          }
-        })
-        .catch(err => { });
-    } catch (e) { }
-  };
-  const onGetDataBySelect = (start, end, maker) => {
-    setCountStep(maker);
+  // const onGetStepsRealTime = (start, end, type) => {
+  //   try {
+  //     Fitness.getSteps({ startDate: start, endDate: end })
+  //       .then(res => {
+  //         if (res.length) {
+  //           setDataChart(getDataChart(res, type));
+  //         }
+  //       })
+  //       .catch(err => { });
+  //   } catch (e) { }
+  // };
+  const onGetDataBySelect = (result) => {
+    console.log('updateDistance', result)
+    let time = result?.time || 0;
+    let h = parseInt(time / 3600)
+    let m = parseInt((time % 3600) / 60)
+    let timeString = ''
+    if (h > 0) {
+      timeString += `${h} - Giờ`
+      if (m > 0) {
+        timeString += `,\n${m} - Phút`
+      }
+    } else
+      timeString += `${m}\nPhút`
 
-    // onGetStepsBySelect(start,end)
-    onGetCalories(start, end);
-    onGetDistances(start, end);
+    // setDistant(result?.distance);
+    // setCountCarlo(result?.calories);
+    // setTime(timeString);
+    getStepsRealTime(result)
+    setCountStep(result?.y);
+
   };
 
   const renderChart = useMemo(() => {
     if (dataChart.length) {
       return (
         <BarChartConvert
+          onGetDataBySelect={onGetDataBySelect}
           data={dataChart}
           maxDomain={maxDomain}
           widthChart={widthChart} />
@@ -369,6 +576,7 @@ const StepCount = ({ props, intl, navigation }) => {
           fontSize: fontSize.bigger,
         }}
       />
+      <Text style={{textAlign:'center',color:'black'}}>{year}</Text>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         {/* <View>
                     <Text>Thống kê bước chân</Text>
@@ -415,16 +623,16 @@ const StepCount = ({ props, intl, navigation }) => {
             <Text style={styles.txData}>{countCarlo}</Text>
             <Text style={styles.txUnit}>{`kcal`}</Text>
           </View>
-          {/* <View style={styles.viewImgData}>
+          <View style={styles.viewImgData}>
                         <Image
                             style={styles.img}
                             source={require('./images/ic_time.png')}
                         />
-                        <Text style={styles.txData}>{`50`}</Text>
+                        <Text style={styles.txData}>{countTime}</Text>
                         <Text style={styles.txUnit}>{`${formatMessage(
                             message.minute,
                         )}`}</Text>
-                    </View> */}
+                    </View>
         </View>
       </ScrollView>
       <View style={styles.viewBtn}>
