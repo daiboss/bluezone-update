@@ -451,24 +451,12 @@ const getNotiStep = async () => {
 
 const setNotiStep = (value = '') => {
   const _resource = _processInput(value);
-  setLastWeight()
   AsyncStorage.setItem(notiStep, _resource);
 };
 
 const getWeightWarning = async () => {
   const result = await AsyncStorage.getItem(weightWarning);
   return _processOutput(result);
-};
-
-const getLastWeight = async () => {
-  const result = await AsyncStorage.getItem(lastWeightWarning);
-  return _processOutput(result || new moment().unix());
-}
-
-const setLastWeight = () => {
-  let value = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
-  const _resource = _processInput(value);
-  AsyncStorage.setItem(lastWeightWarning, _resource);
 };
 
 const setWeightWarning = (value = '') => {
@@ -541,5 +529,4 @@ export {
   getResultSteps,
   getIsShowNotification,
   setIsShowNotification,
-  getLastWeight
 };

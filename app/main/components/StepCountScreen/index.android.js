@@ -42,7 +42,6 @@ import {
   getIsShowNotification,
   getNotiStep,
   getWeightWarning,
-  getLastWeight
 } from '../../../core/storage';
 import ChartLine from './ChartLine';
 import ChartLineV from './ChartLineV';
@@ -54,21 +53,6 @@ import {
   weightWarning,
 } from '../../../const/storage';
 const screenWidth = Dimensions.get('window').width;
-import BackgroundFetch from 'react-native-background-fetch';
-import {
-  accelerometer,
-  gyroscope,
-  setUpdateIntervalForType,
-  SensorTypes,
-} from 'react-native-sensors';
-import { map, filter } from 'rxjs/operators';
-// import {
-//   getAbsoluteMonths,
-//   getDistances,
-//   getStepCount,
-//   getStepsTotal,
-//   getTimeDate,
-// } from '../../../core/steps';
 
 import {
   getAbsoluteMonths,
@@ -77,10 +61,6 @@ import {
   getStepsTotal,
   getTimeDate,
 } from '../../../core/calculation_steps';
-
-let count = 0;
-var timeout;
-var data = [];
 
 import BackgroundJob from './../../../core/service_stepcounter'
 import {
@@ -94,7 +74,6 @@ import {
 } from './../../../core/db/SqliteDb'
 
 import KKK from './lll'
-
 
 const options = {
   taskName: 'Bluezone',
@@ -110,7 +89,8 @@ const options = {
   },
   targetStep: 10000,
   currentStep: 0,
-  isShowStep: true
+  isShowStep: true,
+  valueTarget: 1021
 };
 
 const StepCount = ({ props, intl, navigation }) => {
@@ -153,6 +133,8 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const getResultBindingUI = async () => {
+    let profi = await getProfile()
+    console.log('profiprofiprofi', profi)
     let result = await getDistances();
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
@@ -170,12 +152,12 @@ const StepCount = ({ props, intl, navigation }) => {
 
   useEffect(() => {
     let isRun = BackgroundJob.isRunning();
-    if (!isRun) {
-      BackgroundJob.start(taskStepCounter, options);
-    }
-    // else {
-    //   BackgroundJob.stop();
+    if (isRun) {
+    //   BackgroundJob.start(taskStepCounter, options);
     // }
+    // else {
+      BackgroundJob.stop();
+    }
   }, [BackgroundJob])
 
   const taskStepCounter = async () => {
@@ -193,17 +175,17 @@ const StepCount = ({ props, intl, navigation }) => {
       BackgroundJob.observerStep(async steps => {
         let targetSteps = await getResultSteps();
         let isShowStep = await getIsShowNotification()
-        // console.log('isShowStepisShowStepisShowStep', targetSteps, ' - ', targetSteps?.step)
 
         // console.log('STEP------->>>', steps)
 
         getStepsTotal(total => {
-          // console.log('>>>>>>>>>>>>>>>>>>', targetSteps, ' - ', targetSteps?.step)
+          console.log('isShowStepisShowStepisShowStep', parseInt(targetSteps?.step))
           BackgroundJob.updateNotification({
             ...options,
             currentStep: total || 0,
             targetStep: parseInt(targetSteps?.step || 10000),
-            isShowStep: isShowStep
+            isShowStep: isShowStep,
+            valueTarget: 123
           })
         })
         if (steps.stepCounter) {
@@ -246,12 +228,10 @@ const StepCount = ({ props, intl, navigation }) => {
       scheduler.createWarnningStepNotification(totalStep || 0)
     }
     let tmpWeight = await getWeightWarning()
-    if (tmpWeight) {
-      let lastUpdate = await getLastWeight()
-      let preDay = new moment().subtract(7, 'days')
-      if (preDay.isSame(new moment.unix(lastUpdate))) {
-        scheduler.createWarnningWeightNotification()
-      }
+    let profi = await getProfile()
+    let tmpTime = new moment.unix(profi?.date)
+    if (tmpWeight && (new moment().diff(tmpTime, 'days') >= 7)) {
+      scheduler.createWarnningWeightNotification()
     }
   }
 

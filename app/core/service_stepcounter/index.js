@@ -8,7 +8,7 @@ import {
 import { getIsShowNotification } from '../storage';
 import RNBackgroundActions from './ServiceStepCounter';
 let Emitter = undefined
-if(Platform.OS == 'android'){
+if (Platform.OS == 'android') {
     Emitter = new NativeEventEmitter(RNBackgroundActions);
 }
 /**
@@ -21,8 +21,8 @@ if(Platform.OS == 'android'){
  *            progressBar?: {max: number, value: number, indeterminate?: boolean},
  *            targetStep: int,
  *            currentStep: int,
+ *            valueTarget: any,
  *            isShowStep: boolean
- * 
  *            }} BackgroundTaskOptions
  */
 class BackgroundServer {
@@ -69,7 +69,8 @@ class BackgroundServer {
      *          progressBar?: {max: number, value: number, indeterminate?: boolean},
      *          targetStep: int,
      *          currentStep: int,
-     *          isShowStep: boolean
+     *          valueTarget: any,
+     *          isShowStep: boolean,
      * }}
      */
     async updateNotification(taskData) {

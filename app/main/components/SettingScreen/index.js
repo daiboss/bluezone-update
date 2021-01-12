@@ -139,22 +139,12 @@ const SettingScreen = ({ intl, navigation }) => {
     try {
       setAlertTarget(!alertTarget);
       setNotiStep(value);
-      // if (value) {
-      //   await scheduleTask(notiStep);
-      // } else {
-      //   await stopScheduleTask(notiStep);
-      // }
     } catch (error) { }
   };
   const alertBmiSwitch = async value => {
     try {
       setAlertBmi(!alertBmi);
       setWeightWarning(value);
-      // if (value) {
-      //   await scheduleTask(weightWarning);
-      // } else {
-      //   await stopScheduleTask(weightWarning);
-      // }
     } catch (error) { }
   };
 
