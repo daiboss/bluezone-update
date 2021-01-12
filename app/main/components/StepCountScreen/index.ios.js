@@ -147,6 +147,9 @@ const StepCount = ({ props, intl, navigation }) => {
   let sex
   const { formatMessage } = intl;
   const [time, setTime] = useState([]);
+  const [heightUser,setHeightUser] = useState(0)
+  const [weightUser,setWeightUser] = useState(0)
+
   const [countTime,setCountTime] = useState(0)
   const [countStep, setCountStep] = useState(null);
   const [countRest, setCountRest] = useState(0);
@@ -317,10 +320,11 @@ const StepCount = ({ props, intl, navigation }) => {
   // };
 
   useEffect(() => {
+    getWeightHeight()
     getSex()
     getStepsRealTime()
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [])
+  }, [weightUser,heightUser])
 
   const getSex = async () => {
     let profiles = (await getProfile()) || [];
@@ -331,7 +335,18 @@ const StepCount = ({ props, intl, navigation }) => {
         }
        
   }
+  const getWeightHeight = async () => {
+    let profiles = (await getProfile()) || [];
+    const weight = profiles[0].weight || 0
+    const weightCV = weight.replace('kg','').replace(',','.').replace(' ','')
+    const height = profiles[0].height || 0
+    const heightCV = height.replace('cm','').replace(' ','')
+    setWeightUser(weightCV)
+    setHeightUser(heightCV)
+
+  }
   const getStepsRealTime = () => {
+    let stepCurrent
     const healthKitOptions = {
       permissions: {
         read: [
@@ -346,51 +361,37 @@ const StepCount = ({ props, intl, navigation }) => {
       }
     };
     AppleHealthKit.initHealthKit(healthKitOptions, (err, res) => {
-      let heightUser
-      let weightUser
+    
       if (err) {
         console.log('errr', err)
         return;
       }
       // get Ditance
-      let optionsDistance = {
-        date: (moment()).toISOString(), // optional; default now
-      };
-      AppleHealthKit.getDistanceWalkingRunning(optionsDistance, (err, results) => {
-        if (err) {
-          console.log('errerrerrerrerrerr', err)
-          return;
-        }
-        const total = results.value / 1000;
-        setDistant(total.toFixed(2));
-      });
+      // let optionsDistance = {
+      //   date: (moment()).toISOString(), // optional; default now
+      // };
+      // AppleHealthKit.getDistanceWalkingRunning(optionsDistance, (err, results) => {
+      //   if (err) {
+      //     console.log('errerrerrerrerrerr', err)
+      //     return;
+      //   }
+      //   const total = results.value / 1000;
+      //   setDistant(total.toFixed(2));
+      // });
       //get Sex
       // get to localStorage or get to redux
-      //get Height
-      const optionsHeight = {
-        unit: 'cm'
+      //get stepCurrent
+      let optionsStepCurrent = {
+        startDate: moment().startOf('day'), // required
+        endDate: moment(), // optional; default now
+    };
+    AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
+      if (err) {
+          return;
       }
-      AppleHealthKit.getLatestHeight(optionsHeight, (err, results) => {
-        if (err) {
-          console.log("error getting latest height: ", err);
-          return;
-        }
-        heightUser = results.value
-        // console.log('optionsHeightoptionsHeight',results)
-      });
+      stepCurrent = results.value
+  });
 
-      // get weight
-      let optionsWeight = {
-        unit: 'kg'
-      };
-      AppleHealthKit.getLatestWeight(optionsWeight, (err, results) => {
-        if (err) {
-          console.log("error getting latest weight: ", err);
-          return;
-        }
-        weightUser = results.value
-      });
-     
       //get calo and time
       let optionsAll = {
         startDate: (moment().startOf('day')).toISOString(),
@@ -417,7 +418,6 @@ const StepCount = ({ props, intl, navigation }) => {
             const timeT = timeEnd - timeStart
             return k + timeT
           }, timeInit)
-          console.log('timeUsetimeUsetimeUsetimeUsetimeUse',timeUse)
           const timePush = timeUse/60
           setCountTime(timePush.toFixed(0))
         //get calo
@@ -446,6 +446,8 @@ const StepCount = ({ props, intl, navigation }) => {
         if(sex == 1) sexValue = 0.415
         else sexValue = 0.413
         let distanceInStep = sexValue * heightUser * stepRateFactor
+        const distanceUser = (distanceInStep*stepCurrent/100000).toFixed(2)
+        setDistant(distanceUser)
         let speed = distanceInStep * stepRate * 3.6
         let calo
         if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000

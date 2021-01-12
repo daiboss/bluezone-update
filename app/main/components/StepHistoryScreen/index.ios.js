@@ -79,6 +79,10 @@ const StepCount = ({ props, intl, navigation }) => {
   const [maxDomain, setMaxDomain] = useState(10000)
   const [year,setYear] = useState(moment().format('YYYY'))
   const [widthChart, setWidthChart] = useState(screenWidth)
+
+  const [heightUser,setHeightUser] = useState(0)
+  const [weightUser,setWeightUser] = useState(0)
+
   const [countTime,setCountTime] = useState(0)
   const [selectDate, setSelectDate] = useState(true);
   const [selectWeek, setSelectWeek] = useState(false);
@@ -295,9 +299,24 @@ const StepCount = ({ props, intl, navigation }) => {
         if(profiles){
           sex = profiles[0].gender
         }
-       
   }
+  useEffect(() => {
+    getWeightHeight()
+  },[weightUser,heightUser])
 
+  const getWeightHeight = async () => {
+    let profiles = (await getProfile()) || [];
+    console.log('profilesprofilesprofilesprofiles',profiles)
+    const weight = profiles[0].weight || 0
+    const weightCV = weight.replace('kg','').replace(',','.').replace(' ','')
+    console.log('weightweightweightweight',weightCV)
+    const height = profiles[0].height || 0
+    const heightCV = height.replace('cm','').replace(' ','')
+    console.log('heightCVheightCVheightCV',heightCV)
+    setWeightUser(weightCV)
+    setHeightUser(heightCV)
+
+  }
   const getStepsRealTime = (result) => {
     console.log('getStepsRealTimegetStepsRealTimegetStepsRealTime',result)
     const healthKitOptions = {
@@ -314,8 +333,6 @@ const StepCount = ({ props, intl, navigation }) => {
       }
     };
     AppleHealthKit.initHealthKit(healthKitOptions, (err, res) => {
-      let heightUser
-      let weightUser
       if (err) {
         console.log('errr', err)
         return;
@@ -336,30 +353,6 @@ const StepCount = ({ props, intl, navigation }) => {
       // get Ditance
       //get Sex
       // get to localStorage or get to redux
-      //get Height
-      const optionsHeight = {
-        unit: 'cm'
-      }
-      AppleHealthKit.getLatestHeight(optionsHeight, (err, results) => {
-        if (err) {
-          console.log("error getting latest height: ", err);
-          return;
-        }
-        heightUser = results.value
-        // console.log('optionsHeightoptionsHeight',results)
-      });
-
-      // get weight
-      let optionsWeight = {
-        unit: 'kg'
-      };
-      AppleHealthKit.getLatestWeight(optionsWeight, (err, results) => {
-        if (err) {
-          console.log("error getting latest weight: ", err);
-          return;
-        }
-        weightUser = results.value
-      });
       //get calo and time
       // const timeSet = `${result.year}/${result.x}`
       // console.log('timeSettimeSettimeSet',timeSet)
@@ -477,16 +470,16 @@ const StepCount = ({ props, intl, navigation }) => {
         .catch(err => { });
     } catch (e) { }
   };
-  const onGetDistances = (start, end) => {
-    Fitness.getDistances({ startDate: start, endDate: end })
-      .then(res => {
-        //
-        var total = res.reduce((acc, obj) => acc + obj.quantity, 0);
-        total = total / 1000;
-        setDistant(total.toFixed(1));
-      })
-      .catch(err => { });
-  };
+  // const onGetDistances = (start, end) => {
+  //   Fitness.getDistances({ startDate: start, endDate: end })
+  //     .then(res => {
+  //       //
+  //       var total = res.reduce((acc, obj) => acc + obj.quantity, 0);
+  //       total = total / 1000;
+  //       setDistant(total.toFixed(1));
+  //     })
+  //     .catch(err => { });
+  // };
   const addDays = (date, days = 1) => {
     var list = [];
     const result = new Date(date);
