@@ -82,7 +82,6 @@ class ChartLine extends React.Component {
   }
 
   renderCharMain = () => {
-    console.log('vaorenderCharMain')
     return (
       <VictoryChart
         // padding=""
@@ -194,27 +193,27 @@ class ChartLine extends React.Component {
             size={RFValue(6)}
             labels={() => null}
 
-            // events={[{
-            //   target: "data",
-            //   eventHandlers: {
-            //     onPressIn: () => {
-            //       return [
-            //         {
-            //           target: "data",
-            //           mutation: (props) => {
-            //             this.setState({
-            //               topLabel: props.y,
-            //               leftLabel: props.x,
-            //               value: JSON.stringify(props.datum.y),
-            //               valueX: props?.datum?.x,
-            //               // year: props?.datum?.year
-            //             })
-            //           }
-            //         }
-            //       ];
-            //     }
-            //   }
-            // }]}
+            events={[{
+              target: "data",
+              eventHandlers: {
+                onPressIn: () => {
+                  return [
+                    {
+                      target: "data",
+                      mutation: (props) => {
+                        this.setState({
+                          topLabel: props.y,
+                          leftLabel: props.x,
+                          value: JSON.stringify(props.datum.y),
+                          valueX: props?.datum?.x,
+                          // year: props?.datum?.year
+                        })
+                      }
+                    }
+                  ];
+                }
+              }
+            }]}
 
           />
 
@@ -228,7 +227,6 @@ class ChartLine extends React.Component {
   }
 
   render() {
-    console.log('vaovaovaovaorender')
     return (
       <View style={styles.container}>
         <Text style={styles.txtYear}>{this.state.year}</Text>

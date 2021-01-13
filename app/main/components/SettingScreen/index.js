@@ -8,6 +8,8 @@ import {
   Text,
   TouchableOpacity,
   Platform,
+  Alert,
+  Linking
 } from 'react-native';
 // import Header from '../Header';
 import Header from '../../../base/components/Header';
@@ -72,7 +74,7 @@ const SettingScreen = ({ intl, navigation }) => {
 
   const { formatMessage } = intl;
   const [autoTarget, setAutoTarget] = useState(undefined);
-  const [alertStep, setAlertStep] = useState(undefined);
+  const [alertStep, setAlertStep] = useState(false);
   const [alertTarget, setAlertTarget] = useState(false);
   const [alertBmi, setAlertBmi] = useState(false);
   const [totalStep, setTotalStep] = useState(0);
@@ -82,6 +84,24 @@ const SettingScreen = ({ intl, navigation }) => {
   useEffect(() => {
     getStatus();
   }, []);
+
+  const alertPermission = (type) => {
+    if(type == 'step') setAlertStep(!alertStep)
+    if(type == 'target') setAlertTarget(!alertTarget);
+    if(type == 'bmi') setAlertBmi(!alertBmi);
+    Alert.alert(`"Bluezone" muốn gửi thông báo cho bạn`,'Thông báo có thể bao gồm cảnh báo, âm thanh và biểu tượng. Bạn có thể định cấu hình chúng trong Cài đặt',[
+      {
+        text: "Từ chối",
+        onPress: () => {
+          if(type =='step')setAlertStep(false)
+          if(type == 'target') setAlertTarget(false);
+          if(type == 'bmi') setAlertBmi(false);
+      },
+        style: "cancel"
+      },
+      { text: "Cho phép", onPress: () => Linking.openURL('app-settings:{3}') }
+    ])
+  }
   const getStatus = async () => {
     try {
       let result = await getResultSteps()
@@ -110,11 +130,7 @@ const SettingScreen = ({ intl, navigation }) => {
   };
   const autoTargetSwitch = async value => {
     setAutoTarget(!autoTarget);
-    // if (value) {
-    //   await scheduleTask(autoChange);
-    // } else {
-    //   await stopScheduleTask(autoChange);
-    // }
+  
   };
 
   useEffect(() => {
@@ -125,36 +141,45 @@ const SettingScreen = ({ intl, navigation }) => {
 
   const alertStepSwitch = async value => {
     try {
-      PushNotification.requestPermissions()
-      setAlertStep(!alertStep);
+      PushNotification.requestPermissions().then(res => {
+        console.log('resresres',res)
+        if(res.notificationCenter){
+          setAlertStep(!alertStep);
+        }
+        else{
+          alertPermission('step')
+        }
+      }).catch(er => console.log('errerjeirjeijre',er))
       setRealtime(value);
-      // if (value) {
-      //   await scheduleTask(realtime);
-      // } else {
-      //   await stopScheduleTask(realtime);
-      // }
+
     } catch (error) { }
   };
   const alertTargetSwitch = async value => {
     try {
-      setAlertTarget(!alertTarget);
+      PushNotification.requestPermissions().then(res => {
+        if(res.notificationCenter){
+          setAlertTarget(!alertTarget);
+        }
+        else{
+          alertPermission('target')
+        }
+      }).catch(er => console.log('errerjeirjeijre',er))
       setNotiStep(value);
-      // if (value) {
-      //   await scheduleTask(notiStep);
-      // } else {
-      //   await stopScheduleTask(notiStep);
-      // }
+    
     } catch (error) { }
   };
   const alertBmiSwitch = async value => {
     try {
-      setAlertBmi(!alertBmi);
+      PushNotification.requestPermissions().then(res => {
+        if(res.notificationCenter){
+          setAlertBmi(!alertBmi);
+        }
+        else{
+          alertPermission('bmi')
+        }
+      }).catch(er => console.log('errerjeirjeijre',er))
       setWeightWarning(value);
-      // if (value) {
-      //   await scheduleTask(weightWarning);
-      // } else {
-      //   await stopScheduleTask(weightWarning);
-      // }
+      
     } catch (error) { }
   };
 

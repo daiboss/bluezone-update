@@ -49,7 +49,7 @@ import StepCount from './app/main/components/StepCountScreen';
 import StepHistory from './app/main/components/StepHistoryScreen';
 import SettingScreen from './app/main/components/SettingScreen';
 import FAQScreen from './app/main/components/FAQScreen';
-
+import moment from 'moment';
 import ContextProvider from './LanguageContext';
 import LanguageProvider from './app/base/LanguageProvider';
 import { translationMessages } from './app/i18n';
@@ -105,7 +105,7 @@ import {
   registerInitialNotification,
   removeDeliveredNotification,
 } from './app/core/fcm';
-import { getIsFirstLoading, setIsFirstLoading } from './app/core/storage';
+import { getIsFirstLoading, setIsFirstLoading,setFirstTimeOpen,getFirstTimeOpen } from './app/core/storage';
 import ProfileScreen from './app/main/components/ProfileScreen';
 import BmiScreen from './app/main/components/ProfileScreen/BmiScreen';
 import ResultBmiScreen from './app/main/components/ProfileScreen/ResultBmiScreen';
@@ -244,6 +244,12 @@ class App extends React.Component {
 
   async componentDidMount() {
     // Check trạng thái lần đầu tiên vào app => hien: Dang khoi tao. Lan sau: Dang dong bo
+    const dateInstall = moment().format('yyyy-MM-DD')
+    
+    const firstOpenApp = await getFirstTimeOpen();
+    if(firstOpenApp == null){
+      setFirstTimeOpen(dateInstall)
+    }
     const isFirstLoading = await getIsFirstLoading();
     this.setState({ isFirstLoading: isFirstLoading === null });
     if (isFirstLoading === null) {

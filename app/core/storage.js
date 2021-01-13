@@ -62,6 +62,7 @@ import { parse } from 'react-native-svg';
 import { Platform } from 'react-native';
 // TODO Can sua de moi du lieu ghi vao storage deu dung JSON.stringify, va lay ra deu dung JSON.parse. Dam bao tuong tich ban cu. thay vi ben ngoai phan tu convert nhu gio.
 const _processInput = input => {
+  console.log('_processInput_processInput',input)
   if (input instanceof Date) {
     return JSON.stringify(input.getTime());
   }
@@ -136,6 +137,7 @@ const setHistoryDays = (historyDays = []) => {
 
 const getIsFirstLoading = async () => {
   const result = await AsyncStorage.getItem(IsFirstLoading);
+  console.log('resusususususu',result)
   return _processOutput(result);
 };
 
@@ -179,7 +181,7 @@ const getFirstTimeOpen = async () => {
   return _processOutput(result);
 };
 
-const setFirstTimeOpen = (firstTimeOpen = 0) => {
+const setFirstTimeOpen =async (firstTimeOpen = 0) => {
   const _resource = _processInput(firstTimeOpen);
   AsyncStorage.setItem(FirstTimeOpen, _resource);
 };

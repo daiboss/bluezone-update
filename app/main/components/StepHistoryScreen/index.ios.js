@@ -33,6 +33,8 @@ import BartChartHistory from './BarChart/BartChartHistory';
 import BarChartConvert from './BarChart/BarChartConvert';
 import {
   getProfile,
+  getIsFirstLoading,
+  getFirstTimeOpen
 } from '../../../core/storage';
 import { objectOf } from 'prop-types';
 import { DATA_STEPS } from './BarChart/data';
@@ -82,7 +84,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const [heightUser,setHeightUser] = useState(0)
   const [weightUser,setWeightUser] = useState(0)
-
+  const [startTime,setStartTime] = useState('')
   const [countTime,setCountTime] = useState(0)
   const [selectDate, setSelectDate] = useState(true);
   const [selectWeek, setSelectWeek] = useState(false);
@@ -110,10 +112,19 @@ const StepCount = ({ props, intl, navigation }) => {
     },
   ];
   const [dataChart, setDataChart] = useState([]);
-  useEffect(() => {
+  // useEffect(async () => {
+  //   const firstOpenApp = await getFirstTimeOpen();
+  //   setStartTime(firstOpenApp)
+  //   console.log('firstOpenAppfirstOpenApp',firstOpenApp)
+  // },[])
+  useEffect(async () => {
+    const firstOpenApp = await getFirstTimeOpen();
+    setStartTime(firstOpenApp)
     let end = new Date();
-    var start = new Date(1, 1, new Date().getFullYear());
-    getDataHealth(start.format('yyyy-MM-dd'), end.format('yyyy-MM-dd'), 'day');
+    // let start = firstOpenApp
+    let start = new Date(2020,1,1).format('yyyy-MM-dd')
+    // console.log('anannanannanaan',start)
+    getDataHealth(start, end.format('yyyy-MM-dd'), 'day');
     return () => {
       intervalNow.current && clearInterval(intervalNow.current);
     };
@@ -122,9 +133,11 @@ const StepCount = ({ props, intl, navigation }) => {
   const onSetSelect = type => () => {
     if (type == 1) {
       let end = new Date();
-      let start = new Date(new Date().getFullYear(), 0, 1);
+      // let start = startTime;
+      let start = new Date(2020,1,1).format('yyyy-MM-dd')
+      // let start = moment('2020/01/01','yyyy/MM/DD');
       getDataHealth(
-        start.format('yyyy-MM-dd'),
+        start,
         end.format('yyyy-MM-dd'),
         'day',
       );
@@ -135,10 +148,10 @@ const StepCount = ({ props, intl, navigation }) => {
     }
     if (type == 2) {
       let end = moment();
-      let start = moment('2000/01/01','yyyy/MM/DD');
-      console.log('starttaraatta',start.format('YYYY-MM-DD'))
+      let start = new Date(2020,1,1).format('yyyy-MM-dd')
+      // let start = startTime;
       getDataHealth(
-        start.format('yyyy-MM-DD'),
+        start,
         end.format('yyyy-MM-DD'),
         'week',
       );
@@ -149,9 +162,10 @@ const StepCount = ({ props, intl, navigation }) => {
     }
     if (type == 3) {
       let end = moment();
-      let start = moment('2000/01/01','yyyy/MM/DD');
+      let start = new Date(2020,1,1).format('yyyy-MM-dd')
+      // let start = startTime;
       getDataHealth(
-        start.format('yyyy-MM-DD'),
+        start,
         end.format('yyyy-MM-DD'),
         'month',
       );
@@ -204,6 +218,10 @@ const StepCount = ({ props, intl, navigation }) => {
 
     // })
   };
+  useEffect(async () => {
+    let data =await getIsFirstLoading()
+    console.log('datadatadatadata',data)
+  },[])
   const onRealTime = (start, end, type) => {
     if (intervalNow.current) {
       clearInterval(intervalNow.current);
@@ -269,6 +287,7 @@ const StepCount = ({ props, intl, navigation }) => {
       let currentTime = moment(new Date());
       for (const [key, value] of Object.entries(groups)) {
         let steps = value.reduce((t, v) => t + v.quantity, 0)
+        console.log('valuevaluevaluevaluevalue',value[0])
         let startWeek = moment(value[0].startDate).startOf('isoWeek')
         let endWeek = moment(value[0].startDate).endOf('isoWeek')
         console.log('startWeekstartWeekstartWeekstartWeek',startWeek.format('YYYY/DD/MM'),endWeek.format('YYYY/DD/MM'))
@@ -319,6 +338,9 @@ const StepCount = ({ props, intl, navigation }) => {
   }
   const getStepsRealTime = (result) => {
     console.log('getStepsRealTimegetStepsRealTimegetStepsRealTime',result)
+    let sexValue
+      if(sex == 1) sexValue = 0.415
+      else sexValue = 0.413
     const healthKitOptions = {
       permissions: {
         read: [
@@ -369,13 +391,42 @@ const StepCount = ({ props, intl, navigation }) => {
         let timeInit = 0
         let initialValue = 0
         
+
+        //get Calor
         const a = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
           const timeS = timeEnd - timeStart
-          const tb = timeS / i.quantity
-          return k + tb
+          // const tb = timeS / i.quantity
+          const stepRate = i.quantity/timeS
+          console.log('stepRatestepRatestepRatestepRate',stepRate)
+          let stepRateFactor
+          if (stepRate < 1.6)
+            stepRateFactor = 0.82;
+          else if ((stepRate >= 1.6) && (stepRate < 1.8))
+            stepRateFactor = 0.88;
+          else if ((stepRate >= 1.8) && (stepRate < 2.0))
+            stepRateFactor = 0.96;
+          else if ((stepRate >= 2.0) && (stepRate < 2.35))
+            stepRateFactor = 1.06;
+          else if ((stepRate >= 2.35) && (stepRate < 2.6))
+            stepRateFactor = 1.35;
+          else if ((stepRate >= 2.6) && (stepRate < 2.8))
+            stepRateFactor = 1.55;
+          else if ((stepRate >= 2.8) && (stepRate < 4.0))
+            stepRateFactor = 1.85;
+          else if (stepRate >= 4.0)
+            stepRateFactor = 2.30;
+            let distanceInStep = sexValue * heightUser * stepRateFactor
+            let speed = distanceInStep * stepRate * 3.6
+            let calo
+            // console.log('weightUserweightUserweightUser',weightUser,distanceInStep,stepRate)
+            if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+            else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+            // setCountCarlo(calo.toFixed(2))
+          return k + calo*timeS*2
         }, initialValue)
+        setCountCarlo(parseInt(a/1000))
         //get time
           const timeUse = results.reduce((k, i) => {
             const timeStart = moment(i.start).unix()
@@ -394,39 +445,35 @@ const StepCount = ({ props, intl, navigation }) => {
           // }
           // else timeT = timePush
           setCountTime(timePush)
-        //get calo
-  
-        const stepRate = a / results.length
-        let stepRateFactor
-        if (stepRate < 1.6)
-          stepRateFactor = 0.82;
-        else if ((stepRate >= 1.6) && (stepRate < 1.8))
-          stepRateFactor = 0.88;
-        else if ((stepRate >= 1.8) && (stepRate < 2.0))
-          stepRateFactor = 0.96;
-        else if ((stepRate >= 2.0) && (stepRate < 2.35))
-          stepRateFactor = 1.06;
-        else if ((stepRate >= 2.35) && (stepRate < 2.6))
-          stepRateFactor = 1.35;
-        else if ((stepRate >= 2.6) && (stepRate < 2.8))
-          stepRateFactor = 1.55;
-        else if ((stepRate >= 2.8) && (stepRate < 4.0))
-          stepRateFactor = 1.85;
-        else if (stepRate >= 4.0)
-          stepRateFactor = 2.30;
-        //get sex
+        //get Distance
+        const b = results.reduce((k, i) => {
+          const timeStart = moment(i.start).unix()
+          const timeEnd = moment(i.end).unix()
+          const timeS = timeEnd - timeStart
+          const stepRate = i.quantity/timeS
+          let stepRateFactor
+          if (stepRate < 1.6)
+            stepRateFactor = 0.82;
+          else if ((stepRate >= 1.6) && (stepRate < 1.8))
+            stepRateFactor = 0.88;
+          else if ((stepRate >= 1.8) && (stepRate < 2.0))
+            stepRateFactor = 0.96;
+          else if ((stepRate >= 2.0) && (stepRate < 2.35))
+            stepRateFactor = 1.06;
+          else if ((stepRate >= 2.35) && (stepRate < 2.6))
+            stepRateFactor = 1.35;
+          else if ((stepRate >= 2.6) && (stepRate < 2.8))
+            stepRateFactor = 1.55;
+          else if ((stepRate >= 2.8) && (stepRate < 4.0))
+            stepRateFactor = 1.85;
+          else if (stepRate >= 4.0)
+            stepRateFactor = 2.30;
+            let distanceInStep = sexValue * heightUser * stepRateFactor
+            const distanceUser = parseFloat(distanceInStep*i.quantity/100000)
+          return k + distanceUser
+        }, initialValue)
+        setDistant(b.toFixed(2))
         
-        let sexValue
-        if(sex == 1) sexValue = 0.415
-        else sexValue = 0.413
-        let distanceInStep = sexValue * heightUser * stepRateFactor
-        const distanceUser = (distanceInStep*result.y/100000).toFixed(2)
-        setDistant(distanceUser)
-        let speed = distanceInStep * stepRate * 3.6
-        let calo
-        if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
-        else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
-        setCountCarlo(calo.toFixed(2))
       });
   
     
@@ -548,7 +595,7 @@ const StepCount = ({ props, intl, navigation }) => {
     // setCountCarlo(result?.calories);
     // setTime(timeString);
     getStepsRealTime(result)
-    setCountStep(result?.y);
+    setCountStep(parseInt(result?.y) );
 
   };
 

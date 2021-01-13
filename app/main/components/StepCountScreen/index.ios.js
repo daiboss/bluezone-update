@@ -21,6 +21,7 @@ import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 import { Dimensions } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
+import BackgroundTimer from 'react-native-background-timer';
 //db
 
 // import { LineChart, Grid } from 'react-native-svg-charts'
@@ -57,100 +58,100 @@ const screenWidth = Dimensions.get('window').width;
 import BackgroundFetch from 'react-native-background-fetch';
 import { getAbsoluteMonths } from '../../../core/steps';
 const PERMS = AppleHealthKit.Constants.Permissions;
-export const scheduleTask = async name => {
-  try {
-    await BackgroundFetch.scheduleTask({
-      taskId: name,
-      stopOnTerminate: false,
-      enableHeadless: true,
-      delay: 5000, // milliseconds (5s)
-      forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
-      periodic: true, // Fire once only.
-    })
-      .then(res => { })
-      .catch(err => { });
-  } catch (e) { }
-};
+// export const scheduleTask = async name => {
+//   try {
+//     await BackgroundFetch.scheduleTask({
+//       taskId: name,
+//       stopOnTerminate: false,
+//       enableHeadless: true,
+//       delay: 5000, // milliseconds (5s)
+//       forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
+//       periodic: true, // Fire once only.
+//     })
+//       .then(res => { })
+//       .catch(err => { });
+//   } catch (e) { }
+// };
 
-export const stopScheduleTask = async task => {
-  try {
-    let res = await BackgroundFetch.stop(task);
-  } catch (e) { }
-};
-export const onBackgroundFetchEvent = async taskId => {
-  try {
-    let end = new Date();
-    let start = new Date();
-    end.setDate(end.getDate() + 1);
-    let step = await getSteps(start, end);
+// export const stopScheduleTask = async task => {
+//   try {
+//     let res = await BackgroundFetch.stop(task);
+//   } catch (e) { }
+// };
+// export const onBackgroundFetchEvent = async taskId => 
+//   try {
+//     let end = new Date();
+//     let start = new Date();
+//     end.setDate(end.getDate() + 1);
+//     let step = await getSteps(start, end);
 
-    let today = moment();
-    let resultSteps = await getResultSteps();
+//     let today = moment();
+//     let resultSteps = await getResultSteps();
 
-    switch (taskId) {
-      case autoChange:
-        if (resultSteps) {
-          let storageDate = moment(resultSteps?.date).format('DD');
-          if (storageDate != today.format('DD')) {
-            getStepsTotal(start, end);
-          }
-        }
-        break;
-      case weightWarning:
-        let profiles = (await getProfile()) || [];
-        let profile = profiles.find(
-          item =>
-            getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
-        );
+//     switch (taskId) {
+//       case autoChange:
+//         if (resultSteps) {
+//           let storageDate = moment(resultSteps?.date).format('DD');
+//           if (storageDate != today.format('DD')) {
+//             getStepsTotal(start, end);
+//           }
+//         }
+//         break;
+//       case weightWarning:
+//         let profiles = (await getProfile()) || [];
+//         let profile = profiles.find(
+//           item =>
+//             getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
+//         );
 
-        if (profile) {
-          let nextWeek = new Date().getTime();
-          let isWarning = parseInt(
-            (nextWeek - profile?.date) / (1000 * 3600 * 24),
-          );
+//         if (profile) {
+//           let nextWeek = new Date().getTime();
+//           let isWarning = parseInt(
+//             (nextWeek - profile?.date) / (1000 * 3600 * 24),
+//           );
 
-          if (isWarning >= 7) {
-            scheduler.createWarnningWeightNotification();
-          }
-        }
-        break;
-      case notiStep:
-        if (resultSteps) {
-          if (today.format('HH') >= 19) {
-            scheduler.createWarnningStepNotification(step?.step);
-          }
-        }
-        break;
-      case realtime:
-        scheduler.createShowStepNotification(step?.step);
-        break;
-      default:
-        break;
-    }
-    if (taskId === 'react-native-background-fetch') {
-      // Test initiating a #scheduleTask when the periodic fetch event is received.
-      let auto = await getAutoChange();
+//           if (isWarning >= 7) {
+//             scheduler.createWarnningWeightNotification();
+//           }
+//         }
+//         break;
+//       case notiStep:
+//         if (resultSteps) {
+//           if (today.format('HH') >= 19) {
+//             scheduler.createWarnningStepNotification(step?.step);
+//           }
+//         }
+//         break;
+//       case realtime:
+//         scheduler.createShowStepNotification(step?.step);
+//         break;
+//       default:
+//         break;
+//     }
+//     if (taskId === 'react-native-background-fetch') {
+//       // Test initiating a #scheduleTask when the periodic fetch event is received.
+//       let auto = await getAutoChange();
 
-      if (auto == undefined || auto == null) {
-        await scheduleTask(autoChange);
-        setAutoChange(true);
-      }
-    }
-  } catch (e) { }
-  // Required: Signal completion of your task to native code
-  // If you fail to do this, the OS can terminate your app
-  // or assign battery-blame for consuming too much background-time
-  BackgroundFetch.finish(taskId);
-};
+//       if (auto == undefined || auto == null) {
+//         await scheduleTask(autoChange);
+//         setAutoChange(true);
+//       }
+//     }
+//   } catch (e) { }
+//   // Required: Signal completion of your task to native code
+//   // If you fail to do this, the OS can terminate your app
+//   // or assign battery-blame for consuming too much background-time
+//   BackgroundFetch.finish(taskId);
+//};
 const StepCount = ({ props, intl, navigation }) => {
   const timeInterval = useRef();
   let sex
   const { formatMessage } = intl;
   const [time, setTime] = useState([]);
-  const [heightUser,setHeightUser] = useState(0)
-  const [weightUser,setWeightUser] = useState(0)
+  const [heightUser, setHeightUser] = useState(0)
+  const [weightUser, setWeightUser] = useState(0)
 
-  const [countTime,setCountTime] = useState(0)
+  const [countTime, setCountTime] = useState(0)
   const [countStep, setCountStep] = useState(null);
   const [countRest, setCountRest] = useState(0);
   const [countCarlo, setCountCarlo] = useState(0);
@@ -171,6 +172,48 @@ const StepCount = ({ props, intl, navigation }) => {
     },
   ];
   const [dataChart, setDataChart] = useState([]);
+
+
+  useEffect(() => {
+    BackgroundTimer.start()
+    // setTimeout(() => {
+    //   let optionsStepCurrent = {
+    //     startDate: moment().startOf('day'), // required
+    //     endDate: moment(), // optional; default now
+    // };
+    // let stepCurrent
+    // AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
+    //   if (err) {
+    //       return;
+    //   }
+    //   stepCurrent = results.value
+    //   console.log('vaovaovaovasaaaaaaaa',stepCurrent,new Date().format('mm:ss'))
+    //    scheduler.createWarnningStepNotification(stepCurrent || 0)
+    // })},5000)
+    BackgroundTimer.runBackgroundTimer(() => {
+      //code that will be called every 3 seconds 
+      let optionsStepCurrent = {
+        startDate: moment().startOf('day'), // required
+        endDate: moment(), // optional; default now
+      };
+      let stepCurrent
+      AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
+        if (err) {
+          return;
+        }
+        stepCurrent = results.value
+        console.log('vaovaovaovasaaaaaaaa', stepCurrent, new Date().format('mm:ss'))
+        scheduler.createWarnningStepNotification(stepCurrent || 0)
+      });
+
+      // scheduler.createWarnningStepNotification(countRest || 0)
+    },
+      5000);
+    // BackgroundTimer.stopBackgroundTimer();
+    // BackgroundTimer.stop();
+  }, [])
+
+
   useEffect(() => {
     var end = new Date();
     end.setDate(end.getDate() + 1);
@@ -231,15 +274,16 @@ const StepCount = ({ props, intl, navigation }) => {
       );
       // Turn on the enabled switch.
       await BackgroundFetch.start();
+      console.log('datadata')
       // setEnabled(value);
       // Load the list with persisted events.
     } catch (error) { }
   };
-  useFocusEffect(
-    React.useCallback(() => {
-      resultSteps();
-    }, [])
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     resultSteps();
+  //   }, [])
+  // );
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
@@ -252,9 +296,9 @@ const StepCount = ({ props, intl, navigation }) => {
   };
   const getData = (start, end, startLine, endLine) => {
     onGetStepLine();
-    onGetStepsRealTime(start, end);
-    onGetCalories(start, end);
-    onGetDistances(start, end);
+    // onGetStepsRealTime(start, end);
+    // onGetCalories(start, end);
+    // onGetDistances(start, end);
   };
   const getPermission = async (start, end, startLine, endLine) => {
     try {
@@ -292,57 +336,32 @@ const StepCount = ({ props, intl, navigation }) => {
       })
       .catch(err => { });
   };
-  // const onGetStepsRealTime = (start, end) => {
-  //   timeInterval.current = setInterval(() => {
-  //     Fitness.getSteps({
-  //       startDate: moment(start).toString(),
-  //       endDate: moment(end).toString(),
-  //     })
-  //       .then(res => {
-  //         onGetCalories(start, end);
-  //         onGetDistances(start, end);
-  //         if (res.length) {
-  //           let total = res.reduce((acc, obj) => {
-  //             return acc + obj.quantity;
-  //           }, 0);
-  //           if (numberWithCommas(total) !== countStep) {
-  //             setCountStep(numberWithCommas(total));
-  //           }
-  //           if (countRest !== totalCount - total) {
-  //             setCountRest(totalCount - total);
-  //           }
-  //         } else {
-  //           setCountStep(0), setCountRest(totalCount - 0);
-  //         }
-  //       })
-  //       .catch(err => {});
-  //   }, 3000);
-  // };
+
 
   useEffect(() => {
     getWeightHeight()
     getSex()
     getStepsRealTime()
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightUser,heightUser])
+  }, [weightUser, heightUser])
 
   const getSex = async () => {
     let profiles = (await getProfile()) || [];
-        console.log('proorororororfile',profiles)
-        // sex = profiles.gender
-        if(profiles){
-          sex = profiles[0].gender
-        }
-       
+    console.log('proorororororfile', profiles)
+    // sex = profiles.gender
+    if (profiles) {
+      sex = profiles[0].gender
+    }
+
   }
   const getWeightHeight = async () => {
     let profiles = (await getProfile()) || [];
-    const weight = profiles[0].weight || 0
-    const weightCV = weight.replace('kg','').replace(',','.').replace(' ','')
     const height = profiles[0].height || 0
-    const heightCV = height.replace('cm','').replace(' ','')
-    setWeightUser(weightCV)
-    setHeightUser(heightCV)
+    const heightCV = height.replace('cm', '').replace(' ', '')
+    const weight = profiles[0].weight || 0
+    const weightCV = weight.replace('kg', '').replace(',', '.').replace(' ', '')
+    setHeightUser(parseFloat(heightCV))
+    setWeightUser(parseFloat(weightCV))
 
   }
   const getStepsRealTime = () => {
@@ -361,7 +380,9 @@ const StepCount = ({ props, intl, navigation }) => {
       }
     };
     AppleHealthKit.initHealthKit(healthKitOptions, (err, res) => {
-    
+      let sexValue
+      if (sex == 1) sexValue = 0.415
+      else sexValue = 0.413
       if (err) {
         console.log('errr', err)
         return;
@@ -384,14 +405,14 @@ const StepCount = ({ props, intl, navigation }) => {
       let optionsStepCurrent = {
         startDate: moment().startOf('day'), // required
         endDate: moment(), // optional; default now
-    };
-    AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
-      if (err) {
+      };
+      AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
+        if (err) {
           return;
-      }
-      stepCurrent = results.value
-  });
-
+        }
+        stepCurrent = results.value
+      });
+      let distanUser
       //get calo and time
       let optionsAll = {
         startDate: (moment().startOf('day')).toISOString(),
@@ -404,55 +425,80 @@ const StepCount = ({ props, intl, navigation }) => {
         }
         let timeInit = 0
         let initialValue = 0
+
+        //get Calo
         const a = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
           const timeS = timeEnd - timeStart
-          const tb = timeS / i.quantity
-          return k + tb
+          // const tb = timeS / i.quantity
+          const stepRate = i.quantity / timeS
+          console.log('stepRatestepRatestepRatestepRate', stepRate)
+          let stepRateFactor
+          if (stepRate < 1.6)
+            stepRateFactor = 0.82;
+          else if ((stepRate >= 1.6) && (stepRate < 1.8))
+            stepRateFactor = 0.88;
+          else if ((stepRate >= 1.8) && (stepRate < 2.0))
+            stepRateFactor = 0.96;
+          else if ((stepRate >= 2.0) && (stepRate < 2.35))
+            stepRateFactor = 1.06;
+          else if ((stepRate >= 2.35) && (stepRate < 2.6))
+            stepRateFactor = 1.35;
+          else if ((stepRate >= 2.6) && (stepRate < 2.8))
+            stepRateFactor = 1.55;
+          else if ((stepRate >= 2.8) && (stepRate < 4.0))
+            stepRateFactor = 1.85;
+          else if (stepRate >= 4.0)
+            stepRateFactor = 2.30;
+          let distanceInStep = sexValue * heightUser * stepRateFactor
+          let speed = distanceInStep * stepRate * 3.6
+          let calo
+          // console.log('weightUserweightUserweightUser',weightUser,distanceInStep,stepRate)
+          if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+          else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+          // setCountCarlo(calo.toFixed(2))
+          console.log('objectKcal', { sexValue, heightUser, stepRateFactor, weightUser })
+          return k + calo * timeS * 2
         }, initialValue)
+        setCountCarlo(parseInt(a / 1000))
         //get time
-          const timeUse = results.reduce((k, i) => {
-            const timeStart = moment(i.start).unix()
-            const timeEnd = moment(i.end).unix()
-            const timeT = timeEnd - timeStart
-            return k + timeT
-          }, timeInit)
-          const timePush = timeUse/60
-          setCountTime(timePush.toFixed(0))
-        //get calo
-
-        const stepRate = a / results.length
-        let stepRateFactor
-        if (stepRate < 1.6)
-          stepRateFactor = 0.82;
-        else if ((stepRate >= 1.6) && (stepRate < 1.8))
-          stepRateFactor = 0.88;
-        else if ((stepRate >= 1.8) && (stepRate < 2.0))
-          stepRateFactor = 0.96;
-        else if ((stepRate >= 2.0) && (stepRate < 2.35))
-          stepRateFactor = 1.06;
-        else if ((stepRate >= 2.35) && (stepRate < 2.6))
-          stepRateFactor = 1.35;
-        else if ((stepRate >= 2.6) && (stepRate < 2.8))
-          stepRateFactor = 1.55;
-        else if ((stepRate >= 2.8) && (stepRate < 4.0))
-          stepRateFactor = 1.85;
-        else if (stepRate >= 4.0)
-          stepRateFactor = 2.30;
-        //get sex
-        
-        let sexValue
-        if(sex == 1) sexValue = 0.415
-        else sexValue = 0.413
-        let distanceInStep = sexValue * heightUser * stepRateFactor
-        const distanceUser = (distanceInStep*stepCurrent/100000).toFixed(2)
-        setDistant(distanceUser)
-        let speed = distanceInStep * stepRate * 3.6
-        let calo
-        if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
-        else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
-        setCountCarlo(calo.toFixed(2))
+        const timeUse = results.reduce((k, i) => {
+          const timeStart = moment(i.start).unix()
+          const timeEnd = moment(i.end).unix()
+          const timeT = timeEnd - timeStart
+          return k + timeT
+        }, timeInit)
+        const timePush = timeUse / 60
+        setCountTime(timePush.toFixed(0))
+        //get Distance
+        const b = results.reduce((k, i) => {
+          const timeStart = moment(i.start).unix()
+          const timeEnd = moment(i.end).unix()
+          const timeS = timeEnd - timeStart
+          const stepRate = i.quantity / timeS
+          let stepRateFactor
+          if (stepRate < 1.6)
+            stepRateFactor = 0.82;
+          else if ((stepRate >= 1.6) && (stepRate < 1.8))
+            stepRateFactor = 0.88;
+          else if ((stepRate >= 1.8) && (stepRate < 2.0))
+            stepRateFactor = 0.96;
+          else if ((stepRate >= 2.0) && (stepRate < 2.35))
+            stepRateFactor = 1.06;
+          else if ((stepRate >= 2.35) && (stepRate < 2.6))
+            stepRateFactor = 1.35;
+          else if ((stepRate >= 2.6) && (stepRate < 2.8))
+            stepRateFactor = 1.55;
+          else if ((stepRate >= 2.8) && (stepRate < 4.0))
+            stepRateFactor = 1.85;
+          else if (stepRate >= 4.0)
+            stepRateFactor = 2.30;
+          let distanceInStep = sexValue * heightUser * stepRateFactor
+          const distanceUser = parseFloat(distanceInStep * i.quantity / 100000)
+          return k + distanceUser
+        }, initialValue)
+        setDistant(b.toFixed(2))
       });
 
 
@@ -497,19 +543,19 @@ const StepCount = ({ props, intl, navigation }) => {
     })
   }
 
-  // const onGetDistances = (start, end) => {
-  //   Fitness.getDistances({startDate: start, endDate: end})
-  //     .then(res => {
-  //       //
-  //       var total = 0;
-  //       res.map(obj => {
-  //         total += obj.quantity;
-  //       });
-  //       total = total / 1000;
-  //       setDistant(total.toFixed(1));
-  //     })
-  //     .catch(err => {});
-  // };
+  const onGetDistances = (start, end) => {
+    Fitness.getDistances({ startDate: start, endDate: end })
+      .then(res => {
+        //
+        var total = 0;
+        res.map(obj => {
+          total += obj.quantity;
+        });
+        total = total / 1000;
+        setDistant(total.toFixed(1));
+      })
+      .catch(err => { });
+  };
 
   const numberWithCommas = x => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -535,6 +581,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const onShowMenu = () => {
     navigation.openDrawer();
   };
+  console.log('vaovaovaovaovaovaova')
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar />
