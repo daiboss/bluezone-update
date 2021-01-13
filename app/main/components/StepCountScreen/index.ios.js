@@ -563,6 +563,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.circular}
               width={6}
               rotation={0}
+              lineCap="round"
               fill={((totalCount - countRest) / totalCount) * 100}
               tintColor="#FE4358"
               backgroundColor="#e5e5e5">

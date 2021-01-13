@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import * as PropTypes from 'prop-types';
 import {
   SafeAreaView,
@@ -203,6 +203,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       getProfileList(profiles);
     } catch (error) { }
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <Header

@@ -155,9 +155,9 @@ const StepCount = ({ props, intl, navigation }) => {
     if (!isRun) {
       BackgroundJob.start(taskStepCounter, options);
     }
-    // else {
-    //   BackgroundJob.stop();
-    // }
+    else {
+      BackgroundJob.stop();
+    }
   }, [BackgroundJob])
 
   const taskStepCounter = async () => {
@@ -228,8 +228,15 @@ const StepCount = ({ props, intl, navigation }) => {
       scheduler.createWarnningStepNotification(totalStep || 0)
     }
     let tmpWeight = await getWeightWarning()
-    let profi = await getProfile()
-    let tmpTime = new moment.unix(profi?.date)
+    let profiles = (await getProfile()) || [];
+    let profile = profiles.find(
+      item =>
+        getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) == 0,
+    );
+    if (!profile) {
+      return
+    }
+    let tmpTime = new moment.unix(profile?.date)
     if (tmpWeight && (new moment().diff(tmpTime, 'days') >= 7)) {
       scheduler.createWarnningWeightNotification()
     }
@@ -373,6 +380,7 @@ const StepCount = ({ props, intl, navigation }) => {
               size={180}
               style={styles.circular}
               width={6}
+              lineCap="round"
               rotation={0}
               fill={
                 ((totalCount -
