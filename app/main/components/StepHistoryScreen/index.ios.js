@@ -683,7 +683,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 50,
   },
-  img: {},
+  img: {
+    width: 64,
+    height: 64
+  },
   chart: {
     flex: 1,
   },

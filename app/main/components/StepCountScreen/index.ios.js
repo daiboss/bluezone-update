@@ -147,10 +147,10 @@ const StepCount = ({ props, intl, navigation }) => {
   let sex
   const { formatMessage } = intl;
   const [time, setTime] = useState([]);
-  const [heightUser,setHeightUser] = useState(0)
-  const [weightUser,setWeightUser] = useState(0)
+  const [heightUser, setHeightUser] = useState(0)
+  const [weightUser, setWeightUser] = useState(0)
 
-  const [countTime,setCountTime] = useState(0)
+  const [countTime, setCountTime] = useState(0)
   const [countStep, setCountStep] = useState(null);
   const [countRest, setCountRest] = useState(0);
   const [countCarlo, setCountCarlo] = useState(0);
@@ -324,23 +324,23 @@ const StepCount = ({ props, intl, navigation }) => {
     getSex()
     getStepsRealTime()
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightUser,heightUser])
+  }, [weightUser, heightUser])
 
   const getSex = async () => {
     let profiles = (await getProfile()) || [];
-        console.log('proorororororfile',profiles)
-        // sex = profiles.gender
-        if(profiles){
-          sex = profiles[0].gender
-        }
-       
+    console.log('proorororororfile', profiles)
+    // sex = profiles.gender
+    if (profiles) {
+      sex = profiles[0].gender
+    }
+
   }
   const getWeightHeight = async () => {
     let profiles = (await getProfile()) || [];
     const weight = profiles[0].weight || 0
-    const weightCV = weight.replace('kg','').replace(',','.').replace(' ','')
+    const weightCV = weight.replace('kg', '').replace(',', '.').replace(' ', '')
     const height = profiles[0].height || 0
-    const heightCV = height.replace('cm','').replace(' ','')
+    const heightCV = height.replace('cm', '').replace(' ', '')
     setWeightUser(weightCV)
     setHeightUser(heightCV)
 
@@ -361,7 +361,7 @@ const StepCount = ({ props, intl, navigation }) => {
       }
     };
     AppleHealthKit.initHealthKit(healthKitOptions, (err, res) => {
-    
+
       if (err) {
         console.log('errr', err)
         return;
@@ -384,13 +384,13 @@ const StepCount = ({ props, intl, navigation }) => {
       let optionsStepCurrent = {
         startDate: moment().startOf('day'), // required
         endDate: moment(), // optional; default now
-    };
-    AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
-      if (err) {
+      };
+      AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
+        if (err) {
           return;
-      }
-      stepCurrent = results.value
-  });
+        }
+        stepCurrent = results.value
+      });
 
       //get calo and time
       let optionsAll = {
@@ -412,14 +412,14 @@ const StepCount = ({ props, intl, navigation }) => {
           return k + tb
         }, initialValue)
         //get time
-          const timeUse = results.reduce((k, i) => {
-            const timeStart = moment(i.start).unix()
-            const timeEnd = moment(i.end).unix()
-            const timeT = timeEnd - timeStart
-            return k + timeT
-          }, timeInit)
-          const timePush = timeUse/60
-          setCountTime(timePush.toFixed(0))
+        const timeUse = results.reduce((k, i) => {
+          const timeStart = moment(i.start).unix()
+          const timeEnd = moment(i.end).unix()
+          const timeT = timeEnd - timeStart
+          return k + timeT
+        }, timeInit)
+        const timePush = timeUse / 60
+        setCountTime(timePush.toFixed(0))
         //get calo
 
         const stepRate = a / results.length
@@ -441,12 +441,12 @@ const StepCount = ({ props, intl, navigation }) => {
         else if (stepRate >= 4.0)
           stepRateFactor = 2.30;
         //get sex
-        
+
         let sexValue
-        if(sex == 1) sexValue = 0.415
+        if (sex == 1) sexValue = 0.415
         else sexValue = 0.413
         let distanceInStep = sexValue * heightUser * stepRateFactor
-        const distanceUser = (distanceInStep*stepCurrent/100000).toFixed(2)
+        const distanceUser = (distanceInStep * stepCurrent / 100000).toFixed(2)
         setDistant(distanceUser)
         let speed = distanceInStep * stepRate * 3.6
         let calo
@@ -571,7 +571,10 @@ const StepCount = ({ props, intl, navigation }) => {
                   <Image
                     source={require('./images/ic_run.png')}
                     resizeMode={'contain'}
-                    height={30}
+                    style={{
+                      width: 30,
+                      height: 30
+                    }}
                   />
                   <Text style={styles.txCountStep}>{countStep}</Text>
                   <Text style={styles.txCountTarget}>
@@ -642,7 +645,10 @@ const StepCount = ({ props, intl, navigation }) => {
   );
 };
 const styles = StyleSheet.create({
-  img: {},
+  img: {
+    width: 64,
+    height: 64
+  },
   chart: {
     flex: 1,
   },
