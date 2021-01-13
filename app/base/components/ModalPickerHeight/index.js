@@ -30,24 +30,22 @@ function ModalPicker({
   const [data, setData] = useState([]);
   const [height, setHeight] = useState(() => {
     if (currentHeight) {
-      return parseInt(currentHeight.replace('cm', ''))
+      return currentHeight
     } else {
-      return 165;
+      return '165 cm';
     }
   });
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
     setData(dataHeight);
-    // setIndex(dataHeight.findIndex(e => e.label == currentHeight));
-    // 
   }, []);
 
   useEffect(() => {
     if (gender == 1) {
-      setHeight(165);
+      setHeight('165 cm');
     } else if (gender == 0) {
-      setHeight(155);
+      setHeight('155 cm');
     }
   }, [gender]);
   const selectHeight = () => {
@@ -70,8 +68,8 @@ function ModalPicker({
           onValueChange={setHeight}
           dataSource={data}
           selectedIndex={
-            data.findIndex(e => e == `${currentHeight} cm`) != -1
-              ? data.findIndex(e => e == `${currentHeight} cm`)
+            data.findIndex(e => e == currentHeight) != -1
+              ? data.findIndex(e => e == currentHeight)
               : gender == 1
                 ? 65
                 : gender == 0

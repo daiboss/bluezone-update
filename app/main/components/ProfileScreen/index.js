@@ -54,13 +54,14 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   const onGoBack = () => navigation.goBack();
   const onSelectGender = gender => setGender(gender);
   const getProfileList = async profiles => {
+    console.log('profilesprofiles', profiles)
     let data = profiles
       .sort((a, b) => b.date - a.date)
       .reduce((r, a) => {
         r['values'] = r['values'] || [];
         r['values'].unshift({
           y: Number(
-            a.weight.substring(0, a.weight.length - 4).replace(',', '.'),
+            a?.weight?.replace('kg', '')?.replace(',', '.')?.replace(' ', '') || 0,
           ),
           marker: a.weight,
           year: moment(a.date).format('YYYY'),

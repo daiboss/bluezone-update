@@ -85,11 +85,9 @@ export const getDistances = async () => {
                 getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) == 0,
         );
         let sex = gender[profile?.gender || 0];
-        let height = profile?.height?.substring(0, profile?.height?.length - 3);
+        let height = Number(profile?.height?.replace('cm', '')?.trim() || 0);
         let weight = Number(
-            profile?.weight
-                ?.substring(0, profile?.weight?.length - 3)
-                .replace(', ', '.'),
+            profile?.weight?.replace('kg', '')?.replace(',', '.')?.replace(' ', '') || 0
         );
         if (stepData.length) {
             let result = getAllDistance(stepData, sex, height, weight);

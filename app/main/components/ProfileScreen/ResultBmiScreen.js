@@ -57,12 +57,12 @@ const ResultBmiScreen = ({ route, intl, navigation }) => {
   const onCloseModalProfile = () => setisVisibleVerifyError(false);
   useEffect(() => {
     if (height && weight) {
-      let h = height.substring(0, height.length - 3) / 100;
+      let h = Number(height?.replace('cm', '')?.trim() || 0) / 100;
       console.log('h: ', h);
-      let w = weight.substring(0, weight.length - 4).replace(',', '.');
+      let w = Number(weight?.replace('kg', '')?.replace(',', '.')?.replace(' ', '') || 0);
       console.log('w: ', w);
       let totalBmi = parseFloat(w / (h * h)).toFixed(1);
-      console.log('totalBmi: ', totalBmi);
+      console.log('totalBmiooooo: ', totalBmi);
       setBmi(totalBmi);
     }
   }, [height, weight]);

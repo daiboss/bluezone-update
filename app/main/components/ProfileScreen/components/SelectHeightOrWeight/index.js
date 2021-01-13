@@ -24,12 +24,10 @@ const SelectHeightOrWeight = ({
   visiHeight = false,
   visiWeight = false
 }) => {
-  console.log('listProfilelistProfilelistProfilelistProfile',listProfile,time)
   const { formatMessage } = intl;
   const [isVisibleHeight, setIsVisibleHeight] = useState(visiHeight);
   const [isVisibleWeight, setIsVisibleWeight] = useState(visiWeight);
   const selectGender = () => {
-    // onSelected && onSelected(gender);
     if (type == 'height') {
       setIsVisibleHeight(true);
     } else {
@@ -41,6 +39,14 @@ const SelectHeightOrWeight = ({
     setIsVisibleHeight(visiHeight)
     setIsVisibleWeight(visiWeight)
   }, [visiHeight, visiWeight])
+
+  const onSelectedHeight = (h) => {
+    onSelected(h)
+  }
+
+  const onSelectedWeight = (w) => {
+    onSelected(w)
+  }
 
   return (
     <>
@@ -54,7 +60,6 @@ const SelectHeightOrWeight = ({
               <Text
                 style={[
                   styles.textGender,
-                  value?.substr(0, value?.length - 2) ? { color: '#000' } : {},
                 ]}>
                 {value}
               </Text>
@@ -80,9 +85,7 @@ const SelectHeightOrWeight = ({
         onCloseModal={() => setIsVisibleHeight(false)}
         gender={gender}
         currentHeight={currentHeight || ''}
-        onSelected={height => {
-          onSelected(height);
-        }}
+        onSelected={onSelectedHeight}
       />
 
       <ModalPickerWeight
@@ -90,9 +93,7 @@ const SelectHeightOrWeight = ({
         onCloseModal={() => setIsVisibleWeight(false)}
         gender={gender}
         currentWeight={currentWeight || ''}
-        onSelected={weight => {
-          onSelected(weight);
-        }}
+        onSelected={onSelectedWeight}
       />
     </>
   );

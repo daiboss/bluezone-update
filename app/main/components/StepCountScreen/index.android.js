@@ -134,7 +134,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const getResultBindingUI = async () => {
     let profi = await getProfile()
-    console.log('profiprofiprofi', profi)
+    // console.log('profiprofiprofi', profi)
     let result = await getDistances();
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
@@ -179,7 +179,7 @@ const StepCount = ({ props, intl, navigation }) => {
         // console.log('STEP------->>>', steps)
 
         getStepsTotal(total => {
-          console.log('isShowStepisShowStepisShowStep', parseInt(targetSteps?.step))
+          // console.log('isShowStepisShowStepisShowStep', parseInt(targetSteps?.step))
           BackgroundJob.updateNotification({
             ...options,
             currentStep: total || 0,

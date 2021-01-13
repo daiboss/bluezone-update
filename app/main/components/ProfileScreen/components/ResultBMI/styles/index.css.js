@@ -36,18 +36,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   container2: {
-    shadowColor: '#00000020',
-    shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.6,
-    shadowRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3,
     backgroundColor: '#FFF',
     borderColor: '#00000040',
-    borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 14,
     marginHorizontal: 10,
     paddingHorizontal: 10,
     marginTop: 10,
-    elevation: 2,
   },
   container3: {
     alignItems: 'center',

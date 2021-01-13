@@ -77,7 +77,7 @@ class ChartLine extends React.Component {
     }
   }
   render() {
-    console.log('parammrmarmamra',this.props)
+    // console.log('parammrmarmamra',this.props)
     return (
       <View style={[styles.container,]}>
         <Text style={styles.txtYear}>{this.state.year}</Text>

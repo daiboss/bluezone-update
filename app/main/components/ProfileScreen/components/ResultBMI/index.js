@@ -9,12 +9,9 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     if (height && weight) {
-      let h = height.substring(0, height.length - 3) / 100;
-      console.log('h: ', h);
-      let w = weight.substring(0, weight.length - 4).replace(',', '.');
-      console.log('w: ', w);
+      let h = Number(height?.replace('cm', '')?.trim() || 0) / 100;
+      let w = Number(weight?.replace('kg', '')?.replace(',', '.')?.replace(' ', '') || 0);
       let totalBmi = parseFloat(w / (h * h)).toFixed(1);
-      console.log('totalBmiiiiiiiiiiii: ', totalBmi);
       setBmi(totalBmi);
     }
     handleAnim();

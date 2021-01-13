@@ -44,8 +44,8 @@ const BmiScreen = ({ route, intl, navigation }) => {
   const [heightError, setHeightError] = useState(null);
   const [weightError, setWeightError] = useState(null);
   const [isVisibleVerifyError, setisVisibleVerifyError] = useState(false);
-  const [height, setHeight] = useState(null);
-  const [weight, setWeight] = useState(null);
+  const [height, setHeight] = useState(undefined);
+  const [weight, setWeight] = useState(undefined);
   const [autoOpen, setAutoOpen] = useState(-1)
 
   const onGoBack = () => navigation.goBack();
@@ -58,6 +58,7 @@ const BmiScreen = ({ route, intl, navigation }) => {
         setWeightError(true);
       }
       if (!height || !weight) return;
+      setAutoOpen(-1)
       navigation.navigate('resultBmi', {
         height,
         weight,
@@ -72,6 +73,24 @@ const BmiScreen = ({ route, intl, navigation }) => {
 
   const backAndOpenModal = (type) => {
     setAutoOpen(type)
+  }
+
+  const selectedHeight = (h) => {
+    setHeightError(false);
+    setHeight(h);
+  }
+
+  const selectedWeight = (w) => {
+    setWeightError(false);
+    setWeight(w);
+  }
+
+  const onSelectedValue = (v) => {
+    if (v?.includes('kg')) {
+      selectedWeight(v)
+    } else {
+      selectedHeight(v)
+    }
   }
 
   return (
@@ -99,37 +118,25 @@ const BmiScreen = ({ route, intl, navigation }) => {
               </Text>
             </View>
           </View>
+
           <SelectHeightOrWeight
-            visiWeight={autoOpen == 0}
+            visiHeight={autoOpen == 1}
             label={formatMessage(message.height)}
             value={height ? height : 'cm'}
             type="height"
+            currentHeight={height}
             error={heightError ? formatMessage(message.heightError2) : null}
-            onSelected={height => {
-              if (height.includes('cm')) {
-                setHeightError(false);
-                setHeight(height);
-              } else {
-                setWeightError(false);
-                setWeight(height);
-              }
-            }}
+            onSelected={onSelectedValue}
           />
+
           <SelectHeightOrWeight
-            visiHeight={autoOpen == 1}
+            visiWeight={autoOpen == 0}
             label={formatMessage(message.weight)}
             value={weight ? weight : 'kg'}
             error={weightError ? formatMessage(message.weightError2) : null}
             type="weight"
-            onSelected={weight => {
-              if (weight.includes('cm')) {
-                setHeightError(false);
-                setHeight(weight);
-              } else {
-                setWeightError(false);
-                setWeight(weight);
-              }
-            }}
+            currentWeight={weight}
+            onSelected={onSelectedValue}
           />
         </View>
         <View style={styles.buttonConfirm}>

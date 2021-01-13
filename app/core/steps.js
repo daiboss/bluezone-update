@@ -4,7 +4,7 @@ import {
   setUpdateIntervalForType,
   SensorTypes,
 } from 'react-native-sensors';
-import {map, filter} from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import {
   getProfile,
   getResultSteps,
@@ -78,7 +78,7 @@ export const getAllDistance = (data, sex, height, weight) => {
     .filter((item, i, ar) => ar.indexOf(item) == i)
     .map((item, index) => {
       let new_list = data.filter(itm => itm?.timeEnd == item);
-      return {timeEnd: item, data: new_list};
+      return { timeEnd: item, data: new_list };
     });
   let time = timeList.reduce((total, item) => {
     let data = item.data.sort((a, b) => a.timeStart - b.timeStart);
@@ -106,11 +106,10 @@ export const getDistances = async () => {
         getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) == 0,
     );
     let sex = gender[profile?.gender || 0];
-    let height = profile?.height?.substring(0, profile?.height?.length - 3);
+    let height = Number(profile?.height?.replace('cm', '')?.trim() || 0);
     let weight = Number(
       profile?.weight
-        ?.substring(0, profile?.weight?.length - 3)
-        .replace(', ', '.'),
+        ?.replace('kg', '')?.replace(',', '.')?.replace(' ', '') || 0
     );
 
     if (step.length) {
@@ -175,7 +174,7 @@ export const getStepsTotal = async (start, end) => {
       } else {
         let resultNew = totalStep - (20 / 100) * (totalStep - step);
 
-        setResultSteps({step: parseInt(resultNew), date: new Date().getTime()});
+        setResultSteps({ step: parseInt(resultNew), date: new Date().getTime() });
       }
     }
   } catch (error) {
