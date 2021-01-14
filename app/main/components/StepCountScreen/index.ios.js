@@ -702,8 +702,25 @@ const StepCount = ({ props, intl, navigation }) => {
           </View>
         </View>
         <View style={styles.viewLineChart}>
-          {(dataChart.length && <ChartLineV totalCount={totalCount} data={dataChart} time={time} />) ||
+          {(dataChart.length && <View>
+            <ChartLineV totalCount={totalCount} data={dataChart} time={time} />
+            <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() =>
+                  navigation.navigate('stepHistory', {
+                    dataHealth: { countStep, countRest, countCarlo, distant },
+                  })
+                }
+                style={{
+                  zIndex: 10000,
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%'
+                }}>
+              </TouchableOpacity>
+              </View>) ||
             null}
+                
         </View>
         {/* <View style={styles.viewHeight} /> */}
       </ScrollView>

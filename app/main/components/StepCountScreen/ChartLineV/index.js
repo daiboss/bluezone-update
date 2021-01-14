@@ -85,8 +85,10 @@ class ChartLine extends React.Component {
     return (
       <VictoryChart
         // padding=""
+        // width={400}
         height={RFValue(200)}
         minDomain={{ y: 0 }}
+        padding={{ left: 40, right: 40, top: 50, bottom: 50 }}
         maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
       // theme={VictoryTheme.material}
       >
@@ -121,6 +123,7 @@ class ChartLine extends React.Component {
           padding={{top:30}}
           key='axis-target'
           dependentAxis
+          
           tickFormat={() => ''}
           tickValues={[100000]}
           style={{
@@ -134,11 +137,12 @@ class ChartLine extends React.Component {
         
           style={{ labels: { fill: 'none' } }}
           data={this.state.dataConvert}
+          // data = {[3000,4000,100,100,3000,2000,6000,7000]}
         >
           <VictoryArea
-            interpolation="natural"
+            interpolation="monotoneX"
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
-          // data={sampleData}
+            // data={sampleData}
           />
 
           <VictoryLine
@@ -146,11 +150,11 @@ class ChartLine extends React.Component {
               duration: 200,
               onLoad: { duration: 200 }
             }}
-            interpolation="natural"
+            interpolation="monotoneX"
             style={{
               data: { stroke: "#FE4358" },
               
-              parent: { border: "1px solid #ccc" ,paddingBottom:300}
+              parent: { border: "1px solid #ccc" }
             }}
 
           />
@@ -292,7 +296,7 @@ class ChartLine extends React.Component {
         </View>
         <View style={{
           height: 0,
-          width: width * 0.76,
+          width: width * 0.81,
           alignSelf: 'center',
           backgroundColor: 'white',
           position: 'absolute',
