@@ -117,25 +117,31 @@ const StepCount = ({ props, intl, navigation }) => {
   //   setStartTime(firstOpenApp)
   //   console.log('firstOpenAppfirstOpenApp',firstOpenApp)
   // },[])
-  useEffect(async () => {
-    const firstOpenApp = await getFirstTimeOpen();
-    setStartTime(firstOpenApp)
+  useEffect(() => {
+    // async () => {
+    // //   const firstOpenApp = await getFirstTimeOpen();
+    // // setStartTime(firstOpenApp)
     let end = new Date();
     // let start = firstOpenApp
-    let start = new Date(2020,1,1).format('yyyy-MM-dd')
+    // let start = new Date(2020,1,1).format('yyyy-MM-dd')
+    let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
+    // console.log('monthAgomonthAgo',monthAgo)
     // console.log('anannanannanaan',start)
     getDataHealth(start, end.format('yyyy-MM-dd'), 'day');
     return () => {
       intervalNow.current && clearInterval(intervalNow.current);
-    };
+    // };
+    }
+    
   }, []);
 
   const onSetSelect = type => () => {
     if (type == 1) {
       let end = new Date();
       // let start = startTime;
-      let start = new Date(2020,1,1).format('yyyy-MM-dd')
+      // let start = new Date(2020,1,1).format('yyyy-MM-dd')
       // let start = moment('2020/01/01','yyyy/MM/DD');
+      let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
       getDataHealth(
         start,
         end.format('yyyy-MM-dd'),
@@ -148,7 +154,8 @@ const StepCount = ({ props, intl, navigation }) => {
     }
     if (type == 2) {
       let end = moment();
-      let start = new Date(2020,1,1).format('yyyy-MM-dd')
+      // let start = new Date(2020,1,1).format('yyyy-MM-dd')
+      let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
       // let start = startTime;
       getDataHealth(
         start,
@@ -162,7 +169,8 @@ const StepCount = ({ props, intl, navigation }) => {
     }
     if (type == 3) {
       let end = moment();
-      let start = new Date(2020,1,1).format('yyyy-MM-dd')
+      let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
+      // let start = new Date(2020,1,1).format('yyyy-MM-dd')
       // let start = startTime;
       getDataHealth(
         start,
@@ -218,10 +226,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
     // })
   };
-  useEffect(async () => {
-    let data =await getIsFirstLoading()
-    console.log('datadatadatadata',data)
-  },[])
   const onRealTime = (start, end, type) => {
     if (intervalNow.current) {
       clearInterval(intervalNow.current);
@@ -508,6 +512,7 @@ const StepCount = ({ props, intl, navigation }) => {
                 listDataChart.push(firtItem)
                 console.log('iteitneijfiaufhsauhfusahfushafsa',listDataChart)
               }
+              
               setDataChart(listDataChart);
             } catch (e) {
               console.log('errrrrerererere',e)
@@ -554,7 +559,7 @@ const StepCount = ({ props, intl, navigation }) => {
     Fitness.getCalories({ startDate: start, endDate: end })
       .then(res => {
         let total = res.reduce((acc, obj) => acc + obj.quantity, 0);
-        setCountCarlo(total);
+        // setCountCarlo(total);
       })
       .catch(err => { });
   };

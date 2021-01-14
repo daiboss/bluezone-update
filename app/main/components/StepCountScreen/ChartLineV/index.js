@@ -111,7 +111,7 @@ class ChartLine extends React.Component {
           style={{
             grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
             axis: { stroke: 'none' },
-            tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'black' }
+            tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : '#3F3F3F',fontSize:14,fontWeight:'350', }
           }}
           orientation="top"
         />
@@ -120,6 +120,7 @@ class ChartLine extends React.Component {
         <VictoryAxis
           theme={VictoryTheme.material}
           standalone
+          padding={{top:30}}
           key='axis-target'
           dependentAxis
           tickFormat={() => ''}
@@ -132,6 +133,7 @@ class ChartLine extends React.Component {
 
 
         <VictoryGroup
+        
           style={{ labels: { fill: 'none' } }}
           data={this.state.dataConvert}
           // data={[
@@ -158,7 +160,8 @@ class ChartLine extends React.Component {
             interpolation="natural"
             style={{
               data: { stroke: "#FE4358" },
-              parent: { border: "1px solid #ccc" }
+              
+              parent: { border: "1px solid #ccc" ,paddingBottom:300}
             }}
 
           />

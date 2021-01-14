@@ -62,7 +62,7 @@ import ModalPickerStepsTarget from './../../../base/components/ModalPickerStepsT
 import ImgStep from './../StepCountScreen/images/ic_step.png'
 import ModalAddShortcut from '../../../base/components/ModalAddShortcut';
 import MyShortcut from './CreateShortcut'
-
+import * as scheduler from '../../../core/notifyScheduler';
 import BackgroundJob from './../../../core/service_stepcounter'
 
 Number.prototype.format = function (n, x) {
@@ -74,7 +74,7 @@ const SettingScreen = ({ intl, navigation }) => {
 
   const { formatMessage } = intl;
   const [autoTarget, setAutoTarget] = useState(undefined);
-  const [alertStep, setAlertStep] = useState(false);
+  const [alertStep, setAlertStep] = useState(undefined);
   const [alertTarget, setAlertTarget] = useState(false);
   const [alertBmi, setAlertBmi] = useState(false);
   const [totalStep, setTotalStep] = useState(0);
@@ -83,7 +83,14 @@ const SettingScreen = ({ intl, navigation }) => {
 
   useEffect(() => {
     getStatus();
+    // scheduler.createScheduleWarnningWeightNotification(alertStep)
   }, []);
+  useEffect(() => {
+    console.log('alertStepalertStepalertStep',alertStep)
+    // const a = PushNotification.getScheduledLocalNotifications();
+    // console.log('aabdhasbdhbsahdbsadsa',a)
+    alertBmi ? scheduler.createScheduleWarnningWeightNotification() : PushNotification.cancelAllLocalNotifications()
+  },[alertBmi])
 
   const alertPermission = (type) => {
     if(type == 'step') setAlertStep(!alertStep)
@@ -121,7 +128,7 @@ const SettingScreen = ({ intl, navigation }) => {
     } catch (error) { }
   };
   const onBack = () => {
-    try {
+     try {
       navigation.pop();
     } catch (e) { }
   };
@@ -145,6 +152,8 @@ const SettingScreen = ({ intl, navigation }) => {
         console.log('resresres',res)
         if(res.notificationCenter){
           setAlertStep(!alertStep);
+          // console.log('alerterererere',alertStep)
+         
         }
         else{
           alertPermission('step')
@@ -171,6 +180,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const alertBmiSwitch = async value => {
     try {
       PushNotification.requestPermissions().then(res => {
+        
         if(res.notificationCenter){
           setAlertBmi(!alertBmi);
         }

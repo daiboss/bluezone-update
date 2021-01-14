@@ -150,7 +150,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const [time, setTime] = useState([]);
   const [heightUser, setHeightUser] = useState(0)
   const [weightUser, setWeightUser] = useState(0)
-
+  const [weightHeight,setWeightHeight] = useState({weight:0,height:0})
   const [countTime, setCountTime] = useState(0)
   const [countStep, setCountStep] = useState(null);
   const [countRest, setCountRest] = useState(0);
@@ -174,44 +174,44 @@ const StepCount = ({ props, intl, navigation }) => {
   const [dataChart, setDataChart] = useState([]);
 
 
-  useEffect(() => {
-    BackgroundTimer.start()
-    // setTimeout(() => {
-    //   let optionsStepCurrent = {
-    //     startDate: moment().startOf('day'), // required
-    //     endDate: moment(), // optional; default now
-    // };
-    // let stepCurrent
-    // AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
-    //   if (err) {
-    //       return;
-    //   }
-    //   stepCurrent = results.value
-    //   console.log('vaovaovaovasaaaaaaaa',stepCurrent,new Date().format('mm:ss'))
-    //    scheduler.createWarnningStepNotification(stepCurrent || 0)
-    // })},5000)
-    BackgroundTimer.runBackgroundTimer(() => {
-      //code that will be called every 3 seconds 
-      let optionsStepCurrent = {
-        startDate: moment().startOf('day'), // required
-        endDate: moment(), // optional; default now
-      };
-      let stepCurrent
-      AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
-        if (err) {
-          return;
-        }
-        stepCurrent = results.value
-        console.log('vaovaovaovasaaaaaaaa', stepCurrent, new Date().format('mm:ss'))
-        scheduler.createWarnningStepNotification(stepCurrent || 0)
-      });
+  // useEffect(() => {
+  //   BackgroundTimer.start()
+  //   // setTimeout(() => {
+  //   //   let optionsStepCurrent = {
+  //   //     startDate: moment().startOf('day'), // required
+  //   //     endDate: moment(), // optional; default now
+  //   // };
+  //   // let stepCurrent
+  //   // AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
+  //   //   if (err) {
+  //   //       return;
+  //   //   }
+  //   //   stepCurrent = results.value
+  //   //   console.log('vaovaovaovasaaaaaaaa',stepCurrent,new Date().format('mm:ss'))
+  //   //    scheduler.createWarnningStepNotification(stepCurrent || 0)
+  //   // })},5000)
+  //   BackgroundTimer.runBackgroundTimer(() => {
+  //     //code that will be called every 3 seconds 
+  //     let optionsStepCurrent = {
+  //       startDate: moment().startOf('day'), // required
+  //       endDate: moment(), // optional; default now
+  //     };
+  //     let stepCurrent
+  //     AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
+  //       if (err) {
+  //         return;
+  //       }
+  //       stepCurrent = results.value
+  //       // console.log('vaovaovaovasaaaaaaaa', stepCurrent, new Date().format('mm:ss'))
+  //       // scheduler.createWarnningStepNotification(stepCurrent || 0)
+  //     });
 
-      // scheduler.createWarnningStepNotification(countRest || 0)
-    },
-      5000);
-    // BackgroundTimer.stopBackgroundTimer();
-    // BackgroundTimer.stop();
-  }, [])
+  //     // scheduler.createWarnningStepNotification(countRest || 0)
+  //   },
+  //     5000);
+  //   // BackgroundTimer.stopBackgroundTimer();
+  //   // BackgroundTimer.stop();
+  // }, [])
 
 
   useEffect(() => {
@@ -279,11 +279,11 @@ const StepCount = ({ props, intl, navigation }) => {
       // Load the list with persisted events.
     } catch (error) { }
   };
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     resultSteps();
-  //   }, [])
-  // );
+  useFocusEffect(
+    React.useCallback(() => {
+      resultSteps();
+    }, [])
+  );
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
@@ -343,7 +343,7 @@ const StepCount = ({ props, intl, navigation }) => {
     getSex()
     getStepsRealTime()
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightUser, heightUser])
+  }, [weightHeight.height])
 
   const getSex = async () => {
     let profiles = (await getProfile()) || [];
@@ -360,12 +360,22 @@ const StepCount = ({ props, intl, navigation }) => {
     const heightCV = height.replace('cm', '').replace(' ', '')
     const weight = profiles[0].weight || 0
     const weightCV = weight.replace('kg', '').replace(',', '.').replace(' ', '')
-    setHeightUser(parseFloat(heightCV))
-    setWeightUser(parseFloat(weightCV))
-
+    setWeightHeight({
+      height:parseFloat(heightCV),
+      weight:parseFloat(weightCV)
+    })
+    // setHeightUser(parseFloat(heightCV))
+    // setWeightUser(parseFloat(weightCV))
   }
-  const getStepsRealTime = () => {
+  const getStepsRealTime = async () => {
     let stepCurrent
+    // let profiles = (await getProfile()) || [];
+    // const height = profiles[0].height || 0
+    // const heightCV = height.replace('cm', '').replace(' ', '')
+    // const weight = profiles[0].weight || 0
+    // const weightCV = weight.replace('kg', '').replace(',', '.').replace(' ', '')
+    // setHeightUser(parseFloat(heightCV))
+    // setWeightUser(parseFloat(weightCV))
     const healthKitOptions = {
       permissions: {
         read: [
@@ -427,6 +437,7 @@ const StepCount = ({ props, intl, navigation }) => {
         let initialValue = 0
 
         //get Calo
+     
         const a = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
@@ -451,14 +462,14 @@ const StepCount = ({ props, intl, navigation }) => {
             stepRateFactor = 1.85;
           else if (stepRate >= 4.0)
             stepRateFactor = 2.30;
-          let distanceInStep = sexValue * heightUser * stepRateFactor
+          let distanceInStep = sexValue * weightHeight.height * stepRateFactor
           let speed = distanceInStep * stepRate * 3.6
           let calo
           // console.log('weightUserweightUserweightUser',weightUser,distanceInStep,stepRate)
-          if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
-          else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+          if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightHeight.weight * 2 / 12000
+          else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightHeight.weight * 2 / 12000
           // setCountCarlo(calo.toFixed(2))
-          console.log('objectKcal', { sexValue, heightUser, stepRateFactor, weightUser })
+          console.log('objectKcal', { sexValue, weightHeight, stepRateFactor })
           return k + calo * timeS * 2
         }, initialValue)
         setCountCarlo(parseInt(a / 1000))
@@ -494,7 +505,7 @@ const StepCount = ({ props, intl, navigation }) => {
             stepRateFactor = 1.85;
           else if (stepRate >= 4.0)
             stepRateFactor = 2.30;
-          let distanceInStep = sexValue * heightUser * stepRateFactor
+          let distanceInStep = sexValue * weightHeight.height * stepRateFactor
           const distanceUser = parseFloat(distanceInStep * i.quantity / 100000)
           return k + distanceUser
         }, initialValue)
