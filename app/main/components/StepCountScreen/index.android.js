@@ -140,7 +140,8 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const saveDataDemo = async () => {
     // await removeAllHistory()
-    let tmp = new moment().startOf('years')
+    // let tmp = new moment().startOf('years')
+    let tmp = new moment('2020-01-01')
     let listHistory = await getListHistory(tmp.unix(), new moment().unix())
     if (listHistory?.length > 10) {
       return
@@ -152,7 +153,7 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const getResultBindingUI = async () => {
-    let profi = await getProfile()
+    // let profi = await getProfile()
     // console.log('profiprofiprofi', profi)
     let result = await getDistances();
     let time = result?.time || 0;
@@ -170,9 +171,9 @@ const StepCount = ({ props, intl, navigation }) => {
     if (!isRun) {
       BackgroundJob.start(taskStepCounter, options);
     }
-    else {
-      BackgroundJob.stop();
-    }
+    // else {
+    //   BackgroundJob.stop();
+    // }
   }, [BackgroundJob])
 
   const taskStepCounter = async () => {
