@@ -53,6 +53,7 @@
     "react-native": "0.62.2",
     "react-native-android-location-enabler": "^1.2.1",
     "react-native-background-fetch": "^3.1.0",
+    "react-native-background-timer": "^2.4.1",
     "react-native-bluetooth-scan": "git+https://github.com/BluezoneGlobal/react-native-bluetooth-scan.git",
     "react-native-bluetooth-status": "^1.5.0",
     "react-native-charts-wrapper": "^0.5.7",

@@ -136,6 +136,7 @@ const setHistoryDays = (historyDays = []) => {
 
 const getIsFirstLoading = async () => {
   const result = await AsyncStorage.getItem(IsFirstLoading);
+  console.log('resusususususu',result)
   return _processOutput(result);
 };
 
@@ -179,7 +180,7 @@ const getFirstTimeOpen = async () => {
   return _processOutput(result);
 };
 
-const setFirstTimeOpen = (firstTimeOpen = 0) => {
+const setFirstTimeOpen =async (firstTimeOpen = 0) => {
   const _resource = _processInput(firstTimeOpen);
   AsyncStorage.setItem(FirstTimeOpen, _resource);
 };

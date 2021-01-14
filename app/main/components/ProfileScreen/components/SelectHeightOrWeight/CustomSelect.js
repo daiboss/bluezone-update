@@ -13,7 +13,8 @@ import PropTypes from 'prop-types';
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
-export default class ScrollPicker extends Component {
+export default class
+    ScrollPicker extends Component {
 
     static propTypes = {
         style: ViewPropTypes.style,
@@ -125,13 +126,15 @@ export default class ScrollPicker extends Component {
 
     _renderItem(data, index) {
         let isSelected = index === this.state.selectedIndex;
-        let item = <Text style={[isSelected
-            ?
-            styles.itemTextSelected
-            : ((index == this.state.selectedIndex + 1) ||
-                (index == this.state.selectedIndex - 1)) ?
-                styles.itemTextNear :
-                styles.itemText, this.props.textStyle]}> {data}</Text >;
+        let item = <Text
+            key={data}
+            style={[isSelected
+                ?
+                styles.itemTextSelected
+                : ((index == this.state.selectedIndex + 1) ||
+                    (index == this.state.selectedIndex - 1)) ?
+                    styles.itemTextNear :
+                    styles.itemText, this.props.textStyle]}> {data}</Text >;
 
         if (this.props.renderItem) {
             item = this.props.renderItem(data, index, isSelected);

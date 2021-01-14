@@ -15,15 +15,14 @@ import styles from './styles/index.css';
 import ModalComponent from '../ModalComponent';
 import message from './../../../core/msg/setting'
 const windowWidth = Dimensions.get('window').width;
-let dataSteps = [];
-let i = 1000;
+
+import { DATA_STEP } from './data'
+
 Number.prototype.format = function (n, x) {
   var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
   return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&.');
 };
-for (i; i <= 100000; i += 250) {
-  dataSteps.push(i.format() + ' bước');
-}
+
 function ModalPickerStepsTarget({
   isVisibleModal,
   onCloseModal,
@@ -65,10 +64,10 @@ function ModalPickerStepsTarget({
 
           <CustomSelect
             onValueChange={changeStep}
-            dataSource={dataSteps}
+            dataSource={DATA_STEP}
             selectedIndex={
-              dataSteps.findIndex(e => e == `${currentSteps.format() + ' bước'}`) != -1
-                ? dataSteps.findIndex(e => e == `${currentSteps.format() + ' bước'}`) : 0
+              DATA_STEP.findIndex(e => e == `${currentSteps.format() + ' bước'}`) != -1
+                ? DATA_STEP.findIndex(e => e == `${currentSteps.format() + ' bước'}`) : 0
             }
             containerStyle={{
               marginVertical: 30,

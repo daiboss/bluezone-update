@@ -69,7 +69,7 @@ const ResultBmiScreen = ({ route, intl, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header
-        onBack={onGoBack}
+        // onBack={onGoBack}
         title={formatMessage(message.title)}
         styleHeader={styles.header}
         colorIcon={'#FE4358'}

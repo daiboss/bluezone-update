@@ -84,6 +84,9 @@ export const getDistances = async () => {
             item =>
                 getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) == 0,
         );
+        if (profile == undefined && profiles.length > 0) {
+            profile = profiles[0]
+        }
         let sex = gender[profile?.gender || 0];
         let height = Number(profile?.height?.replace('cm', '')?.trim() || 0);
         let weight = Number(
@@ -108,6 +111,15 @@ export const getStepsTotal = async (callback) => {
     getListStepDay().then(res => {
         let total = res?.reduce((t, e) => t + e?.step, 0)
         callback(total)
+    })
+};
+
+export const getStepsTotalPromise = async () => {
+    return new Promise((resolve, reject) => {
+        getListStepDay().then(res => {
+            let total = res?.reduce((t, e) => t + e?.step, 0)
+            resolve(total)
+        }).catch(() => resolve(0))
     })
 };
 

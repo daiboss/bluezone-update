@@ -11,6 +11,7 @@ import {
   DeviceEventEmitter,
   Platform,
   ScrollView,
+  BackHandler,
 
 } from 'react-native';
 import { LineChart } from 'react-native-charts-wrapper';
@@ -59,6 +60,7 @@ import {
   getDistances,
   getStepCount,
   getStepsTotal,
+  getStepsTotalPromise,
   getTimeDate,
 } from '../../../core/calculation_steps';
 
@@ -113,7 +115,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const getListHistoryChart = async () => {
     let start = new moment().subtract(8, 'days').unix()
-    let end = new moment().unix()
+    let end = new moment().subtract(1, 'days').unix()
     let steps = await getListHistory(start, end)
     let list = steps.map(item => {
       let tmp = JSON.parse(item?.resultStep || {})
@@ -132,6 +134,23 @@ const StepCount = ({ props, intl, navigation }) => {
     setTime(listTime)
   }
 
+  useEffect(() => {
+    saveDataDemo()
+  }, [])
+
+  const saveDataDemo = async () => {
+    // await removeAllHistory()
+    let tmp = new moment().startOf('years')
+    let listHistory = await getListHistory(tmp.unix(), new moment().unix())
+    if (listHistory?.length > 10) {
+      return
+    }
+    // save data example
+    KKK.forEach(async element => {
+      await addHistory(element.starttime, element?.resultStep || {})
+    });
+  }
+
   const getResultBindingUI = async () => {
     let profi = await getProfile()
     // console.log('profiprofiprofi', profi)
@@ -139,14 +158,10 @@ const StepCount = ({ props, intl, navigation }) => {
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
     let m = parseInt((time % 3600) / 60)
-    let timeString = ''
-    if (h > 0) {
-      timeString += `${h} - Giờ,\n${m} - Phút`
-    } else
-      timeString += `${m}\nPhút`
     setDistant(result?.distance || 0);
     setCountCarlo(result?.calories || 0);
-    setCountTime(timeString);
+    setCountTime(m);
+    setCountTimeHour(h)
     setCountStep(result?.step || 0);
   }
 
@@ -204,6 +219,8 @@ const StepCount = ({ props, intl, navigation }) => {
       timePush.add(1, 'days')
     }
     let timeDiff = timePush.diff(currentTime, 'milliseconds')
+    console.log('timeDifftimeDiff', timeDiff)
+
     BackgroundJob.setTimeout(() => {
       pushNotificationWarning()
       schedule7PM()
@@ -222,9 +239,9 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const pushNotificationWarning = async () => {
-    let tmpStep = await getNotiStep()
+    let tmpStep = await getNotiStep() || true
     if (tmpStep) {
-      let totalStep = await getStepsTotal();
+      let totalStep = await getStepsTotalPromise();
       scheduler.createWarnningStepNotification(totalStep || 0)
     }
     let tmpWeight = await getWeightWarning()
@@ -298,12 +315,6 @@ const StepCount = ({ props, intl, navigation }) => {
     BackgroundJob.updateTypeNotification()
 
     await autoChangeStepsTarget()
-
-
-    // save data example
-    // KKK.forEach(async element => {
-    //   await addHistory(element.starttime, element?.resultStep || {})
-    // });
   }
 
   const { formatMessage } = intl;
@@ -313,6 +324,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const [countRest, setCountRest] = useState(0);
   const [countCarlo, setCountCarlo] = useState(0);
   const [countTime, setCountTime] = useState(0);
+  const [countTimeHour, setCountTimeHour] = useState(0);
   const [distant, setDistant] = useState(0);
   const [totalCount, setTotalCount] = useState(10000);
   const [dataChart, setDataChart] = useState([]);
@@ -355,7 +367,7 @@ const StepCount = ({ props, intl, navigation }) => {
       <StatusBar />
 
       <Header
-        onBack={onBack}
+        // onBack={onBack}
         colorIcon={'#FE4358'}
         title={formatMessage(message.title)}
         styleHeader={styles.header}
@@ -443,54 +455,45 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_time.png')}
             />
+            <View style={{ flexDirection: 'row' }}>
+              <View>
+                <Text style={styles.txData}>{countTime}</Text>
+                <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+              </View>
+              {
+                countTimeHour > 0 && (
+                  <View style={{ marginLeft: 4 }}>
+                    <Text style={styles.txData}>{countTimeHour}</Text>
+                    <Text style={styles.txUnit}>{formatMessage(message.hour)}</Text>
+                  </View>
+                )
+              }
 
-            <Text style={styles.txData}>{countTime}</Text>
-            {/* <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text> */}
+            </View>
           </View>
         </View>
         <View style={styles.viewLineChart}>
-          {(dataChart.length && <ChartLineV totalCount={totalCount} data={dataChart} time={time} />) || null}
-          {/* <LineChart style={styles.chart}
-                        data={dataChart}
-                        style={styles.chart}
-                        // data={this.state.data}
-                        xAxis={xAxis}
-                        highlights={[{ x: 3 }, { x: 6 }]}
-                        animation={{
-                            durationY: 500,
-                        }}
-                        chartDescription={{
-                            text: '',
-                        }}
+          {(dataChart.length && (
+            <View>
+              <ChartLineV totalCount={totalCount} data={dataChart} time={time} />
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() =>
+                  navigation.navigate('stepHistory', {
+                    dataHealth: { countStep, countRest, countCarlo, distant },
+                  })
+                }
+                style={{
+                  zIndex: 10000,
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%'
+                }}>
+              </TouchableOpacity>
+            </View>
+          )
 
-                        yAxis={{
-                            left: {
-                                enabled: false,
-                            },
-                            right: {
-                                enabled: false,
-                            },
-                        }}
-                        touchEnabled={true}
-                        dragEnabled={true}
-                        scaleEnabled={true}
-                        syncX={true}
-                        scaleXEnabled={true}
-                        legend={{
-                            enabled: false,
-                        }}
-                        marker={{
-                            enabled: true,
-                            markerColor: processColor('#fe4358'),
-                            textColor: processColor('#FFF'),
-                            markerFontSize: 14,
-                        }}
-                        scaleYEnabled={true}
-                        visibleRange={{ x: { max: 6 } }}
-                        dragDecelerationEnabled={false}
-                        // ref="chart"
-                        onSelect={handleSelect}
-                    /> */}
+          ) || null}
         </View>
         {/* <View style={styles.viewHeight} /> */}
       </ScrollView>
@@ -505,7 +508,7 @@ const StepCount = ({ props, intl, navigation }) => {
           {formatMessage(message.viewHistory)}
         </Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };
 const styles = StyleSheet.create({

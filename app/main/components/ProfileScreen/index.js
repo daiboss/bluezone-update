@@ -91,7 +91,9 @@ const ProfileScreen = ({ route, intl, navigation }) => {
           getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) ==
           0,
       );
-
+      if (profile == undefined && profiles.length > 0) {
+        profile = profiles[0]
+      }
       if (profile) {
         console.log('profileprofileprofile', profile)
         setGender(profile.gender);
@@ -207,7 +209,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header
-        onBack={onGoBack}
+        // onBack={onGoBack}
         colorIcon={'#FE4358'}
         title={formatMessage(message.title)}
         styleHeader={styles.header}

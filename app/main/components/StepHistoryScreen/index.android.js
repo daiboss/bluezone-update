@@ -9,6 +9,7 @@ import {
   ImageBackground,
   Image,
   processColor,
+  BackHandler,
 } from 'react-native';
 // import { BarChart } from 'react-native-charts-wrapper';
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
@@ -75,6 +76,8 @@ const StepCount = ({ props, intl, navigation }) => {
   const [selectMonth, setSelectMonth] = useState(false);
   const offset = new Date().getTimezoneOffset();
   const [time, setTime] = useState(0);
+  const [countTime, setCountTime] = useState(0);
+  const [countTimeHour, setCountTimeHour] = useState(0);
   const [countStep, setCountStep] = useState(null);
   const [countRest, setCountRest] = useState(0);
   const [countCarlo, setCountCarlo] = useState(0);
@@ -82,7 +85,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const [dataChart, setDataChart] = useState([]);
   const [maxDomain, setMaxDomain] = useState(10000)
   const [startTime, setStartTime] = useState(new moment(new Date()).startOf('year').unix())
-  const [endTime, setEndTime] = useState(new moment(new Date()).unix())
+  const [endTime, setEndTime] = useState(new moment(new Date()).subtract(1, 'days').unix())
   const [listStepToday, setListStepToday] = useState(undefined)
   const [listTotalSteps, setListTotalSteps] = useState([])
 
@@ -163,13 +166,14 @@ const StepCount = ({ props, intl, navigation }) => {
       let list = [];
       if (type == 'day') {
         list = step.map(item => {
+          // console.log('SOSANHHHHHHHH', moment.unix(item?.starttime).format('DD/MM/YYYY'), new moment().format('DD/MM/YYYY'))
           let tmp = JSON.parse(item?.resultStep || {})
           return {
-            x: (new moment().isSame(new moment.unix(endTime), 'days')) ?
+            x: (new moment().isSame(new moment.unix(item?.starttime), 'days')) ?
               'Hôm nay' :
               moment.unix(item?.starttime).format('DD/MM'),
             y: tmp?.step,
-            results: tmp
+            // results: tmp
           }
         });
       }
@@ -239,10 +243,11 @@ const StepCount = ({ props, intl, navigation }) => {
       if (list.length <= 7) {
         setWidthChart(screenWidth)
       } else {
-        let tmp = (screenWidth - (type == 'month' ? 30 : type == 'day' ? 80 : 60)) / 6;
+        let tmp = (screenWidth - (type == 'month' ? 30 : type == 'day' ? 60 : 60)) / 6;
         let widthTmp = tmp * (list.length - 1)
         setWidthChart(widthTmp)
       }
+      console.log('listlistlist', list)
       setDataChart(list);
     } catch (error) { }
   };
@@ -256,18 +261,20 @@ const StepCount = ({ props, intl, navigation }) => {
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
     let m = parseInt((time % 3600) / 60)
-    let timeString = ''
-    if (h > 0) {
-      timeString += `${h} - Giờ`
-      if (m > 0) {
-        timeString += `,\n${m} - Phút`
-      }
-    } else
-      timeString += `${m}\nPhút`
+    // let timeString = ''
+    // if (h > 0) {
+    //   timeString += `${h} - Giờ`
+    //   if (m > 0) {
+    //     timeString += `,\n${m} - Phút`
+    //   }
+    // } else
+    //   timeString += `${m}\nPhút`
 
     setDistant(result?.distance);
     setCountCarlo(result?.calories);
-    setTime(timeString);
+    // setTime(timeString);
+    setCountTime(m)
+    setCountTimeHour(h)
     setCountStep(result?.steps || result?.step || 0);
 
   }
@@ -296,7 +303,7 @@ const StepCount = ({ props, intl, navigation }) => {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <Header
-          onBack={onBack}
+          // onBack={onBack}
           colorIcon={'#FE4358'}
           title={formatMessage(message.stepCountHistory)}
           styleHeader={styles.header}
@@ -335,7 +342,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_calories.png')}
             />
-            <Text style={styles.txData}>{countCarlo}</Text>
+            <Text style={styles.txData}>{Number(countCarlo || 0).toFixed(0)}</Text>
             <Text style={styles.txUnit}>{`kcal`}</Text>
           </View>
           <View style={styles.viewImgData}>
@@ -343,10 +350,31 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_time.png')}
             />
-            <Text style={styles.txData}>{time}</Text>
-            {/* <Text style={styles.txUnit}>{`${formatMessage(
-              message.minute,
-            )}`}</Text> */}
+
+            {
+              countTimeHour > 0 ? (
+                <View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={[styles.txData, {
+                      marginRight: 4
+                    }]}>{countTimeHour}</Text>
+                    <Text style={styles.txUnit}>{formatMessage(message.hour)}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={[styles.txData, {
+                      marginRight: 4
+                    }]}>{countTime}</Text>
+                    <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+                  </View>
+                </View>
+              ) : (
+                  <View>
+                    <Text style={styles.txData}>{countTime}</Text>
+                    <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+                  </View>
+                )
+            }
+
           </View>
         </View>
       </ScrollView>

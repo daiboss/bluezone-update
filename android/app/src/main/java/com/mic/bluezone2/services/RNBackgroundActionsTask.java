@@ -121,8 +121,8 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                 .setAutoCancel(false)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setStyle(new NotificationCompat.BigPictureStyle())
                 .build();
-
         return notification;
     }
 
