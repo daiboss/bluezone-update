@@ -93,17 +93,17 @@ const SettingScreen = ({ intl, navigation }) => {
   },[alertBmi])
 
   const alertPermission = (type) => {
-    if(type == 'step') setAlertStep(!alertStep)
-    if(type == 'target') setAlertTarget(!alertTarget);
-    if(type == 'bmi') setAlertBmi(!alertBmi);
-    Alert.alert(`"Bluezone" muốn gửi thông báo cho bạn`,'Thông báo có thể bao gồm cảnh báo, âm thanh và biểu tượng. Bạn có thể định cấu hình chúng trong Cài đặt',[
+    if (type == 'step') setAlertStep(!alertStep)
+    if (type == 'target') setAlertTarget(!alertTarget);
+    if (type == 'bmi') setAlertBmi(!alertBmi);
+    Alert.alert(`"Bluezone" muốn gửi thông báo cho bạn`, 'Thông báo có thể bao gồm cảnh báo, âm thanh và biểu tượng. Bạn có thể định cấu hình chúng trong Cài đặt', [
       {
         text: "Từ chối",
         onPress: () => {
-          if(type =='step')setAlertStep(false)
-          if(type == 'target') setAlertTarget(false);
-          if(type == 'bmi') setAlertBmi(false);
-      },
+          if (type == 'step') setAlertStep(false)
+          if (type == 'target') setAlertTarget(false);
+          if (type == 'bmi') setAlertBmi(false);
+        },
         style: "cancel"
       },
       { text: "Cho phép", onPress: () => Linking.openURL('app-settings:{3}') }
@@ -118,8 +118,8 @@ const SettingScreen = ({ intl, navigation }) => {
         res = true;
       }
       setAutoTarget(res);
-      let res1 = (await getIsShowNotification()) || false;
-      setAlertStep(res1);
+      let res1 = (await getIsShowNotification());
+      setAlertStep(res1 || false);
 
       let res2 = (await getNotiStep()) || false;
       setAlertTarget(res2);
@@ -137,7 +137,7 @@ const SettingScreen = ({ intl, navigation }) => {
   };
   const autoTargetSwitch = async value => {
     setAutoTarget(!autoTarget);
-  
+
   };
 
   useEffect(() => {
@@ -147,64 +147,78 @@ const SettingScreen = ({ intl, navigation }) => {
   }, [autoTarget])
 
   const alertStepSwitch = async value => {
-    try {
-      PushNotification.requestPermissions().then(res => {
-        console.log('resresres',res)
-        if(res.notificationCenter){
-          setAlertStep(!alertStep);
-          // console.log('alerterererere',alertStep)
-         
-        }
-        else{
-          alertPermission('step')
-        }
-      }).catch(er => console.log('errerjeirjeijre',er))
-      setRealtime(value);
+    if (Platform.OS == 'android') {
+      await setAlertStep(value);
+    } else
+      try {
+        PushNotification.requestPermissions().then(res => {
+          console.log('resresres', res)
+          if (res.notificationCenter) {
+            setAlertStep(!alertStep);
+          }
+          else {
+            alertPermission('step')
+          }
+        }).catch(er => console.log('errerjeirjeijre', er))
+        setRealtime(value);
 
-    } catch (error) { }
+      } catch (error) { }
   };
+
   const alertTargetSwitch = async value => {
-    try {
-      PushNotification.requestPermissions().then(res => {
-        if(res.notificationCenter){
-          setAlertTarget(!alertTarget);
-        }
-        else{
-          alertPermission('target')
-        }
-      }).catch(er => console.log('errerjeirjeijre',er))
-      setNotiStep(value);
-    
-    } catch (error) { }
+    if (Platform.OS == 'android') {
+      await setAlertTarget(value);
+      await setNotiStep(value)
+    } else
+      try {
+        PushNotification.requestPermissions().then(res => {
+          if (res.notificationCenter) {
+            setAlertTarget(!alertTarget);
+          }
+          else {
+            alertPermission('target')
+          }
+        }).catch(er => console.log('errerjeirjeijre', er))
+        setNotiStep(value);
+
+      } catch (error) { }
   };
+
   const alertBmiSwitch = async value => {
-    try {
-      PushNotification.requestPermissions().then(res => {
-        
-        if(res.notificationCenter){
-          setAlertBmi(!alertBmi);
-        }
-        else{
-          alertPermission('bmi')
-        }
-      }).catch(er => console.log('errerjeirjeijre',er))
-      setWeightWarning(value);
-      
-    } catch (error) { }
+    if (Platform.OS == 'android') {
+      await setAlertBmi(value);
+      await setWeightWarning(value);
+    } else
+      try {
+        PushNotification.requestPermissions().then(res => {
+          if (res.notificationCenter) {
+            setAlertBmi(!alertBmi);
+          }
+          else {
+            alertPermission('bmi')
+          }
+        }).catch(er => console.log('errerjeirjeijre', er))
+        setWeightWarning(value);
+
+      } catch (error) { }
   };
 
   useEffect(() => {
+    saveStepAlert()
+  }, [alertStep])
+
+  const saveStepAlert = async () => {
     if (alertStep == undefined) {
       return;
     }
     if (alertStep) {
-      setIsShowNotification(true);
+      await setIsShowNotification(true);
     } else {
-      setIsShowNotification(false)
+      await setIsShowNotification(false)
     }
     if (Platform.OS == 'android')
       BackgroundJob.updateTypeNotification()
-  }, [alertStep])
+  }
 
   const getListShortcut = () => {
     MyShortcut.GetAllShortcut({
@@ -266,7 +280,7 @@ const SettingScreen = ({ intl, navigation }) => {
         isVisibleModal={isShowModalShortcut}
       />
       <Header
-        onBack={onBack}
+        // onBack={onBack}
         onShowMenu={onShowMenu}
         title={'Cài đặt'}
         colorIcon={'#FE4358'}
@@ -298,7 +312,7 @@ const SettingScreen = ({ intl, navigation }) => {
         <TouchableOpacity
           onPress={openModalTarget}
           disabled={autoTarget}
-          activeOpacity={0.8}>
+          activeOpacity={0.5}>
           <Text style={autoTarget ? styles.txLabelGray : styles.txLabelRed}>{totalStep.format()} bước <IconAntDesign name="right" size={14} /></Text>
         </TouchableOpacity>
       </View>

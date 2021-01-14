@@ -1,7 +1,7 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as PropTypes from 'prop-types';
-import {View, Platform, TouchableOpacity, Dimensions} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+import { View, Platform, TouchableOpacity, Dimensions } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import {
   WheelPicker,
   TimePicker,
@@ -12,16 +12,13 @@ import Text from '../Text';
 // Styles
 import styles from './styles/index.css';
 import ModalComponent from '../ModalComponent';
-import {widthPercentageToDP} from '../../../core/utils/dimension';
-import DynamicallySelectedPicker from '../DynamicallySelectedPicker/DynamicallySelectedPicker';
+import CustomSelect from './../../../main/components/ProfileScreen/components/SelectHeightOrWeight/CustomSelect'
+
 const windowWidth = Dimensions.get('window').width;
 let dataHeight = [];
 let i = 100;
 for (i; i <= 300; i++) {
-  dataHeight.push({
-    label: i + ' cm',
-    value: i,
-  });
+  dataHeight.push(i + ' cm');
 }
 function ModalPicker({
   isVisibleModal,
@@ -33,24 +30,22 @@ function ModalPicker({
   const [data, setData] = useState([]);
   const [height, setHeight] = useState(() => {
     if (currentHeight) {
-      return currentHeight.substring(0, currentHeight.length - 3);
+      return currentHeight
     } else {
-      return 165;
+      return '165 cm';
     }
   });
   const [index, setIndex] = useState(0);
-  
+
   useEffect(() => {
     setData(dataHeight);
-    // setIndex(dataHeight.findIndex(e => e.label == currentHeight));
-    // 
   }, []);
 
   useEffect(() => {
     if (gender == 1) {
-      setHeight(165);
+      setHeight('165 cm');
     } else if (gender == 0) {
-      setHeight(155);
+      setHeight('155 cm');
     }
   }, [gender]);
   const selectHeight = () => {
@@ -69,22 +64,21 @@ function ModalPicker({
       backdropTransitionInTiming={1000}
       backdropTransitionOutTiming={1000}>
       <View style={styles.content}>
-        <DynamicallySelectedPicker
-          items={data}
-          initialSelectedIndex={
-            dataHeight.findIndex(e => e.label == currentHeight) != -1
-              ? dataHeight.findIndex(e => e.label == currentHeight)
+        <CustomSelect
+          onValueChange={setHeight}
+          dataSource={data}
+          selectedIndex={
+            data.findIndex(e => e == currentHeight) != -1
+              ? data.findIndex(e => e == currentHeight)
               : gender == 1
-              ? 65
-              : gender == 0
-              ? 55
-              : 65
+                ? 65
+                : gender == 0
+                  ? 55
+                  : 65
           }
-          onScroll={({index, item}) => {
-            setHeight(item.label);
+          containerStyle={{
+            marginVertical: 30
           }}
-          height={300}
-          width={'100%'}
         />
       </View>
     </ModalComponent>
@@ -102,7 +96,7 @@ ModalPicker.propTypes = {
 };
 
 ModalPicker.defaultProps = {
-  onCloseModal: () => {},
+  onCloseModal: () => { },
   styleTitle: {},
   styleDescription: {},
 };

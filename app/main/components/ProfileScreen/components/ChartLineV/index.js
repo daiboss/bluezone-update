@@ -44,27 +44,28 @@ class ChartLine extends React.Component {
       },
       topLabel: null,
       leftLabel: null,
-      dataConvert :[]
+      dataConvert: [],
+      position: { x: -100, y: -100 }
     };
   }
   componentDidMount() {
-   
-   const datanew = this.props.data[0]?.values.map((it,index)=>{
-      return{
+
+    const datanew = this.props.data[0]?.values.map((it, index) => {
+      return {
         ...it,
-        x:index + 1
+        x: index + 1
       }
     })
-   let b = datanew.slice(0,7)
-   console.log('bbbbbbb',b)
-  this.setState({dataConvert:b},() => {
-    console.log('dâtttatatata',this.state.dataConvert)
-  })
+    let b = datanew.slice(0, 7)
+    // console.log('bbbbbbb', b)
+    this.setState({ dataConvert: b }, () => {
+      // console.log('dâtttatatata', this.state.dataConvert)
+    })
   }
 
   getLeftLabel = () => {
     const value = this.state?.value?.length
-    console.log('topLabelbaelbel',this.state.leftLabel,value)
+    // console.log('topLabelbaelbel', this.state.leftLabel, value)
 
     if (value == 1) {
       return this.state.leftLabel - width * 0.12
@@ -77,7 +78,7 @@ class ChartLine extends React.Component {
     }
   }
   render() {
-    console.log('parammrmarmamra',this.props)
+    // console.log('parammrmarmamra',this.props)
     return (
       <View style={[styles.container,]}>
         <Text style={styles.txtYear}>{this.state.year}</Text>
@@ -86,60 +87,69 @@ class ChartLine extends React.Component {
             position: 'absolute',
             backgroundColor: '#FE4358',
             zIndex: 1,
-            top: this.state.topLabel - height * 0.045,
-            left: this.getLeftLabel(),
+            // top: this.state.topLabel - height * 0.045,
+            top: this.state.position.y - RFValue(22),
+            // left: this.getLeftLabel(),
+            left: this.state.position.x - RFValue(57),
             paddingHorizontal: 10,
-            paddingVertical: 5,
-            borderWidth: 1,
-            borderRadius: 15, borderColor: 'red'
+            paddingVertical: 8,
+            borderRadius: 15,
+            width: RFValue(54)
           }}>
             <Text style={{
-              color: 'white'
-            }}>{this.state.value}</Text>
+              color: 'white',
+              fontSize: 10,
+              textAlign: 'center',
+              fontWeight: '700',
+            }}>{this.state.value} kg</Text>
             <Image
               style={{
-                zIndex: -1,
-                width: 30, height: 30,
-                position: 'absolute', bottom: -10, alignSelf: 'center'
+                width: RFValue(10),
+                height: RFValue(10),
+                position: 'absolute',
+                bottom: -6,
+                alignSelf: 'center',
+                tintColor: '#FE4358',
+                // zIndex: 0
               }}
               source={require('../../../StepCountScreen/images/down-arrow.png')} />
           </View>
         }
-  { Platform.OS == 'android' ? <Svg style={{height:RFValue(220),alignSelf:'center'}}>
-  <VictoryChart
-          // padding=""
-          height={RFValue(220)}
-          // minDomain={{ y: 0 }}
-          maxDomain={{ y: 300 }}
+        { Platform.OS == 'android' ? <Svg style={{ height: RFValue(160), alignSelf: 'center' }}>
+          <VictoryChart
+            // padding=""
+            height={RFValue(180)}
+            // minDomain={{ y: 0 }}
+            maxDomain={{ y: 300 }}
           // theme={VictoryTheme.material}
-        >
-          <Defs>
-            <LinearGradient id="gradientStroke"
-              x1="0%"
-              x2="0%"
-              y1="0%"
-              y2="100%"
-            >
-              <Stop offset="0%" stopColor="#FE4358" stopOpacity="0.8" />
-              <Stop offset="70%" stopColor="#FE4358" stopOpacity="0.1" />
-            </LinearGradient>
-          </Defs>
-          <VictoryAxis
-            //  crossAxis dependentAxis
-            tickValues={this.props.time}
-            // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
-          
-            style={{
-              grid: { stroke: ({tick,index}) => this.state.valueX == index + 1 ? '#FE4358' : 'gray',strokeWidth:0.5 },
-              axis: { stroke: 'none' },
-              tickLabels: { fill:({tick,index}) => this.state.valueX == index + 1 ? '#FE4358' : 'black'}
-            }}
-            orientation="top"
-          />
+          >
+            <Defs>
+              <LinearGradient id="gradientStroke"
+                x1="0%"
+                x2="0%"
+                y1="0%"
+                y2="100%"
+              >
+                <Stop offset="0%" stopColor="#FE4358" stopOpacity="0.8" />
+                <Stop offset="70%" stopColor="#FE4358" stopOpacity="0.1" />
+              </LinearGradient>
+            </Defs>
+            <VictoryAxis
+              //  crossAxis dependentAxis
+              tickValues={this.props.time}
+              // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
 
-          <VictoryGroup
-            style={{ labels: { fill: 'none' } }}
-            data={this.state.dataConvert}
+              style={{
+                grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
+                axis: { stroke: 'none' },
+                tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'black' }
+              }}
+              orientation="top"
+            />
+
+            <VictoryGroup
+              style={{ labels: { fill: 'none' } }}
+              data={this.state.dataConvert}
             //    data = {[
             //   {x:1,y:65},
             //   {x:2,y:67},
@@ -150,116 +160,116 @@ class ChartLine extends React.Component {
             //   {x:7,y:300},
             // ]}
             >
-            <VictoryArea
-              interpolation="natural"
-              style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
-            // data={sampleData}
-            />
-            <VictoryLine
-             animate={{
-              duration: 1000,
-              onLoad: { duration: 1000 }
-            }}
-              interpolation="natural"
-              style={{
-                data: { stroke: "#FE4358" },
-                parent: { border: "1px solid #ccc" }
-              }}
+              <VictoryArea
+                interpolation="natural"
+                style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
+              // data={sampleData}
+              />
+              <VictoryLine
+                animate={{
+                  duration: 1000,
+                  onLoad: { duration: 1000 }
+                }}
+                interpolation="natural"
+                style={{
+                  data: { stroke: "#FE4358" },
+                  parent: { border: "1px solid #ccc" }
+                }}
 
-            />
+              />
 
-            <VictoryScatter
-              style={{
-                data: {
-                  fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358",
-                  stroke: ({ datum }) => datum.x === this.state?.valueX ? "red" : "#FE4358",
-                  strokeWidth: ({ datum }) => datum.x === this.state?.valueX ? 1 : 0,
-                },
-                labels: {
-                  fontSize: 15,
-                  fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358"
-                }
-              }}
-              size={({ datum }) => datum.x === this.state?.valueX ? 9 : 6}
-              labels={() => null}
-
-            />
-            <VictoryScatter
-              style={{
-                data: {
-                  fill: ({ datum }) => "#FE4358",
-                  stroke: ({ datum }) => "#FE4358",
-                  strokeWidth: ({ datum }) => 0,
-                },
-                labels: {
-                  fontSize: 15,
-                  fill: "#FE4358"
-                }
-              }}
-              size={6}
-              labels={() => null}
-
-              events={[{
-                target: "data",
-                eventHandlers: {
-                  onPressIn: () => {
-                    return [
-                      {
-                        target: "data",
-                        mutation: (props) => {
-                          console.log('propsosoossoos', props)
-                          this.setState({
-                            topLabel: props.y,
-                            leftLabel: props.x,
-                            value: JSON.stringify(props.datum.y),
-                            valueX: props?.datum?.x,
-                            year: props?.datum?.year
-                          })
-                        }
-                      }
-                    ];
+              <VictoryScatter
+                style={{
+                  data: {
+                    fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358",
+                    stroke: ({ datum }) => datum.x === this.state?.valueX ? "red" : "#FE4358",
+                    strokeWidth: ({ datum }) => datum.x === this.state?.valueX ? 1 : 0,
+                  },
+                  labels: {
+                    fontSize: 15,
+                    fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358"
                   }
-                }
-              }]}
+                }}
+                size={({ datum }) => datum.x === this.state?.valueX ? 9 : 6}
+                labels={() => null}
 
-            />
-          </VictoryGroup>
-        </VictoryChart>
-  </Svg> : <VictoryChart
+              />
+              <VictoryScatter
+                style={{
+                  data: {
+                    fill: ({ datum }) => "#FE4358",
+                    stroke: ({ datum }) => "#FE4358",
+                    strokeWidth: ({ datum }) => 0,
+                  },
+                  labels: {
+                    fontSize: 15,
+                    fill: "#FE4358"
+                  }
+                }}
+                size={6}
+                labels={() => null}
+
+                events={[{
+                  target: "data",
+                  eventHandlers: {
+                    onPressIn: () => {
+                      return [
+                        {
+                          target: "data",
+                          mutation: (props) => {
+                            this.setState({
+                              topLabel: props.y,
+                              leftLabel: props.x,
+                              value: JSON.stringify(props.datum.y),
+                              valueX: props?.datum?.x,
+                              year: props?.datum?.year,
+                              position: { x: props?.x, y: props?.y }
+                            })
+                          }
+                        }
+                      ];
+                    }
+                  }
+                }]}
+
+              />
+            </VictoryGroup>
+          </VictoryChart>
+        </Svg> : <VictoryChart
           // padding=""
-          style={{parent:{alignSelf:'center'}}}
-          height={RFValue(220)}
+          style={{ parent: { alignSelf: 'center' } }}
+          height={RFValue(180)}
           // minDomain={{ y: 0 }}
           maxDomain={{ y: 300 }}
-          // theme={VictoryTheme.material}
+        // theme={VictoryTheme.material}
         >
-          <Defs>
-            <LinearGradient id="gradientStroke"
-              x1="0%"
-              x2="0%"
-              y1="0%"
-              y2="100%"
-            >
-              <Stop offset="0%" stopColor="#FE4358" stopOpacity="0.8" />
-              <Stop offset="70%" stopColor="#FE4358" stopOpacity="0.1" />
-            </LinearGradient>
-          </Defs>
-          <VictoryAxis
-            //  crossAxis dependentAxis
-            tickValues={this.props.time}
-            // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11',]}
-          
-            style={{
-              grid: { stroke: ({tick,index}) => this.state.valueX == index + 1 ? '#FE4358' : 'gray',strokeWidth:0.5 },
-              axis: { stroke: 'none' },
-              tickLabels: { fill:({tick,index}) => this.state.valueX == index + 1 ? '#FE4358' : 'black'}
-            }}
-            orientation="top"
-          />
+            <Defs>
+              <LinearGradient id="gradientStroke"
+                x1="0%"
+                x2="0%"
+                y1="0%"
+                y2="100%"
+              >
+                <Stop offset="0%" stopColor="#FE4358" stopOpacity="0.8" />
+                <Stop offset="70%" stopColor="#FE4358" stopOpacity="0.1" />
+              </LinearGradient>
+            </Defs>
+            <VictoryAxis
+              //  crossAxis dependentAxis
+              tickValues={this.props.time}
+              // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11',]}
 
-          <VictoryGroup
-            style={{ labels: { fill: 'none' } }}
-            data={this.state.dataConvert}
+              style={{
+                grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
+                axis: { stroke: 'none' },
+                tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'black' }
+              }}
+              orientation="top"
+            />
+
+            <VictoryGroup
+              style={{ labels: { fill: 'none' } }}
+              data={this.state.dataConvert}
             //    data = {[
             //   {x:1,y:65},
             //   {x:2,y:67},
@@ -270,82 +280,82 @@ class ChartLine extends React.Component {
             //   {x:7,y:300},
             // ]}
             >
-            <VictoryArea
-              interpolation="natural"
-              style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
-            // data={sampleData}
-            />
-            <VictoryLine
-             animate={{
-              duration: 1000,
-              onLoad: { duration: 1000 }
-            }}
-              interpolation="natural"
-              style={{
-                data: { stroke: "#FE4358" },
-                parent: { border: "1px solid #ccc" }
-              }}
+              <VictoryArea
+                interpolation="natural"
+                style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
+              // data={sampleData}
+              />
+              <VictoryLine
+                animate={{
+                  duration: 1000,
+                  onLoad: { duration: 1000 }
+                }}
+                interpolation="natural"
+                style={{
+                  data: { stroke: "#FE4358" },
+                  parent: { border: "1px solid #ccc" }
+                }}
 
-            />
+              />
 
-            <VictoryScatter
-              style={{
-                data: {
-                  fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358",
-                  stroke: ({ datum }) => datum.x === this.state?.valueX ? "red" : "#FE4358",
-                  strokeWidth: ({ datum }) => datum.x === this.state?.valueX ? 1 : 0,
-                },
-                labels: {
-                  fontSize: 15,
-                  fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358"
-                }
-              }}
-              size={({ datum }) => datum.x === this.state?.valueX ? 9 : 6}
-              labels={() => null}
-
-            />
-            <VictoryScatter
-              style={{
-                data: {
-                  fill: ({ datum }) => "#FE4358",
-                  stroke: ({ datum }) => "#FE4358",
-                  strokeWidth: ({ datum }) => 0,
-                },
-                labels: {
-                  fontSize: 15,
-                  fill: "#FE4358"
-                }
-              }}
-              size={6}
-              labels={() => null}
-
-              events={[{
-                target: "data",
-                eventHandlers: {
-                  onPressIn: () => {
-                    return [
-                      {
-                        target: "data",
-                        mutation: (props) => {
-                          console.log('propsosoossoos', props)
-                          this.setState({
-                            topLabel: props.y,
-                            leftLabel: props.x,
-                            value: JSON.stringify(props.datum.y),
-                            valueX: props?.datum?.x,
-                            year: props?.datum?.year
-                          })
-                        }
-                      }
-                    ];
+              <VictoryScatter
+                style={{
+                  data: {
+                    fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358",
+                    stroke: ({ datum }) => datum.x === this.state?.valueX ? "red" : "#FE4358",
+                    strokeWidth: ({ datum }) => datum.x === this.state?.valueX ? 1 : 0,
+                  },
+                  labels: {
+                    fontSize: 15,
+                    fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358"
                   }
-                }
-              }]}
+                }}
+                size={({ datum }) => datum.x === this.state?.valueX ? 9 : 6}
+                labels={() => null}
 
-            />
-          </VictoryGroup>
-        </VictoryChart>}
-       
+              />
+              <VictoryScatter
+                style={{
+                  data: {
+                    fill: ({ datum }) => "#FE4358",
+                    stroke: ({ datum }) => "#FE4358",
+                    strokeWidth: ({ datum }) => 0,
+                  },
+                  labels: {
+                    fontSize: 15,
+                    fill: "#FE4358"
+                  }
+                }}
+                size={6}
+                labels={() => null}
+
+                events={[{
+                  target: "data",
+                  eventHandlers: {
+                    onPressIn: () => {
+                      return [
+                        {
+                          target: "data",
+                          mutation: (props) => {
+                            this.setState({
+                              topLabel: props.y,
+                              leftLabel: props.x,
+                              value: JSON.stringify(props.datum.y),
+                              valueX: props?.datum?.x,
+                              year: props?.datum?.year,
+                              position: { x: props?.x, y: props?.y }
+                            })
+                          }
+                        }
+                      ];
+                    }
+                  }
+                }]}
+
+              />
+            </VictoryGroup>
+          </VictoryChart>}
+
       </View>
     );
   }

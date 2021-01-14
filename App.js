@@ -531,6 +531,9 @@ class App extends React.Component {
         currentComponent={props.currentComponent}
         initialRouteName="HomeStack"
         drawerPosition="right"
+        drawerStyle={{
+          width: '80%'
+        }}
         edgeWidth={0}
         drawerContent={props => <CustomDrawerContent {...props} />}>
         {/* <Home /> */}

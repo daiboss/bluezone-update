@@ -213,6 +213,18 @@ const StepCount = ({ props, intl, navigation }) => {
   //   // BackgroundTimer.stop();
   // }, [])
 
+  // const timeNotification = async () => {
+  //   BackgroundTimer.start()
+  //   BackgroundTimer.runBackgroundTimer(() => {
+  //     console.log('runBackgroundTimerrunBackgroundTimer', new moment().format('hh:mm:ss'))
+  //     BackgroundTimer.stopBackgroundTimer()
+  //   }, 3000)
+  //   BackgroundTimer.stop()
+  // }
+
+
+
+
 
   useEffect(() => {
     var end = new Date();
@@ -621,6 +633,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.circular}
               width={6}
               rotation={0}
+              lineCap="round"
               fill={((totalCount - countRest) / totalCount) * 100}
               tintColor="#FE4358"
               backgroundColor="#e5e5e5">
@@ -629,7 +642,10 @@ const StepCount = ({ props, intl, navigation }) => {
                   <Image
                     source={require('./images/ic_run.png')}
                     resizeMode={'contain'}
-                    height={30}
+                    style={{
+                      width: 30,
+                      height: 30
+                    }}
                   />
                   <Text style={styles.txCountStep}>{countStep}</Text>
                   <Text style={styles.txCountTarget}>
@@ -700,7 +716,10 @@ const StepCount = ({ props, intl, navigation }) => {
   );
 };
 const styles = StyleSheet.create({
-  img: {},
+  img: {
+    width: 64,
+    height: 64
+  },
   chart: {
     flex: 1,
   },

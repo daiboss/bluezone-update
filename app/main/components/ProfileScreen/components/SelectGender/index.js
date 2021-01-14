@@ -1,19 +1,21 @@
-import {injectIntl, intlShape} from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import React from 'react';
 import styles from './styles/index.css';
-import {View, TouchableOpacity, Text} from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import message from '../../../../../core/msg/profile';
-const SelectGender = ({intl, onSelectGender, gender}) => {
-  const {formatMessage} = intl;
+const SelectGender = ({ intl, onSelectGender, gender }) => {
+  const { formatMessage } = intl;
   const selectGender = gender => () => {
     onSelectGender && onSelectGender(gender);
   };
   return (
     <View style={styles.container2}>
       <Text style={styles.textLabel}>{formatMessage(message.gender)}</Text>
-      <View style={styles.containerSelectGender}>
-        <TouchableOpacity
-          onPress={selectGender(1)}
+      <TouchableOpacity
+        onPress={selectGender(gender == 1 ? 0 : 1)}
+        activeOpacity={0.8}
+        style={styles.containerSelectGender}>
+        <View
           style={[
             styles.buttonSelectGender,
             gender == 1 ? styles.backgroundColorGenderSelected : {},
@@ -25,9 +27,8 @@ const SelectGender = ({intl, onSelectGender, gender}) => {
             ]}>
             {formatMessage(message.male)}
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={selectGender(0)}
+        </View>
+        <View
           style={[
             styles.buttonSelectGender,
             gender == 0 ? styles.backgroundColorGenderSelected : {},
@@ -39,8 +40,8 @@ const SelectGender = ({intl, onSelectGender, gender}) => {
             ]}>
             {formatMessage(message.female)}
           </Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

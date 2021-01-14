@@ -8,7 +8,8 @@ import {
   processColor, Image,
   ScrollView,
   Dimensions,
-  Platform
+  Platform,
+  TouchableOpacity
 } from 'react-native';
 import update from 'immutability-helper';
 import styles from './styles/index.css';
@@ -46,18 +47,17 @@ class ChartLine extends React.Component {
       topLabel: null,
       maxCounter: 0,
       leftLabel: null,
-      dataConvert: []
+      dataConvert: [],
+      position: { x: -100, y: -100 }
     };
   }
   componentDidMount() {
-    console.log('propsopropsopropsorps', this.props)
     const datanew = this.props.data.map((it, index) => {
       return {
         ...it,
         x: index + 1
       }
     })
-    console.log('datanewdatanewdatanewdatanew', datanew)
     const max = Math.max.apply(Math, datanew.map(i => i.y));
     this.setState({ dataConvert: datanew, maxCounter: max })
   }
@@ -102,8 +102,6 @@ class ChartLine extends React.Component {
           </LinearGradient>
         </Defs>
 
-
-
         <VictoryAxis
           tickValues={this.props.time}
           // tickValues={['10/11', '11/11', '12/11', '13/11', '14/11', '15/11', '16/11']}
@@ -136,15 +134,6 @@ class ChartLine extends React.Component {
         
           style={{ labels: { fill: 'none' } }}
           data={this.state.dataConvert}
-          // data={[
-          //   { x: 1, y: 3000 },
-          //   { x: 2, y: 4000 },
-          //   { x: 3, y: 5000 },
-          //   { x: 4, y: 3000 },
-          //   { x: 5, y: 6000 },
-          //   { x: 6, y: 10000 },
-          //   { x: 7, y: 3000 },
-          // ]}
         >
           <VictoryArea
             interpolation="natural"
@@ -196,27 +185,29 @@ class ChartLine extends React.Component {
             size={RFValue(6)}
             labels={() => null}
 
-            events={[{
-              target: "data",
-              eventHandlers: {
-                onPressIn: () => {
-                  return [
-                    {
-                      target: "data",
-                      mutation: (props) => {
-                        this.setState({
-                          topLabel: props.y,
-                          leftLabel: props.x,
-                          value: JSON.stringify(props.datum.y),
-                          valueX: props?.datum?.x,
-                          // year: props?.datum?.year
-                        })
-                      }
-                    }
-                  ];
-                }
-              }
-            }]}
+          // events={[{
+          //   target: "data",
+          //   eventHandlers: {
+          //     onPressIn: () => {
+          //       return [
+          //         {
+          //           target: "data",
+          //           mutation: (props) => {
+          //             // console.log('clickkkkkkk', props)
+          //             this.setState({
+          //               topLabel: props.y,
+          //               leftLabel: props.x,
+          //               value: JSON.stringify(props.datum.y),
+          //               valueX: props?.datum?.x,
+          //               // year: props?.datum?.year
+          //               position: { x: props?.x, y: props?.y }
+          //             })
+          //           }
+          //         }
+          //       ];
+          //     }
+          //   }
+          // }]}
 
           />
 
@@ -225,13 +216,13 @@ class ChartLine extends React.Component {
 
 
       </VictoryChart>
-
     )
   }
 
   render() {
     return (
-      <View style={styles.container}>
+      <View
+        style={styles.container}>
         <Text style={styles.txtYear}>{this.state.year}</Text>
         {this.state.topLabel && this.state.leftLabel &&
           <View style={{
@@ -239,20 +230,30 @@ class ChartLine extends React.Component {
             backgroundColor: '#FE4358',
             zIndex: 1,
             top: this.state.topLabel - height * 0.045,
-            left: this.getLeftLabel(),
-            paddingHorizontal: 10,
-            paddingVertical: 5,
+            // left: this.getLeftLabel(),
+            left: this.state.position.x - RFValue(25),
+            paddingHorizontal: RFValue(10),
+            paddingVertical: RFValue(5),
             borderWidth: 1,
-            borderRadius: 15, borderColor: 'red'
+            borderRadius: 15,
+            borderColor: 'red',
+            width: RFValue(50)
           }}>
             <Text style={{
-              color: 'white'
+              color: 'white',
+              fontSize: 10,
+              textAlign: 'center',
+              fontWeight: '700'
             }}>{this.state.value}</Text>
             <Image
               style={{
                 zIndex: -1,
-                width: 30, height: 30,
-                position: 'absolute', bottom: -10, alignSelf: 'center'
+                width: 10,
+                height: 10,
+                position: 'absolute',
+                bottom: -8,
+                alignSelf: 'center',
+                tintColor: '#FE4358'
               }}
               source={require('../images/down-arrow.png')} />
           </View>
@@ -265,39 +266,44 @@ class ChartLine extends React.Component {
           // left: ,
           alignSelf: 'center',
           paddingHorizontal: RFValue(10),
-          paddingVertical: RFValue(3),
+          paddingVertical: RFValue(5),
           borderWidth: 1,
-          borderRadius: 15, borderColor: 'red'
+          borderRadius: 15,
+          borderColor: 'red',
+          width: RFValue(50)
         }}>
           <Text style={{
-            color: 'white'
+            color: 'white',
+            fontSize: 10,
+            textAlign: 'center',
+            fontWeight: '700'
           }}>{this.props.totalCount}</Text>
           <Image
             style={{
               zIndex: -1,
-              width: RFValue(20), height: RFValue(20),
-              position: 'absolute', bottom: RFValue(-8), alignSelf: 'center'
+              width: RFValue(10),
+              height: RFValue(10),
+              position: 'absolute',
+              bottom: -8,
+              alignSelf: 'center',
+              tintColor: '#FE4358'
             }}
             source={require('../images/down-arrow.png')} />
         </View>
         <View style={{
-          height: 1, width: width * 0.76,
+          height: 0,
+          width: width * 0.76,
           alignSelf: 'center',
           backgroundColor: 'white',
           position: 'absolute',
           top: height * 0.12,
           borderColor: '#FE4358',
-          borderWidth: 1, borderStyle: 'dashed',
-          borderRadius: 1
+          borderWidth: 1,
+          borderStyle: 'dashed',
+          borderRadius: 1,
         }} />
         {
-          Platform.OS == 'android' ? (
-            <Svg>
-              {
-                this.renderCharMain()
-              }
-            </Svg>
-          ) : this.renderCharMain()
+          this.renderCharMain()
         }
         {/* <Svg> */}
         {/* </Svg> */}

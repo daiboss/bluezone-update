@@ -72,7 +72,7 @@ class AnimatedGradient extends Component {
       [color0, color1].map(animatedColor => {
         return Animated.timing(animatedColor, {
           toValue: customColors.length,
-          duration: 200,
+          duration: 1000,
           easing: Easing.linear,
           useNativeDriver: false,
           delay: 300

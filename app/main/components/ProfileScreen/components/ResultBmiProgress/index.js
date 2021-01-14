@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { View, ImageBackground, Text } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { View, ImageBackground, Text, Animated, Easing } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import message from '../../../../../core/msg/profile';
 import styles from './styles/index.css';
 import { injectIntl, intlShape } from 'react-intl';
 import LinearGradient from './LinearGradient';
 import AnimateNumber from './AnimateNumber';
+// import Animated, { Easing } from 'react-native-reanimated';
 
 const TIME_ANIM = 2000
 
@@ -14,6 +15,15 @@ const ResultBmiProgress = ({ bmi, intl }) => {
   const [fill, setFill] = useState('#015CD0');
   const [status, setStatus] = useState(message.fit);
   const [listColorBackground, setListColorBackground] = useState([])
+  const animShow = useRef(new Animated.Value(0)).current
+
+  const animShowText = Animated.timing(animShow, {
+    toValue: 1,
+    useNativeDriver: true,
+    duration: 1000,
+    delay: TIME_ANIM,
+    easing: Easing.linear,
+  })
 
   useEffect(() => {
     let color;
@@ -77,6 +87,7 @@ const ResultBmiProgress = ({ bmi, intl }) => {
     }
     setStatus(status);
     setFill(color);
+    animShowText.start()
   }, [bmi]);
 
   const renderCircle = () => {
@@ -174,10 +185,11 @@ const ResultBmiProgress = ({ bmi, intl }) => {
                 ]}
                 value={bmi} />
 
-              <Text style={[styles.textStatus, {
+              <Animated.Text style={[styles.textStatus, {
                 width: '100%',
-                textAlign: 'center'
-              }]}>{formatMessage(status)}</Text>
+                textAlign: 'center',
+                opacity: animShow
+              }]}>{formatMessage(status)}</Animated.Text>
 
             </View>
           </View>

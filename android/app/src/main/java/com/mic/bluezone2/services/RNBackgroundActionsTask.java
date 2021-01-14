@@ -76,7 +76,8 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
         final double currentSteps = bgOptions.getCurrentSteps();
         boolean isShowNofi = bgOptions.isShowStep();
         int targetSteps = bgOptions.getStepsTarget();
-        Log.e("TAGGGGG", "targetSteps: " + targetSteps);
+        final double valueTarget = bgOptions.getvalueTarget();
+        Log.e("TAGGGGG", "targetSteps: " + targetSteps + " - " + valueTarget + " - " + taskTitle + " - " + currentSteps);
         if (targetSteps == 0) {
             targetSteps = 10000;
         }
@@ -110,7 +111,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
 
 
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
-//                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.icon_bluezone)
                 .setSmallIcon(iconInt)
                 .setContentTitle(taskTitle)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
@@ -120,8 +121,8 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                 .setAutoCancel(false)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setStyle(new NotificationCompat.BigPictureStyle())
                 .build();
-
         return notification;
     }
 

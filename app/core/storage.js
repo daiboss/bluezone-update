@@ -62,7 +62,6 @@ import { parse } from 'react-native-svg';
 import { Platform } from 'react-native';
 // TODO Can sua de moi du lieu ghi vao storage deu dung JSON.stringify, va lay ra deu dung JSON.parse. Dam bao tuong tich ban cu. thay vi ben ngoai phan tu convert nhu gio.
 const _processInput = input => {
-  console.log('_processInput_processInput',input)
   if (input instanceof Date) {
     return JSON.stringify(input.getTime());
   }
@@ -457,24 +456,12 @@ const getNotiStep = async () => {
 
 const setNotiStep = (value = '') => {
   const _resource = _processInput(value);
-  setLastWeight()
   AsyncStorage.setItem(notiStep, _resource);
 };
 
 const getWeightWarning = async () => {
   const result = await AsyncStorage.getItem(weightWarning);
   return _processOutput(result);
-};
-
-const getLastWeight = async () => {
-  const result = await AsyncStorage.getItem(lastWeightWarning);
-  return _processOutput(result || new moment().unix());
-}
-
-const setLastWeight = () => {
-  let value = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
-  const _resource = _processInput(value);
-  AsyncStorage.setItem(lastWeightWarning, _resource);
 };
 
 const setWeightWarning = (value = '') => {
@@ -547,5 +534,4 @@ export {
   getResultSteps,
   getIsShowNotification,
   setIsShowNotification,
-  getLastWeight
 };

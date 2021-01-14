@@ -13,17 +13,17 @@
  */
 'use strict';
 
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import * as fontSize from '../../../../../../core/fontSize';
-import {blue_bluezone, red_bluezone} from '../../../../../../core/color';
+import { blue_bluezone, red_bluezone } from '../../../../../../core/color';
 
 const styles = StyleSheet.create({
   iconNext: {
     height: 17,
     width: 17,
     resizeMode: 'cover',
-    marginTop:2,
-    marginLeft:10,
+    marginTop: 2,
+    marginLeft: 10,
   },
   textGender: {
     fontSize: fontSize.normal,
@@ -50,19 +50,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container2: {
-    shadowColor: '#00000020',
-    shadowOffset: {width: 2, height: 2},
-    shadowOpacity: 1,
-    elevation: 2,
-    shadowRadius: 10,
     backgroundColor: '#FFF',
-    borderColor: '#00000040',
-    borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 14,
     marginHorizontal: 10,
     paddingHorizontal: 10,
     marginTop: 10,
-    elevation: 2,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3,
   },
   container3: {
     alignItems: 'center',

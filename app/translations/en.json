@@ -275,6 +275,7 @@
     "bluezone.stepCount.viewHistory": "View history",
     "bluezone.stepCount.stepCountHistory": "Step count history",
     "bluezone.stepCount.minute": "minute",
+    "bluezone.stepCount.hour": "hour",
     "bluezone.stepCount.day": "Day",
     "bluezone.stepCount.week": "Week",
     "bluezone.stepCount.month": "Month",

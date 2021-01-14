@@ -59,6 +59,10 @@ export default defineMessages({
         id: 'bluezone.stepCount.minute',
         defaultMessage: 'bluezone.stepCount.minute',
     },
+    hour: {
+        id: 'bluezone.stepCount.hour',
+        defaultMessage: 'bluezone.stepCount.hour',
+    },
     day: {
         id: 'bluezone.stepCount.day',
         defaultMessage: 'bluezone.stepCount.day',

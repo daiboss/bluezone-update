@@ -104,6 +104,10 @@ public final class BackgroundTaskOptions {
         return extras.getDouble("currentStep");
     }
 
+    public double getvalueTarget() {
+        return extras.getDouble("valueTarget");
+    }
+
     public boolean isShowStep() {
         return extras.getBoolean("isShowStep");
     }
