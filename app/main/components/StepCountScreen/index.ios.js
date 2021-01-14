@@ -58,91 +58,96 @@ const screenWidth = Dimensions.get('window').width;
 import BackgroundFetch from 'react-native-background-fetch';
 import { getAbsoluteMonths } from '../../../core/steps';
 const PERMS = AppleHealthKit.Constants.Permissions;
-// export const scheduleTask = async name => {
-//   try {
-//     await BackgroundFetch.scheduleTask({
-//       taskId: name,
-//       stopOnTerminate: false,
-//       enableHeadless: true,
-//       delay: 5000, // milliseconds (5s)
-//       forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
-//       periodic: true, // Fire once only.
-//     })
-//       .then(res => { })
-//       .catch(err => { });
-//   } catch (e) { }
-// };
+export const scheduleTask = async name => {
+  try {
+    await BackgroundFetch.scheduleTask({
+      taskId: name,
+      stopOnTerminate: false,
+      enableHeadless: true,
+      delay: 5000, // milliseconds (5s)
+      forceAlarmManager: true, // more precise timing with AlarmManager vs default JobScheduler
+      periodic: true, // Fire once only.
+    })
+      .then(res => { })
+      .catch(err => { });
+  } catch (e) { }
+};
 
-// export const stopScheduleTask = async task => {
-//   try {
-//     let res = await BackgroundFetch.stop(task);
-//   } catch (e) { }
-// };
-// export const onBackgroundFetchEvent = async taskId => 
-//   try {
-//     let end = new Date();
-//     let start = new Date();
-//     end.setDate(end.getDate() + 1);
-//     let step = await getSteps(start, end);
+export const stopScheduleTask = async task => {
+  try {
+    let res = await BackgroundFetch.stop(task);
+  } catch (e) { }
+};
+export const onBackgroundFetchEvent = async taskId => {
+  console.log('taskIdtaskId',taskId)
+try {
+    let end = new Date();
+    let start = new Date();
+    end.setDate(end.getDate() + 1);
+    let step = await getSteps(start, end);
 
-//     let today = moment();
-//     let resultSteps = await getResultSteps();
+    let today = moment();
+    let resultSteps = await getResultSteps();
+    console.log('resultStepsresultStepsresultSteps',resultSteps)
 
-//     switch (taskId) {
-//       case autoChange:
-//         if (resultSteps) {
-//           let storageDate = moment(resultSteps?.date).format('DD');
-//           if (storageDate != today.format('DD')) {
-//             getStepsTotal(start, end);
-//           }
-//         }
-//         break;
-//       case weightWarning:
-//         let profiles = (await getProfile()) || [];
-//         let profile = profiles.find(
-//           item =>
-//             getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
-//         );
+    switch (taskId) {
+      case autoChange:
+        if (resultSteps) {
+          let storageDate = moment(resultSteps?.date).format('DD');
+          if (storageDate != today.format('DD')) {
+            getStepsTotal(start, end);
+          }
+        }
+        break;
+      case weightWarning:
+        let profiles = (await getProfile()) || [];
+        let profile = profiles.find(
+          item =>
+            getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
+        );
 
-//         if (profile) {
-//           let nextWeek = new Date().getTime();
-//           let isWarning = parseInt(
-//             (nextWeek - profile?.date) / (1000 * 3600 * 24),
-//           );
+        if (profile) {
+          let nextWeek = new Date().getTime();
+          let isWarning = parseInt(
+            (nextWeek - profile?.date) / (1000 * 3600 * 24),
+          );
 
-//           if (isWarning >= 7) {
-//             scheduler.createWarnningWeightNotification();
-//           }
-//         }
-//         break;
-//       case notiStep:
-//         if (resultSteps) {
-//           if (today.format('HH') >= 19) {
-//             scheduler.createWarnningStepNotification(step?.step);
-//           }
-//         }
-//         break;
-//       case realtime:
-//         scheduler.createShowStepNotification(step?.step);
-//         break;
-//       default:
-//         break;
-//     }
-//     if (taskId === 'react-native-background-fetch') {
-//       // Test initiating a #scheduleTask when the periodic fetch event is received.
-//       let auto = await getAutoChange();
+          if (isWarning >= 7) {
+            scheduler.createWarnningWeightNotification();
+          }
+        }
+        break;
+      case notiStep:
+        if (resultSteps) {
+          console.log('vaovaovavoavoaovoa',resultSteps)
+          if (today.format('HH') >= 16) {
+            scheduler.createWarnningStepNotification(step?.step);
+          }
+        }
+        break;
+      case realtime:
+        scheduler.createShowStepNotification(step?.step);
+        break;
+      default:
+        break;
+    }
+    if (taskId === 'react-native-background-fetch') {
+      // Test initiating a #scheduleTask when the periodic fetch event is received.
+      let auto = await getAutoChange();
 
-//       if (auto == undefined || auto == null) {
-//         await scheduleTask(autoChange);
-//         setAutoChange(true);
-//       }
-//     }
-//   } catch (e) { }
-//   // Required: Signal completion of your task to native code
-//   // If you fail to do this, the OS can terminate your app
-//   // or assign battery-blame for consuming too much background-time
-//   BackgroundFetch.finish(taskId);
-//};
+      if (auto == undefined || auto == null) {
+        await scheduleTask(autoChange);
+        setAutoChange(true);
+      }
+    }
+  } catch (e) { }
+  BackgroundFetch.finish(taskId);
+
+}
+  
+  // Required: Signal completion of your task to native code
+  // If you fail to do this, the OS can terminate your app
+  // or assign battery-blame for consuming too much background-time
 const StepCount = ({ props, intl, navigation }) => {
   const timeInterval = useRef();
   let sex
@@ -272,7 +277,7 @@ const StepCount = ({ props, intl, navigation }) => {
           requiresBatteryNotLow: false, // Default
           requiresStorageNotLow: false, // Default
         },
-        onBackgroundFetchEvent,
+        onBackgroundFetchEvent(notiStep),
         status => {
           switch (status) {
             case BackgroundFetch.STATUS_RESTRICTED:
@@ -286,7 +291,6 @@ const StepCount = ({ props, intl, navigation }) => {
       );
       // Turn on the enabled switch.
       await BackgroundFetch.start();
-      console.log('datadata')
       // setEnabled(value);
       // Load the list with persisted events.
     } catch (error) { }
@@ -302,6 +306,7 @@ const StepCount = ({ props, intl, navigation }) => {
       if (!resultSteps) {
         setResultSteps({ step: totalCount, date: new Date().getTime() });
       } else {
+        console.log('vaovoaovaovoaovaoRESRES',resultSteps)
         setTotalCount(resultSteps.step);
       }
     } catch (error) { }
@@ -560,6 +565,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
       if (steps > 0) {
         setCountStep(steps)
+        console.log('totalCounttotalCounttotalCounttotalCount',totalCount,steps)
         const countR = totalCount - steps
         setCountRest(countR)
       }

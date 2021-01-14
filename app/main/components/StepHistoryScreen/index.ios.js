@@ -14,6 +14,7 @@ import {
 import Fitness from '@ovalmoney/react-native-fitness';
 // import { BarChart } from 'react-native-charts-wrapper';
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
+import { RFValue } from '../../../const/multiscreen';
 
 import { Dimensions } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
@@ -403,7 +404,6 @@ const StepCount = ({ props, intl, navigation }) => {
           const timeS = timeEnd - timeStart
           // const tb = timeS / i.quantity
           const stepRate = i.quantity/timeS
-          console.log('stepRatestepRatestepRatestepRate',stepRate)
           let stepRateFactor
           if (stepRate < 1.6)
             stepRateFactor = 0.82;
@@ -438,7 +438,6 @@ const StepCount = ({ props, intl, navigation }) => {
             const timeT = timeEnd - timeStart
             return k + timeT
           }, timeInit)
-          console.log('timeUsetimeUsetimeUsetimeUsetimeUse',timeUse)
           let timeT
           const timePush = (timeUse/60).toFixed(0)
           // if(timePush > 60) {
@@ -489,9 +488,6 @@ const StepCount = ({ props, intl, navigation }) => {
     try {
       Fitness.getSteps({ startDate: start, endDate: end })
         .then(res => {
-          // let res = DATA_STEPS
-          console.log('onGetStepsonGetStepsonGetStepsonGetSteps',start,end,type)
-          console.log('resresresresresresresresresresres',res)
           if (res.length) {
             try {
               let listDataChart = getDataChart(res, type)
@@ -504,18 +500,15 @@ const StepCount = ({ props, intl, navigation }) => {
                 let widthTmp = tmp * (listDataChart.length - 1)
                 setWidthChart(widthTmp)
               }
-              console.log('listDataChartlistDataChartlistDataChart',listDataChart)
               // type == 'month' && listDataChart.reverse() //: listDataChart
               if(type == 'month'){
                 let firtItem = listDataChart[0]
                 listDataChart.splice(0,1)
                 listDataChart.push(firtItem)
-                console.log('iteitneijfiaufhsauhfusahfushafsa',listDataChart)
               }
               
               setDataChart(listDataChart);
             } catch (e) {
-              console.log('errrrrerererere',e)
             }
           }
         })
@@ -599,6 +592,7 @@ const StepCount = ({ props, intl, navigation }) => {
     // setDistant(result?.distance);
     // setCountCarlo(result?.calories);
     // setTime(timeString);
+    setYear(result.year)
     getStepsRealTime(result)
     setCountStep(parseInt(result?.y) );
 
@@ -628,7 +622,11 @@ const StepCount = ({ props, intl, navigation }) => {
           fontSize: fontSize.bigger,
         }}
       />
-      <Text style={{textAlign:'center',color:'black'}}>{year}</Text>
+      <Text style={{textAlign:'center',
+      // paddingTop:RFValue(10),
+      color:'black',
+      fontSize:RFValue(18),
+      fontWeight:'600'}}>{year}</Text>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         {/* <View>
                     <Text>Thống kê bước chân</Text>
@@ -743,7 +741,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   viewLineChart: {
-    marginTop: 30,
+    // marginTop: 30,
   },
   container: {
     flex: 1,
