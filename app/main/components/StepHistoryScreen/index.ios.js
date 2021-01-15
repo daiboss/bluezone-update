@@ -14,6 +14,7 @@ import {
 import Fitness from '@ovalmoney/react-native-fitness';
 // import { BarChart } from 'react-native-charts-wrapper';
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
+import { RFValue } from '../../../const/multiscreen';
 
 import { Dimensions } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
@@ -117,25 +118,31 @@ const StepCount = ({ props, intl, navigation }) => {
   //   setStartTime(firstOpenApp)
   //   console.log('firstOpenAppfirstOpenApp',firstOpenApp)
   // },[])
-  useEffect(async () => {
-    const firstOpenApp = await getFirstTimeOpen();
-    setStartTime(firstOpenApp)
+  useEffect(() => {
+    // async () => {
+    // //   const firstOpenApp = await getFirstTimeOpen();
+    // // setStartTime(firstOpenApp)
     let end = new Date();
     // let start = firstOpenApp
-    let start = new Date(2020,1,1).format('yyyy-MM-dd')
+    // let start = new Date(2020,1,1).format('yyyy-MM-dd')
+    let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
+    // console.log('monthAgomonthAgo',monthAgo)
     // console.log('anannanannanaan',start)
     getDataHealth(start, end.format('yyyy-MM-dd'), 'day');
     return () => {
       intervalNow.current && clearInterval(intervalNow.current);
-    };
+    // };
+    }
+    
   }, []);
 
   const onSetSelect = type => () => {
     if (type == 1) {
       let end = new Date();
       // let start = startTime;
-      let start = new Date(2020,1,1).format('yyyy-MM-dd')
+      // let start = new Date(2020,1,1).format('yyyy-MM-dd')
       // let start = moment('2020/01/01','yyyy/MM/DD');
+      let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
       getDataHealth(
         start,
         end.format('yyyy-MM-dd'),
@@ -148,7 +155,8 @@ const StepCount = ({ props, intl, navigation }) => {
     }
     if (type == 2) {
       let end = moment();
-      let start = new Date(2020,1,1).format('yyyy-MM-dd')
+      // let start = new Date(2020,1,1).format('yyyy-MM-dd')
+      let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
       // let start = startTime;
       getDataHealth(
         start,
@@ -162,7 +170,8 @@ const StepCount = ({ props, intl, navigation }) => {
     }
     if (type == 3) {
       let end = moment();
-      let start = new Date(2020,1,1).format('yyyy-MM-dd')
+      let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
+      // let start = new Date(2020,1,1).format('yyyy-MM-dd')
       // let start = startTime;
       getDataHealth(
         start,
@@ -218,10 +227,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
     // })
   };
-  useEffect(async () => {
-    let data =await getIsFirstLoading()
-    console.log('datadatadatadata',data)
-  },[])
   const onRealTime = (start, end, type) => {
     if (intervalNow.current) {
       clearInterval(intervalNow.current);
@@ -399,7 +404,6 @@ const StepCount = ({ props, intl, navigation }) => {
           const timeS = timeEnd - timeStart
           // const tb = timeS / i.quantity
           const stepRate = i.quantity/timeS
-          console.log('stepRatestepRatestepRatestepRate',stepRate)
           let stepRateFactor
           if (stepRate < 1.6)
             stepRateFactor = 0.82;
@@ -434,7 +438,6 @@ const StepCount = ({ props, intl, navigation }) => {
             const timeT = timeEnd - timeStart
             return k + timeT
           }, timeInit)
-          console.log('timeUsetimeUsetimeUsetimeUsetimeUse',timeUse)
           let timeT
           const timePush = (timeUse/60).toFixed(0)
           // if(timePush > 60) {
@@ -485,9 +488,6 @@ const StepCount = ({ props, intl, navigation }) => {
     try {
       Fitness.getSteps({ startDate: start, endDate: end })
         .then(res => {
-          // let res = DATA_STEPS
-          console.log('onGetStepsonGetStepsonGetStepsonGetSteps',start,end,type)
-          console.log('resresresresresresresresresresres',res)
           if (res.length) {
             try {
               let listDataChart = getDataChart(res, type)
@@ -500,17 +500,15 @@ const StepCount = ({ props, intl, navigation }) => {
                 let widthTmp = tmp * (listDataChart.length - 1)
                 setWidthChart(widthTmp)
               }
-              console.log('listDataChartlistDataChartlistDataChart',listDataChart)
               // type == 'month' && listDataChart.reverse() //: listDataChart
               if(type == 'month'){
                 let firtItem = listDataChart[0]
                 listDataChart.splice(0,1)
                 listDataChart.push(firtItem)
-                console.log('iteitneijfiaufhsauhfusahfushafsa',listDataChart)
               }
+              
               setDataChart(listDataChart);
             } catch (e) {
-              console.log('errrrrerererere',e)
             }
           }
         })
@@ -554,7 +552,7 @@ const StepCount = ({ props, intl, navigation }) => {
     Fitness.getCalories({ startDate: start, endDate: end })
       .then(res => {
         let total = res.reduce((acc, obj) => acc + obj.quantity, 0);
-        setCountCarlo(total);
+        // setCountCarlo(total);
       })
       .catch(err => { });
   };
@@ -594,6 +592,7 @@ const StepCount = ({ props, intl, navigation }) => {
     // setDistant(result?.distance);
     // setCountCarlo(result?.calories);
     // setTime(timeString);
+    setYear(result.year)
     getStepsRealTime(result)
     setCountStep(parseInt(result?.y) );
 
@@ -623,7 +622,11 @@ const StepCount = ({ props, intl, navigation }) => {
           fontSize: fontSize.bigger,
         }}
       />
-      <Text style={{textAlign:'center',color:'black'}}>{year}</Text>
+      <Text style={{textAlign:'center',
+      // paddingTop:RFValue(10),
+      color:'black',
+      fontSize:RFValue(18),
+      fontWeight:'600'}}>{year}</Text>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         {/* <View>
                     <Text>Thống kê bước chân</Text>
@@ -738,7 +741,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   viewLineChart: {
-    marginTop: 30,
+    // marginTop: 30,
   },
   container: {
     flex: 1,

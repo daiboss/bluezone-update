@@ -20,7 +20,7 @@ const ResultBmiProgress = ({ bmi, intl }) => {
   const animShowText = Animated.timing(animShow, {
     toValue: 1,
     useNativeDriver: true,
-    duration: 1000,
+    duration: 2000,
     delay: TIME_ANIM,
     easing: Easing.linear,
   })

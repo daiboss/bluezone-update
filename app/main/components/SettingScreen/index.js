@@ -62,7 +62,7 @@ import ModalPickerStepsTarget from './../../../base/components/ModalPickerStepsT
 import ImgStep from './../StepCountScreen/images/ic_step.png'
 import ModalAddShortcut from '../../../base/components/ModalAddShortcut';
 import MyShortcut from './CreateShortcut'
-
+import * as scheduler from '../../../core/notifyScheduler';
 import BackgroundJob from './../../../core/service_stepcounter'
 
 Number.prototype.format = function (n, x) {
@@ -83,7 +83,14 @@ const SettingScreen = ({ intl, navigation }) => {
 
   useEffect(() => {
     getStatus();
+    // scheduler.createScheduleWarnningWeightNotification(alertStep)
   }, []);
+  useEffect(() => {
+    console.log('alertStepalertStepalertStep',alertStep)
+    // const a = PushNotification.getScheduledLocalNotifications();
+    // console.log('aabdhasbdhbsahdbsadsa',a)
+    alertBmi ? scheduler.createScheduleWarnningWeightNotification() : PushNotification.cancelAllLocalNotifications()
+  },[alertBmi])
 
   const alertPermission = (type) => {
     if (type == 'step') setAlertStep(!alertStep)
@@ -121,7 +128,7 @@ const SettingScreen = ({ intl, navigation }) => {
     } catch (error) { }
   };
   const onBack = () => {
-    try {
+     try {
       navigation.pop();
     } catch (e) { }
   };

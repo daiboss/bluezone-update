@@ -26,16 +26,16 @@ const CustomDrawer = ({ intl,navigation }) => {
     return (
         <SafeAreaView>
             <View style={styles.container}>
-                <View>
-                    <TouchableOpacity onPress={closeMenu} style={styles.btnMenu}>
+                <View style={{}}>
+                    <TouchableOpacity onPress={closeMenu} style={[styles.btnMenu,]}>
                         <Ionicons
                             name={'ios-menu'}
                             size={28}
-                            style={styles.iconMenu}
+                            style={[styles.iconMenu]}
                         />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={toProfile} style={styles.btn}>
+                <TouchableOpacity onPress={toProfile} style={[styles.btn,{paddingTop:0}]}>
                     <Image style={styles.image} resizeMode={'contain'} source={require('./images/ic_profile.png')}></Image>
                     <Text style={styles.txBtn}>{formatMessage(message.profile)}</Text>
 
@@ -50,7 +50,6 @@ const CustomDrawer = ({ intl,navigation }) => {
                     <Text style={styles.txBtn}>{formatMessage(message.title)}</Text>
 
                 </TouchableOpacity>
-
             </View>
         </SafeAreaView>
     )
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     btnMenu: {
-        padding: 5,
+        // padding: 5,
         alignSelf: 'flex-end',
         // marginRight: 20,
         marginTop: 10

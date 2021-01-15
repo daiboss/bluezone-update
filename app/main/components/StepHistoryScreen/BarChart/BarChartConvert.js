@@ -56,12 +56,12 @@ const BarChartConvert = ({
     const scrollToEnd = () => {
         setTimeout(() => {
             if (refScroll.current) {
-                refScroll.current.scrollToEnd({ animated: true })
+                refScroll.current.scrollToEnd({ animated: false })
             }
-        }, 1000)
+        }, 0)
         setTimeout(() => {
             setIsAnim(false)
-        }, 2000)
+        }, 0)
     }
 
     const clickEntry = (entry) => {

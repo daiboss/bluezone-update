@@ -86,8 +86,10 @@ class ChartLine extends React.Component {
     return (
       <VictoryChart
         // padding=""
+        // width={400}
         height={RFValue(200)}
         minDomain={{ y: 0 }}
+        padding={{ left: 40, right: 40, top: 50, bottom: 50 }}
         maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
       // theme={VictoryTheme.material}
       >
@@ -110,7 +112,7 @@ class ChartLine extends React.Component {
           style={{
             grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
             axis: { stroke: 'none' },
-            tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'black' }
+            tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : '#3F3F3F',fontSize:14,fontWeight:'350', }
           }}
           orientation="top"
         />
@@ -119,8 +121,10 @@ class ChartLine extends React.Component {
         {/* <VictoryAxis
           theme={VictoryTheme.material}
           standalone
+          padding={{top:30}}
           key='axis-target'
           dependentAxis
+          
           tickFormat={() => ''}
           tickValues={[100000]}
           style={{
@@ -131,21 +135,28 @@ class ChartLine extends React.Component {
 
 
         <VictoryGroup
+        
           style={{ labels: { fill: 'none' } }}
           data={this.state.dataConvert}
+          // data = {[3000,4000,100,100,3000,2000,6000,7000]}
         >
           <VictoryArea
-            interpolation="natural"
+           animate={{
+            duration: 100,
+            onLoad: { duration: 800 },
+            
+          }}
+            interpolation="monotoneX"
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
-          // data={sampleData}
+            // data={sampleData}
           />
-
           <VictoryLine
+
             animate={{
-              duration: 200,
-              onLoad: { duration: 200 }
+              duration: 100,
+              onLoad: { duration: 800 },
             }}
-            interpolation="natural"
+            interpolation="monotoneX"
             style={{
               data: { stroke: "#FE4358" },
               parent: { border: "1px solid #ccc" }
@@ -272,7 +283,7 @@ class ChartLine extends React.Component {
           borderWidth: 1,
           borderRadius: 15,
           borderColor: 'red',
-          width: RFValue(50)
+          // width: RFValue(63)
         }}>
           <Text style={{
             color: 'white',
@@ -294,7 +305,7 @@ class ChartLine extends React.Component {
         </View>
         {/* <View style={{
           height: 0,
-          width: width * 0.76,
+          width: width * 0.81,
           alignSelf: 'center',
           backgroundColor: 'white',
           position: 'absolute',
