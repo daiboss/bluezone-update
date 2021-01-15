@@ -34,6 +34,7 @@ import { getProfile, getStepChange } from '../../../core/storage';
 import { getAbsoluteMonths, getAllDistance, gender, getDistances } from '../../../core/calculation_steps';
 import { getListHistory, removeAllHistory } from '../../../core/db/SqliteDb';
 import BarChartConvert from './BarChart/BarChartConvert';
+import BarChart7Item from './BarChart/BarChart7Item';
 Date.prototype.getWeek = function (dowOffset) {
   /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
 
@@ -246,7 +247,7 @@ const StepCount = ({ props, intl, navigation }) => {
         let widthTmp = tmp * (list.length - 1)
         setWidthChart(widthTmp)
       }
-      console.log('listlistlist', list)
+      // console.log('listlistlist', list)
       setDataChart(list);
     } catch (error) { }
   };
@@ -288,11 +289,17 @@ const StepCount = ({ props, intl, navigation }) => {
             textAlign: 'center',
             marginBottom: 14
           }}>{new moment().format('YYYY')}</Text>
-          <BarChartConvert
+          {/* <BarChartConvert
             data={dataChart}
             maxDomain={maxDomain}
             onGetDataBySelect={updateDistance}
-            widthChart={widthChart} />
+            widthChart={widthChart} /> */}
+          <BarChart7Item
+            data={dataChart}
+            maxDomain={maxDomain}
+            onGetDataBySelect={updateDistance}
+            widthChart={widthChart}
+          />
         </View>
       )
     }
@@ -357,13 +364,13 @@ const StepCount = ({ props, intl, navigation }) => {
                     <Text style={[styles.txData, {
                       marginRight: 4
                     }]}>{countTimeHour}</Text>
-                    <Text style={styles.txUnit}>{formatMessage(message.hour)}</Text>
+                    <Text style={[styles.txUnit, { marginTop: 10 }]}>{formatMessage(message.hour)}</Text>
                   </View>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={[styles.txData, {
                       marginRight: 4
                     }]}>{countTime}</Text>
-                    <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+                    <Text style={[styles.txUnit, { marginTop: 10 }]}>{formatMessage(message.minute)}</Text>
                   </View>
                 </View>
               ) : (
