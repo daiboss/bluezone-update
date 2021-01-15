@@ -359,7 +359,7 @@ const StepCount = ({ props, intl, navigation }) => {
     getSex()
     getStepsRealTime()
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightHeight.height])
+  }, [weightHeight.height,totalCount])
 
   const getSex = async () => {
     let profiles = (await getProfile()) || [];
