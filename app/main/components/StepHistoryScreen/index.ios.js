@@ -439,7 +439,7 @@ const StepCount = ({ props, intl, navigation }) => {
             return k + timeT
           }, timeInit)
           let timeT
-          const timePush = (timeUse/60).toFixed(0)
+          const timePush = (timeUse/600).toFixed(0)
           // if(timePush > 60) {
           //  const h = timePush/60
           //  const m = timePush - h*60
