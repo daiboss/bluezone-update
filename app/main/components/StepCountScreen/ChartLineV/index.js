@@ -112,13 +112,19 @@ class ChartLine extends React.Component {
           style={{
             grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
             axis: { stroke: 'none' },
-            tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : '#3F3F3F',fontSize:14,fontWeight:'350', }
+            
+            tickLabels: { 
+            fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : '#3F3F3F',
+            fontSize:14,
+            fontWeight:'350',
+            fontFamily: 'helvetica',
+          }
           }}
           orientation="top"
         />
 
-
-        {/* <VictoryAxis
+{/* 
+        <VictoryAxis
           theme={VictoryTheme.material}
           standalone
           padding={{top:30}}
@@ -128,6 +134,7 @@ class ChartLine extends React.Component {
           tickFormat={() => ''}
           tickValues={[100000]}
           style={{
+            fontFamily: 'helvetica',
             axis: { stroke: "none" },
             grid: { stroke: ({ tick }) => 'blue'},
           }}
@@ -316,7 +323,7 @@ class ChartLine extends React.Component {
         }} /> */}
         <Dash style={{
           height: 1,
-          width: width * 0.76,
+          width: width * 0.81,
           alignSelf: 'center',
           position: 'absolute',
           top: height * 0.12

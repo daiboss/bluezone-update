@@ -119,7 +119,7 @@ try {
         break;
       case notiStep:
         if (resultSteps) {
-          if (today.format('HH') >= 12) {
+          if (today.format('HH') >= 19) {
             scheduler.createWarnningStepNotification(step?.step);
           }
         }
