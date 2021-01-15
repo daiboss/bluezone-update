@@ -500,7 +500,7 @@ const StepCount = ({ props, intl, navigation }) => {
           const timeT = timeEnd - timeStart
           return k + timeT
         }, timeInit)
-        const timePush = timeUse / 60
+        const timePush = timeUse / 600
         setCountTime(timePush.toFixed(0))
         //get Distance
         const b = results.reduce((k, i) => {

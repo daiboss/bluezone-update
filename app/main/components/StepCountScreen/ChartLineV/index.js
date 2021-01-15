@@ -90,7 +90,7 @@ class ChartLine extends React.Component {
         minDomain={{ y: 0 }}
         padding={{ left: 40, right: 40, top: 50, bottom: 50 }}
         maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
-      // theme={VictoryTheme.material}
+        // theme={VictoryTheme.material}
       >
         <Defs>
           <LinearGradient id="gradientStroke"
@@ -118,7 +118,6 @@ class ChartLine extends React.Component {
 
 
         <VictoryAxis
-          theme={VictoryTheme.material}
           standalone
           padding={{top:30}}
           key='axis-target'
@@ -128,13 +127,12 @@ class ChartLine extends React.Component {
           tickValues={[100000]}
           style={{
             axis: { stroke: "none" },
-            grid: { stroke: ({ tick }) => 'blue' },
+            grid: { stroke: ({ tick }) => 'blue'},
           }}
         />
 
 
-        <VictoryGroup
-        
+        <VictoryGroup  
           style={{ labels: { fill: 'none' } }}
           data={this.state.dataConvert}
           // data = {[3000,4000,100,100,3000,2000,6000,7000]}
