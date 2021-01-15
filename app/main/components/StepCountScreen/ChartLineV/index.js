@@ -16,6 +16,7 @@ import styles from './styles/index.css';
 import { LineChart } from 'react-native-charts-wrapper';
 import { red_bluezone, blue_bluezone } from '../../../../core/color';
 import { RFValue } from '../../../../const/multiscreen';
+import Dash from 'react-native-dash';
 
 import {
   VictoryChart, VictoryLine, VictoryTheme, VictoryGroup,
@@ -115,7 +116,7 @@ class ChartLine extends React.Component {
         />
 
 
-        <VictoryAxis
+        {/* <VictoryAxis
           theme={VictoryTheme.material}
           standalone
           key='axis-target'
@@ -126,7 +127,7 @@ class ChartLine extends React.Component {
             axis: { stroke: "none" },
             grid: { stroke: ({ tick }) => 'blue' },
           }}
-        />
+        /> */}
 
 
         <VictoryGroup
@@ -152,7 +153,7 @@ class ChartLine extends React.Component {
 
           />
 
-          <VictoryScatter
+          {/* <VictoryScatter
             style={{
               data: {
                 fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358",
@@ -164,9 +165,9 @@ class ChartLine extends React.Component {
                 fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358"
               }
             }}
-            size={({ datum }) => datum.x === this.state?.valueX ? RFValue(9) : RFValue(6)}
+            size={({ datum }) => datum.x === this.state?.valueX ? RFValue(9) : RFValue(4)}
             labels={() => null}
-          />
+          /> */}
           <VictoryScatter
             style={{
               data: {
@@ -179,7 +180,7 @@ class ChartLine extends React.Component {
                 fill: "#FE4358"
               }
             }}
-            size={RFValue(6)}
+            size={RFValue(4)}
             labels={() => null}
 
           // events={[{
@@ -215,6 +216,10 @@ class ChartLine extends React.Component {
       </VictoryChart>
     )
   }
+
+  numberWithCommas = x => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
 
   render() {
     return (
@@ -274,7 +279,7 @@ class ChartLine extends React.Component {
             fontSize: 10,
             textAlign: 'center',
             fontWeight: '700'
-          }}>{this.props.totalCount}</Text>
+          }}>{this.numberWithCommas(this.props.totalCount || 10000)}</Text>
           <Image
             style={{
               zIndex: -1,
@@ -287,7 +292,7 @@ class ChartLine extends React.Component {
             }}
             source={require('../images/down-arrow.png')} />
         </View>
-        <View style={{
+        {/* <View style={{
           height: 0,
           width: width * 0.76,
           alignSelf: 'center',
@@ -298,7 +303,16 @@ class ChartLine extends React.Component {
           borderWidth: 1,
           borderStyle: 'dashed',
           borderRadius: 1,
-        }} />
+        }} /> */}
+        <Dash style={{
+          height: 1,
+          width: width * 0.76,
+          alignSelf: 'center',
+          position: 'absolute',
+          top: height * 0.12
+        }}
+          dashColor={'#FE4358'}
+        />
         {
           this.renderCharMain()
         }

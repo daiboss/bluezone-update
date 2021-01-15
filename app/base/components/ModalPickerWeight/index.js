@@ -55,7 +55,7 @@ function ModalPicker({
   }, [gender]);
 
   const selectHeight = () => {
-    onSelected && onSelected(`${weight} ${weight2 || '0kg'}`);
+    onSelected && onSelected(`${weight}${weight2 || '0kg'}`);
     onCloseModal();
   };
   return (

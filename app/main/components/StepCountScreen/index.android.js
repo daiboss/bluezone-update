@@ -171,12 +171,13 @@ const StepCount = ({ props, intl, navigation }) => {
     if (!isRun) {
       BackgroundJob.start(taskStepCounter, options);
     }
-    // else {
-    //   BackgroundJob.stop();
-    // }
+    else {
+      BackgroundJob.stop();
+    }
   }, [BackgroundJob])
 
   const taskStepCounter = async () => {
+    console.log('taskStepCountertaskStepCounter')
     await new Promise(async () => {
       scheduleLastDay()
       schedule7PM();
@@ -220,7 +221,7 @@ const StepCount = ({ props, intl, navigation }) => {
       timePush.add(1, 'days')
     }
     let timeDiff = timePush.diff(currentTime, 'milliseconds')
-    console.log('timeDifftimeDiff', timeDiff)
+    // console.log('timeDifftimeDiff', timeDiff)
 
     BackgroundJob.setTimeout(() => {
       pushNotificationWarning()
@@ -233,6 +234,7 @@ const StepCount = ({ props, intl, navigation }) => {
     let tomorow = new moment(currentTime).add(1, 'days')
     tomorow.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
     let timeDiff = tomorow.diff(currentTime, 'milliseconds')
+    console.log('timeDifftimeDiff', timeDiff)
     BackgroundJob.setTimeout(() => {
       saveHistory();
       scheduleLastDay();

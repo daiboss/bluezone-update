@@ -20,7 +20,7 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
     fadeAnim.setValue(0)
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 2000,
+      duration: 1500,
       useNativeDriver: false
     }).start();
   };
@@ -49,7 +49,7 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
         <View style={[styles.empty]} />
       ) : (
           <View style={[styles.container3]}>
-            <Text style={styles.textLabel}>Kết quả BMI (Kg/m2) của bạn</Text>
+            <Text style={styles.textLabel}>Kết quả BMI (Kg/m²) của bạn</Text>
             <Text style={styles.textTotalBmi}>{bmi}</Text>
           </View>
         )}

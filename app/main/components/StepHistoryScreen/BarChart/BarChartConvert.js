@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from 'react'
-import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator,Platform } from 'react-native'
+import { View, StyleSheet, ScrollView, Dimensions, ActivityIndicator, Platform } from 'react-native'
 import {
     VictoryChart,
     VictoryBar,
@@ -68,7 +68,7 @@ const BarChartConvert = ({
         if (selectedEntry?.index != entry.index) {
             let tmp = {
                 datum: { ...entry?.datum },
-                index: entry?.index || -1
+                index: entry.index
             }
             setSelectedEntry(tmp)
         }
@@ -93,7 +93,7 @@ const BarChartConvert = ({
                             stroke: "none",
                         },
                         grid: {
-                            stroke: '#a1a1a1',
+                            stroke: '#f3f3f3',
                         },
                         ticks: {
                             size: 0,
@@ -101,6 +101,7 @@ const BarChartConvert = ({
                         tickLabels: {
                             fontSize: 11,
                             padding: 15,
+                            fontWeight: '700',
                             fill: (e) => {
                                 return e?.index == selectedEntry?.index ? red_bluezone : '#a1a1a1'
                             },
@@ -110,19 +111,21 @@ const BarChartConvert = ({
                 <VictoryBar
                     barWidth={widthItemChart}
 
-                    events={[{
-                        target: "data",
-                        eventHandlers: {
-                            onPress: (e) => {
-                                return [
-                                    {
-                                        target: "data",
-                                        mutation: clickEntry
-                                    }
-                                ];
+                    events={[
+                        {
+                            target: "data",
+                            eventHandlers: {
+                                onPress: (e) => {
+                                    return [
+                                        {
+                                            target: "data",
+                                            mutation: clickEntry
+                                        }
+                                    ];
+                                }
                             }
-                        }
-                    }]}
+                        },
+                    ]}
                     style={{
                         data: {
                             fill: ({ datum }) => {

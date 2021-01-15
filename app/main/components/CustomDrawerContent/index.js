@@ -73,7 +73,8 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '500',
         color: '#000',
-        marginLeft: 10
+        marginLeft: 10,
+        fontWeight: '700'
     },
     container: {
     },
@@ -85,12 +86,12 @@ const styles = StyleSheet.create({
     btnMenu: {
         padding: 5,
         alignSelf: 'flex-end',
-        marginRight: 20,
+        // marginRight: 20,
         marginTop: 10
     },
     iconMenu:{
         paddingLeft: 20,
-        paddingRight: 30,
+        paddingRight: 20,
         ...Platform.select({
             ios: {
                 paddingTop: 5,
