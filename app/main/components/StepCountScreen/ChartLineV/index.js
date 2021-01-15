@@ -140,20 +140,24 @@ class ChartLine extends React.Component {
           // data = {[3000,4000,100,100,3000,2000,6000,7000]}
         >
           <VictoryArea
+           animate={{
+            duration: 100,
+            onLoad: { duration: 800 },
+            
+          }}
             interpolation="monotoneX"
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
             // data={sampleData}
           />
-
           <VictoryLine
+
             animate={{
-              duration: 200,
-              onLoad: { duration: 200 }
+              duration: 100,
+              onLoad: { duration: 800 },
             }}
             interpolation="monotoneX"
             style={{
               data: { stroke: "#FE4358" },
-              
               parent: { border: "1px solid #ccc" }
             }}
 
@@ -274,7 +278,7 @@ class ChartLine extends React.Component {
           borderWidth: 1,
           borderRadius: 15,
           borderColor: 'red',
-          width: RFValue(50)
+          // width: RFValue(63)
         }}>
           <Text style={{
             color: 'white',

@@ -119,8 +119,7 @@ try {
         break;
       case notiStep:
         if (resultSteps) {
-          console.log('vaovaovavoavoaovoa',resultSteps)
-          if (today.format('HH') >= 16) {
+          if (today.format('HH') >= 12) {
             scheduler.createWarnningStepNotification(step?.step);
           }
         }
@@ -438,6 +437,10 @@ const StepCount = ({ props, intl, navigation }) => {
           return;
         }
         stepCurrent = results.value
+        console.log('stepCurrentstepCurrentstepCurrent',stepCurrent)
+        const countR = totalCount - stepCurrent
+        setCountRest(countR)
+
       });
       let distanUser
       //get calo and time
@@ -567,7 +570,7 @@ const StepCount = ({ props, intl, navigation }) => {
         setCountStep(steps)
         console.log('totalCounttotalCounttotalCounttotalCount',totalCount,steps)
         const countR = totalCount - steps
-        setCountRest(countR)
+        // setCountRest(countR)
       }
     })
   }
