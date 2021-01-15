@@ -21,11 +21,11 @@ const BarChartConvert = ({
 }) => {
     const refScroll = useRef(null)
     const [selectedEntry, setSelectedEntry] = useState({ index: -1 })
-    const [isAnim, setIsAnim] = useState(false)
+    const [isAnim, setIsAnim] = useState(true)
 
     useEffect(() => {
         if (data.length) {
-            setIsAnim(true)
+            // setIsAnim(true)
             setSelectedEntry({
                 index: data.length - 1,
                 datum: data[data.length - 1]
@@ -59,9 +59,9 @@ const BarChartConvert = ({
                 refScroll.current.scrollToEnd({ animated: false })
             }
         }, 0)
-        setTimeout(() => {
-            setIsAnim(false)
-        }, 0)
+        // setTimeout(() => {
+        //     setIsAnim(false)
+        // }, 0)
     }
 
     const clickEntry = (entry) => {
