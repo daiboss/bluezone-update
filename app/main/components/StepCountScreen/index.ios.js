@@ -153,6 +153,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const { formatMessage } = intl;
   const [time, setTime] = useState([]);
   const [heightUser, setHeightUser] = useState(0)
+  const [countTimeHour, setCountTimeHour] = useState(0);
   const [weightUser, setWeightUser] = useState(0)
   const [weightHeight,setWeightHeight] = useState({weight:0,height:0})
   const [countTime, setCountTime] = useState(0)
@@ -501,7 +502,10 @@ const StepCount = ({ props, intl, navigation }) => {
           return k + timeT
         }, timeInit)
         const timePush = timeUse / 600
-        setCountTime(timePush.toFixed(0))
+        let h = parseInt(timeUse / 3600)
+        let m = parseInt((timeUse % 3600) / 600)
+        setCountTime(m)
+        setCountTimeHour(h)
         //get Distance
         const b = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
@@ -702,6 +706,14 @@ const StepCount = ({ props, intl, navigation }) => {
 
             <Text style={styles.txData}>{countTime}</Text>
             <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+            {
+                countTimeHour > 0 && (
+                  <View style={{ marginLeft: 4 }}>
+                    <Text style={styles.txData}>{countTimeHour}</Text>
+                    <Text style={[styles.txUnit,{marginTop:10}]}>{formatMessage(message.hour)}</Text>
+                  </View>
+                )
+              }
           </View>
         </View>
         <View style={styles.viewLineChart}>
