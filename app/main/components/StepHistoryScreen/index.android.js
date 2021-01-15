@@ -166,14 +166,13 @@ const StepCount = ({ props, intl, navigation }) => {
       let list = [];
       if (type == 'day') {
         list = step.map(item => {
-          // console.log('SOSANHHHHHHHH', moment.unix(item?.starttime).format('DD/MM/YYYY'), new moment().format('DD/MM/YYYY'))
           let tmp = JSON.parse(item?.resultStep || {})
           return {
             x: (new moment().isSame(new moment.unix(item?.starttime), 'days')) ?
               'Hôm nay' :
               moment.unix(item?.starttime).format('DD/MM'),
             y: tmp?.step,
-            // results: tmp
+            results: tmp
           }
         });
       }
@@ -258,6 +257,7 @@ const StepCount = ({ props, intl, navigation }) => {
   };
 
   const updateDistance = (result) => {
+    console.log('updateDistanceupdateDistance', result)
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
     let m = parseInt((time % 3600) / 60)
@@ -269,9 +269,8 @@ const StepCount = ({ props, intl, navigation }) => {
     //   }
     // } else
     //   timeString += `${m}\nPhút`
-
-    setDistant(result?.distance);
-    setCountCarlo(result?.calories);
+    setDistant(result?.distance || 0);
+    setCountCarlo(result?.calories || 0);
     // setTime(timeString);
     setCountTime(m)
     setCountTimeHour(h)
@@ -285,7 +284,7 @@ const StepCount = ({ props, intl, navigation }) => {
         <View>
           <Text style={{
             fontSize: 16,
-            fontWeight: '600',
+            fontWeight: '700',
             textAlign: 'center',
             marginBottom: 14
           }}>{new moment().format('YYYY')}</Text>
@@ -334,7 +333,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_distance.png')}
             />
-            <Text style={styles.txData}>{parseFloat(distant).toFixed(3)}</Text>
+            <Text style={styles.txData}>{parseFloat(distant || 0).toFixed(3)}</Text>
             <Text style={styles.txUnit}>{`km`}</Text>
           </View>
           <View style={styles.viewImgData}>
@@ -424,7 +423,7 @@ const styles = StyleSheet.create({
   btnDate: {
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 50,
+    borderRadius: 50
   },
   img: {
     width: 64,
@@ -512,6 +511,7 @@ const styles = StyleSheet.create({
   txDate: {
     color: '#fff',
     fontSize: 14,
+    fontWeight: '700'
   },
   txtYear: {
     fontSize: fontSize.normal,
