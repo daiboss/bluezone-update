@@ -127,7 +127,7 @@ export default class AnimateNumber extends Component {
   }
 
   render() {
-    return <Text {...this.props}>{this.state.displayValue}</Text>;
+    return <Text style={this.props?.styleText || {}} {...this.props}>{this.state.displayValue}</Text>;
   }
 
   startAnimate() {

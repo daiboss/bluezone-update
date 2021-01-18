@@ -126,7 +126,7 @@ const ResultBmiProgress = ({ bmi, intl }) => {
             tintColor={fill}
             backgroundColor="#FFF">
             {() => (
-              <View style={{alignItems: 'center', justifyContent: 'center'}}>
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                 <Text
                   style={[
                     styles.textTotalBmi,
@@ -139,7 +139,7 @@ const ResultBmiProgress = ({ bmi, intl }) => {
                 <Text style={styles.textStatus}>{formatMessage(status)}</Text>
               </View>
             )}
-          </AnimatedCircularProgress>7 */}
+          </AnimatedCircularProgress> */}
           <View style={{
             width: 200,
             height: 200,

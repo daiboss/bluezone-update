@@ -32,6 +32,10 @@ export default defineMessages({
     id: 'bluezone.profile.height',
     defaultMessage: 'bluezone.profile.height',
   },
+  result: {
+    id: 'bluezone.bmi.bmiResult',
+    defaultMessage: 'bluezone.bmi.bmiResult'
+  },
   weight: {
     id: 'bluezone.profile.weight',
     defaultMessage: 'bluezone.profile.weight',

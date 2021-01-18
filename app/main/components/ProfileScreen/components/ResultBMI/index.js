@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef, memo } from 'react';
+import React, { useEffect, useState, useRef, memo, useMemo } from 'react';
 import { View, Text, Animated } from 'react-native';
 import styles from './styles/index.css';
 import message from '../../../../../core/msg/profile';
+import NumberAnimate from './../../components/ResultBmiProgress/AnimateNumber'
 import { injectIntl, intlShape } from 'react-intl';
 const ResultBMI = ({ height, weight, intl, resultScreen }) => {
   const { formatMessage } = intl;
@@ -41,6 +42,28 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
     }
     return per;
   };
+
+  const renderValueBMI = useMemo(() => {
+    if (bmi > 0) {
+      console.log('BMIIIII', bmi)
+      return (
+        <NumberAnimate steps={0.3}
+          interval={2000 / (30)}
+          formatter={(val) => {
+            return parseFloat(val).toFixed(1)
+          }}
+          textBlueNumber={styles.textTotalBmi}
+          style={[
+            styles.textTotalBmi,
+            // {
+            //   color: fill,
+            // },
+          ]}
+          value={parseInt(bmi)} />
+      )
+    }
+  }, [bmi])
+
   return (
     <View style={[styles.container2, {
       overflow: 'hidden'
@@ -49,8 +72,32 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
         <View style={[styles.empty]} />
       ) : (
           <View style={[styles.container3]}>
-            <Text style={styles.textLabel}>Kết quả BMI (Kg/m²) của bạn</Text>
-            <Text style={styles.textTotalBmi}>{bmi}</Text>
+            <Text style={styles.textLabel}>{formatMessage(message.result)}</Text>
+            {/* <Text style={styles.textTotalBmi}>{bmi}</Text> */}
+            {/* <NumberAnimate steps={0.3}
+              interval={2000 / (30)}
+              formatter={(val) => {
+                return parseFloat(val).toFixed(1)
+              }}
+              // textBlueNumber={styles.textTotalBmi}
+              style={[
+                styles.textTotalBmi,
+                // {
+                //   color: fill,
+                // },
+              ]}
+              value={parseInt(bmi)} /> */}
+            <NumberAnimate
+              styleText={{
+                fontSize: 10
+              }}
+              value={bmi}
+              countBy={Math.floor(bmi / 40)}
+              // timing="easeOut"
+              formatter={val => {
+                return parseFloat(val).toFixed(1);
+              }}
+            />
           </View>
         )}
       <View style={styles.container4}>

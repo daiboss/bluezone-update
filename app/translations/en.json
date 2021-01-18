@@ -263,6 +263,7 @@
 
 
     "bluezone.bmi.titleHeader":"BMI",
+    "bluezone.bmi.bmiResult":"Your BMI (Kg/m²) results",
     "bluezone.bmi.finish":"View results",
     "bluezone.bmi.content":"Body Mass Index (BMI) is calculated from the body's height and weight. It provides a reliable indicator of body fatness for people.",
 

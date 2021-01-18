@@ -6,6 +6,10 @@ export default defineMessages({
     id: 'bluezone.bmi.titleHeader',
     defaultMessage: 'bluezone.bmi.titleHeader',
   },
+  result: {
+    id: 'bluezone.bmi.bmiResult',
+    defaultMessage: 'bluezone.bmi.bmiResult'
+  },
   height: {
     id: 'bluezone.profile.height',
     defaultMessage: 'bluezone.profile.height',
