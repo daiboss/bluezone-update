@@ -125,26 +125,6 @@ class ChartLine extends React.Component {
                     ];
                   }
                 },
-                // eventHandlers: {
-                //   onPressIn: () => {
-                //     return [
-                //       {
-                //         target: "tickValues",
-                //         mutation: (props) => {
-                //           console.log('dahdsuadhsuahdusadsa',props)
-                //           this.setState({
-                //             topLabel: props.y,
-                //             leftLabel: props.x,
-                //             value: JSON.stringify(props.datum.y),
-                //             valueX: props?.datum?.x,
-                //             year: props?.datum?.year,
-                //             position: { x: props?.x, y: props?.y }
-                //           })
-                //         }
-                //       }
-                //     ];
-                //   }
-                // }
               }]}
               style={{
                 grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },

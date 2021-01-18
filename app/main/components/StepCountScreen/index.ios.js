@@ -40,6 +40,7 @@ import {
   setEvents,
   getEvents,
   getTimestamp,
+  getFirstTimeOpen,
   getSteps,
   getStepsTotal,
   setAutoChange,
@@ -365,38 +366,30 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
+    console.log('autoautoautoauto',auto)
     if (!auto) {
       return
     }
-    let startDay = new moment().subtract(4).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-    let listHistory = await getListHistory(startDay.unix(), new moment().unix())
-    if (listHistory?.length < 3) {
-      return
-    }
-    startDay = new moment().subtract(1).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-    listHistory = await getListHistory(startDay.unix(), new moment().unix())
-
-    let optionsStepCurrent = {
-      startDate: moment().subtract(4).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }), // required
-      endDate: moment().subtract(4).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }), // required, // optional; default now
-    };
-    AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
-      if (err) {
-        return;
-      }
-      stepCurrent = results.value
-      console.log('stepCurrentstepCurrentstepCurrent',stepCurrent)
-      const countR = totalCount - stepCurrent
-      setCountRest(countR)
-
-    });
-
+    let start = new Date();
+    let end = new Date();
+    start.setDate(start.getDate() - 3);
+    end.setDate(end.getDate() - 1)
+    let listHistory = await Fitness.getSteps({ startDate: start, endDate: end })
+    let firtTimeOpen = await getFirstTimeOpen()
+    let firtTimeUnix = moment(firtTimeOpen,'yyyy-MM-DD').unix()
     let stepTarget = await getResultSteps()
     if (!listHistory || listHistory.length <= 0) {
       return
     }
-    let tm = JSON.parse(listHistory[0]?.resultStep)
-    let totalSteps = tm?.step || 0
+    let todayUnix = moment().unix()
+    console.log('todayUnixtodayUnix',todayUnix)
+    if(todayUnix < firtTimeUnix + 2*24*60*60){
+      return
+    }
+    let totalSteps
+    if(listHistory.length = 2){
+      totalSteps = listHistory[1]?.quantity || 0
+    }else  totalSteps = listHistory[2]?.quantity || 0
     let tmp = totalSteps / (stepTarget?.step || 10000) * 100;
     let configurationStep = stepTarget?.step || 10000;
     let stepDifferen = Math.abs(totalSteps - (stepTarget?.step || 10000))
@@ -411,7 +404,6 @@ const StepCount = ({ props, intl, navigation }) => {
       step: configurationStep,
       date: new moment().unix()
     })
-    BackgroundJob.updateTypeNotification()
   }
 
   const getSex = async () => {
