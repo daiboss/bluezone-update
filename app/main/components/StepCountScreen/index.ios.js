@@ -359,8 +359,60 @@ const StepCount = ({ props, intl, navigation }) => {
     getWeightHeight()
     getSex()
     getStepsRealTime()
+    autoChangeStepsTarget()
     return NativeAppEventEmitter.removeListener('change:steps')
   }, [weightHeight.height,totalCount])
+
+  const autoChangeStepsTarget = async () => {
+    let auto = await getAutoChange();
+    if (!auto) {
+      return
+    }
+    let startDay = new moment().subtract(4).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    let listHistory = await getListHistory(startDay.unix(), new moment().unix())
+    if (listHistory?.length < 3) {
+      return
+    }
+    startDay = new moment().subtract(1).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    listHistory = await getListHistory(startDay.unix(), new moment().unix())
+
+    let optionsStepCurrent = {
+      startDate: moment().subtract(4).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }), // required
+      endDate: moment().subtract(4).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }), // required, // optional; default now
+    };
+    AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
+      if (err) {
+        return;
+      }
+      stepCurrent = results.value
+      console.log('stepCurrentstepCurrentstepCurrent',stepCurrent)
+      const countR = totalCount - stepCurrent
+      setCountRest(countR)
+
+    });
+
+    let stepTarget = await getResultSteps()
+    if (!listHistory || listHistory.length <= 0) {
+      return
+    }
+    let tm = JSON.parse(listHistory[0]?.resultStep)
+    let totalSteps = tm?.step || 0
+    let tmp = totalSteps / (stepTarget?.step || 10000) * 100;
+    let configurationStep = stepTarget?.step || 10000;
+    let stepDifferen = Math.abs(totalSteps - (stepTarget?.step || 10000))
+    if (tmp >= 150) {
+      configurationStep += parseInt(stepDifferen * 0.2)
+    } else if (tmp >= 100) {
+      configurationStep += parseInt(stepDifferen * 0.1)
+    } else {
+      configurationStep -= parseInt(stepDifferen * 0.2)
+    }
+    await setResultSteps({
+      step: configurationStep,
+      date: new moment().unix()
+    })
+    BackgroundJob.updateTypeNotification()
+  }
 
   const getSex = async () => {
     let profiles = (await getProfile()) || [];
