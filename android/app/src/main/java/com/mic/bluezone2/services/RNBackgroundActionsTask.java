@@ -47,7 +47,6 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
     private static final String CHANNEL_ID = "CHANNEL_HEALTH_BLUEZONE";
     private static final String CHANNEL_ID_2 = "CHANNEL_HEALTH_BLUEZONE_NORMAL";
     private static final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-    private static final Date date = new Date();
     private SensorManager mSensorManager;
 
     private Sensor sensorStepCounter;
@@ -99,7 +98,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
             notificationLayout.setViewVisibility(R.id.txtNumber, View.VISIBLE);
             notificationLayout.setViewVisibility(R.id.progressBar, View.VISIBLE);
             notificationLayout.setViewVisibility(R.id.txtStepText, View.VISIBLE);
-
+            Date date = new Date();
             notificationLayout.setTextViewText(R.id.txtTime, formatter.format(date));
             notificationLayout.setTextViewText(R.id.txtNumber, "" + ((int) currentSteps) + "/" + ((int) targetSteps));
             int tmp = (int) (((float) currentSteps / targetSteps) * 100);
