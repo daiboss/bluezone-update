@@ -528,8 +528,9 @@ const StepCount = ({ props, intl, navigation }) => {
         const a = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
-          const timeS = timeEnd - timeStart
+          let timeS = timeEnd - timeStart 
           // const tb = timeS / i.quantity
+          if(timeS == 0) timeS = 1
           const stepRate = i.quantity/timeS
           let stepRateFactor
           if (stepRate < 1.6)
@@ -551,13 +552,14 @@ const StepCount = ({ props, intl, navigation }) => {
             let distanceInStep = sexValue * heightUser * stepRateFactor
             let speed = distanceInStep * stepRate * 3.6
             let calo
-            // console.log('weightUserweightUserweightUser',weightUser,distanceInStep,stepRate)
+            console.log('weightUserweightUserweightUser',weightUser,distanceInStep,stepRate)
             if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
             else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
             // setCountCarlo(calo.toFixed(2))
           return k + calo*timeS*2
         }, initialValue)
-        setCountCarlo(parseInt(a/1000))
+        console.log('aaabdbdbdbdbbda',a)
+        setCountCarlo(parseInt(a*2/1000))
         //get time
           const timeUse = results.reduce((k, i) => {
             const timeStart = moment(i.start).unix()

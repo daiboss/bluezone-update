@@ -537,7 +537,7 @@ const StepCount = ({ props, intl, navigation }) => {
           console.log('objectKcal', { sexValue, weightHeight, stepRateFactor })
           return k + calo * timeS * 2
         }, initialValue)
-        setCountCarlo(parseInt(a / 1000))
+        setCountCarlo(parseInt(a*2 / 1000))
         //get time
         const timeUse = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
