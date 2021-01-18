@@ -98,6 +98,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
             notificationLayout.setViewVisibility(R.id.txtTime, View.VISIBLE);
             notificationLayout.setViewVisibility(R.id.txtNumber, View.VISIBLE);
             notificationLayout.setViewVisibility(R.id.progressBar, View.VISIBLE);
+            notificationLayout.setViewVisibility(R.id.txtStepText, View.VISIBLE);
 
             notificationLayout.setTextViewText(R.id.txtTime, formatter.format(date));
             notificationLayout.setTextViewText(R.id.txtNumber, "" + ((int) currentSteps) + "/" + ((int) targetSteps));
@@ -107,6 +108,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
             notificationLayout.setViewVisibility(R.id.txtTime, View.GONE);
             notificationLayout.setViewVisibility(R.id.txtNumber, View.GONE);
             notificationLayout.setViewVisibility(R.id.progressBar, View.GONE);
+            notificationLayout.setViewVisibility(R.id.txtStepText, View.GONE);
         }
 
 

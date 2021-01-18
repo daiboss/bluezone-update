@@ -95,7 +95,6 @@ const ProfileScreen = ({ route, intl, navigation }) => {
         profile = profiles[0]
       }
       if (profile) {
-        console.log('profileprofileprofile', profile)
         setGender(profile.gender);
         setHeight(profile.height);
         setWeight(profile.weight);

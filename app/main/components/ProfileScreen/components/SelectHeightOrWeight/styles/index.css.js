@@ -73,7 +73,8 @@ const styles = StyleSheet.create({
     minHeight: 55,
   },
   borderError: {
-    borderColor: 'red',
+    borderColor: red_bluezone,
+    borderWidth: 1,
   },
   textError: {
     color: 'red',
