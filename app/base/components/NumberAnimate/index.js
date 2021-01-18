@@ -26,7 +26,7 @@ import * as PropTypes from 'prop-types';
 
 // Components
 import AnimateNumber from './AnimateNumber';
-import {MediumText} from '../../../base/components/Text';
+import { MediumText } from '../../../base/components/Text';
 import Text from '../Text';
 
 // Styles
@@ -39,7 +39,7 @@ class InviteScreen extends React.Component {
   }
 
   setRoundNumber(number) {
-    const {language} = this.context;
+    const { language } = this.context;
     let round, text;
     if (number > 100000 && number < 1000000) {
       round = 1000;
@@ -61,12 +61,15 @@ class InviteScreen extends React.Component {
   }
 
   render() {
-    const {amount} = this.props;
+    const { amount, textBlueNumber } = this.props;
     const newAmount = parseInt(amount, 10);
     const count = this.setRoundNumber(amount);
     return (
-      <Text style={style.textBlueNumber}>
+      <Text style={textBlueNumber || {}}>
         <AnimateNumber
+          styleText={{
+            fontSize: 10
+          }}
           value={newAmount}
           countBy={Math.floor(newAmount / 40)}
           // timing="easeOut"

@@ -89,8 +89,11 @@ const StepCount = ({ props, intl, navigation }) => {
   const [endTime, setEndTime] = useState(new moment(new Date()).subtract(1, 'days').unix())
   const [listStepToday, setListStepToday] = useState(undefined)
   const [listTotalSteps, setListTotalSteps] = useState([])
+  const [selectedItem, setSelectedItem] = useState({
+    page: 0,
+    index: -1
+  })
 
-  const [widthChart, setWidthChart] = useState(screenWidth)
 
   useEffect(() => {
     getDataHealth(
@@ -131,8 +134,6 @@ const StepCount = ({ props, intl, navigation }) => {
     }
   };
   const getDataHealth = async (type) => {
-    // await removeAllHistory()
-
     let stepToday = listStepToday
     let step = [...listTotalSteps]
 
@@ -287,7 +288,12 @@ const StepCount = ({ props, intl, navigation }) => {
           let startWeek = moment.unix(value[0]?.starttime).startOf('isoWeek')
           let endWeek = moment.unix(value[0]?.starttime).endOf('isoWeek')
           let valueEnd = (endWeek.isAfter(currentTime) || endWeek.isSame(currentTime)) ? formatMessage(message.now) : `${endWeek.format('DD')}`
-          let label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
+          let label = ''
+          if (locale == 'en') {
+            label = `${startWeek.format('DD')} - ${valueEnd}\n${endWeek.locale('en').format('MMM')}`
+          } else {
+            label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
+          }
           list.push({
             x: label,
             y: results?.steps || 0,
@@ -297,14 +303,7 @@ const StepCount = ({ props, intl, navigation }) => {
       }
       let max = Math.max.apply(Math, list.map(function (o) { return o.y; }))
       setMaxDomain(max + 1000)
-      if (list.length <= 7) {
-        setWidthChart(screenWidth)
-      } else {
-        let tmp = (screenWidth - (type == 'month' ? 30 : type == 'day' ? 60 : 60)) / 6;
-        let widthTmp = tmp * (list.length - 1)
-        setWidthChart(widthTmp)
-      }
-      // console.log('listlistlist', list)
+
       setDataChart(list);
     } catch (error) { }
   };
@@ -314,26 +313,21 @@ const StepCount = ({ props, intl, navigation }) => {
     } catch (e) { }
   };
 
-  const updateDistance = (result) => {
-    console.log('updateDistanceupdateDistance', result)
+  const updateDistance = (item, index, flIndex) => {
+    let result = item?.results
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
     let m = parseInt((time % 3600) / 60)
-    // let timeString = ''
-    // if (h > 0) {
-    //   timeString += `${h} - Giờ`
-    //   if (m > 0) {
-    //     timeString += `,\n${m} - Phút`
-    //   }
-    // } else
-    //   timeString += `${m}\nPhút`
     setDistant(result?.distance || 0);
     setCountCarlo(result?.calories || 0);
-    // setTime(timeString);
     setCountTime(m)
     setCountTimeHour(h)
     setCountStep(result?.steps || result?.step || 0);
 
+    setSelectedItem({
+      page: flIndex,
+      index: index
+    })
   }
 
   const renderChart = useMemo(() => {
@@ -344,23 +338,19 @@ const StepCount = ({ props, intl, navigation }) => {
             fontSize: 16,
             fontWeight: '700',
             textAlign: 'center',
-            marginBottom: 14
+            marginBottom: 0
           }}>{new moment().format('YYYY')}</Text>
-          {/* <BarChartConvert
-            data={dataChart}
-            maxDomain={maxDomain}
-            onGetDataBySelect={updateDistance}
-            widthChart={widthChart} /> */}
+
           <BarChart7Item
             data={dataChart}
             maxDomain={maxDomain}
+            selectedItem={selectedItem}
             onGetDataBySelect={updateDistance}
-            widthChart={widthChart}
           />
         </View>
       )
     }
-  }, [dataChart])
+  }, [dataChart, selectedItem])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -375,7 +365,7 @@ const StepCount = ({ props, intl, navigation }) => {
             fontSize: fontSize.bigger,
           }}
         />
-        <View style={[styles.viewLineChart, { marginTop: 16 }]}>
+        <View style={[styles.viewLineChart, { marginTop: 0 }]}>
           {/* {dataChart?.length ? <BartChartHistory
             data={dataChart} /> : null} */}
           {renderChart}
