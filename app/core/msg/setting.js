@@ -99,5 +99,21 @@ export default defineMessages({
         id: 'bluezone.settings.addShortcut',
         defaultMessage: 'bluezone.settings.addShortcut'
     },
+    Notification: {
+        id: 'bluezone.settings.notification',
+        defaultMessage: 'bluezone.settings.notification'
+    },
+    NotificationRealtime: {
+        id: 'bluezone.settings.notificationRealtime',
+        defaultMessage: 'bluezone.settings.notificationRealtime'
+    },
+    NotificationTarget: {
+        id: 'bluezone.settings.notificationTarget',
+        defaultMessage: 'bluezone.settings.notificationTarget'
+    },
+    NotificationWeight: {
+        id: 'bluezone.settings.notificationUpdateWeight',
+        defaultMessage: 'bluezone.settings.notificationUpdateWeight'
+    },
    
 })

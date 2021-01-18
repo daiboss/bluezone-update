@@ -282,6 +282,7 @@
     "bluezone.stepCount.day": "Ngày",
     "bluezone.stepCount.week": "Tuần",
     "bluezone.stepCount.month": "Tháng",
+    "bluezone.stepCount.now": "nay",
 
     "bluezone.settings.titleHeader": "Cài đặt",
     "bluezone.settings.profile": "Hồ sơ",
@@ -302,4 +303,8 @@
     "bluezone.settings.stepADay": "bước mỗi ngày",
     "bluezone.settings.save": "Lưu",
     "bluezone.settings.addShortcut": "Thêm vào màn hình chính",
+    "bluezone.settings.notification": "Thông báo",
+    "bluezone.settings.notificationRealtime": "Thông báo số bước đi trong ngày",
+    "bluezone.settings.notificationTarget": "Thông báo khi chưa hoàn thành mục tiêu",
+    "bluezone.settings.notificationUpdateWeight": "Thông báo cập nhật cân nặng hàng tuần",
 }

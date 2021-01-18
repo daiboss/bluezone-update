@@ -16,7 +16,7 @@ import ModalComponent from '../ModalComponent';
 import message from './../../../core/msg/setting'
 const windowWidth = Dimensions.get('window').width;
 
-import { DATA_STEP } from './data'
+import { DATA_STEP, DATA_STEP_EN } from './data'
 
 Number.prototype.format = function (n, x) {
   var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
@@ -30,7 +30,7 @@ function ModalPickerStepsTarget({
   intl,
   currentSteps = 10000
 }) {
-  const { formatMessage } = intl;
+  const { formatMessage, locale } = intl;
   const [steps, setSteps] = useState(() => {
     if (currentSteps) {
       return currentSteps;
@@ -63,11 +63,12 @@ function ModalPickerStepsTarget({
         <View style={styles.body}>
 
           <CustomSelect
+            formatMessage={formatMessage}
             onValueChange={changeStep}
-            dataSource={DATA_STEP}
+            dataSource={locale == 'en' ? DATA_STEP_EN : DATA_STEP}
             selectedIndex={
-              DATA_STEP.findIndex(e => e == `${currentSteps.format() + ' bước'}`) != -1
-                ? DATA_STEP.findIndex(e => e == `${currentSteps.format() + ' bước'}`) : 0
+              (locale == 'en' ? DATA_STEP_EN : DATA_STEP).findIndex(e => e == `${currentSteps.format()} ${formatMessage(message.steps).toLowerCase()}`) != -1
+                ? (locale == 'en' ? DATA_STEP_EN : DATA_STEP).findIndex(e => e == `${currentSteps.format()} ${formatMessage(message.steps).toLowerCase()}`) : 0
             }
             containerStyle={{
               marginVertical: 30,
@@ -84,7 +85,7 @@ function ModalPickerStepsTarget({
             </Text>
           </TouchableOpacity>
           <Text style={styles.txRecomends}>
-            {formatMessage(message.stepRecommends)} <Text style={styles.txRed}>10,000</Text> {formatMessage(message.stepsADay)}</Text>
+            {formatMessage(message.stepRecommends)} <Text style={styles.txRed}>10.000</Text> {formatMessage(message.stepsADay)}</Text>
         </View>
       </View>
     </ModalComponent>

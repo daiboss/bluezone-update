@@ -393,7 +393,6 @@ class App extends React.Component {
   };
 
   HomeStack = currentProps => () => {
-    console.log('currentPropscurrentPropscurrentPropscurrentProps',currentProps)
     const currentComponent = currentProps.currentComponent;
     const { loading, isHome } = currentProps.currentComponent.state;
     return loading ? (

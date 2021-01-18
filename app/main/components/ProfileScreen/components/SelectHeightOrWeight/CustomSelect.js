@@ -10,6 +10,8 @@ import ReactNative, {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import message from './../../../../../core/msg/setting'
+
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
@@ -134,7 +136,7 @@ export default class
                 : ((index == this.state.selectedIndex + 1) ||
                     (index == this.state.selectedIndex - 1)) ?
                     styles.itemTextNear :
-                    styles.itemText, this.props.textStyle]}> {data}</Text >;
+                    styles.itemText, this.props.textStyle]}> {data} </Text >;
 
         if (this.props.renderItem) {
             item = this.props.renderItem(data, index, isSelected);
