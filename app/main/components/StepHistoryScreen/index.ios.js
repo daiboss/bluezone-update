@@ -244,7 +244,7 @@ const StepCount = ({ props, intl, navigation }) => {
     if (type == 'day') {
       let currentDay = moment(new Date())
       list = data.map(item => ({
-        x: moment(item.startDate).isAfter(currentDay) ? 'Hôm nay' : moment(item.startDate).format('DD/MM'),
+        x: moment(item.startDate).isAfter(currentDay) ? formatMessage(message.today) : moment(item.startDate).format('DD/MM'),
         y: Number(item.quantity),
         start:moment(item.startDate).format('YYYY/DD/MM'),
         end:moment(item.startDate).format('YYYY/DD/MM'),

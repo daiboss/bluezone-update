@@ -75,5 +75,9 @@ export default defineMessages({
         id: 'bluezone.stepCount.month',
         defaultMessage: 'bluezone.stepCount.month',
     },
+    now: {
+        id: 'bluezone.stepCount.now',
+        defaultMessage: 'bluezone.stepCount.now'
+    }
    
 })

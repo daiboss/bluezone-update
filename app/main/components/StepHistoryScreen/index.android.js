@@ -34,6 +34,7 @@ import { getProfile, getStepChange } from '../../../core/storage';
 import { getAbsoluteMonths, getAllDistance, gender, getDistances } from '../../../core/calculation_steps';
 import { getListHistory, removeAllHistory } from '../../../core/db/SqliteDb';
 import BarChartConvert from './BarChart/BarChartConvert';
+import BarChart7Item from './BarChart/BarChart7Item';
 Date.prototype.getWeek = function (dowOffset) {
   /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
 
@@ -69,7 +70,7 @@ const screenWidth = Dimensions.get('window').width;
 const StepCount = ({ props, intl, navigation }) => {
   const route = useRoute();
 
-  const { formatMessage } = intl;
+  const { formatMessage, locale } = intl;
 
   const [selectDate, setSelectDate] = useState(true);
   const [selectWeek, setSelectWeek] = useState(false);
@@ -169,7 +170,7 @@ const StepCount = ({ props, intl, navigation }) => {
           let tmp = JSON.parse(item?.resultStep || {})
           return {
             x: (new moment().isSame(new moment.unix(item?.starttime), 'days')) ?
-              'Hôm nay' :
+              formatMessage(message.today) :
               moment.unix(item?.starttime).format('DD/MM'),
             y: tmp?.step,
             results: tmp
@@ -197,8 +198,65 @@ const StepCount = ({ props, intl, navigation }) => {
               time: (t?.time || 0) + (tmp?.time || 0),
             }
           }, {})
-          // let label = `Tháng\n${parseInt(key) + 1}`
-          let label = `Tháng\n${key < currentMonth ? (parseInt(key) + 1) : 'này'}`
+          let label = ''
+          if (locale == 'en') {
+            switch (parseInt(key)) {
+              case 0: {
+                label = 'Jan'
+                break
+              }
+              case 1: {
+                label = 'Feb'
+                break
+              }
+              case 2: {
+                label = 'Mar'
+                break
+              }
+              case 3: {
+                label = 'Apr'
+                break
+              }
+              case 4: {
+                label = 'May'
+                break
+              }
+              case 5: {
+                label = 'Jun'
+                break
+              }
+              case 6: {
+                label = 'Jul'
+                break
+              }
+              case 7: {
+                label = 'Aug'
+                break
+              }
+              case 8: {
+                label = 'Sep'
+                break
+              }
+              case 9: {
+                label = 'Oct'
+                break
+              }
+              case 10: {
+                label = 'Nov'
+                break
+              }
+              case 11: {
+                label = 'Dec'
+                break
+              }
+              default: label = ''
+            }
+            if (key >= currentMonth) {
+              label = 'This\nmonth'
+            }
+          } else {
+            label = `${formatMessage(message.month)}\n${key < currentMonth ? (parseInt(key) + 1) : 'này'}`
+          }
           list.push({
             x: label,
             y: results?.steps || 0,
@@ -228,7 +286,7 @@ const StepCount = ({ props, intl, navigation }) => {
           }, {})
           let startWeek = moment.unix(value[0]?.starttime).startOf('isoWeek')
           let endWeek = moment.unix(value[0]?.starttime).endOf('isoWeek')
-          let valueEnd = (endWeek.isAfter(currentTime) || endWeek.isSame(currentTime)) ? 'nay' : `${endWeek.format('DD')}`
+          let valueEnd = (endWeek.isAfter(currentTime) || endWeek.isSame(currentTime)) ? formatMessage(message.now) : `${endWeek.format('DD')}`
           let label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
           list.push({
             x: label,
@@ -246,7 +304,7 @@ const StepCount = ({ props, intl, navigation }) => {
         let widthTmp = tmp * (list.length - 1)
         setWidthChart(widthTmp)
       }
-      console.log('listlistlist', list)
+      // console.log('listlistlist', list)
       setDataChart(list);
     } catch (error) { }
   };
@@ -288,11 +346,17 @@ const StepCount = ({ props, intl, navigation }) => {
             textAlign: 'center',
             marginBottom: 14
           }}>{new moment().format('YYYY')}</Text>
-          <BarChartConvert
+          {/* <BarChartConvert
             data={dataChart}
             maxDomain={maxDomain}
             onGetDataBySelect={updateDistance}
-            widthChart={widthChart} />
+            widthChart={widthChart} /> */}
+          <BarChart7Item
+            data={dataChart}
+            maxDomain={maxDomain}
+            onGetDataBySelect={updateDistance}
+            widthChart={widthChart}
+          />
         </View>
       )
     }
@@ -357,13 +421,13 @@ const StepCount = ({ props, intl, navigation }) => {
                     <Text style={[styles.txData, {
                       marginRight: 4
                     }]}>{countTimeHour}</Text>
-                    <Text style={styles.txUnit}>{formatMessage(message.hour)}</Text>
+                    <Text style={[styles.txUnit, { marginTop: 10 }]}>{formatMessage(message.hour)}</Text>
                   </View>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={[styles.txData, {
                       marginRight: 4
                     }]}>{countTime}</Text>
-                    <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+                    <Text style={[styles.txUnit, { marginTop: 10 }]}>{formatMessage(message.minute)}</Text>
                   </View>
                 </View>
               ) : (

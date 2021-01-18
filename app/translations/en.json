@@ -280,13 +280,14 @@
     "bluezone.stepCount.day": "Day",
     "bluezone.stepCount.week": "Week",
     "bluezone.stepCount.month": "Month",
+    "bluezone.stepCount.now": "now",
 
     "bluezone.settings.titleHeader": "Settings",
     "bluezone.settings.profile": "profile",
     "bluezone.settings.updateProfile": "Update profile",
     "bluezone.settings.autoAdjustTarget": "Automatically adjust target",
     "bluezone.settings.content": "When this option is enabled, target will be automatically calculated to match your daily steps.",
-    "bluezone.settings.stepTarget ": "Step target",
+    "bluezone.settings.stepTarget": "Step target",
     "bluezone.settings.showNotification ": "Show notification",
     "bluezone.settings.enterStepTarget": "Please enter your step target",
     "bluezone.settings.stepRecommends": "The Ministry of Health recommends",
@@ -299,6 +300,10 @@
     "bluezone.settings.stepADay": "steps a day",
     "bluezone.settings.save": "Save",
     "bluezone.settings.addShortcut": "Add shortcut to the main screen",
-    
+    "bluezone.settings.notification": "Notification",
+    "bluezone.settings.notificationRealtime": "Notice the number of steps per day",
+    "bluezone.settings.notificationTarget": "Notify when the goal is not completed",
+    "bluezone.settings.notificationUpdateWeight": "Notice weekly weight updates",
+
 
 }

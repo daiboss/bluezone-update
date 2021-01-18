@@ -181,7 +181,6 @@ class ChartLine extends React.Component {
                 }}
                 size={({ datum }) => datum.x === this.state?.valueX ? 9 : 6}
                 labels={() => null}
-
               />
               <VictoryScatter
                 style={{
@@ -196,6 +195,21 @@ class ChartLine extends React.Component {
                   }
                 }}
                 size={6}
+                labels={() => null}
+              />
+              <VictoryScatter
+                style={{
+                  data: {
+                    fill: ({ datum }) => "none",
+                    stroke: ({ datum }) => "none",
+                    strokeWidth: ({ datum }) => 0,
+                  },
+                  labels: {
+                    fontSize: 8,
+                    fill: "none"
+                  }
+                }}
+                size={18}
                 labels={() => null}
 
                 events={[{

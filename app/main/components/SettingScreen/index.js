@@ -86,11 +86,11 @@ const SettingScreen = ({ intl, navigation }) => {
     // scheduler.createScheduleWarnningWeightNotification(alertStep)
   }, []);
   useEffect(() => {
-    console.log('alertStepalertStepalertStep',alertStep)
+    // console.log('alertStepalertStepalertStep', alertStep)
     // const a = PushNotification.getScheduledLocalNotifications();
     // console.log('aabdhasbdhbsahdbsadsa',a)
     alertBmi ? scheduler.createScheduleWarnningWeightNotification() : PushNotification.cancelAllLocalNotifications()
-  },[alertBmi])
+  }, [alertBmi])
 
   const alertPermission = (type) => {
     if (type == 'step') setAlertStep(!alertStep)
@@ -128,7 +128,7 @@ const SettingScreen = ({ intl, navigation }) => {
     } catch (error) { }
   };
   const onBack = () => {
-     try {
+    try {
       navigation.pop();
     } catch (e) { }
   };
@@ -282,7 +282,7 @@ const SettingScreen = ({ intl, navigation }) => {
       <Header
         // onBack={onBack}
         onShowMenu={onShowMenu}
-        title={'Cài đặt'}
+        title={formatMessage(message.title)}
         colorIcon={'#FE4358'}
         styleHeader={styles.header}
         styleTitle={{
@@ -313,12 +313,12 @@ const SettingScreen = ({ intl, navigation }) => {
           onPress={openModalTarget}
           disabled={autoTarget}
           activeOpacity={0.5}>
-          <Text style={autoTarget ? styles.txLabelGray : styles.txLabelRed}>{totalStep.format()} bước <IconAntDesign name="right" size={14} /></Text>
+          <Text style={autoTarget ? styles.txLabelGray : styles.txLabelRed}>{totalStep.format()} {formatMessage(message.steps)} <IconAntDesign name="right" size={14} /></Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.txNotification}>Thông báo</Text>
+      <Text style={styles.txNotification}>{formatMessage(message.Notification)}</Text>
       <View style={[styles.viewTx, styles.borderBottom]}>
-        <Text style={styles.txLabel}>Thông báo số bước đi trong ngày</Text>
+        <Text style={styles.txLabel}>{formatMessage(message.NotificationRealtime)}</Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
           thumbColor={alertStep ? '#fe4358' : '#a5a5a5'}
@@ -328,9 +328,7 @@ const SettingScreen = ({ intl, navigation }) => {
         />
       </View>
       <View style={[styles.viewTx, styles.borderBottom]}>
-        <Text style={styles.txLabel}>
-          Thông báo khi chưa hoàn thành mục tiêu
-        </Text>
+        <Text style={styles.txLabel}>{formatMessage(message.NotificationTarget)}</Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
           thumbColor={alertTarget ? '#fe4358' : '#a5a5a5'}
@@ -340,9 +338,7 @@ const SettingScreen = ({ intl, navigation }) => {
         />
       </View>
       <View style={[styles.viewTx, styles.borderBottom]}>
-        <Text style={styles.txLabel}>
-          Thông báo cập nhật cân nặng hàng tuần
-        </Text>
+        <Text style={styles.txLabel}>{formatMessage(message.NotificationWeight)}</Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
           thumbColor={alertBmi ? '#fe4358' : '#a5a5a5'}
