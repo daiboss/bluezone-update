@@ -119,7 +119,7 @@ try {
         break;
       case notiStep:
         if (resultSteps) {
-          if (today.format('HH') >= 12) {
+          if (today.format('HH') >= 19) {
             scheduler.createWarnningStepNotification(step?.step);
           }
         }
@@ -153,6 +153,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const { formatMessage } = intl;
   const [time, setTime] = useState([]);
   const [heightUser, setHeightUser] = useState(0)
+  const [countTimeHour, setCountTimeHour] = useState(0);
   const [weightUser, setWeightUser] = useState(0)
   const [weightHeight,setWeightHeight] = useState({weight:0,height:0})
   const [countTime, setCountTime] = useState(0)
@@ -358,8 +359,60 @@ const StepCount = ({ props, intl, navigation }) => {
     getWeightHeight()
     getSex()
     getStepsRealTime()
+    autoChangeStepsTarget()
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightHeight.height])
+  }, [weightHeight.height,totalCount])
+
+  const autoChangeStepsTarget = async () => {
+    let auto = await getAutoChange();
+    if (!auto) {
+      return
+    }
+    let startDay = new moment().subtract(4).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    let listHistory = await getListHistory(startDay.unix(), new moment().unix())
+    if (listHistory?.length < 3) {
+      return
+    }
+    startDay = new moment().subtract(1).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    listHistory = await getListHistory(startDay.unix(), new moment().unix())
+
+    let optionsStepCurrent = {
+      startDate: moment().subtract(4).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }), // required
+      endDate: moment().subtract(4).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }), // required, // optional; default now
+    };
+    AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
+      if (err) {
+        return;
+      }
+      stepCurrent = results.value
+      console.log('stepCurrentstepCurrentstepCurrent',stepCurrent)
+      const countR = totalCount - stepCurrent
+      setCountRest(countR)
+
+    });
+
+    let stepTarget = await getResultSteps()
+    if (!listHistory || listHistory.length <= 0) {
+      return
+    }
+    let tm = JSON.parse(listHistory[0]?.resultStep)
+    let totalSteps = tm?.step || 0
+    let tmp = totalSteps / (stepTarget?.step || 10000) * 100;
+    let configurationStep = stepTarget?.step || 10000;
+    let stepDifferen = Math.abs(totalSteps - (stepTarget?.step || 10000))
+    if (tmp >= 150) {
+      configurationStep += parseInt(stepDifferen * 0.2)
+    } else if (tmp >= 100) {
+      configurationStep += parseInt(stepDifferen * 0.1)
+    } else {
+      configurationStep -= parseInt(stepDifferen * 0.2)
+    }
+    await setResultSteps({
+      step: configurationStep,
+      date: new moment().unix()
+    })
+    BackgroundJob.updateTypeNotification()
+  }
 
   const getSex = async () => {
     let profiles = (await getProfile()) || [];
@@ -500,8 +553,11 @@ const StepCount = ({ props, intl, navigation }) => {
           const timeT = timeEnd - timeStart
           return k + timeT
         }, timeInit)
-        const timePush = timeUse / 60
-        setCountTime(timePush.toFixed(0))
+        const timePush = timeUse / 600
+        let h = parseInt(timeUse / 3600)
+        let m = parseInt((timeUse % 3600) / 600)
+        setCountTime(m)
+        setCountTimeHour(h)
         //get Distance
         const b = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
@@ -702,6 +758,14 @@ const StepCount = ({ props, intl, navigation }) => {
 
             <Text style={styles.txData}>{countTime}</Text>
             <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+            {
+                countTimeHour > 0 && (
+                  <View style={{ marginLeft: 4 }}>
+                    <Text style={styles.txData}>{countTimeHour}</Text>
+                    <Text style={[styles.txUnit,{marginTop:10}]}>{formatMessage(message.hour)}</Text>
+                  </View>
+                )
+              }
           </View>
         </View>
         <View style={styles.viewLineChart}>

@@ -87,6 +87,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const [weightUser,setWeightUser] = useState(0)
   const [startTime,setStartTime] = useState('')
   const [countTime,setCountTime] = useState(0)
+  const [countTimeHour, setCountTimeHour] = useState(0);
   const [selectDate, setSelectDate] = useState(true);
   const [selectWeek, setSelectWeek] = useState(false);
   const [selectMonth, setSelectMonth] = useState(false);
@@ -439,7 +440,9 @@ const StepCount = ({ props, intl, navigation }) => {
             return k + timeT
           }, timeInit)
           let timeT
-          const timePush = (timeUse/60).toFixed(0)
+          // const timePush = (timeUse/60).toFixed(0)
+          let h = parseInt(timeUse / 3600)
+          let m = parseInt((timeUse % 3600) / 600)
           // if(timePush > 60) {
           //  const h = timePush/60
           //  const m = timePush - h*60
@@ -447,7 +450,8 @@ const StepCount = ({ props, intl, navigation }) => {
           //  return timeT
           // }
           // else timeT = timePush
-          setCountTime(timePush)
+          setCountTime(m)
+          setCountTimeHour(h)
         //get Distance
         const b = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
@@ -678,10 +682,29 @@ const StepCount = ({ props, intl, navigation }) => {
                             style={styles.img}
                             source={require('./images/ic_time.png')}
                         />
-                        <Text style={styles.txData}>{countTime}</Text>
-                        <Text style={styles.txUnit}>{`${formatMessage(
-                            message.minute,
-                        )}`}</Text>
+                           {
+              countTimeHour > 0 ? (
+                <View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={[styles.txData, {
+                      marginRight: 4
+                    }]}>{countTimeHour}</Text>
+                    <Text style={[styles.txUnit,{marginTop:10}]}>{formatMessage(message.hour)}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={[styles.txData, {
+                      marginRight: 4
+                    }]}>{countTime}</Text>
+                    <Text style={[styles.txUnit,{marginTop:10}]}>{formatMessage(message.minute)}</Text>
+                  </View>
+                </View>
+              ) : (
+                  <View>
+                    <Text style={styles.txData}>{countTime}</Text>
+                    <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+                  </View>
+                )
+            }
                     </View>
         </View>
       </ScrollView>

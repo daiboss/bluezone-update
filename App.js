@@ -393,6 +393,7 @@ class App extends React.Component {
   };
 
   HomeStack = currentProps => () => {
+    console.log('currentPropscurrentPropscurrentPropscurrentProps',currentProps)
     const currentComponent = currentProps.currentComponent;
     const { loading, isHome } = currentProps.currentComponent.state;
     return loading ? (
@@ -432,7 +433,7 @@ class App extends React.Component {
           component={NotifyDetail}
         />
       </Stack.Navigator>
-    ) : !isHome ? (
+    ) : isHome ? (
       <Stack.Navigator
         id="Welcome"
         headerMode="none"

@@ -7,6 +7,7 @@ import {
   View,
   processColor, Image,
   ScrollView,
+  Platform,
   Dimensions
 } from 'react-native';
 import update from 'immutability-helper';
@@ -77,46 +78,9 @@ class ChartLine extends React.Component {
       return this.state.leftLabel - width * 0.15
     }
   }
-  render() {
-    // console.log('parammrmarmamra',this.props)
-    return (
-      <View style={[styles.container,]}>
-        <Text style={styles.txtYear}>{this.state.year}</Text>
-        {this.state.topLabel && this.state.leftLabel &&
-          <View style={{
-            position: 'absolute',
-            backgroundColor: '#FE4358',
-            zIndex: 1,
-            // top: this.state.topLabel - height * 0.045,
-            top: this.state.position.y - RFValue(22),
-            // left: this.getLeftLabel(),
-            left: this.state.position.x - RFValue(57),
-            paddingHorizontal: 10,
-            paddingVertical: 8,
-            borderRadius: 15,
-            width: RFValue(54)
-          }}>
-            <Text style={{
-              color: 'white',
-              fontSize: 10,
-              textAlign: 'center',
-              fontWeight: '700',
-            }}>{this.state.value} kg</Text>
-            <Image
-              style={{
-                width: RFValue(10),
-                height: RFValue(10),
-                position: 'absolute',
-                bottom: -6,
-                alignSelf: 'center',
-                tintColor: '#FE4358',
-                // zIndex: 0
-              }}
-              source={require('../../../StepCountScreen/images/down-arrow.png')} />
-          </View>
-        }
-        { Platform.OS == 'android' ? <Svg style={{ height: RFValue(160), alignSelf: 'center' }}>
-          <VictoryChart
+  renderMainChart = () => {
+    return(
+      <VictoryChart
             // padding=""
             height={RFValue(180)}
             // minDomain={{ y: 0 }}
@@ -138,11 +102,56 @@ class ChartLine extends React.Component {
               //  crossAxis dependentAxis
               tickValues={this.props.time}
               // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
-
+              
+              events={[{
+                target: "tickValues",
+                eventKey : {
+                  onPressIn: () => {
+                    return [
+                      {
+                        target: "tickValues",
+                        mutation: (props) => {
+                          console.log('dahdsuadhsuahdusadsa',props)
+                          this.setState({
+                            topLabel: props.y,
+                            leftLabel: props.x,
+                            value: JSON.stringify(props.datum.y),
+                            valueX: props?.datum?.x,
+                            year: props?.datum?.year,
+                            position: { x: props?.x, y: props?.y }
+                          })
+                        }
+                      }
+                    ];
+                  }
+                },
+                // eventHandlers: {
+                //   onPressIn: () => {
+                //     return [
+                //       {
+                //         target: "tickValues",
+                //         mutation: (props) => {
+                //           console.log('dahdsuadhsuahdusadsa',props)
+                //           this.setState({
+                //             topLabel: props.y,
+                //             leftLabel: props.x,
+                //             value: JSON.stringify(props.datum.y),
+                //             valueX: props?.datum?.x,
+                //             year: props?.datum?.year,
+                //             position: { x: props?.x, y: props?.y }
+                //           })
+                //         }
+                //       }
+                //     ];
+                //   }
+                // }
+              }]}
               style={{
                 grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
                 axis: { stroke: 'none' },
-                tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'black' }
+                tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'black',
+                fontFamily: 'helvetica',
+              }
               }}
               orientation="top"
             />
@@ -249,126 +258,51 @@ class ChartLine extends React.Component {
               />
             </VictoryGroup>
           </VictoryChart>
-        </Svg> : <VictoryChart
-          // padding=""
-          style={{ parent: { alignSelf: 'center' } }}
-          height={RFValue(180)}
-          // minDomain={{ y: 0 }}
-          maxDomain={{ y: 300 }}
-        // theme={VictoryTheme.material}
-        >
-            <Defs>
-              <LinearGradient id="gradientStroke"
-                x1="0%"
-                x2="0%"
-                y1="0%"
-                y2="100%"
-              >
-                <Stop offset="0%" stopColor="#FE4358" stopOpacity="0.8" />
-                <Stop offset="70%" stopColor="#FE4358" stopOpacity="0.1" />
-              </LinearGradient>
-            </Defs>
-            <VictoryAxis
-              //  crossAxis dependentAxis
-              tickValues={this.props.time}
-              // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11',]}
-
+    )
+  }
+  render() {
+    // console.log('parammrmarmamra',this.props)
+    return (
+      <View style={[styles.container,]}>
+        <Text style={styles.txtYear}>{this.state.year}</Text>
+        {this.state.topLabel && this.state.leftLabel &&
+          <View style={{
+            position: 'absolute',
+            backgroundColor: '#FE4358',
+            zIndex: 1,
+            // top: this.state.topLabel - height * 0.045,
+            top: this.state.position.y - RFValue(22),
+            // left: this.getLeftLabel(),
+            left: this.state.position.x - (Platform.OS == 'ios' ? RFValue(59) : RFValue(57)),
+            paddingHorizontal: 10,
+            paddingVertical: 8,
+            borderRadius: 15,
+            width: RFValue(54)
+          }}>
+            <Text style={{
+              color: 'white',
+              fontSize: 10,
+              textAlign: 'center',
+              fontWeight: '700',
+            }}>{this.state.value} kg</Text>
+            <Image
               style={{
-                grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
-                axis: { stroke: 'none' },
-                tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'black' }
+                width: RFValue(10),
+                height: RFValue(10),
+                position: 'absolute',
+                bottom: -6,
+                alignSelf: 'center',
+                tintColor: '#FE4358',
+                // zIndex: 0
               }}
-              orientation="top"
-            />
-
-            <VictoryGroup
-              style={{ labels: { fill: 'none' } }}
-              data={this.state.dataConvert}
-            //    data = {[
-            //   {x:1,y:65},
-            //   {x:2,y:67},
-            //   {x:3,y:1},
-            //   {x:4,y:69},
-            //   {x:5,y:68},
-            //   {x:6,y:66},
-            //   {x:7,y:300},
-            // ]}
-            >
-              <VictoryArea
-                interpolation="natural"
-                style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
-              // data={sampleData}
-              />
-              <VictoryLine
-                animate={{
-                  duration: 1000,
-                  onLoad: { duration: 1000 }
-                }}
-                interpolation="natural"
-                style={{
-                  data: { stroke: "#FE4358" },
-                  parent: { border: "1px solid #ccc" }
-                }}
-
-              />
-
-              <VictoryScatter
-                style={{
-                  data: {
-                    fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358",
-                    stroke: ({ datum }) => datum.x === this.state?.valueX ? "red" : "#FE4358",
-                    strokeWidth: ({ datum }) => datum.x === this.state?.valueX ? 1 : 0,
-                  },
-                  labels: {
-                    fontSize: 15,
-                    fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358"
-                  }
-                }}
-                size={({ datum }) => datum.x === this.state?.valueX ? 9 : 6}
-                labels={() => null}
-
-              />
-              <VictoryScatter
-                style={{
-                  data: {
-                    fill: ({ datum }) => "#FE4358",
-                    stroke: ({ datum }) => "#FE4358",
-                    strokeWidth: ({ datum }) => 0,
-                  },
-                  labels: {
-                    fontSize: 15,
-                    fill: "#FE4358"
-                  }
-                }}
-                size={6}
-                labels={() => null}
-
-                events={[{
-                  target: "data",
-                  eventHandlers: {
-                    onPressIn: () => {
-                      return [
-                        {
-                          target: "data",
-                          mutation: (props) => {
-                            this.setState({
-                              topLabel: props.y,
-                              leftLabel: props.x,
-                              value: JSON.stringify(props.datum.y),
-                              valueX: props?.datum?.x,
-                              year: props?.datum?.year,
-                              position: { x: props?.x, y: props?.y }
-                            })
-                          }
-                        }
-                      ];
-                    }
-                  }
-                }]}
-
-              />
-            </VictoryGroup>
-          </VictoryChart>}
+              source={require('../../../StepCountScreen/images/down-arrow.png')} />
+          </View>
+        }
+        { Platform.OS == 'android' ? <Svg style={{ height: RFValue(160), alignSelf: 'center' }}>
+         {this.renderMainChart()}
+        </Svg> :<View style={{ height: RFValue(160), alignSelf: 'center' }}>
+         {this.renderMainChart()}
+        </View>}
 
       </View>
     );

@@ -102,6 +102,7 @@ const BarChartConvert = ({
                             fontSize: 11,
                             padding: 15,
                             fontWeight: '700',
+                            fontFamily: 'helvetica',
                             fill: (e) => {
                                 return e?.index == selectedEntry?.index ? red_bluezone : '#a1a1a1'
                             },
