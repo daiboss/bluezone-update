@@ -76,8 +76,7 @@ const screenWidth = Dimensions.get('window').width;
 const StepCount = ({ props, intl, navigation }) => {
   let sex
   const route = useRoute();
-
-  const { formatMessage } = intl;
+  const { formatMessage, locale } = intl;
 
   const [maxDomain, setMaxDomain] = useState(10000)
   const [year,setYear] = useState(moment().format('YYYY'))
@@ -267,7 +266,66 @@ const StepCount = ({ props, intl, navigation }) => {
         let startMonth = moment(value[0].startDate).startOf('month')
         let endMonth = moment(value[0].startDate).endOf('month')
         console.log('dhasudhsauhdsauhdusahdusansabcyhfu',key)
-        let label = `Tháng\n${key > currentMonth ? (parseInt(key) + 1) : 'này'}`
+        let label = ''
+        if (locale == 'en') {
+          switch (parseInt(key)) {
+            case 0: {
+              label = 'Jan'
+              break
+            }
+            case 1: {
+              label = 'Feb'
+              break
+            }
+            case 2: {
+              label = 'Mar'
+              break
+            }
+            case 3: {
+              label = 'Apr'
+              break
+            }
+            case 4: {
+              label = 'May'
+              break
+            }
+            case 5: {
+              label = 'Jun'
+              break
+            }
+            case 6: {
+              label = 'Jul'
+              break
+            }
+            case 7: {
+              label = 'Aug'
+              break
+            }
+            case 8: {
+              label = 'Sep'
+              break
+            }
+            case 9: {
+              label = 'Oct'
+              break
+            }
+            case 10: {
+              label = 'Nov'
+              break
+            }
+            case 11: {
+              label = 'Dec'
+              break
+            }
+            default: label = ''
+          }
+          if (key == currentMonth) {
+            label = 'This\nmonth'
+          }
+        } else {
+          label = `${formatMessage(message.month)}\n${key < currentMonth ? (parseInt(key) + 1) : 'này'}`
+        }
+        // let label = `Tháng\n${key > currentMonth ? (parseInt(key) + 1) : 'này'}`
         console.log('djadhasdhsuahdusadas',label)
         list.push({
           x: label,
@@ -289,16 +347,84 @@ const StepCount = ({ props, intl, navigation }) => {
         acc[yearWeek].push(current);
         return acc;
       }, {});
-
       let currentTime = moment(new Date());
-      for (const [key, value] of Object.entries(groups)) {
+      let b = Object.entries(groups)
+      const firstA = b.filter(i => i[0] <= 26)
+      const endA = b.filter(i => i[0] > 26)
+      let c = endA.concat(firstA)
+      for (const [key, value] of c) {
         let steps = value.reduce((t, v) => t + v.quantity, 0)
-        console.log('valuevaluevaluevaluevalue',value[0])
         let startWeek = moment(value[0].startDate).startOf('isoWeek')
         let endWeek = moment(value[0].startDate).endOf('isoWeek')
-        console.log('startWeekstartWeekstartWeekstartWeek',startWeek.format('YYYY/DD/MM'),endWeek.format('YYYY/DD/MM'))
-        let valueEnd = endWeek.isAfter(currentTime) ? 'nay' : `${endWeek.format('DD')}`
-        let label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
+        let valueEnd = endWeek.isAfter(currentTime) ? formatMessage(message.now) : `${endWeek.format('DD')}`
+        startWeek.locale('en').format('MMM')
+        endWeek.locale('en').format('MMM')
+        console.log('startWeekstartWeekstartWeekstartWeek',startWeek)
+        // let label = ''
+        // if (locale == 'en') {
+        //   switch (parseInt(key)) {
+        //     case 0: {
+        //       label = 'Jan'
+        //       break
+        //     }
+        //     case 1: {
+        //       label = 'Feb'
+        //       break
+        //     }
+        //     case 2: {
+        //       label = 'Mar'
+        //       break
+        //     }
+        //     case 3: {
+        //       label = 'Apr'
+        //       break
+        //     }
+        //     case 4: {
+        //       label = 'May'
+        //       break
+        //     }
+        //     case 5: {
+        //       label = 'Jun'
+        //       break
+        //     }
+        //     case 6: {
+        //       label = 'Jul'
+        //       break
+        //     }
+        //     case 7: {
+        //       label = 'Aug'
+        //       break
+        //     }
+        //     case 8: {
+        //       label = 'Sep'
+        //       break
+        //     }
+        //     case 9: {
+        //       label = 'Oct'
+        //       break
+        //     }
+        //     case 10: {
+        //       label = 'Nov'
+        //       break
+        //     }
+        //     case 11: {
+        //       label = 'Dec'
+        //       break
+        //     }
+        //     default: label = ''
+        //   }
+        //   if (key == currentMonth) {
+        //     label = 'This\nmonth'
+        //   }
+        // } else {
+        //   label = `${formatMessage(message.month)}\n${key < currentMonth ? (parseInt(key) + 1) : 'này'}`
+        // }
+        let label = ''
+        if(locale == 'en'){
+          label = `${startWeek.format('DD')} - ${valueEnd}\n ${endWeek.locale('en').format('MMM')}`
+        }
+        else label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
+        // console.log('abllaabcsabdshbaduhsadsadsadas',labels)
         list.push({
           x: label,
           y: steps,

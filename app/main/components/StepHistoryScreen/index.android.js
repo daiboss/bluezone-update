@@ -264,6 +264,7 @@ const StepCount = ({ props, intl, navigation }) => {
           })
         }
       } else if (type == 'week') {
+        
         const groups = step.reduce((acc, current) => {
           const yearWeek = moment.unix(current?.starttime).week();
           if (!acc[yearWeek]) {
