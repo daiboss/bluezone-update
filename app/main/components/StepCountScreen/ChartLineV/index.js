@@ -107,7 +107,7 @@ class ChartLine extends React.Component {
 
         <VictoryAxis
           tickValues={this.props.time}
-          tickValues = {['11','12','13','14','16','17','18']}
+          // tickValues = {['11','12','13','14','16','17','18']}
           style={{
             grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
             axis: { stroke: 'none' },
@@ -125,8 +125,8 @@ class ChartLine extends React.Component {
 
         <VictoryGroup
           style={{ labels: { fill: 'none' } }}
-          // data={this.state.dataConvert}
-        data = {[3000,4000,100,100,3000,2000,6000,7000]}
+          data={this.state.dataConvert}
+        // data = {[3000,4000,100,100,3000,2000,6000,7000]}
         >
           <VictoryArea
             animate={{

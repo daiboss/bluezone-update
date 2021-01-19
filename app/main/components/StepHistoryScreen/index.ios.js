@@ -569,12 +569,20 @@ const StepCount = ({ props, intl, navigation }) => {
             const timeStart = moment(i.start).unix()
             const timeEnd = moment(i.end).unix()
             const timeT = timeEnd - timeStart
+            console.log('kkkkkkkkkkkkkkkkk',k)
             return k + timeT
           }, timeInit)
           let timeT
           // const timePush = (timeUse/60).toFixed(0)
+          console.log('timeUsetimeUsetimeUsetimeUsetimeUse',timeUse)
           let h = parseInt(timeUse / 3600)
-          let m = parseInt((timeUse % 3600) / 600)
+          let m
+          if(h == 0){
+             m = parseInt((timeUse/60))
+          }else{
+            m = parseInt((timeUse - h*3600) / 60)
+          }
+          
           // if(timePush > 60) {
           //  const h = timePush/60
           //  const m = timePush - h*60

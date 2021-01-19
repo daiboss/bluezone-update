@@ -581,7 +581,12 @@ const StepCount = ({ props, intl, navigation }) => {
           return k + timeT
         }, timeInit)
         let h = parseInt(timeUse / 3600)
-        let m = parseInt((timeUse % 3600) / 600)
+        let m
+        if(h == 0){
+           m = parseInt((timeUse/60))
+        }else{
+          m = parseInt((timeUse - h*3600) / 60)
+        }
         setCountTime(m)
         setCountTimeHour(h)
         //get Distance
