@@ -721,7 +721,7 @@ const StepCount = ({ props, intl, navigation }) => {
           <Text style={styles.txToday}>{formatMessage(message.today)}</Text>
           <View style={styles.viewBorderCircular}>
             <AnimatedCircularProgress
-              size={180}
+              size={RFValue(170)}
               style={styles.circular}
               width={6}
               rotation={0}
@@ -754,12 +754,16 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_step.png')}
             />
-            <Text style={styles.txData}>{`${formatMessage(
-              message.stepsToTarget,
-            )} ${countRest > 0 ? countRest : 0}`}</Text>
-            <Text style={styles.txUnit}>{`${formatMessage(
-              message.stepsNormal,
-            )}`}</Text>
+
+           { <View>
+              <Text style={styles.txData}>{`${formatMessage(
+                message.stepsToTarget,
+              )} ${countRest > 0 ? countRest : 0}`}</Text>
+              <Text style={styles.txUnit}>{`${formatMessage(
+                message.stepsNormal,
+              )}`}</Text>
+            </View>}
+         
           </View>
           <View style={styles.viewImgData}>
             <Image
@@ -801,7 +805,6 @@ const StepCount = ({ props, intl, navigation }) => {
                 <Text style={[styles.txUnit,]}>{formatMessage(message.minute)}</Text>
               </View>
               }
-              
             </View>
            
             
@@ -857,23 +860,23 @@ const StepCount = ({ props, intl, navigation }) => {
 };
 const styles = StyleSheet.create({
   img: {
-    width: 64,
-    height: 64
+    width: RFValue(55),
+    height: RFValue(55)
   },
   chart: {
     flex: 1,
   },
   viewLineChart: {
-    marginTop: 30,
+    // marginTop: RFValue(10),
   },
   colorButtonConfirm: {
     backgroundColor: red_bluezone,
-    height: 46,
+    height: RFValue(46),
     alignSelf: 'center',
     width: '60%',
     borderRadius: 25,
     paddingVertical: 0,
-    marginBottom:20
+    marginBottom:RFValue(10)
   },
   container: {
     flex: 1,
@@ -897,25 +900,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     color: '#fe4358',
-    marginTop: 5,
+    marginTop: RFValue(5),
   },
   dataHealth: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: 30,
-    marginTop: 20,
+    marginTop: RFValue(10),
   },
 
   viewCircular: {
-    paddingBottom: 30,
-    marginTop: 20,
+    paddingBottom: RFValue(20),
+    // marginTop: RFValue(20),
     alignItems: 'center',
-    marginHorizontal: 20,
+    marginHorizontal: RFValue(20),
     justifyContent: 'center',
   },
   viewBorderCircular: {
-    padding: 10,
+    padding: RFValue(10),
     backgroundColor: '#fff',
     borderRadius: 200,
   },
@@ -941,17 +944,17 @@ const styles = StyleSheet.create({
   },
   chart: {
     flex: 1,
-    height: 300,
+    height: RFValue(300),
   },
   btnHistory: {
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
     width: '70%',
-    height: 41,
+    height: RFValue(41),
     backgroundColor: '#fe4358',
     borderRadius: 6,
-    marginBottom: 20,
+    marginBottom: RFValue(20),
   },
   txHistory: {
     color: '#fff',
@@ -960,12 +963,12 @@ const styles = StyleSheet.create({
   txToday: {
     color: '#fff',
     fontSize: 14,
-    marginVertical: 20,
+    marginVertical: RFValue(20),
     textAlign: 'center',
   },
   header: {
     backgroundColor: '#ffffff',
-    marginTop: isIPhoneX ? 0 : 20,
+    marginTop: isIPhoneX ? 0 : RFValue(20),
   },
 });
 StepCount.propTypes = {

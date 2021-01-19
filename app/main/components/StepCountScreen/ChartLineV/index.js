@@ -87,7 +87,7 @@ class ChartLine extends React.Component {
       <VictoryChart
         // padding=""
         // width={400}
-        height={RFValue(200)}
+        height={RFValue(180)}
         minDomain={{ y: 0 }}
         padding={{ left: 40, right: 40, top: 50, bottom: 50 }}
         maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
@@ -107,7 +107,7 @@ class ChartLine extends React.Component {
 
         <VictoryAxis
           tickValues={this.props.time}
-
+          tickValues = {['11','12','13','14','16','17','18']}
           style={{
             grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
             axis: { stroke: 'none' },
@@ -124,8 +124,8 @@ class ChartLine extends React.Component {
 
         <VictoryGroup
           style={{ labels: { fill: 'none' } }}
-          data={this.state.dataConvert}
-        // data = {[3000,4000,100,100,3000,2000,6000,7000]}
+          // data={this.state.dataConvert}
+        data = {[3000,4000,100,100,3000,2000,6000,7000]}
         >
           <VictoryArea
             animate={{

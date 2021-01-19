@@ -80,6 +80,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const [alertBmi, setAlertBmi] = useState(false);
   const [totalStep, setTotalStep] = useState(0);
   const [isHardwork, setIsHardwork] = useState(true)
+  const [timeWeight,setTimeWeight] = useState(0)
   const [isShowModalTarget, setIsShowModalTarget] = useState(false)
   const [isShowModalShortcut, setIsShowModalShortcut] = useState(false)
 
