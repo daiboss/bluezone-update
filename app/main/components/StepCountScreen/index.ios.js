@@ -153,7 +153,7 @@ try {
 const StepCount = ({ props, intl, navigation }) => {
   const timeInterval = useRef();
   let sex
-  const { formatMessage } = intl;
+  const { formatMessage,locale } = intl;
   const [time, setTime] = useState([]);
   const [heightUser, setHeightUser] = useState(0)
   const [countTimeHour, setCountTimeHour] = useState(0);
@@ -755,13 +755,16 @@ const StepCount = ({ props, intl, navigation }) => {
               source={require('./images/ic_step.png')}
             />
 
-           { <View>
+           { locale != 'en' ? <View>
               <Text style={styles.txData}>{`${formatMessage(
                 message.stepsToTarget,
               )} ${countRest > 0 ? countRest : 0}`}</Text>
               <Text style={styles.txUnit}>{`${formatMessage(
                 message.stepsNormal,
               )}`}</Text>
+            </View> :  <View>
+              <Text style={styles.txData}>{countRest > 0 ? countRest : 0} <Text style={[styles.txUnit,{marginTop:10,fontWeight:'400'}]}>steps</Text> </Text>
+              <Text style={styles.txUnit}>to target</Text>
             </View>}
          
           </View>
@@ -787,7 +790,7 @@ const StepCount = ({ props, intl, navigation }) => {
               source={require('./images/ic_time.png')}
             />
             <View>
-            {
+            { 
                 countTimeHour > 0 ? (
                   <View>
                            <View style={{ marginLeft: 4,flexDirection:'row' }}>
