@@ -307,7 +307,7 @@ const SettingScreen = ({ intl, navigation }) => {
         onShowMenu={onShowMenu}
       />
       <View style={styles.viewTx}>
-        <Text style={styles.txLabel}>
+        <Text style={[styles.txLabel, {fontWeight: '700'}]}>
           {formatMessage(message.autoAdjustTarget)}
         </Text>
         <Switch

@@ -354,6 +354,10 @@ const StepCount = ({ props, intl, navigation }) => {
     }
   }, [dataChart, selectedItem])
 
+  const numberWithCommas = x => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
@@ -379,7 +383,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_step.png')}
             />
-            <Text style={styles.txData}>{`${countStep || 0}`}</Text>
+            <Text style={styles.txData}>{`${numberWithCommas(countStep || 0)}`}</Text>
             <Text style={styles.txUnit}>{`${formatMessage(
               message.stepsNormal,
             )}`}</Text>
@@ -389,7 +393,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_distance.png')}
             />
-            <Text style={styles.txData}>{parseFloat(distant || 0).toFixed(3)}</Text>
+            <Text style={styles.txData}>{parseFloat(distant || 0).toFixed(2).replace('.', ',')}</Text>
             <Text style={styles.txUnit}>{`km`}</Text>
           </View>
           <View style={styles.viewImgData}>
