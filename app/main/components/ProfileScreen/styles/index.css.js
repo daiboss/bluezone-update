@@ -26,6 +26,7 @@ import * as fontSize from '../../../../core/fontSize';
 import {blue_bluezone, red_bluezone} from '../../../../core/color';
 import {isIPhoneX} from '../../../../core/utils/isIPhoneX';
 import {large} from '../../../../core/fontSize';
+import { RFValue } from '../../../../const/multiscreen';
 import {heightPercentageToDP} from '../../../../core/utils/dimension';
 
 const MARGIN_TOP_CONTENT = heightPercentageToDP((62 / 720) * 100);
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#ffffff',
-    marginTop: isIPhoneX ? 0 : 20,
+    marginTop: isIPhoneX ? 0 : RFValue(20),
   },
 
   buttonConfirm: {
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
 
   group: {
     flex: 1,
-    padding: 15,
+    padding: RFValue(15),
     justifyContent: 'space-between',
     // paddingTop: '10%',
   },
