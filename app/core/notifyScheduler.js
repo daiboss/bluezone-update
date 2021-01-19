@@ -34,7 +34,7 @@ import {getBluetoothState} from './bluetooth';
 import {PERMISSIONS, RESULTS, check} from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
 import {ResultSteps} from '../const/storage';
-import {getResultSteps} from './storage';
+import {getResultSteps,getProfile} from './storage';
 import moment from 'moment';
 const bluetoothGranted = async () => {
   const v = check(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
@@ -563,10 +563,10 @@ export const createWarnningStepNotification = async step => {
     // );
   } catch (error) {}
 };
-export const createScheduleWarnningWeightNotification = async () => {
+export const createScheduleWarnningWeightNotification = async (time) => {
   try {
     const {iOSShowStepNotification} = configuration;
-
+    const timeNoti = time + 7*24*60*60*1000
     PushNotification.localNotificationSchedule({
       /* Android Only Properties */
       channelId: FCM_CHANNEL_ID, // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
@@ -578,7 +578,7 @@ export const createScheduleWarnningWeightNotification = async () => {
       visibility: 'private', // (optional) set notification visibility, default: private
       ignoreInForeground: false, // (optional) if true, the notification will not be visible when the app is in the foreground (useful for parity with how iOS notifications appear). should be used in combine with `com.dieam.reactnativepushnotification.notification_foreground` setting
       onlyAlertOnce: false, // (optional) alert will open only once with sound and notify, default: false
-      date:new Date(Date.now() +  7 * 24 * 60 * 60 * 1000),
+      date:new Date(timeNoti),
       allowWhileIdle: false,
       when: null, // (optionnal) Add a timestamp pertaining to the notification (usually the time the event occurred). For apps targeting Build.VERSION_CODES.N and above, this time is not shown anymore by default and must be opted into by using `showWhen`, default: null.
       usesChronometer: false, // (optional) Show the `when` field as a stopwatch. Instead of presenting `when` as a timestamp, the notification will show an automatically updating display of the minutes and seconds since when. Useful when showing an elapsed time (like an ongoing phone call), default: false.

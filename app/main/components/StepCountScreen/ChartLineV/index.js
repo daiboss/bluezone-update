@@ -281,7 +281,7 @@ class ChartLine extends React.Component {
           position: 'absolute',
           backgroundColor: '#FE4358',
           zIndex: 1,
-          top: height * 0.08,
+          top: height * 0.081,
           // left: ,
           alignSelf: 'center',
           paddingHorizontal: RFValue(10),
@@ -293,9 +293,9 @@ class ChartLine extends React.Component {
         }}>
           <Text style={{
             color: 'white',
-            fontSize: 10,
+            fontSize: RFValue(10),
             textAlign: 'center',
-            fontWeight: '700'
+            fontWeight: '600'
           }}>{this.numberWithCommas(this.props.totalCount || 10000)}</Text>
           <Image
             style={{

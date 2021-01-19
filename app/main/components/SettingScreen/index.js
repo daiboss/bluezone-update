@@ -47,6 +47,7 @@ import {
   getNotiStep,
   setNotiStep,
   getWeightWarning,
+  getProfile,
   setWeightWarning,
   getResultSteps,
   setResultSteps,
@@ -78,20 +79,28 @@ const SettingScreen = ({ intl, navigation }) => {
   const [alertTarget, setAlertTarget] = useState(false);
   const [alertBmi, setAlertBmi] = useState(false);
   const [totalStep, setTotalStep] = useState(0);
+  const [timeWeight,setTimeWeight] = useState(0)
   const [isShowModalTarget, setIsShowModalTarget] = useState(false)
   const [isShowModalShortcut, setIsShowModalShortcut] = useState(false)
 
   useEffect(() => {
     getStatus();
+    getProfileUser()
     // scheduler.createScheduleWarnningWeightNotification(alertStep)
-  }, []);
+  }, [timeWeight]);
   useEffect(() => {
     // console.log('alertStepalertStepalertStep', alertStep)
     // const a = PushNotification.getScheduledLocalNotifications();
     // console.log('aabdhasbdhbsahdbsadsa',a)
-    alertBmi ? scheduler.createScheduleWarnningWeightNotification() : PushNotification.cancelAllLocalNotifications()
+    alertBmi ? scheduler.createScheduleWarnningWeightNotification(timeWeight) : PushNotification.cancelAllLocalNotifications()
   }, [alertBmi])
 
+  const getProfileUser = async () => {
+    let profiles = (await getProfile()) || [];
+    const time = profiles?.[profiles.length - 1]?.date
+    setTimeWeight(time)
+    console.log('profilesprofilesprofilesprofiles',profiles)
+  }
   const alertPermission = (type) => {
     if (type == 'step') setAlertStep(!alertStep)
     if (type == 'target') setAlertTarget(!alertTarget);
@@ -111,6 +120,7 @@ const SettingScreen = ({ intl, navigation }) => {
   }
   const getStatus = async () => {
     try {
+      console.log('vaviaviaviaviaivaiviavgetStatus')
       let result = await getResultSteps()
       setTotalStep(parseInt(result.step))
       let res = await getAutoChange();
@@ -240,6 +250,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const closeModalTarget = () => setIsShowModalTarget(false)
 
   const saveStepsTarget = async (steps) => {
+    console.log('vaovoaovaovoaovaoSAVE')
     setTotalStep(steps)
     await setResultSteps({ step: steps })
     if (Platform.OS == 'android') {

@@ -32,6 +32,7 @@ import { useRoute } from '@react-navigation/native';
 import dateUtils from 'mainam-react-native-date-utils';
 import BartChartHistory from './BarChart/BartChartHistory';
 import BarChartConvert from './BarChart/BarChartConvert';
+import BarChart7Item from './BarChart/BarChart7Item';
 import {
   getProfile,
   getIsFirstLoading,
@@ -92,6 +93,10 @@ const StepCount = ({ props, intl, navigation }) => {
   const [selectMonth, setSelectMonth] = useState(false);
   const offset = new Date().getTimezoneOffset();
   const [time, setTime] = useState([]);
+  const [select,setSelect] = useState({
+    index:-1,
+    page:0
+  })
   const [countStep, setCountStep] = useState(null);
   const [countRest, setCountRest] = useState(0);
   const [countCarlo, setCountCarlo] = useState(0);
@@ -323,7 +328,7 @@ const StepCount = ({ props, intl, navigation }) => {
             label = 'This\nmonth'
           }
         } else {
-          label = `${formatMessage(message.month)}\n${key < currentMonth ? (parseInt(key) + 1) : 'này'}`
+          label = `${formatMessage(message.month)}\n${key != currentMonth ? (parseInt(key) + 1) : 'này'}`
         }
         // let label = `Tháng\n${key > currentMonth ? (parseInt(key) + 1) : 'này'}`
         console.log('djadhasdhsuahdusadas',label)
@@ -558,7 +563,6 @@ const StepCount = ({ props, intl, navigation }) => {
             // setCountCarlo(calo.toFixed(2))
           return k + calo*timeS*2
         }, initialValue)
-        console.log('aaabdbdbdbdbbda',a)
         setCountCarlo(parseInt(a*2/1000))
         //get time
           const timeUse = results.reduce((k, i) => {
@@ -707,7 +711,7 @@ const StepCount = ({ props, intl, navigation }) => {
   //       .catch(err => { });
   //   } catch (e) { }
   // };
-  const onGetDataBySelect = (result) => {
+  const onGetDataBySelect = (result,index,page) => {
     console.log('updateDistance', result)
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
@@ -727,20 +731,25 @@ const StepCount = ({ props, intl, navigation }) => {
     setYear(result.year)
     getStepsRealTime(result)
     setCountStep(parseInt(result?.y) );
-
+    setSelect({
+      index:index,
+      page:page
+    })
   };
 
   const renderChart = useMemo(() => {
+    console.log('dataChartdataChartdataChartdataChart',dataChart)
     if (dataChart.length) {
       return (
-        <BarChartConvert
+        <BarChart7Item
           onGetDataBySelect={onGetDataBySelect}
           data={dataChart}
           maxDomain={maxDomain}
+          selectedItem={select}
           widthChart={widthChart} />
       )
     }
-  }, [dataChart])
+  }, [dataChart,select])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -815,15 +824,17 @@ const StepCount = ({ props, intl, navigation }) => {
                 <View>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={[styles.txData, {
-                      marginRight: 4
+                      marginRight: 4,
+                      marginTop:10
                     }]}>{countTimeHour}</Text>
                     <Text style={[styles.txUnit,{marginTop:10}]}>{formatMessage(message.hour)}</Text>
                   </View>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={[styles.txData, {
-                      marginRight: 4
+                      marginRight: 4,
+                      marginTop:5
                     }]}>{countTime}</Text>
-                    <Text style={[styles.txUnit,{marginTop:10}]}>{formatMessage(message.minute)}</Text>
+                    <Text style={[styles.txUnit,{marginTop:5}]}>{formatMessage(message.minute)}</Text>
                   </View>
                 </View>
               ) : (

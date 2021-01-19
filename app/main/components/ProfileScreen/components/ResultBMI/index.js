@@ -66,7 +66,7 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
 
   return (
     <View style={[styles.container2, {
-      overflow: 'hidden'
+      // overflow: 'hidden'
     }]}>
       {resultScreen ? (
         <View style={[styles.empty]} />

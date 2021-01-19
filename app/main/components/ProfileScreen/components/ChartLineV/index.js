@@ -32,6 +32,7 @@ class ChartLine extends React.Component {
     this.xMin = 6;
     this.xMax = 7;
     this.state = {
+      showToolTip:false,
       data: {},
       year: null,
       xAxis: {
@@ -50,7 +51,10 @@ class ChartLine extends React.Component {
     };
   }
   componentDidMount() {
-
+    console.log('this.propsthis.propsthis.propsthis.props',this.props)
+    const {data} = this.props
+    console.log('dadadadadadadata',data)
+    this.setState({year:data[data?.length - 1]?.values?.[0]?.year})
     const datanew = this.props.data[0]?.values.map((it, index) => {
       return {
         ...it,
@@ -83,6 +87,7 @@ class ChartLine extends React.Component {
       <VictoryChart
             // padding=""
             height={RFValue(180)}
+            // style={{parent:{backgroundColor:'red'}}}
             // minDomain={{ y: 0 }}
             maxDomain={{ y: 300 }}
           // theme={VictoryTheme.material}
@@ -102,34 +107,10 @@ class ChartLine extends React.Component {
               //  crossAxis dependentAxis
               tickValues={this.props.time}
               // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
-              
-              events={[{
-                target: "tickValues",
-                eventKey : {
-                  onPressIn: () => {
-                    return [
-                      {
-                        target: "tickValues",
-                        mutation: (props) => {
-                          console.log('dahdsuadhsuahdusadsa',props)
-                          this.setState({
-                            topLabel: props.y,
-                            leftLabel: props.x,
-                            value: JSON.stringify(props.datum.y),
-                            valueX: props?.datum?.x,
-                            year: props?.datum?.year,
-                            position: { x: props?.x, y: props?.y }
-                          })
-                        }
-                      }
-                    ];
-                  }
-                },
-              }]}
               style={{
-                grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
+                grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'gray', strokeWidth: 0.5 },
                 axis: { stroke: 'none' },
-                tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'black',
+                tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'black',
                 fontFamily: 'helvetica',
               }
               }}
@@ -167,7 +148,7 @@ class ChartLine extends React.Component {
 
               />
 
-              <VictoryScatter
+             {this.state.showToolTip && <VictoryScatter
                 style={{
                   data: {
                     fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358",
@@ -181,7 +162,7 @@ class ChartLine extends React.Component {
                 }}
                 size={({ datum }) => datum.x === this.state?.valueX ? 9 : 6}
                 labels={() => null}
-              />
+              />}
               <VictoryScatter
                 style={{
                   data: {
@@ -221,6 +202,7 @@ class ChartLine extends React.Component {
                           target: "data",
                           mutation: (props) => {
                             this.setState({
+                              showToolTip:!this.state.showToolTip,
                               topLabel: props.y,
                               leftLabel: props.x,
                               value: JSON.stringify(props.datum.y),
@@ -241,11 +223,11 @@ class ChartLine extends React.Component {
     )
   }
   render() {
-    // console.log('parammrmarmamra',this.props)
+    console.log('parammrmarmamra',this.state.position)
     return (
       <View style={[styles.container,]}>
-        <Text style={styles.txtYear}>{this.state.year}</Text>
-        {this.state.topLabel && this.state.leftLabel &&
+        <Text style={[styles.txtYear,{paddingTop:5}]}>{this.state.year}</Text>
+        {this.state.topLabel && this.state.leftLabel && this.state.showToolTip &&
           <View style={{
             position: 'absolute',
             backgroundColor: '#FE4358',
@@ -253,9 +235,9 @@ class ChartLine extends React.Component {
             // top: this.state.topLabel - height * 0.045,
             top: this.state.position.y - RFValue(22),
             // left: this.getLeftLabel(),
-            left: this.state.position.x - (Platform.OS == 'ios' ? RFValue(59) : RFValue(57)),
-            paddingHorizontal: 10,
-            paddingVertical: 8,
+            left: this.state.position.x - RFValue(27) - 35,
+            paddingHorizontal:RFValue(10) ,
+            paddingVertical: RFValue(8),
             borderRadius: 15,
             width: RFValue(54)
           }}>
@@ -280,7 +262,7 @@ class ChartLine extends React.Component {
         }
         { Platform.OS == 'android' ? <Svg style={{ height: RFValue(160), alignSelf: 'center' }}>
          {this.renderMainChart()}
-        </Svg> :<View style={{ height: RFValue(160), alignSelf: 'center' }}>
+        </Svg> :<View style={{ height: RFValue(160), alignSelf: 'center'}}>
          {this.renderMainChart()}
         </View>}
 

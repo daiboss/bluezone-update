@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useRef, useState } from 'react'
-import { View, Text, FlatList, Animated, TouchableOpacity } from 'react-native'
+import { View, Text, FlatList, Animated, TouchableOpacity ,Platform} from 'react-native'
 import { red_bluezone } from '../../../../core/color'
-
+import { RFValue } from '../../../../const/multiscreen';
 const HEIGHT_CHART = 200
 const TIME_ANIM = 1000
 
@@ -12,6 +12,7 @@ const MyBarChart = ({
     maxDomain,
     selectedItem
 }) => {
+    console.log('selectedItemselectedItemselectedItemselectedItem',selectedItem)
     return (
         <View style={{
             width: '100%',
@@ -19,6 +20,7 @@ const MyBarChart = ({
         }}>
             <FlatList
                 data={data}
+                style={{marginHorizontal:RFValue(10)}}
                 keyExtractor={(item, index) => `Key_column_${flIndex}_${index}`}
                 numColumns={7}
                 renderItem={({ item, index }) => <ChartColumn
@@ -73,9 +75,10 @@ const ChartColumn = ({ item,
                 marginTop: 28
             }} />
             <Text style={{
-                fontSize: 10,
+                fontSize: Platform.OS == 'android' ? 10 : RFValue(10),
                 fontWeight: '700',
                 textAlign: 'center',
+                paddingTop:3,
                 color: selectedItem?.index == index && selectedItem?.page == flIndex ? red_bluezone : '#a1a1a1'
             }}>{item?.x}</Text>
             <Animated.View style={{

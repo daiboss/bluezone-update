@@ -20,6 +20,8 @@ import { LineChart } from 'react-native-charts-wrapper';
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 import { Dimensions } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import ButtonIconText from '../../../base/components/ButtonIconText';
+import {blue_bluezone, red_bluezone} from '../../../core/color';
 
 import BackgroundTimer from 'react-native-background-timer';
 //db
@@ -156,7 +158,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const [heightUser, setHeightUser] = useState(0)
   const [countTimeHour, setCountTimeHour] = useState(0);
   const [weightUser, setWeightUser] = useState(0)
-  const [weightHeight,setWeightHeight] = useState({weight:0,height:0})
+  const [weightHeight,setWeightHeight] = useState({weight:65,height:165})
   const [countTime, setCountTime] = useState(0)
   const [countStep, setCountStep] = useState(null);
   const [countRest, setCountRest] = useState(0);
@@ -383,27 +385,60 @@ const StepCount = ({ props, intl, navigation }) => {
     }
     let todayUnix = moment().unix()
     console.log('todayUnixtodayUnix',todayUnix)
-    if(todayUnix < firtTimeUnix + 2*24*60*60){
-      return
-    }
+    // số bước chân của ngày hôm qua 
     let totalSteps
     if(listHistory.length = 2){
       totalSteps = listHistory[1]?.quantity || 0
     }else  totalSteps = listHistory[2]?.quantity || 0
-    let tmp = totalSteps / (stepTarget?.step || 10000) * 100;
-    let configurationStep = stepTarget?.step || 10000;
-    let stepDifferen = Math.abs(totalSteps - (stepTarget?.step || 10000))
-    if (tmp >= 150) {
-      configurationStep += parseInt(stepDifferen * 0.2)
-    } else if (tmp >= 100) {
-      configurationStep += parseInt(stepDifferen * 0.1)
-    } else {
-      configurationStep -= parseInt(stepDifferen * 0.2)
+    // nhỏ hơn 2 ngày
+    if(todayUnix < firtTimeUnix + 2*24*60*60){
+      return
     }
-    await setResultSteps({
-      step: configurationStep,
-      date: new moment().unix()
-    })
+    // từ 2-3 ngày
+    if(todayUnix > firtTimeUnix + 2*24*60*60 && todayUnix < firtTimeUnix + 3*24*60*60){
+      if(totalSteps >= stepTarget){
+         await setResultSteps({
+          step: stepTarget,
+          date: new moment().unix()
+        })
+      }else{
+         await setResultSteps({
+          step: totalSteps + 250,
+          date: new moment().unix()
+        })
+      } 
+    }
+    // bắt đầu ngày thứ 4
+    else{
+      if(totalSteps <= 1000){
+         await setResultSteps({
+          step: 1000,
+          date: new moment().unix()
+        })
+      }
+      if(totalSteps > stepTarget){
+        if(stepTarget <=5000){
+          await setResultSteps({
+            step: totalSteps + 250,
+            date: new moment().unix()
+          })
+        }
+        let tmp = totalSteps / (stepTarget?.step || 10000) * 100;
+        let configurationStep = stepTarget?.step || 10000;
+        let stepDifferen = Math.abs(totalSteps - (stepTarget?.step || 10000))
+        if (tmp >= 150) {
+          configurationStep += parseInt(stepDifferen * 0.2)
+        } else if (tmp >= 100) {
+          configurationStep += parseInt(stepDifferen * 0.1)
+        } else {
+          configurationStep -= parseInt(stepDifferen * 0.2)
+        }
+        await setResultSteps({
+          step: configurationStep,
+          date: new moment().unix()
+        })
+      }
+    }
   }
 
   const getSex = async () => {
@@ -665,9 +700,7 @@ const StepCount = ({ props, intl, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar />
-
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-        <Header
+      <Header
           onBack={onBack}
           colorIcon={'#FE4358'}
           title={formatMessage(message.title)}
@@ -679,6 +712,8 @@ const StepCount = ({ props, intl, navigation }) => {
           showMenu={true}
           onShowMenu={onShowMenu}
         />
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+       
         <ImageBackground
           resizeMode={'stretch'}
           source={require('./images/bg_step_count.png')}
@@ -742,22 +777,35 @@ const StepCount = ({ props, intl, navigation }) => {
             <Text style={styles.txData}>{countCarlo}</Text>
             <Text style={styles.txUnit}>{`kcal`}</Text>
           </View>
-          <View style={styles.viewImgData}>
+          <View style={[styles.viewImgData]}>
             <Image
-              style={styles.img}
+              style={[styles.img,{marginBottom:countTimeHour > 0 ? 10 : 0}]}
               source={require('./images/ic_time.png')}
             />
-
-            <Text style={styles.txData}>{countTime}</Text>
-            <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+            <View>
             {
-                countTimeHour > 0 && (
-                  <View style={{ marginLeft: 4 }}>
-                    <Text style={styles.txData}>{countTimeHour}</Text>
-                    <Text style={[styles.txUnit,{marginTop:10}]}>{formatMessage(message.hour)}</Text>
+                countTimeHour > 0 ? (
+                  <View>
+                           <View style={{ marginLeft: 4,flexDirection:'row' }}>
+                              <Text style={[styles.txData,{paddingRight:3,marginTop:0}]}>{countTimeHour}</Text>
+                              <Text style={[styles.txUnit,{marginTop:0}]}>{formatMessage(message.hour)}</Text>
+                            </View>
+                            <View style={{flexDirection:'row',marginTop:8}}>
+                              <Text style={[styles.txData,{paddingRight:3,marginTop:0}]}>{countTime}</Text>
+                              <Text style={[styles.txUnit,{marginTop:0}]}>{formatMessage(message.minute)}</Text>
+                          </View>
                   </View>
-                )
+                 
+                ) : <View>
+                <Text style={[styles.txData,{paddingRight:3}]}>{countTime}</Text>
+                <Text style={[styles.txUnit,]}>{formatMessage(message.minute)}</Text>
+              </View>
               }
+              
+            </View>
+           
+            
+           
           </View>
         </View>
         <View style={styles.viewLineChart}>
@@ -783,7 +831,7 @@ const StepCount = ({ props, intl, navigation }) => {
         </View>
         {/* <View style={styles.viewHeight} /> */}
       </ScrollView>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.btnHistory}
         onPress={() =>
           navigation.navigate('stepHistory', {
@@ -793,7 +841,17 @@ const StepCount = ({ props, intl, navigation }) => {
         <Text style={styles.txHistory}>
           {formatMessage(message.viewHistory)}
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <ButtonIconText
+               onPress={() =>
+                navigation.navigate('stepHistory', {
+                  dataHealth: { countStep, countRest, countCarlo, distant },
+                })
+              }
+              text= {formatMessage(message.viewHistory)}
+              styleBtn={[styles.colorButtonConfirm]}
+              styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
+            />
     </SafeAreaView>
   );
 };
@@ -807,6 +865,15 @@ const styles = StyleSheet.create({
   },
   viewLineChart: {
     marginTop: 30,
+  },
+  colorButtonConfirm: {
+    backgroundColor: red_bluezone,
+    height: 46,
+    alignSelf: 'center',
+    width: '60%',
+    borderRadius: 25,
+    paddingVertical: 0,
+    marginBottom:20
   },
   container: {
     flex: 1,

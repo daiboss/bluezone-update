@@ -32,7 +32,9 @@ const styles = StyleSheet.create({
   txtYear: {
     fontSize: fontSize.normal,
     fontWeight: 'bold',
-    paddingBottom:5
+    paddingBottom:5,
+    // textAlignVertical:'center',
+    // paddingTop:19
   },
 });
 

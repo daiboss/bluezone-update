@@ -284,7 +284,7 @@
     "bluezone.stepCount.now": "now",
 
     "bluezone.settings.titleHeader": "Settings",
-    "bluezone.settings.profile": "profile",
+    "bluezone.settings.profile": "Profile",
     "bluezone.settings.updateProfile": "Update profile",
     "bluezone.settings.autoAdjustTarget": "Automatically adjust target",
     "bluezone.settings.content": "When this option is enabled, target will be automatically calculated to match your daily steps.",

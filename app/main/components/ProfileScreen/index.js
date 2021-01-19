@@ -26,11 +26,13 @@ import styles from './styles/index.css';
 import * as fontSize from '../../../core/fontSize';
 import SelectGender from './components/SelectGender';
 import SelectHeightOrWeight from './components/SelectHeightOrWeight';
-import { getProfile, setProfile } from '../../../core/storage';
+import { getProfile, setProfile, getWeightWarning} from '../../../core/storage';
 const TIMEOUT_LOADING = 800;
 import moment from 'moment';
 import { ButtonClose } from '../../../base/components/ButtonText/ButtonModal';
+import * as scheduler from '../../../core/notifyScheduler';
 import ResultBMI from './components/ResultBMI';
+import PushNotification from 'react-native-push-notification';
 
 const visibleModal = {
   isProcessing: false,
@@ -51,6 +53,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   const [isVisibleVerifyError, setisVisibleVerifyError] = useState(false);
   const [height, setHeight] = useState(null);
   const [weight, setWeight] = useState(null);
+  const [timeWeight,setTimeWeight] = useState(0)
   const onGoBack = () => navigation.goBack();
   const onSelectGender = gender => setGender(gender);
   const getProfileList = async profiles => {
@@ -142,6 +145,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   }
   const onConfirm = async () => {
     try {
+     await PushNotification.cancelAllLocalNotifications()
       if (!height) {
         setHeightError(true);
       }
@@ -150,7 +154,8 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       }
       if (!height || !weight) return;
       let profiles = (await getProfile()) || [];
-
+      let getWeighiNoti = await getWeightWarning()
+      console.log('getWeighiNotigetWeighiNotigetWeighiNoti',getWeighiNoti)
       let index = profiles.findIndex(
         profile =>
           getAbsoluteMonths(moment(profile.date)) -
@@ -166,7 +171,9 @@ const ProfileScreen = ({ route, intl, navigation }) => {
           .toDate()
           .getTime(),
       };
+      getWeighiNoti && scheduler.createScheduleWarnningWeightNotification(obj.date) 
       if (index != -1) {
+        console.log('vaovaovaovoaIF')
         profiles.splice(index, 1, obj);
       } else {
         profiles.push(obj);
