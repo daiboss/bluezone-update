@@ -567,8 +567,8 @@ const StepCount = ({ props, intl, navigation }) => {
 };
 const styles = StyleSheet.create({
   img: {
-    width: RFValue(60),
-    height: RFValue(60)
+    width: RFValue(56),
+    height: RFValue(56)
   },
   chart: {
     flex: 1,

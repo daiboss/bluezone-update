@@ -259,10 +259,10 @@
   "bluezone.profile.errorTitle": "Thông báo",
   "bluezone.profile.errorDescription": "Đã có lỗi xảy ra. Bạn vui lòng thử lại.",
   "bluezone.profile.skinny": "Gầy",
-  "bluezone.profile.fit": "Bình thường",
+  "bluezone.profile.fit": "Bình\nthường",
   "bluezone.profile.overWeight": "Thừa cân",
-  "bluezone.profile.classOneObesity": "Béo phì độ 1",
-  "bluezone.profile.classTwoObesity": "Béo phì độ 2",
+  "bluezone.profile.classOneObesity": "Béo phì\nđộ 1",
+  "bluezone.profile.classTwoObesity": "Béo phì\nđộ 2",
 
 
   "bluezone.bmi.titleHeader":"Chỉ số BMI",

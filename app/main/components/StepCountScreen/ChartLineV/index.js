@@ -164,7 +164,7 @@ class ChartLine extends React.Component {
                 fill: "#FE4358"
               }
             }}
-            size={RFValue(4)}
+            size={6}
             labels={() => null}
           />
 
