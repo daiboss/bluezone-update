@@ -432,7 +432,7 @@ class App extends React.Component {
           component={NotifyDetail}
         />
       </Stack.Navigator>
-    ) : !isHome ? (
+    ) : isHome ? (
       <Stack.Navigator
         id="Welcome"
         headerMode="none"

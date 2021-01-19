@@ -148,7 +148,8 @@ class HomeTab extends React.Component {
   }
 
   onWatchHistory() {
-    this.props.navigation.navigate('stepCount');
+    // this.props.navigation.navigate('stepCount');
+    this.props.navigation.navigate('ContactHistory');
   }
 
   renderReminderModal() {
