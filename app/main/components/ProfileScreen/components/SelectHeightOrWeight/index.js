@@ -60,6 +60,9 @@ const SelectHeightOrWeight = ({
               <Text
                 style={[
                   styles.textGender,
+                  {
+                    color: (value == 'cm' || value == 'kg') ? '#949494' : '#222'
+                  }
                 ]}>
                 {value}
               </Text>

@@ -109,7 +109,7 @@ class ChartLine extends React.Component {
           tickValues={this.props.time}
           // tickValues = {['11','12','13','14','16','17','18']}
           style={{
-            grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
+            grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : '#f3f3f3', strokeWidth: 1 },
             axis: { stroke: 'none' },
 
             tickLabels: {
