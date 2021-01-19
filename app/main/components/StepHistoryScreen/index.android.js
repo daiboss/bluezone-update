@@ -35,6 +35,7 @@ import { getAbsoluteMonths, getAllDistance, gender, getDistances } from '../../.
 import { getListHistory, removeAllHistory } from '../../../core/db/SqliteDb';
 import BarChartConvert from './BarChart/BarChartConvert';
 import BarChart7Item from './BarChart/BarChart7Item';
+import { RFValue } from '../../../const/multiscreen';
 Date.prototype.getWeek = function (dowOffset) {
   /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
 
@@ -410,15 +411,17 @@ const StepCount = ({ props, intl, navigation }) => {
                 <View>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={[styles.txData, {
-                      marginRight: 4
+                      marginRight: 4,
+                      marginTop: 10
                     }]}>{countTimeHour}</Text>
                     <Text style={[styles.txUnit, { marginTop: 10 }]}>{formatMessage(message.hour)}</Text>
                   </View>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={[styles.txData, {
-                      marginRight: 4
+                      marginRight: 5,
+                      marginTop: 5
                     }]}>{countTime}</Text>
-                    <Text style={[styles.txUnit, { marginTop: 10 }]}>{formatMessage(message.minute)}</Text>
+                    <Text style={[styles.txUnit, { marginTop: 5 }]}>{formatMessage(message.minute)}</Text>
                   </View>
                 </View>
               ) : (
@@ -481,8 +484,8 @@ const styles = StyleSheet.create({
     borderRadius: 50
   },
   img: {
-    width: 64,
-    height: 64
+    width: RFValue(60),
+    height: RFValue(60)
   },
   chart: {
     flex: 1,

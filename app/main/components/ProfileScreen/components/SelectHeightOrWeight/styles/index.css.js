@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
   textGender: {
     fontSize: fontSize.normal,
     color: '#949494',
+    fontWeight: '700'
   },
   textLabel: {
     fontSize: fontSize.normal,

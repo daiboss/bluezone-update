@@ -85,8 +85,8 @@ class ChartLine extends React.Component {
   renderMainChart = () => {
     return(
       <VictoryChart
-            // padding=""
-            height={RFValue(180)}
+            padding={{left: 35, right: 35, top: RFValue(20), bottom: 10}}
+            height={RFValue(120)}
             // style={{parent:{backgroundColor:'red'}}}
             // minDomain={{ y: 0 }}
             maxDomain={{ y: 300 }}
@@ -112,6 +112,8 @@ class ChartLine extends React.Component {
                 axis: { stroke: 'none' },
                 tickLabels: { fill: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'black',
                 fontFamily: 'helvetica',
+                fontSize: RFValue(10),
+                fontWeight: '700'
               }
               }}
               orientation="top"
@@ -260,7 +262,7 @@ class ChartLine extends React.Component {
               source={require('../../../StepCountScreen/images/down-arrow.png')} />
           </View>
         }
-        { Platform.OS == 'android' ? <Svg style={{ height: RFValue(160), alignSelf: 'center' }}>
+        { Platform.OS == 'android' ? <Svg style={{ height: RFValue(120), alignSelf: 'center' }}>
          {this.renderMainChart()}
         </Svg> :<View style={{ height: RFValue(160), alignSelf: 'center'}}>
          {this.renderMainChart()}
