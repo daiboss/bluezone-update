@@ -574,13 +574,12 @@ const StepCount = ({ props, intl, navigation }) => {
         }, initialValue)
         setCountCarlo(parseInt(a*2 / 1000))
         //get time
-        const timeUse = results.reduce((k, i) => {
+        let timeUse = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
           const timeT = timeEnd - timeStart
           return k + timeT
         }, timeInit)
-        const timePush = timeUse / 600
         let h = parseInt(timeUse / 3600)
         let m = parseInt((timeUse % 3600) / 600)
         setCountTime(m)
@@ -786,7 +785,7 @@ const StepCount = ({ props, intl, navigation }) => {
           </View>
           <View style={[styles.viewImgData]}>
             <Image
-              style={[styles.img,{marginBottom:countTimeHour > 0 ? 10 : 0}]}
+              style={[styles.img]}
               source={require('./images/ic_time.png')}
             />
             <View>
@@ -794,12 +793,12 @@ const StepCount = ({ props, intl, navigation }) => {
                 countTimeHour > 0 ? (
                   <View>
                            <View style={{ marginLeft: 4,flexDirection:'row' }}>
-                              <Text style={[styles.txData,{paddingRight:3,marginTop:0}]}>{countTimeHour}</Text>
-                              <Text style={[styles.txUnit,{marginTop:0}]}>{formatMessage(message.hour)}</Text>
+                              <Text style={[styles.txData,{paddingRight:3,marginTop:10}]}>{countTimeHour}</Text>
+                              <Text style={[styles.txUnit,{marginTop:10}]}>{formatMessage(message.hour)}</Text>
                             </View>
-                            <View style={{flexDirection:'row',marginTop:8}}>
-                              <Text style={[styles.txData,{paddingRight:3,marginTop:0}]}>{countTime}</Text>
-                              <Text style={[styles.txUnit,{marginTop:0}]}>{formatMessage(message.minute)}</Text>
+                            <View style={{flexDirection:'row'}}>
+                              <Text style={[styles.txData,{paddingRight:3,marginTop:5}]}>{countTime}</Text>
+                              <Text style={[styles.txUnit,{marginTop:5}]}>{formatMessage(message.minute)}</Text>
                           </View>
                   </View>
                  
