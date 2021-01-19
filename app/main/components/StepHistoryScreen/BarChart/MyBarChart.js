@@ -12,7 +12,6 @@ const MyBarChart = ({
     maxDomain,
     selectedItem
 }) => {
-    console.log('selectedItemselectedItemselectedItemselectedItem',selectedItem)
     return (
         <View style={{
             width: '100%',

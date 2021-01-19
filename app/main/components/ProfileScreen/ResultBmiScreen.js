@@ -58,11 +58,8 @@ const ResultBmiScreen = ({ route, intl, navigation }) => {
   useEffect(() => {
     if (height && weight) {
       let h = Number(height?.replace('cm', '')?.trim() || 0) / 100;
-      console.log('h: ', h);
       let w = Number(weight?.replace('kg', '')?.replace(',', '.')?.replace(' ', '') || 0);
-      console.log('w: ', w);
       let totalBmi = parseFloat(w / (h * h)).toFixed(1);
-      console.log('totalBmiooooo: ', totalBmi);
       setBmi(totalBmi);
     }
   }, [height, weight]);

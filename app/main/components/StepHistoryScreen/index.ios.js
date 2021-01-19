@@ -199,7 +199,6 @@ const StepCount = ({ props, intl, navigation }) => {
     return days;
   };
   const getDataHealth = (start, end, type) => {
-    console.log('dadatatatata',start, end, type)
     Fitness.isAuthorized(permissions)
       .then(res => {
         if (res == true) {
@@ -243,7 +242,6 @@ const StepCount = ({ props, intl, navigation }) => {
     }, 3000);
   };
   const getDataChart = (data, type) => {
-    console.log('vaovaovoaoavvaovaov',data,type)
     let list = [];
     if (type == 'day') {
       let currentDay = moment(new Date())
@@ -256,7 +254,6 @@ const StepCount = ({ props, intl, navigation }) => {
       }));
     } else if (type == 'month') {
       let currentMonth = moment(new Date()).month();
-      console.log('dadadadhsuadhusahdusahduasd',currentMonth)
       const groups = data.reduce((acc, current) => {
         const monthYear = moment(current.startDate).month();
         if (!acc[monthYear]) {
@@ -265,12 +262,10 @@ const StepCount = ({ props, intl, navigation }) => {
         acc[monthYear].push(current);
         return acc;
       }, {});
-      console.log('groupsgroupsgroups',groups,currentMonth)
       for (const [key, value] of Object.entries(groups)) {
         let steps = value.reduce((t, v) => t + v.quantity, 0)
         let startMonth = moment(value[0].startDate).startOf('month')
         let endMonth = moment(value[0].startDate).endOf('month')
-        console.log('dhasudhsauhdsauhdusahdusansabcyhfu',key)
         let label = ''
         if (locale == 'en') {
           switch (parseInt(key)) {
@@ -331,7 +326,6 @@ const StepCount = ({ props, intl, navigation }) => {
           label = `${formatMessage(message.month)}\n${key != currentMonth ? (parseInt(key) + 1) : 'này'}`
         }
         // let label = `Tháng\n${key > currentMonth ? (parseInt(key) + 1) : 'này'}`
-        console.log('djadhasdhsuahdusadas',label)
         list.push({
           x: label,
           y: steps,
@@ -340,7 +334,6 @@ const StepCount = ({ props, intl, navigation }) => {
           year:startMonth.format('YYYY')
           // year:moment(item.startDate).format('YYYY')
         })
-        console.log('hfhshfusahfusahfuhsaufhsauhfsa',list)
         // list.reverse()
       }
     } else if (type == 'week') {
@@ -364,7 +357,6 @@ const StepCount = ({ props, intl, navigation }) => {
         let valueEnd = endWeek.isAfter(currentTime) ? formatMessage(message.now) : `${endWeek.format('DD')}`
         startWeek.locale('en').format('MMM')
         endWeek.locale('en').format('MMM')
-        console.log('startWeekstartWeekstartWeekstartWeek',startWeek)
         // let label = ''
         // if (locale == 'en') {
         //   switch (parseInt(key)) {
@@ -450,7 +442,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const getSex = async () => {
     let profiles = (await getProfile()) || [];
-        console.log('proorororororfile',profiles)
         // sex = profiles.gender
         if(profiles){
           sex = profiles[0].gender
@@ -462,19 +453,15 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const getWeightHeight = async () => {
     let profiles = (await getProfile()) || [];
-    console.log('profilesprofilesprofilesprofiles',profiles)
     const weight = profiles[0].weight || 0
     const weightCV = weight.replace('kg','').replace(',','.').replace(' ','')
-    console.log('weightweightweightweight',weightCV)
     const height = profiles[0].height || 0
     const heightCV = height.replace('cm','').replace(' ','')
-    console.log('heightCVheightCVheightCV',heightCV)
     setWeightUser(weightCV)
     setHeightUser(heightCV)
 
   }
   const getStepsRealTime = (result) => {
-    console.log('getStepsRealTimegetStepsRealTimegetStepsRealTime',result)
     let sexValue
       if(sex == 1) sexValue = 0.415
       else sexValue = 0.413
@@ -493,7 +480,6 @@ const StepCount = ({ props, intl, navigation }) => {
     };
     AppleHealthKit.initHealthKit(healthKitOptions, (err, res) => {
       if (err) {
-        console.log('errr', err)
         return;
       }
 
@@ -507,7 +493,6 @@ const StepCount = ({ props, intl, navigation }) => {
         if (err) {
           return;
         }
-        console.log("resultsresults",results)
     });
       // get Ditance
       //get Sex
@@ -524,7 +509,6 @@ const StepCount = ({ props, intl, navigation }) => {
         if (err) {
           return;
         }
-        console.log('resulltssss',results)
         let timeInit = 0
         let initialValue = 0
         
@@ -557,7 +541,6 @@ const StepCount = ({ props, intl, navigation }) => {
             let distanceInStep = sexValue * heightUser * stepRateFactor
             let speed = distanceInStep * stepRate * 3.6
             let calo
-            console.log('weightUserweightUserweightUser',weightUser,distanceInStep,stepRate)
             if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
             else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
             // setCountCarlo(calo.toFixed(2))
@@ -569,12 +552,10 @@ const StepCount = ({ props, intl, navigation }) => {
             const timeStart = moment(i.start).unix()
             const timeEnd = moment(i.end).unix()
             const timeT = timeEnd - timeStart
-            console.log('kkkkkkkkkkkkkkkkk',k)
             return k + timeT
           }, timeInit)
           let timeT
           // const timePush = (timeUse/60).toFixed(0)
-          console.log('timeUsetimeUsetimeUsetimeUsetimeUse',timeUse)
           let h = parseInt(timeUse / 3600)
           let m
           if(h == 0){
@@ -720,7 +701,6 @@ const StepCount = ({ props, intl, navigation }) => {
   //   } catch (e) { }
   // };
   const onGetDataBySelect = (result,index,page) => {
-    console.log('updateDistance', result)
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
     let m = parseInt((time % 3600) / 60)
@@ -746,7 +726,6 @@ const StepCount = ({ props, intl, navigation }) => {
   };
 
   const renderChart = useMemo(() => {
-    console.log('dataChartdataChartdataChartdataChart',dataChart)
     if (dataChart.length) {
       return (
         <BarChart7Item

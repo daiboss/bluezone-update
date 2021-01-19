@@ -57,7 +57,6 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   const onGoBack = () => navigation.goBack();
   const onSelectGender = gender => setGender(gender);
   const getProfileList = async profiles => {
-    console.log('profilesprofiles', profiles)
     let data = profiles
       .sort((a, b) => b.date - a.date)
       .reduce((r, a) => {
@@ -73,7 +72,6 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       }, Object.create(null));
 
     if (profiles?.length) {
-      console.log('profilesprofilesprofilesprofiles', profiles)
       let time = profiles
         .sort((a, b) => a.date - b.date)
         .map(e => moment(e.date)?.format('DD/MM'));
@@ -155,7 +153,6 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       if (!height || !weight) return;
       let profiles = (await getProfile()) || [];
       let getWeighiNoti = await getWeightWarning()
-      console.log('getWeighiNotigetWeighiNotigetWeighiNoti',getWeighiNoti)
       let index = profiles.findIndex(
         profile =>
           getAbsoluteMonths(moment(profile.date)) -
@@ -173,7 +170,6 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       };
       getWeighiNoti && scheduler.createScheduleWarnningWeightNotification(obj.date) 
       if (index != -1) {
-        console.log('vaovaovaovoaIF')
         profiles.splice(index, 1, obj);
       } else {
         profiles.push(obj);

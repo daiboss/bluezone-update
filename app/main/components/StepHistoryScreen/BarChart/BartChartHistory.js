@@ -61,7 +61,6 @@ const BartChartHistory = ({data}) => {
               fontSize: 12,
               padding: 15,
               fill: e => {
-                console.log('e: ', e);
                 if (e.tickValue == 7) {
                   return '#fe4358';
                 }

@@ -114,7 +114,7 @@ class ChartLine extends React.Component {
 
             tickLabels: {
               fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : '#3F3F3F',
-              fontSize: RFValue(10),
+              fontSize: RFValue(11),
               fontWeight: '700',
               // fontWeight: '350',
               fontFamily: 'helvetica',

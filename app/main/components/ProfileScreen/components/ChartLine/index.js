@@ -43,7 +43,6 @@ class ChartLine extends React.Component {
         },
       },
     });
-    console.log('this.props.data: ', this.props.data);
     this.setState(newState);
 
     this.setState({
@@ -52,7 +51,6 @@ class ChartLine extends React.Component {
   }
 
   getDataChart = (dataCharts = []) => {
-    console.log('dataCharts: ', dataCharts);
     let data = dataCharts.map((e, i) => {
       return {
         values: e.values,
@@ -140,7 +138,6 @@ class ChartLine extends React.Component {
   };
   handleSelect = event => {
     let entry = event.nativeEvent;
-    console.log('entry: ', entry);
 
     if (entry == null) {
       this.setState({

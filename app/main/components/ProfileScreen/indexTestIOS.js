@@ -145,21 +145,17 @@ const ProfileScreen = ({route, intl, navigation}) => {
   const getSex = () => {
     AppleHealthKit.getBiologicalSex(null, (err, results) => {
         if (err) {
-            console.log('getBiologicalSex',err)
           return;
         }
         if(results.value == "female") setGender(0)
         else setGender(1)
-        console.log('getBiologicalSexgetBiologicalSexgetBiologicalSexSUCCESS',results)
     });
   }
   const getHeightUser = () => {
     AppleHealthKit.getLatestHeight(optionsHeight, (err, results) => {
         if (err) {
-            console.log("error getting latest height: ", err);
             return;
         }
-        console.log('results,r',results)
         setHeight(`${results.value} cm`)
     });
   }
@@ -173,10 +169,8 @@ const ProfileScreen = ({route, intl, navigation}) => {
       }
     AppleHealthKit.saveWeight(weightOp,(err, results) => {
         if (err) {
-            console.log("error saving weight to Healthkit: ", err);
             return;
         }
-        console.log('saveWeightUsersaveWeightUsersaveWeightUser',results)
         // Done
     });
   }
@@ -190,7 +184,6 @@ const ProfileScreen = ({route, intl, navigation}) => {
           return;
         }
         // height successfully saved
-        console.log('saveHeightUsersaveHeightUsersaveHeightUser',results)
         
       });
   }
@@ -204,7 +197,6 @@ const ProfileScreen = ({route, intl, navigation}) => {
 
 
   const getProfileList = async profiles => {
-      console.log('profilesprofilesprofilesprofiles',profiles)
     let data = profiles
       .sort((a, b) => b.date - a.date)
       .reduce((r, a) => {
@@ -223,9 +215,7 @@ const ProfileScreen = ({route, intl, navigation}) => {
       let time = profiles
         .sort((a, b) => a.date - b.date)
         .map(e => moment(e.date)?.format('DD/MM'));
-        console.log('timetimetimetimetimetimeCURENT',time)
     //   setListTime(time);
-      console.log('daldladladladladladladla',data)
     //   setListProfile([data]);
     } else {
       // setListTime([]);
@@ -359,7 +349,6 @@ const ProfileScreen = ({route, intl, navigation}) => {
     //   getProfileList(profiles);
     } catch (error) {}
   };
-  console.log('litslitslitslitsProfile',listProfile,gender,weight,height)
   return (
     <SafeAreaView style={styles.container}>
       <Header

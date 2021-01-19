@@ -124,7 +124,6 @@ class ChartLine extends React.Component {
         year: entry?.data?.year,
       });
       this.props.onGetDataBySelect(entry?.data?.start, entry?.data?.end, entry?.data?.marker)
-      console.log('entry?.data?.start: ', entry?.data?.start);
     }
   };
   render() {

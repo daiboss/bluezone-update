@@ -82,7 +82,6 @@ export const stopScheduleTask = async task => {
   } catch (e) { }
 };
 export const onBackgroundFetchEvent = async taskId => {
-  console.log('taskIdtaskId',taskId)
 try {
     let end = new Date();
     let start = new Date();
@@ -91,7 +90,6 @@ try {
 
     let today = moment();
     let resultSteps = await getResultSteps();
-    console.log('resultStepsresultStepsresultSteps',resultSteps)
 
     switch (taskId) {
       case autoChange:
@@ -309,7 +307,6 @@ const StepCount = ({ props, intl, navigation }) => {
       if (!resultSteps) {
         setResultSteps({ step: totalCount, date: new Date().getTime() });
       } else {
-        console.log('vaovoaovaovoaovaoRESRES',resultSteps)
         setTotalCount(resultSteps.step);
       }
     } catch (error) { }
@@ -368,7 +365,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
-    console.log('autoautoautoauto',auto)
     if (!auto) {
       return
     }
@@ -384,7 +380,6 @@ const StepCount = ({ props, intl, navigation }) => {
       return
     }
     let todayUnix = moment().unix()
-    console.log('todayUnixtodayUnix',todayUnix)
     // số bước chân của ngày hôm qua 
     let totalSteps
     if(listHistory.length = 2){
@@ -443,7 +438,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const getSex = async () => {
     let profiles = (await getProfile()) || [];
-    console.log('proorororororfile', profiles)
     // sex = profiles.gender
     if (profiles) {
       sex = profiles[0].gender
@@ -490,7 +484,6 @@ const StepCount = ({ props, intl, navigation }) => {
       if (sex == 1) sexValue = 0.415
       else sexValue = 0.413
       if (err) {
-        console.log('errr', err)
         return;
       }
       // get Ditance
@@ -517,7 +510,6 @@ const StepCount = ({ props, intl, navigation }) => {
           return;
         }
         stepCurrent = results.value
-        console.log('stepCurrentstepCurrentstepCurrent',stepCurrent)
         const countR = totalCount - stepCurrent
         setCountRest(countR)
 
@@ -544,7 +536,6 @@ const StepCount = ({ props, intl, navigation }) => {
           const timeS = timeEnd - timeStart
           // const tb = timeS / i.quantity
           const stepRate = i.quantity / timeS
-          console.log('stepRatestepRatestepRatestepRate', stepRate)
           let stepRateFactor
           if (stepRate < 1.6)
             stepRateFactor = 0.82;
@@ -569,7 +560,6 @@ const StepCount = ({ props, intl, navigation }) => {
           if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightHeight.weight * 2 / 12000
           else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightHeight.weight * 2 / 12000
           // setCountCarlo(calo.toFixed(2))
-          console.log('objectKcal', { sexValue, weightHeight, stepRateFactor })
           return k + calo * timeS * 2
         }, initialValue)
         setCountCarlo(parseInt(a*2 / 1000))
@@ -645,7 +635,6 @@ const StepCount = ({ props, intl, navigation }) => {
       date: options.startDate
     }, (err, results) => {
       if (err) {
-        console.log(err)
         return
       }
 
@@ -655,7 +644,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
       if (steps > 0) {
         setCountStep(steps)
-        console.log('totalCounttotalCounttotalCounttotalCount',totalCount,steps)
         const countR = totalCount - steps
         // setCountRest(countR)
       }
