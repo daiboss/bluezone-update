@@ -766,7 +766,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_distance.png')}
             />
-            <Text style={styles.txData}>{distant}</Text>
+            <Text style={styles.txData}>{distant.toString().replace('.', ',')}</Text>
             <Text style={styles.txUnit}>{`km`}</Text>
           </View>
           <View style={styles.viewImgData}>

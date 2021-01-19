@@ -76,6 +76,8 @@ import {
 } from './../../../core/db/SqliteDb'
 
 import KKK from './lll'
+import ButtonIconText from '../../../base/components/ButtonIconText';
+import { red_bluezone } from '../../../core/color';
 
 const options = {
   taskName: 'Bluezone',
@@ -105,7 +107,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
   }, [])
 
-  const observerStepDrawUI = () => {
+  const observerStepDrawUI = async () => {
     getResultBindingUI()
     BackgroundJob.observerStep(steps => {
       // console.log('STEP------->>>', steps)
@@ -171,9 +173,9 @@ const StepCount = ({ props, intl, navigation }) => {
     if (!isRun) {
       BackgroundJob.start(taskStepCounter, options);
     }
-    // else {
-    //   BackgroundJob.stop();
-    // }
+    else {
+      BackgroundJob.stop();
+    }
   }, [BackgroundJob])
 
   const taskStepCounter = async () => {
@@ -233,9 +235,9 @@ const StepCount = ({ props, intl, navigation }) => {
     let tomorow = new moment(currentTime).add(1, 'days')
     tomorow.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
     let timeDiff = tomorow.diff(currentTime, 'milliseconds')
-    console.log('timeDifftimeDiff', timeDiff)
-    BackgroundJob.setTimeout(() => {
-      saveHistory();
+    // console.log('timeDifftimeDiff', timeDiff)
+    BackgroundJob.setTimeout(async () => {
+      await saveHistory();
       scheduleLastDay();
     }, timeDiff)
   }
@@ -246,54 +248,87 @@ const StepCount = ({ props, intl, navigation }) => {
       let totalStep = await getStepsTotalPromise();
       scheduler.createWarnningStepNotification(totalStep || 0)
     }
-    let tmpWeight = await getWeightWarning()
-    let profiles = (await getProfile()) || [];
-    let profile = profiles.find(
-      item =>
-        getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) == 0,
-    );
-    if (!profile) {
-      return
-    }
-    let tmpTime = new moment.unix(profile?.date)
-    if (tmpWeight && (new moment().diff(tmpTime, 'days') >= 7)) {
-      scheduler.createWarnningWeightNotification()
-    }
+    // let tmpWeight = await getWeightWarning()
+    // let profiles = (await getProfile()) || [];
+    // let profile = profiles.find(
+    //   item =>
+    //     getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) == 0,
+    // );
+    // if (!profile) {
+    //   return
+    // }
+    // let tmpTime = new moment.unix(profile?.date)
+    // if (tmpWeight && (new moment().diff(tmpTime, 'days') >= 7)) {
+    //   scheduler.createWarnningWeightNotification()
+    // }
   }
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
-    if (!auto) {
+    if (auto != undefined && auto == false) {
       return
     }
-    let startDay = new moment().subtract(4).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    let startDay = new moment().subtract(4, 'days').set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     let listHistory = await getListHistory(startDay.unix(), new moment().unix())
-    if (listHistory?.length < 3) {
-      return
-    }
-    startDay = new moment().subtract(1).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-    listHistory = await getListHistory(startDay.unix(), new moment().unix())
+    if (listHistory?.length < 2) return
 
     let stepTarget = await getResultSteps()
-    if (!listHistory || listHistory.length <= 0) {
-      return
-    }
-    let tm = JSON.parse(listHistory[0]?.resultStep)
-    let totalSteps = tm?.step || 0
-    let tmp = totalSteps / (stepTarget?.step || 10000) * 100;
-    let configurationStep = stepTarget?.step || 10000;
-    let stepDifferen = Math.abs(totalSteps - (stepTarget?.step || 10000))
-    if (tmp >= 150) {
-      configurationStep += parseInt(stepDifferen * 0.2)
-    } else if (tmp >= 100) {
-      configurationStep += parseInt(stepDifferen * 0.1)
+
+    let resultSave = {}
+
+    if (listHistory?.length == 2) {
+      let itemLast = listHistory[1]
+      let resultTmp = JSON.parse(itemLast?.resultStep)
+      if ((resultTmp?.step || 0) < 10000) {
+        let newTarget = (itemLast?.step || 0) + 250
+        resultSave = {
+          step: newTarget,
+          date: currentTime
+        }
+      }
     } else {
-      configurationStep -= parseInt(stepDifferen * 0.2)
+      let itemLast = listHistory[listHistory?.length - 1]
+      let resultTmp = JSON.parse(itemLast?.resultStep)
+      if (resultTmp?.step <= 1000) {
+        resultSave = {
+          step: 1000,
+          date: currentTime
+        }
+      } else if (resultTmp?.step > stepTarget?.step && stepTarget?.step <= 5000) {
+        let newTarget = (resultTmp?.step || 0) + 250
+        resultSave = {
+          step: newTarget,
+          date: currentTime
+        }
+      } else {
+        if (resultTmp?.step < stepTarget?.step) {
+          let tmp = stepTarget?.step - resultTmp?.step
+          let newTarget = parseInt(Math.abs(stepTarget?.step - 0.2 * tmp))
+          resultSave = {
+            step: newTarget,
+            date: currentTime
+          }
+        } else {
+          let tmp = resultTmp?.step - stepTarget?.step
+          let k = tmp / stepTarget?.step * 100
+          if (k >= 50) {
+            let newTarget = parseInt(Math.abs(stepTarget?.step + 0.2 * tmp))
+            resultSave = {
+              step: newTarget,
+              date: currentTime
+            }
+          } else {
+            let newTarget = parseInt(Math.abs(stepTarget?.step + 0.1 * tmp))
+            resultSave = {
+              step: newTarget,
+              date: currentTime
+            }
+          }
+        }
+      }
     }
-    await setResultSteps({
-      step: configurationStep,
-      date: new moment().unix()
-    })
+    await setResultSteps(resultSave)
     BackgroundJob.updateTypeNotification()
   }
 
@@ -441,7 +476,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_distance.png')}
             />
-            <Text style={styles.txData}>{distant.toFixed(3)}</Text>
+            <Text style={styles.txData}>{distant.toFixed(2).replace('.', ',')}</Text>
             <Text style={styles.txUnit}>{`km`}</Text>
           </View>
           <View style={styles.viewImgData}>
@@ -499,7 +534,7 @@ const StepCount = ({ props, intl, navigation }) => {
         </View>
         {/* <View style={styles.viewHeight} /> */}
       </ScrollView>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.btnHistory}
         onPress={() =>
           navigation.navigate('stepHistory', {
@@ -509,7 +544,17 @@ const StepCount = ({ props, intl, navigation }) => {
         <Text style={styles.txHistory}>
           {formatMessage(message.viewHistory)}
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <ButtonIconText
+        onPress={() =>
+          navigation.navigate('stepHistory', {
+            dataHealth: { countStep, countRest, countCarlo, distant },
+          })
+        }
+        text={formatMessage(message.viewHistory)}
+        styleBtn={[styles.colorButtonConfirm]}
+        styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
+      />
     </SafeAreaView >
   );
 };
@@ -558,7 +603,7 @@ const styles = StyleSheet.create({
 
   viewCircular: {
     paddingBottom: 30,
-    marginTop: 20,
+    // marginTop: 20,
     alignItems: 'center',
     marginHorizontal: 20,
     justifyContent: 'center',
@@ -599,7 +644,7 @@ const styles = StyleSheet.create({
     width: '70%',
     height: 41,
     backgroundColor: '#fe4358',
-    borderRadius: 6,
+    borderRadius: 20,
     marginBottom: 20,
   },
   txHistory: {
@@ -616,6 +661,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     marginTop: isIPhoneX ? 0 : 20,
   },
+  colorButtonConfirm: {
+    backgroundColor: red_bluezone,
+    height: 46,
+    alignSelf: 'center',
+    width: '80%',
+    borderRadius: 25,
+    paddingVertical: 0,
+    marginBottom: 10
+  },
+
 });
 StepCount.propTypes = {
   intl: intlShape.isRequired,

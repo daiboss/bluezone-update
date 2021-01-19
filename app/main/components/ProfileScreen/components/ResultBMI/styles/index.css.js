@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   textWarning: {
     textAlign: 'center',
     flex: 1,
-    fontSize: fontSize.smaller,
+    fontSize: fontSize.fontSize11,
   },
 });
 

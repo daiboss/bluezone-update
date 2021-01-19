@@ -91,7 +91,7 @@ class ChartLine extends React.Component {
         minDomain={{ y: 0 }}
         padding={{ left: 40, right: 40, top: 50, bottom: 50 }}
         maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
-        // theme={VictoryTheme.material}
+      // theme={VictoryTheme.material}
       >
         <Defs>
           <LinearGradient id="gradientStroke"
@@ -107,54 +107,35 @@ class ChartLine extends React.Component {
 
         <VictoryAxis
           tickValues={this.props.time}
-          // tickValues={['10/11', '11/11', '12/11', '13/11', '14/11', '15/11', '16/11']}
 
           style={{
             grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
             axis: { stroke: 'none' },
-            
-            tickLabels: { 
-            fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : '#3F3F3F',
-            fontSize:14,
-            fontWeight:'350',
-            fontFamily: 'helvetica',
-          }
+
+            tickLabels: {
+              fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : '#3F3F3F',
+              fontSize: 14,
+              fontWeight: '350',
+              fontFamily: 'helvetica',
+            }
           }}
           orientation="top"
         />
 
-{/* 
-        <VictoryAxis
-          theme={VictoryTheme.material}
-          standalone
-          padding={{top:30}}
-          key='axis-target'
-          dependentAxis
-          
-          tickFormat={() => ''}
-          tickValues={[100000]}
-          style={{
-            fontFamily: 'helvetica',
-            axis: { stroke: "none" },
-            grid: { stroke: ({ tick }) => 'blue'},
-          }}
-        /> */}
-
-
-        <VictoryGroup  
+        <VictoryGroup
           style={{ labels: { fill: 'none' } }}
           data={this.state.dataConvert}
-          // data = {[3000,4000,100,100,3000,2000,6000,7000]}
+        // data = {[3000,4000,100,100,3000,2000,6000,7000]}
         >
           <VictoryArea
-           animate={{
-            duration: 100,
-            onLoad: { duration: 800 },
-            
-          }}
+            animate={{
+              duration: 100,
+              onLoad: { duration: 800 },
+
+            }}
             interpolation="monotoneX"
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
-            // data={sampleData}
+          // data={sampleData}
           />
           <VictoryLine
 
@@ -170,21 +151,6 @@ class ChartLine extends React.Component {
 
           />
 
-          {/* <VictoryScatter
-            style={{
-              data: {
-                fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358",
-                stroke: ({ datum }) => datum.x === this.state?.valueX ? "red" : "#FE4358",
-                strokeWidth: ({ datum }) => datum.x === this.state?.valueX ? 1 : 0,
-              },
-              labels: {
-                fontSize: 15,
-                fill: ({ datum }) => datum.x === this.state?.valueX ? "white" : "#FE4358"
-              }
-            }}
-            size={({ datum }) => datum.x === this.state?.valueX ? RFValue(9) : RFValue(4)}
-            labels={() => null}
-          /> */}
           <VictoryScatter
             style={{
               data: {
@@ -199,31 +165,6 @@ class ChartLine extends React.Component {
             }}
             size={RFValue(4)}
             labels={() => null}
-
-          // events={[{
-          //   target: "data",
-          //   eventHandlers: {
-          //     onPressIn: () => {
-          //       return [
-          //         {
-          //           target: "data",
-          //           mutation: (props) => {
-          //             // console.log('clickkkkkkk', props)
-          //             this.setState({
-          //               topLabel: props.y,
-          //               leftLabel: props.x,
-          //               value: JSON.stringify(props.datum.y),
-          //               valueX: props?.datum?.x,
-          //               // year: props?.datum?.year
-          //               position: { x: props?.x, y: props?.y }
-          //             })
-          //           }
-          //         }
-          //       ];
-          //     }
-          //   }
-          // }]}
-
           />
 
 
@@ -248,7 +189,7 @@ class ChartLine extends React.Component {
             position: 'absolute',
             backgroundColor: '#FE4358',
             zIndex: 1,
-            top: this.state.topLabel - height * 0.045,
+            top: this.state.topLabel - height * (Platform.OS == 'ios' ? 0.045 : 0.06),
             // left: this.getLeftLabel(),
             left: this.state.position.x - RFValue(25),
             paddingHorizontal: RFValue(10),
@@ -285,7 +226,7 @@ class ChartLine extends React.Component {
           // left: ,
           alignSelf: 'center',
           paddingHorizontal: RFValue(10),
-          paddingVertical: RFValue(5),
+          paddingVertical: RFValue(Platform.OS == 'ios' ? 5 : 3),
           borderWidth: 1,
           borderRadius: 15,
           borderColor: 'red',

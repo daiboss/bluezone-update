@@ -79,7 +79,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const [alertTarget, setAlertTarget] = useState(false);
   const [alertBmi, setAlertBmi] = useState(false);
   const [totalStep, setTotalStep] = useState(0);
-  const [timeWeight,setTimeWeight] = useState(0)
+  const [isHardwork, setIsHardwork] = useState(true)
   const [isShowModalTarget, setIsShowModalTarget] = useState(false)
   const [isShowModalShortcut, setIsShowModalShortcut] = useState(false)
 
@@ -123,6 +123,7 @@ const SettingScreen = ({ intl, navigation }) => {
       console.log('vaviaviaviaviaivaiviavgetStatus')
       let result = await getResultSteps()
       setTotalStep(parseInt(result.step))
+      setIsHardwork(result?.hardwork || false)
       let res = await getAutoChange();
       if (res == undefined) {
         res = true;
@@ -252,7 +253,8 @@ const SettingScreen = ({ intl, navigation }) => {
   const saveStepsTarget = async (steps) => {
     console.log('vaovoaovaovoaovaoSAVE')
     setTotalStep(steps)
-    await setResultSteps({ step: steps })
+    let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+    await setResultSteps({ step: steps, date: currentTime, hardwork: true })
     if (Platform.OS == 'android') {
       BackgroundJob.updateTypeNotification()
     }
@@ -281,7 +283,7 @@ const SettingScreen = ({ intl, navigation }) => {
         intl={intl}
         onSelected={saveStepsTarget}
         onCloseModal={closeModalTarget}
-        currentSteps={totalStep}
+        currentSteps={isHardwork ? totalStep : 10000}
         isVisibleModal={isShowModalTarget} />
 
       <ModalAddShortcut
@@ -324,7 +326,9 @@ const SettingScreen = ({ intl, navigation }) => {
           onPress={openModalTarget}
           disabled={autoTarget}
           activeOpacity={0.5}>
-          <Text style={autoTarget ? styles.txLabelGray : styles.txLabelRed}>{totalStep.format()} {formatMessage(message.steps)} <IconAntDesign name="right" size={14} /></Text>
+          <Text style={autoTarget ? styles.txLabelGray : styles.txLabelRed}>
+            {autoTarget ? '10.000' :totalStep.format()} {formatMessage(message.steps)} <IconAntDesign name="right" size={14} />
+          </Text>
         </TouchableOpacity>
       </View>
       <Text style={styles.txNotification}>{formatMessage(message.Notification)}</Text>
