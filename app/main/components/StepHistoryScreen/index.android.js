@@ -484,8 +484,8 @@ const styles = StyleSheet.create({
     borderRadius: 50
   },
   img: {
-    width: RFValue(60),
-    height: RFValue(60)
+    width: RFValue(56),
+    height: RFValue(56)
   },
   chart: {
     flex: 1,
