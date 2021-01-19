@@ -89,7 +89,7 @@ class ChartLine extends React.Component {
         // width={400}
         height={RFValue(200)}
         minDomain={{ y: 0 }}
-        padding={{ left: 40, right: 40, top: 50, bottom: 50 }}
+        padding={{ left: 40, right: 40, top: 30, bottom: 50 }}
         maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
       // theme={VictoryTheme.material}
       >
@@ -114,8 +114,9 @@ class ChartLine extends React.Component {
 
             tickLabels: {
               fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : '#3F3F3F',
-              fontSize: 14,
-              fontWeight: '350',
+              fontSize: RFValue(10),
+              fontWeight: '700',
+              // fontWeight: '350',
               fontFamily: 'helvetica',
             }
           }}

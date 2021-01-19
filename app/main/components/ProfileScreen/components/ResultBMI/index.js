@@ -43,27 +43,6 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
     return per;
   };
 
-  const renderValueBMI = useMemo(() => {
-    if (bmi > 0) {
-      console.log('BMIIIII', bmi)
-      return (
-        <NumberAnimate steps={0.3}
-          interval={2000 / (30)}
-          formatter={(val) => {
-            return parseFloat(val).toFixed(1)
-          }}
-          textBlueNumber={styles.textTotalBmi}
-          style={[
-            styles.textTotalBmi,
-            // {
-            //   color: fill,
-            // },
-          ]}
-          value={parseInt(bmi)} />
-      )
-    }
-  }, [bmi])
-
   return (
     <View style={[styles.container2, {
       // overflow: 'hidden'
@@ -91,6 +70,7 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
               styleText={{
                 fontSize: 10
               }}
+              interval={1400 / (30)}
               value={bmi}
               countBy={Math.floor(bmi / 40)}
               // timing="easeOut"

@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
     btnMenu: {
         // padding: 5,
         alignSelf: 'flex-end',
-        // marginRight: 20,
-        marginTop: 10
+        marginRight: 10,
+        marginTop: 30
     },
     iconMenu:{
         paddingLeft: 20,

@@ -78,6 +78,7 @@ import {
 import KKK from './lll'
 import ButtonIconText from '../../../base/components/ButtonIconText';
 import { red_bluezone } from '../../../core/color';
+import { RFValue } from '../../../const/multiscreen';
 
 const options = {
   taskName: 'Bluezone',
@@ -415,49 +416,50 @@ const StepCount = ({ props, intl, navigation }) => {
         showMenu={true}
         onShowMenu={onShowMenu}
       />
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-        {/* <View>
+      {/* <ScrollView showsVerticalScrollIndicator={false} style={styles.container}> */}
+      {/* <View>
                     <Text>Thống kê bước chân</Text>
                 </View> */}
-        <ImageBackground
-          resizeMode={'stretch'}
-          source={require('./images/bg_step_count.png')}
-          style={styles.viewCircular}>
-          <Text style={styles.txToday}>{formatMessage(message.today)}</Text>
-          <View style={styles.viewBorderCircular}>
-            <AnimatedCircularProgress
-              size={180}
-              style={styles.circular}
-              width={6}
-              lineCap="round"
-              rotation={0}
-              fill={
-                ((totalCount -
-                  (totalCount - countStep > 0 ? totalCount - countStep : 0)) /
-                  totalCount) *
-                100
-              }
-              tintColor="#FE4358"
-              backgroundColor="#e5e5e5">
-              {fill => (
-                <View style={styles.viewFill}>
-                  <Image
-                    source={require('./images/ic_run.png')}
-                    resizeMode={'contain'}
-                    style={{
-                      width: 30,
-                      height: 30
-                    }}
-                  />
-                  <Text style={styles.txCountStep}>{numberWithCommas(countStep || 0)}</Text>
-                  <Text style={styles.txCountTarget}>
-                    {formatMessage(message.target)} {numberWithCommas(totalCount || 0)}
-                  </Text>
-                </View>
-              )}
-            </AnimatedCircularProgress>
-          </View>
-        </ImageBackground>
+      <ImageBackground
+        resizeMode={'stretch'}
+        source={require('./images/bg_step_count.png')}
+        style={styles.viewCircular}>
+        <Text style={styles.txToday}>{formatMessage(message.today)}</Text>
+        <View style={styles.viewBorderCircular}>
+          <AnimatedCircularProgress
+            size={RFValue(170)}
+            style={styles.circular}
+            width={6}
+            lineCap="round"
+            rotation={0}
+            fill={
+              ((totalCount -
+                (totalCount - countStep > 0 ? totalCount - countStep : 0)) /
+                totalCount) *
+              100
+            }
+            tintColor="#FE4358"
+            backgroundColor="#e5e5e5">
+            {fill => (
+              <View style={styles.viewFill}>
+                <Image
+                  source={require('./images/ic_run.png')}
+                  resizeMode={'contain'}
+                  style={{
+                    width: RFValue(26),
+                    height: RFValue(26)
+                  }}
+                />
+                <Text style={styles.txCountStep}>{numberWithCommas(countStep || 0)}</Text>
+                <Text style={styles.txCountTarget}>
+                  {formatMessage(message.target)} {numberWithCommas(totalCount || 0)}
+                </Text>
+              </View>
+            )}
+          </AnimatedCircularProgress>
+        </View>
+      </ImageBackground>
+      <View style={{ flex: 4 }}>
         <View style={styles.dataHealth}>
           <View style={styles.viewImgData}>
             <Image
@@ -509,6 +511,7 @@ const StepCount = ({ props, intl, navigation }) => {
             </View>
           </View>
         </View>
+
         <View style={styles.viewLineChart}>
           {(dataChart.length && (
             <View>
@@ -532,8 +535,10 @@ const StepCount = ({ props, intl, navigation }) => {
 
           ) || null}
         </View>
-        {/* <View style={styles.viewHeight} /> */}
-      </ScrollView>
+
+      </View>
+      {/* <View style={styles.viewHeight} /> */}
+      {/* </ScrollView> */}
       {/* <TouchableOpacity
         style={styles.btnHistory}
         onPress={() =>
@@ -545,23 +550,25 @@ const StepCount = ({ props, intl, navigation }) => {
           {formatMessage(message.viewHistory)}
         </Text>
       </TouchableOpacity> */}
-      <ButtonIconText
-        onPress={() =>
-          navigation.navigate('stepHistory', {
-            dataHealth: { countStep, countRest, countCarlo, distant },
-          })
-        }
-        text={formatMessage(message.viewHistory)}
-        styleBtn={[styles.colorButtonConfirm]}
-        styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
-      />
+      <View style={{ flex: 0.7 }}>
+        <ButtonIconText
+          onPress={() =>
+            navigation.navigate('stepHistory', {
+              dataHealth: { countStep, countRest, countCarlo, distant },
+            })
+          }
+          text={formatMessage(message.viewHistory)}
+          styleBtn={[styles.colorButtonConfirm]}
+          styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
+        />
+      </View>
     </SafeAreaView >
   );
 };
 const styles = StyleSheet.create({
   img: {
-    width: 64,
-    height: 64
+    width: RFValue(60),
+    height: RFValue(60)
   },
   chart: {
     flex: 1,
@@ -607,6 +614,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 20,
     justifyContent: 'center',
+    flex: 3
   },
   viewBorderCircular: {
     padding: 10,
@@ -654,7 +662,7 @@ const styles = StyleSheet.create({
   txToday: {
     color: '#fff',
     fontSize: 14,
-    marginVertical: 20,
+    marginVertical: RFValue(14),
     textAlign: 'center',
   },
   header: {
