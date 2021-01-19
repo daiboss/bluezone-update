@@ -174,9 +174,9 @@ const StepCount = ({ props, intl, navigation }) => {
     if (!isRun) {
       BackgroundJob.start(taskStepCounter, options);
     }
-    else {
-      BackgroundJob.stop();
-    }
+    // else {
+    //   BackgroundJob.stop();
+    // }
   }, [BackgroundJob])
 
   const taskStepCounter = async () => {
