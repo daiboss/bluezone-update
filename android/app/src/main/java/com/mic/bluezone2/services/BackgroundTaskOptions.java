@@ -2,6 +2,7 @@ package com.mic.bluezone2.services;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -96,8 +97,14 @@ public final class BackgroundTaskOptions {
         return extras.getBundle("progressBar");
     }
 
-    public int getStepsTarget() {
-        return extras.getInt("targetStep");
+    public double getStepsTarget() {
+//        String string = "Bundle{";
+//        for (String key : extras.keySet()) {
+//            string += " " + key + " => " + extras.get(key) + ";";
+//        }
+//        string += " }Bundle";
+//        Log.e("TAGGGGG", string);
+        return extras.getDouble("targetStep");
     }
 
     public double getCurrentSteps() {

@@ -76,6 +76,8 @@ import {
 } from './../../../core/db/SqliteDb'
 
 import KKK from './lll'
+import ButtonIconText from '../../../base/components/ButtonIconText';
+import { red_bluezone } from '../../../core/color';
 
 const options = {
   taskName: 'Bluezone',
@@ -246,19 +248,19 @@ const StepCount = ({ props, intl, navigation }) => {
       let totalStep = await getStepsTotalPromise();
       scheduler.createWarnningStepNotification(totalStep || 0)
     }
-    let tmpWeight = await getWeightWarning()
-    let profiles = (await getProfile()) || [];
-    let profile = profiles.find(
-      item =>
-        getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) == 0,
-    );
-    if (!profile) {
-      return
-    }
-    let tmpTime = new moment.unix(profile?.date)
-    if (tmpWeight && (new moment().diff(tmpTime, 'days') >= 7)) {
-      scheduler.createWarnningWeightNotification()
-    }
+    // let tmpWeight = await getWeightWarning()
+    // let profiles = (await getProfile()) || [];
+    // let profile = profiles.find(
+    //   item =>
+    //     getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) == 0,
+    // );
+    // if (!profile) {
+    //   return
+    // }
+    // let tmpTime = new moment.unix(profile?.date)
+    // if (tmpWeight && (new moment().diff(tmpTime, 'days') >= 7)) {
+    //   scheduler.createWarnningWeightNotification()
+    // }
   }
 
   const autoChangeStepsTarget = async () => {
@@ -293,8 +295,8 @@ const StepCount = ({ props, intl, navigation }) => {
           step: 1000,
           date: currentTime
         }
-      } else if (resultTmp?.step > stepTarget?.step && (resultTmp?.step - stepTarget?.step) <= 5000) {
-        let newTarget = (itemLast?.step || 0) + 250
+      } else if (resultTmp?.step > stepTarget?.step && stepTarget?.step <= 5000) {
+        let newTarget = (resultTmp?.step || 0) + 250
         resultSave = {
           step: newTarget,
           date: currentTime
@@ -532,7 +534,7 @@ const StepCount = ({ props, intl, navigation }) => {
         </View>
         {/* <View style={styles.viewHeight} /> */}
       </ScrollView>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.btnHistory}
         onPress={() =>
           navigation.navigate('stepHistory', {
@@ -542,7 +544,17 @@ const StepCount = ({ props, intl, navigation }) => {
         <Text style={styles.txHistory}>
           {formatMessage(message.viewHistory)}
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <ButtonIconText
+        onPress={() =>
+          navigation.navigate('stepHistory', {
+            dataHealth: { countStep, countRest, countCarlo, distant },
+          })
+        }
+        text={formatMessage(message.viewHistory)}
+        styleBtn={[styles.colorButtonConfirm]}
+        styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
+      />
     </SafeAreaView >
   );
 };
@@ -591,7 +603,7 @@ const styles = StyleSheet.create({
 
   viewCircular: {
     paddingBottom: 30,
-    marginTop: 20,
+    // marginTop: 20,
     alignItems: 'center',
     marginHorizontal: 20,
     justifyContent: 'center',
@@ -649,6 +661,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     marginTop: isIPhoneX ? 0 : 20,
   },
+  colorButtonConfirm: {
+    backgroundColor: red_bluezone,
+    height: 46,
+    alignSelf: 'center',
+    width: '80%',
+    borderRadius: 25,
+    paddingVertical: 0,
+    marginBottom: 10
+  },
+
 });
 StepCount.propTypes = {
   intl: intlShape.isRequired,

@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
     justifyContent: 'space-between',
-    paddingTop: '10%',
+    // paddingTop: '10%',
   },
   container2: {
     shadowColor: "#000",
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
   },
+
 });
 
 export default styles;

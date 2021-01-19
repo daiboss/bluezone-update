@@ -74,9 +74,9 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
         final String taskTitle = bgOptions.getTaskTitle();
         final double currentSteps = bgOptions.getCurrentSteps();
         boolean isShowNofi = bgOptions.isShowStep();
-        int targetSteps = bgOptions.getStepsTarget();
+        double targetSteps = bgOptions.getStepsTarget();
         final double valueTarget = bgOptions.getvalueTarget();
-        Log.e("TAGGGGG", "targetSteps: " + targetSteps + " - " + valueTarget + " - " + taskTitle + " - " + currentSteps);
+//        Log.e("TAGGGGG", "targetSteps: " + targetSteps + " - " + valueTarget + " - " + taskTitle + " - " + currentSt`eps);
         if (targetSteps == 0) {
             targetSteps = 10000;
         }
