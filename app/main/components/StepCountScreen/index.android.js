@@ -355,7 +355,7 @@ const StepCount = ({ props, intl, navigation }) => {
     await autoChangeStepsTarget()
   }
 
-  const { formatMessage } = intl;
+  const { formatMessage, locale } = intl;
 
   const [time, setTime] = useState([]);
   const [countStep, setCountStep] = useState(null);
@@ -466,12 +466,19 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_step.png')}
             />
-            <Text style={styles.txData}>{`${formatMessage(
-              message.stepsToTarget,
-            )} ${numberWithCommas((totalCount - countStep) > 0 ? (totalCount - countStep) : 0)}`}</Text>
-            <Text style={styles.txUnit}>{`${formatMessage(
-              message.stepsNormal,
-            )}`}</Text>
+            {locale != 'en' ? <View>
+              <Text style={styles.txData}>{`${formatMessage(
+                message.stepsToTarget,
+              )} ${countRest > 0 ? countRest : 0}`}</Text>
+              <Text style={styles.txUnit}>{`${formatMessage(
+                message.stepsNormal,
+              )}`}</Text>
+            </View> : <View>
+                <Text style={styles.txData}>{countRest > 0 ? countRest : 0} <Text style={[styles.txUnit, { marginTop: 10, fontWeight: '400' }]}>steps</Text> </Text>
+                <Text style={styles.txUnit}>to target</Text>
+              </View>}
+
+
           </View>
           <View style={styles.viewImgData}>
             <Image
@@ -673,7 +680,7 @@ const styles = StyleSheet.create({
     backgroundColor: red_bluezone,
     height: 46,
     alignSelf: 'center',
-    width: '80%',
+    width: '60%',
     borderRadius: 25,
     paddingVertical: 0,
     marginBottom: 10

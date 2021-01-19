@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
 
   buttonConfirm: {
-    marginHorizontal: 43,
+    // marginHorizontal: 43,
     marginBottom: 27,
     marginTop: 40,
   },
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: red_bluezone,
     height: 46,
     alignSelf: 'center',
-    width: '80%',
+    width: '60%',
     borderRadius: 25,
     paddingVertical: 0,
   },
