@@ -80,7 +80,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const [alertBmi, setAlertBmi] = useState(false);
   const [totalStep, setTotalStep] = useState(0);
   const [isHardwork, setIsHardwork] = useState(true)
-  const [timeWeight,setTimeWeight] = useState(0)
+  const [timeWeight, setTimeWeight] = useState(0)
   const [isShowModalTarget, setIsShowModalTarget] = useState(false)
   const [isShowModalShortcut, setIsShowModalShortcut] = useState(false)
 
@@ -100,7 +100,7 @@ const SettingScreen = ({ intl, navigation }) => {
     let profiles = (await getProfile()) || [];
     const time = profiles?.[profiles.length - 1]?.date
     setTimeWeight(time)
-    console.log('profilesprofilesprofilesprofiles',profiles)
+    console.log('profilesprofilesprofilesprofiles', profiles)
   }
   const alertPermission = (type) => {
     if (type == 'step') setAlertStep(!alertStep)
@@ -307,7 +307,7 @@ const SettingScreen = ({ intl, navigation }) => {
         onShowMenu={onShowMenu}
       />
       <View style={styles.viewTx}>
-        <Text style={[styles.txLabel, {fontWeight: '700'}]}>
+        <Text style={[styles.txLabel, { fontWeight: '700' }]}>
           {formatMessage(message.autoAdjustTarget)}
         </Text>
         <Switch
@@ -319,19 +319,20 @@ const SettingScreen = ({ intl, navigation }) => {
         />
       </View>
       <Text style={styles.txContent}>{formatMessage(message.content)}</Text>
-      <View style={[styles.viewTx, styles.borderTop, styles.borderBottom]}>
+      <TouchableOpacity
+        onPress={openModalTarget}
+        disabled={autoTarget}
+        activeOpacity={0.5}
+        style={[styles.viewTx, styles.borderTop, styles.borderBottom]}>
         <Text style={autoTarget ? styles.txTargetGrey : styles.txTarget}>
           {formatMessage(message.stepTarget)}
         </Text>
-        <TouchableOpacity
-          onPress={openModalTarget}
-          disabled={autoTarget}
-          activeOpacity={0.5}>
+        <View>
           <Text style={autoTarget ? styles.txLabelGray : styles.txLabelRed}>
-            {autoTarget ? '10.000' :totalStep.format()} {formatMessage(message.steps)} <IconAntDesign name="right" size={14} />
+            {autoTarget ? '10.000' : totalStep.format()} {formatMessage(message.steps)} <IconAntDesign name="right" size={14} />
           </Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
       <Text style={styles.txNotification}>{formatMessage(message.Notification)}</Text>
       <View style={[styles.viewTx, styles.borderBottom]}>
         <Text style={styles.txLabel}>{formatMessage(message.NotificationRealtime)}</Text>
@@ -368,7 +369,9 @@ const SettingScreen = ({ intl, navigation }) => {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={getListShortcut}
-            style={[styles.viewTx, styles.borderBottom]}>
+            style={[styles.viewTx
+              // , styles.borderBottom
+            ]}>
             <Text
               style={styles.txLabel}>
               {formatMessage(message.AddShortcut)}
@@ -393,13 +396,14 @@ const styles = StyleSheet.create({
   borderBottom: {
     borderBottomColor: '#00000020',
     borderBottomWidth: 1,
+    paddingBottom: 16
   },
   viewTx: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: 20,
-    marginVertical: 5,
+    marginVertical: 0,
     paddingVertical: 20,
   },
   txContent: {
