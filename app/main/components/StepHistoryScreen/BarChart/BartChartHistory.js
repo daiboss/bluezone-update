@@ -9,8 +9,6 @@ import {
 import moment from 'moment'
 import { red_bluezone } from '../../../../core/color';
 
-import { DATA_STEPS } from './data'
-
 const sampleData = [
   {x: '01/12', y: 22000},
   {x: '02/12', y: 300},

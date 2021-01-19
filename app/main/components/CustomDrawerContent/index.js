@@ -59,10 +59,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        padding: 10,
+        paddingHorizontal: 10,
         borderBottomColor: '#00000010',
         borderBottomWidth: 1,
-        marginHorizontal: 20
+        marginHorizontal: 20,
+        padding: 16
     },
     image: {
         height: 18,
