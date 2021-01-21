@@ -52,32 +52,16 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
       ) : (
           <View style={[styles.container3]}>
             <Text style={styles.textLabel}>{formatMessage(message.result)}</Text>
-            {/* <Text style={styles.textTotalBmi}>{bmi}</Text> */}
-            {/* <NumberAnimate steps={0.3}
-              interval={2000 / (30)}
+            <NumberAnimate
+              steps={30}
+              interval={1300 / (30)}
               formatter={(val) => {
                 return parseFloat(val).toFixed(1)
               }}
-              // textBlueNumber={styles.textTotalBmi}
-              style={[
-                styles.textTotalBmi,
-                // {
-                //   color: fill,
-                // },
-              ]}
-              value={parseInt(bmi)} /> */}
-            <NumberAnimate
               styleText={{
                 fontSize: 10
               }}
-              interval={1400 / (30)}
-              value={bmi}
-              countBy={Math.floor(bmi / 40)}
-              // timing="easeOut"
-              formatter={val => {
-                return parseFloat(val).toFixed(1);
-              }}
-            />
+              value={bmi} />
           </View>
         )}
       <View style={styles.container4}>

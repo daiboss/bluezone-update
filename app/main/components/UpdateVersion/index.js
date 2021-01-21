@@ -23,16 +23,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Linking, View, Platform} from 'react-native';
+import { Linking, View, Platform } from 'react-native';
 import Modal from 'react-native-modal';
-import {injectIntl} from 'react-intl';
+import { injectIntl } from 'react-intl';
 // import Config from 'react-native-config';
 
 // Component
-import Text, {MediumText} from '../../../base/components/Text';
+import Text, { MediumText } from '../../../base/components/Text';
 import ButtonText from '../../../base/components/ButtonText';
-import {getCheckVersions} from '../../../core/apis/bluezone';
-import {checkPriorityOfNewVersion} from '../../../core/version';
+import { getCheckVersions } from '../../../core/apis/bluezone';
+import { checkPriorityOfNewVersion } from '../../../core/version';
 
 import {
   getVersionCurrent,
@@ -43,7 +43,7 @@ import {
   creatScheduleUpdateAppNotification,
   clearScheduleUpdateAppNotification,
 } from '../../../core/notifyScheduler';
-import {CurrentVersionValue} from '../../../core/version';
+import { CurrentVersionValue } from '../../../core/version';
 
 // Styles
 import styles from './styles/index.css';
@@ -68,8 +68,8 @@ class UpdateVersion extends React.PureComponent {
   }
 
   onUpdate = () => {
-    const {navigation} = this.props;
-    this.setState({isModalUpdate: false}, () => {
+    const { navigation } = this.props;
+    this.setState({ isModalUpdate: false }, () => {
       if (Config.TYPE_APP === 'web' && Platform.OS === 'android') {
         this.urlUpdate &&
           navigation.navigate('DownloadLatestVersionScreen', {
@@ -82,7 +82,7 @@ class UpdateVersion extends React.PureComponent {
   };
 
   onCancelUpdate = () => {
-    this.setState({isModalUpdate: false}, this.setModalStatus);
+    this.setState({ isModalUpdate: false }, this.setModalStatus);
   };
 
   async onCheckUpdate() {
@@ -163,18 +163,19 @@ class UpdateVersion extends React.PureComponent {
   }
 
   setModalStatus() {
-    const {setModalStatus} = this.props;
+    const { setModalStatus } = this.props;
     setModalStatus({
       isPermission: true,
     });
   }
 
   render() {
-    const {intl} = this.props;
-    const {formatMessage} = intl;
-    const {isModalUpdate, forceUpdate} = this.state;
+    const { intl } = this.props;
+    const { formatMessage } = intl;
+    const { isModalUpdate, forceUpdate } = this.state;
     return (
       <Modal
+        useNativeDriver
         isVisible={isModalUpdate}
         style={styles.modal}
         animationIn="zoomInDown"

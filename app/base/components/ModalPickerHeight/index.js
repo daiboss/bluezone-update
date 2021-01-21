@@ -55,6 +55,7 @@ function ModalPicker({
 
   return (
     <ModalComponent
+      useNativeDriver={true}
       isVisible={isVisibleModal}
       onBackdropPress={selectHeight}
       backdropOpacity={0.5}

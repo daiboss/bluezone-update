@@ -42,6 +42,7 @@ export const DisplayOriginalImg = 'DisplayOriginalImg';
 export const QuestionFAQ = 'QuestionFAQ';
 export const Profile = 'Profile';
 export const ResultSteps = 'ResultSteps';
+export const ConfirmAlert = 'ConfirmAlert';
 export const IsShowNotification = 'IsShowNotification';
 export const autoChange = 'com.bluezone.autoChange';
 export const realtime = 'com.bluezone.realtime';

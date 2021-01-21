@@ -253,6 +253,17 @@ class BackgroundServer {
             delete this.callbacks[intervalId];
         }
     }
+
+    sendEmitSaveSuccess() {
+        RNBackgroundActions.sendEmitSaveSuccess();
+    }
+
+    observerStepSaveChange(callback) {
+        DeviceEventEmitter.addListener(
+            'EMIT_EVENT_STEP_SAVE',
+            () => callback()
+        )
+    }
 }
 
 const backgroundStepCounter = new BackgroundServer();

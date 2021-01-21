@@ -26,13 +26,14 @@ import styles from './styles/index.css';
 import * as fontSize from '../../../core/fontSize';
 import SelectGender from './components/SelectGender';
 import SelectHeightOrWeight from './components/SelectHeightOrWeight';
-import { getProfile, setProfile, getWeightWarning} from '../../../core/storage';
+import { getProfile, setProfile, getWeightWarning } from '../../../core/storage';
 const TIMEOUT_LOADING = 800;
 import moment from 'moment';
 import { ButtonClose } from '../../../base/components/ButtonText/ButtonModal';
 import * as scheduler from '../../../core/notifyScheduler';
 import ResultBMI from './components/ResultBMI';
 import PushNotification from 'react-native-push-notification';
+import { CommonActions } from '@react-navigation/native';
 
 const visibleModal = {
   isProcessing: false,
@@ -53,7 +54,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   const [isVisibleVerifyError, setisVisibleVerifyError] = useState(false);
   const [height, setHeight] = useState(null);
   const [weight, setWeight] = useState(null);
-  const [timeWeight,setTimeWeight] = useState(0)
+  const [timeWeight, setTimeWeight] = useState(0)
   const onGoBack = () => navigation.goBack();
   const onSelectGender = gender => setGender(gender);
   const getProfileList = async profiles => {
@@ -143,7 +144,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   }
   const onConfirm = async () => {
     try {
-     await PushNotification.cancelAllLocalNotifications()
+      await PushNotification.cancelAllLocalNotifications()
       if (!height) {
         setHeightError(true);
       }
@@ -168,7 +169,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
           .toDate()
           .getTime(),
       };
-      getWeighiNoti && scheduler.createScheduleWarnningWeightNotification(obj.date) 
+      getWeighiNoti && scheduler.createScheduleWarnningWeightNotification(obj.date)
       if (index != -1) {
         profiles.splice(index, 1, obj);
       } else {
@@ -176,6 +177,14 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       }
       setProfile(profiles);
       navigation.navigate('stepCount');
+      // navigation.dispatch(
+      //   CommonActions.reset({
+      //     index: 1,
+      //     routes: [
+      //       { name: 'stepCount' },
+      //     ],
+      //   })
+      // );
     } catch (error) {
       console.log('error: ', error);
       setisVisibleVerifyError(true);

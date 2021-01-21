@@ -76,9 +76,10 @@ export const getAllDistance = (data, sex, height, weight) => {
 export const getDistances = async () => {
     try {
         let stepData = [];
-        await getListStepDay().then(res => {
-            Array.prototype.push.apply(stepData, res);
-        })
+        const res = await getListStepDay()
+        // .then(res => {
+        Array.prototype.push.apply(stepData, res);
+        // })
         let profiles = (await getProfile()) || [];
         let profile = profiles.find(
             item =>
@@ -101,9 +102,19 @@ export const getDistances = async () => {
                 time: result?.time || 1,
             };
         }
-        return {};
+        return {
+            step: 0,
+            distance: 0.00,
+            calories: 0,
+            time: 0,
+        };
     } catch (error) {
-        return {};
+        return {
+            step: 0,
+            distance: 0.00,
+            calories: 0,
+            time: 0,
+        };
     }
 };
 

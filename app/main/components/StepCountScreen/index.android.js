@@ -43,6 +43,8 @@ import {
   getIsShowNotification,
   getNotiStep,
   getWeightWarning,
+  setConfirmAlert,
+  getConfirmAlert
 } from '../../../core/storage';
 import ChartLine from './ChartLine';
 import ChartLineV from './ChartLineV';
@@ -52,6 +54,7 @@ import {
   realtime,
   notiStep,
   weightWarning,
+
 } from '../../../const/storage';
 const screenWidth = Dimensions.get('window').width;
 
@@ -72,13 +75,16 @@ import {
   removeAllStep,
   getListHistory,
   addHistory,
-  removeAllHistory
+  removeAllHistory,
 } from './../../../core/db/SqliteDb'
 
 import KKK from './lll'
 import ButtonIconText from '../../../base/components/ButtonIconText';
-import { red_bluezone } from '../../../core/color';
+import { blue_bluezone, red_bluezone } from '../../../core/color';
 import { RFValue } from '../../../const/multiscreen';
+import { CommonActions } from '@react-navigation/native';
+
+import Modal from 'react-native-modal'
 
 const options = {
   taskName: 'Bluezone',
@@ -110,8 +116,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const observerStepDrawUI = async () => {
     getResultBindingUI()
-    BackgroundJob.observerStep(steps => {
-      // console.log('STEP------->>>', steps)
+    BackgroundJob.observerStepSaveChange(() => {
       getResultBindingUI()
     })
   }
@@ -120,6 +125,7 @@ const StepCount = ({ props, intl, navigation }) => {
     let start = new moment().subtract(8, 'days').unix()
     let end = new moment().subtract(1, 'days').unix()
     let steps = await getListHistory(start, end)
+
     let list = steps.map(item => {
       let tmp = JSON.parse(item?.resultStep || {})
       return {
@@ -127,14 +133,29 @@ const StepCount = ({ props, intl, navigation }) => {
         y: tmp?.step || 0,
       }
     });
-    // console.log('List hiustory', list, start, end)
     let listTime = []
     list.forEach(e => {
       listTime.push(e?.x)
     });
     setDataChart(list)
-    // console.log('listTime', listTime)
     setTime(listTime)
+
+    // alert7dayLessThan1000(steps)
+  }
+
+  const alert7dayLessThan1000 = (steps) => {
+    if (steps.length == 7) {
+      let check = true
+      steps.forEach(element => {
+        let tmp = JSON.parse(element?.resultStep)
+        if ((tmp?.step || 0) >= 1000) {
+          check = false
+        }
+      });
+      if (check) {
+        showNotificationAlert7DayLessThan100()
+      }
+    }
   }
 
   useEffect(() => {
@@ -156,8 +177,6 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const getResultBindingUI = async () => {
-    // let profi = await getProfile()
-    // console.log('profiprofiprofi', profi)
     let result = await getDistances();
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
@@ -181,13 +200,14 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const taskStepCounter = async () => {
     await new Promise(async () => {
-      scheduleLastDay()
-      schedule7PM();
+      // scheduleLastDay()
+      // schedule7PM();
+
+      loopTimeToSchedule()
 
       getStepsTotal(async total => {
         let targetSteps = await getResultSteps();
         let isShowStep = await getIsShowNotification()
-        // console.log('isShowStepisShowStepisShowStep', isShowStep)
         BackgroundJob.updateNotification({ ...options, currentStep: total || 0, targetStep: targetSteps?.step || 10000, isShowStep: isShowStep })
       })
 
@@ -197,8 +217,14 @@ const StepCount = ({ props, intl, navigation }) => {
 
         // console.log('STEP------->>>', steps)
 
+        if (steps.stepCounter) {
+          await addStepCounter(steps?.startTime,
+            steps?.endTime,
+            steps?.stepCounter)
+          BackgroundJob.sendEmitSaveSuccess()
+        }
+
         getStepsTotal(total => {
-          // console.log('isShowStepisShowStepisShowStep', parseInt(targetSteps?.step))
           BackgroundJob.updateNotification({
             ...options,
             currentStep: total || 0,
@@ -207,40 +233,50 @@ const StepCount = ({ props, intl, navigation }) => {
             valueTarget: 123
           })
         })
-        if (steps.stepCounter) {
-          addStepCounter(steps?.startTime,
-            steps?.endTime,
-            steps?.stepCounter)
-        }
+
       })
     })
   }
 
-  const schedule7PM = async () => {
-    let currentTime = new moment()
-    let timePush = new moment(currentTime).set({ hour: 19, minute: 0, second: 0, millisecond: 0 })
-    if (timePush.isBefore(currentTime)) {
-      timePush.add(1, 'days')
+  const loopTimeToSchedule = async (oldId) => {
+    if (oldId) {
+      BackgroundJob.clearTimeout(oldId);
     }
-    let timeDiff = timePush.diff(currentTime, 'milliseconds')
-    // console.log('timeDifftimeDiff', timeDiff)
-
-    BackgroundJob.setTimeout(() => {
-      pushNotificationWarning()
-      schedule7PM()
-    }, timeDiff)
-  }
-
-  const scheduleLastDay = () => {
+    await switchTimeToSchedule();
     let currentTime = new moment()
+    let today7pm = new moment().set({ hour: 19, minute: 0, second: 0, millisecond: 0 })
     let tomorow = new moment(currentTime).add(1, 'days')
     tomorow.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+
     let timeDiff = tomorow.diff(currentTime, 'milliseconds')
-    // console.log('timeDifftimeDiff', timeDiff)
-    BackgroundJob.setTimeout(async () => {
-      await saveHistory();
-      scheduleLastDay();
-    }, timeDiff)
+    let timeDiff7h = 10001
+    if (today7pm.isAfter(currentTime)) {
+      timeDiff7h = today7pm.diff(currentTime, 'milliseconds')
+    }
+    let tmpTime = Math.min(timeDiff, timeDiff7h)
+    if (tmpTime > 10000) {
+      tmpTime = 10000
+    }
+    const timeoutId = BackgroundJob.setTimeout(() => {
+      loopTimeToSchedule(timeoutId);
+    }, tmpTime)
+  }
+
+  const switchTimeToSchedule = async () => {
+    let currentTime = new moment()
+    if (currentTime.format('HH:mm:ss') == '00:00:00') {
+      await scheduleLastDay()
+    } else if (currentTime.format('HH:mm:ss') == '19:00:00') {
+      await schedule7PM()
+    }
+  }
+
+  const schedule7PM = async () => {
+    await pushNotificationWarning()
+  }
+
+  const scheduleLastDay = async () => {
+    await saveHistory();
   }
 
   const pushNotificationWarning = async () => {
@@ -249,19 +285,6 @@ const StepCount = ({ props, intl, navigation }) => {
       let totalStep = await getStepsTotalPromise();
       scheduler.createWarnningStepNotification(totalStep || 0)
     }
-    // let tmpWeight = await getWeightWarning()
-    // let profiles = (await getProfile()) || [];
-    // let profile = profiles.find(
-    //   item =>
-    //     getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) == 0,
-    // );
-    // if (!profile) {
-    //   return
-    // }
-    // let tmpTime = new moment.unix(profile?.date)
-    // if (tmpWeight && (new moment().diff(tmpTime, 'days') >= 7)) {
-    //   scheduler.createWarnningWeightNotification()
-    // }
   }
 
   const autoChangeStepsTarget = async () => {
@@ -277,7 +300,6 @@ const StepCount = ({ props, intl, navigation }) => {
     let stepTarget = await getResultSteps()
 
     let resultSave = {}
-
     if (listHistory?.length == 2) {
       let itemLast = listHistory[1]
       let resultTmp = JSON.parse(itemLast?.resultStep)
@@ -367,6 +389,12 @@ const StepCount = ({ props, intl, navigation }) => {
   const [totalCount, setTotalCount] = useState(10000);
   const [dataChart, setDataChart] = useState([]);
 
+  const [isShowModalAlert, setIsShowModalAlert] = useState(false)
+
+  const openModalAlert7Day = () => setIsShowModalAlert(true)
+
+  const closeModalAlert7Day = () => setIsShowModalAlert(false)
+
   useFocusEffect(
     React.useCallback(() => {
       resultSteps();
@@ -376,7 +404,6 @@ const StepCount = ({ props, intl, navigation }) => {
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
-      // console.log('resultStepsresultSteps', resultSteps)
       if (!resultSteps) {
         setResultSteps({ step: totalCount, date: new Date().getTime() });
       } else {
@@ -391,8 +418,17 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const onBack = () => {
     try {
-      if (navigation.canGoBack())
-        navigation.pop();
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            { name: 'Home' },
+            {
+              name: 'Welcome',
+            },
+          ],
+        })
+      );
     } catch (e) { }
   };
 
@@ -400,9 +436,25 @@ const StepCount = ({ props, intl, navigation }) => {
     navigation.openDrawer();
   };
 
+  const showNotificationAlert7DayLessThan100 = async () => {
+    let old = await getConfirmAlert()
+    if (old != (new moment().format('DD/MM/YYYY'))) {
+      openModalAlert7Day()
+    }
+  }
+
+  const confirmStepsTarget = async (type) => {
+    await setConfirmAlert(new moment().format('DD/MM/YYYY'))
+    if (type) {
+      closeModalAlert7Day()
+    } else {
+      closeModalAlert7Day()
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar />
+      {/* <StatusBar /> */}
 
       <Header
         // onBack={onBack}
@@ -416,10 +468,39 @@ const StepCount = ({ props, intl, navigation }) => {
         showMenu={true}
         onShowMenu={onShowMenu}
       />
-      {/* <ScrollView showsVerticalScrollIndicator={false} style={styles.container}> */}
-      {/* <View>
-                    <Text>Thống kê bước chân</Text>
-                </View> */}
+
+      <Modal
+        useNativeDriver
+        isVisible={isShowModalAlert}
+        onBackdropPress={closeModalAlert7Day}
+      >
+        <View style={styles.containerAlert}>
+          <Text style={styles.textAlert}>Bạn có muốn dữ mục tiêu là {numberWithCommas(totalCount)} không?</Text>
+          <View style={{
+            marginTop: RFValue(18),
+            flexDirection: 'row',
+            borderTopWidth: 1,
+            borderColor: '#d3d3d3'
+          }}>
+            <TouchableOpacity
+              onPress={() => confirmStepsTarget(0)}
+              activeOpacity={0.5}
+              style={{ flex: 1, justifyContent: 'center' }} >
+              <Text style={styles.btnAlert}>Không</Text>
+            </TouchableOpacity>
+            <View style={{ height: RFValue(36), width: 1, backgroundColor: '#d3d3d3' }} />
+            <TouchableOpacity
+              onPress={() => confirmStepsTarget(1)}
+              activeOpacity={0.5}
+              style={{ flex: 1, justifyContent: 'center' }} >
+              <Text style={[styles.btnAlert, {
+                color: blue_bluezone
+              }]}>Đồng ý</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <ImageBackground
         resizeMode={'stretch'}
         source={require('./images/bg_step_count.png')}
@@ -469,12 +550,12 @@ const StepCount = ({ props, intl, navigation }) => {
             {locale != 'en' ? <View>
               <Text style={styles.txData}>{`${formatMessage(
                 message.stepsToTarget,
-              )} ${countRest > 0 ? countRest : 0}`}</Text>
+              )} ${numberWithCommas((totalCount - countStep) > 0 ? (totalCount - countStep) : 0)}`}</Text>
               <Text style={styles.txUnit}>{`${formatMessage(
                 message.stepsNormal,
               )}`}</Text>
             </View> : <View>
-                <Text style={styles.txData}>{countRest > 0 ? countRest : 0} <Text style={[styles.txUnit, { marginTop: 10, fontWeight: '400' }]}>steps</Text> </Text>
+                <Text style={styles.txData}>{numberWithCommas((totalCount - countStep) > 0 ? (totalCount - countStep) : 0)} <Text style={[styles.txUnit, { marginTop: 10, fontWeight: '400' }]}>steps</Text> </Text>
                 <Text style={styles.txUnit}>to target</Text>
               </View>}
 
@@ -493,7 +574,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_calories.png')}
             />
-            <Text style={styles.txData}>{countCarlo}</Text>
+            <Text style={styles.txData}>{numberWithCommas(parseInt(countCarlo || 0))}</Text>
             <Text style={styles.txUnit}>{`kcal`}</Text>
           </View>
           <View style={styles.viewImgData}>
@@ -502,18 +583,33 @@ const StepCount = ({ props, intl, navigation }) => {
               source={require('./images/ic_time.png')}
             />
             <View style={{ flexDirection: 'row' }}>
-              <View>
-                <Text style={styles.txData}>{countTime}</Text>
-                <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
-              </View>
+
               {
-                countTimeHour > 0 && (
-                  <View style={{ marginLeft: 4 }}>
-                    <Text style={styles.txData}>{countTimeHour}</Text>
-                    <Text style={styles.txUnit}>{formatMessage(message.hour)}</Text>
+                countTimeHour > 0 ? (
+                  <View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={[styles.txData, {
+                        marginRight: 4,
+                        marginTop: 10
+                      }]}>{countTimeHour}</Text>
+                      <Text style={[styles.txUnit, { marginTop: 10 }]}>{formatMessage(message.hour)}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={[styles.txData, {
+                        marginRight: 5,
+                        marginTop: 5
+                      }]}>{countTime}</Text>
+                      <Text style={[styles.txUnit, { marginTop: 5 }]}>{formatMessage(message.minute)}</Text>
+                    </View>
                   </View>
-                )
+                ) : (
+                    <View>
+                      <Text style={styles.txData}>{countTime}</Text>
+                      <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+                    </View>
+                  )
               }
+
 
             </View>
           </View>
@@ -527,7 +623,10 @@ const StepCount = ({ props, intl, navigation }) => {
                 activeOpacity={0.8}
                 onPress={() =>
                   navigation.navigate('stepHistory', {
-                    dataHealth: { countStep, countRest, countCarlo, distant },
+                    dataHealth: {
+                      countStep, countRest: (totalCount - countStep) > 0 ? (totalCount - countStep) : 0
+                      , countCarlo, distant
+                    },
                   })
                 }
                 style={{
@@ -544,19 +643,7 @@ const StepCount = ({ props, intl, navigation }) => {
         </View>
 
       </View>
-      {/* <View style={styles.viewHeight} /> */}
-      {/* </ScrollView> */}
-      {/* <TouchableOpacity
-        style={styles.btnHistory}
-        onPress={() =>
-          navigation.navigate('stepHistory', {
-            dataHealth: { countStep, countRest, countCarlo, distant },
-          })
-        }>
-        <Text style={styles.txHistory}>
-          {formatMessage(message.viewHistory)}
-        </Text>
-      </TouchableOpacity> */}
+
       <View style={{ flex: 0.7 }}>
         <ButtonIconText
           onPress={() =>
@@ -569,7 +656,7 @@ const StepCount = ({ props, intl, navigation }) => {
           styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
         />
       </View>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
@@ -685,7 +772,20 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     marginBottom: 10
   },
-
+  containerAlert: {
+    backgroundColor: '#fff',
+    borderRadius: 6,
+  },
+  textAlert: {
+    textAlign: 'center',
+    fontSize: RFValue(12),
+    fontWeight: '700',
+    marginTop: RFValue(10)
+  },
+  btnAlert: {
+    textAlign: 'center',
+    fontWeight: '700'
+  }
 });
 StepCount.propTypes = {
   intl: intlShape.isRequired,

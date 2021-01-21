@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +40,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
     private static final String EVENT_DETECTOR = "stepDetector";
     private static final String EVENT_ACCELEROMETER = "stepAccelerometer";
     private static final String EMIT_EVENT_STEP = "EMIT_EVENT_STEP";
+    private static final String EMIT_EVENT_CHANGE_TIME = "EMIT_EVENT_CHANGE_TIME";
     private static final String EMIT_IS_SUPPORT = "EMIT_IS_SUPPORT";
     private static final String START_TIME = "startTime";
     private static final String END_TIME = "endTime";
@@ -76,7 +79,6 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
         boolean isShowNofi = bgOptions.isShowStep();
         double targetSteps = bgOptions.getStepsTarget();
         final double valueTarget = bgOptions.getvalueTarget();
-//        Log.e("TAGGGGG", "targetSteps: " + targetSteps + " - " + valueTarget + " - " + taskTitle + " - " + currentSt`eps);
         if (targetSteps == 0) {
             targetSteps = 10000;
         }
@@ -84,12 +86,12 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
         final String linkingURI = bgOptions.getLinkingURI();
         Intent notificationIntent;
         if (linkingURI != null) {
-            notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkingURI));
+            notificationIntent = new Intent(Intent.ACTION_VIEW);
+            notificationIntent.setData(Uri.parse(linkingURI));
         } else {
             notificationIntent = new Intent(context, context.getCurrentActivity().getClass());
         }
         final PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         //custom notification
         RemoteViews notificationLayout = new RemoteViews(context.getPackageName(), R.layout.custom_notification);
 
@@ -112,7 +114,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
 
 
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.icon_bluezone)
+                .setSmallIcon(R.mipmap.icon_bluezone_service)
                 .setSmallIcon(iconInt)
                 .setContentTitle(taskTitle)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
@@ -311,5 +313,4 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
-
 }

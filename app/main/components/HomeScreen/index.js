@@ -26,6 +26,7 @@ import { View, StatusBar, AppState } from 'react-native';
 import * as PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import { injectIntl, intlShape } from 'react-intl';
+import { CommonActions } from '@react-navigation/native';
 
 // Language
 import message from '../../../core/msg/home';
@@ -145,6 +146,17 @@ class HomeTab extends React.Component {
 
   onChangeNavigateIntroduce() {
     this.props.navigation.navigate('Welcome');
+    // this.props.navigation.dispatch(
+    //   CommonActions.reset({
+    //     index: 1,
+    //     routes: [
+    //       { name: 'Home' },
+    //       {
+    //         name: 'Welcome',
+    //       },
+    //     ],
+    //   })
+    // );
   }
 
   onWatchHistory() {

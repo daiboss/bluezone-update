@@ -731,9 +731,9 @@ const StepCount = ({ props, intl, navigation }) => {
                       height: 30
                     }}
                   />
-                  <Text style={styles.txCountStep}>{countStep}</Text>
+                  <Text style={styles.txCountStep}>{numberWithCommas(countStep || 0)}</Text>
                   <Text style={styles.txCountTarget}>
-                    {formatMessage(message.target)} {totalCount}
+                    {formatMessage(message.target)} {numberWithCommas(totalCount || 0)}
                   </Text>
                 </View>
               )}
@@ -750,12 +750,12 @@ const StepCount = ({ props, intl, navigation }) => {
            { locale != 'en' ? <View>
               <Text style={styles.txData}>{`${formatMessage(
                 message.stepsToTarget,
-              )} ${countRest > 0 ? countRest : 0}`}</Text>
+              )} ${numberWithCommas(countRest > 0 ? countRest : 0)}`}</Text>
               <Text style={styles.txUnit}>{`${formatMessage(
                 message.stepsNormal,
               )}`}</Text>
             </View> :  <View>
-              <Text style={styles.txData}>{countRest > 0 ? countRest : 0} <Text style={[styles.txUnit,{marginTop:10,fontWeight:'400'}]}>steps</Text> </Text>
+              <Text style={styles.txData}>{numberWithCommas(countRest > 0 ? countRest : 0)} <Text style={[styles.txUnit,{marginTop:10,fontWeight:'400'}]}>steps</Text> </Text>
               <Text style={styles.txUnit}>to target</Text>
             </View>}
          
@@ -773,7 +773,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_calories.png')}
             />
-            <Text style={styles.txData}>{countCarlo}</Text>
+            <Text style={styles.txData}>{numberWithCommas(countCarlo || 0)}</Text>
             <Text style={styles.txUnit}>{`kcal`}</Text>
           </View>
           <View style={[styles.viewImgData]}>

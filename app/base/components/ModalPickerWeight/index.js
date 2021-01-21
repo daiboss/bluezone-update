@@ -8,6 +8,8 @@ import {
   DatePicker,
 } from 'react-native-wheel-picker-android';
 
+import { DATA_LEFT, DATA_RIGHT } from './data'
+
 // Components
 import Text from '../Text';
 
@@ -16,16 +18,6 @@ import styles from './styles/index.css';
 import ModalComponent from '../ModalComponent';
 import CustomSelect from './../../../main/components/ProfileScreen/components/SelectHeightOrWeight/CustomSelect'
 
-let dataWeight = [];
-let i = 15;
-let j = 0;
-let data3 = [];
-for (i; i <= 300; i++) {
-  dataWeight.push(i.toString() + ',');
-}
-for (j; j <= 9; j++) {
-  data3.push(j.toString() + ' kg');
-}
 function ModalPicker({
   isVisibleModal,
   onCloseModal,
@@ -33,8 +25,6 @@ function ModalPicker({
   gender,
   currentWeight,
 }) {
-  const [data, setData] = useState([]);
-  const [data2, setData2] = useState([]);
   const [weight, setWeight] = useState(gender == 1 ? '65,' : '50,');
   const [index, setIndex] = useState(0);
 
@@ -42,9 +32,6 @@ function ModalPicker({
   const [index2, setIndex2] = useState(0);
   useEffect(() => {
     setWeight('65,');
-    setData(dataWeight);
-
-    setData2(data3);
   }, []);
   useEffect(() => {
     if (gender == 1) {
@@ -60,21 +47,20 @@ function ModalPicker({
   };
   return (
     <ModalComponent
+      useNativeDriver={true}
       isVisible={isVisibleModal}
       onBackdropPress={selectHeight}
       backdropOpacity={0.5}
       animationInTiming={500}
       animationOutTiming={500}
-      style={styles.modal}
-      backdropTransitionInTiming={1000}
-      backdropTransitionOutTiming={1000}>
+      style={styles.modal}>
       <View style={styles.content}>
         <CustomSelect
           onValueChange={setWeight}
-          dataSource={data}
+          dataSource={DATA_LEFT}
           selectedIndex={
-            data.findIndex(e => e == `${weight}`) != -1
-              ? data.findIndex(e => e == `${weight}`)
+            DATA_LEFT.findIndex(e => e == `${weight}`) != -1
+              ? DATA_LEFT.findIndex(e => e == `${weight}`)
               : gender == 1
                 ? 50
                 : gender == 0
@@ -92,10 +78,10 @@ function ModalPicker({
 
         <CustomSelect
           onValueChange={setWeight2}
-          dataSource={data2}
+          dataSource={DATA_RIGHT}
           selectedIndex={
-            data2.findIndex(e => e == weight2) != -1
-              ? data2.findIndex(e => e == weight2)
+            DATA_RIGHT.findIndex(e => e == weight2) != -1
+              ? DATA_RIGHT.findIndex(e => e == weight2)
               : gender == 1
                 ? 50
                 : gender == 0

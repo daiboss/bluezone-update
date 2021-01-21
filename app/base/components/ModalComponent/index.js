@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   TouchableWithoutFeedback,
   Platform,
@@ -16,7 +16,9 @@ class ModalComponent extends Component {
     if (Platform.OS == 'android')
       return <Modal {...this.props}>{this.props.children}</Modal>;
     return (
-      <Modal {...this.props}>
+      <Modal
+        useNativeDriver
+        {...this.props}>
         <TouchableWithoutFeedback
           style={StyleSheet.absoluteFillObject}
           onPress={() => {

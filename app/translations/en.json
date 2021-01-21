@@ -305,6 +305,8 @@
     "bluezone.settings.notificationRealtime": "Notice the number of steps per day",
     "bluezone.settings.notificationTarget": "Notify when the goal is not completed",
     "bluezone.settings.notificationUpdateWeight": "Notice weekly weight updates",
-
+    "bluezone.settings.shortcutText": "Would you like to add Health Widgets to\nHome screen?",
+    "bluezone.settings.shortcutAccept": "Accept",
+    "bluezone.settings.shortcutCancel": "Cancel",
 
 }

@@ -60,6 +60,8 @@ import { registerMessageHandler } from './app/core/fcm';
 import CustomDrawerContent from './app/main/components/CustomDrawerContent';
 // Api
 import { registerResourceLanguageChange } from './app/core/language';
+import { enableScreens } from 'react-native-screens';
+enableScreens();
 
 const isLastStepOfWizard = name => {
   return wizard.indexOf(name) + 1 === wizard.length;

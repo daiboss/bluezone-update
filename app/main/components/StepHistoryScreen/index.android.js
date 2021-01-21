@@ -401,7 +401,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_calories.png')}
             />
-            <Text style={styles.txData}>{Number(countCarlo || 0).toFixed(0)}</Text>
+            <Text style={styles.txData}>{numberWithCommas(parseInt(countCarlo || 0))}</Text>
             <Text style={styles.txUnit}>{`kcal`}</Text>
           </View>
           <View style={styles.viewImgData}>

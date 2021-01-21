@@ -508,15 +508,20 @@ const addHistory = async (time, value) => {
 
 }
 
-const addStepCounter = (start, end, steps) => {
-  db = open();
-  db.transaction(function (txn) {
-    txn.executeSql('INSERT INTO stepcounter(starttime, endtime, step) VALUES (?,?,?)', [
-      start,
-      end,
-      steps
-    ]);
-  });
+const addStepCounter = async (start, end, steps) => {
+  return new Promise((resolve, reject) => {
+    db = open();
+    db.transaction(function (txn) {
+      txn.executeSql('INSERT INTO stepcounter(starttime, endtime, step) VALUES (?,?,?)', [
+        start,
+        end,
+        steps
+      ],
+        () => resolve(),
+        () => reject()
+      );
+    });
+  })
 }
 
 export {

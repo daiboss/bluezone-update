@@ -115,5 +115,16 @@ export default defineMessages({
         id: 'bluezone.settings.notificationUpdateWeight',
         defaultMessage: 'bluezone.settings.notificationUpdateWeight'
     },
-   
+    AddShortcutText: {
+        id: 'bluezone.settings.shortcutText',
+        defaultMessage: 'bluezone.settings.shortcutText'
+    },
+    ShortcutAccept: {
+        id: 'bluezone.settings.shortcutAccept',
+        defaultMessage: 'bluezone.settings.shortcutAccept'
+    },
+    ShortcutCancel: {
+        id: 'bluezone.settings.shortcutCancel',
+        defaultMessage: 'bluezone.settings.shortcutCancel'
+    }
 })

@@ -16,7 +16,7 @@
 import React from 'react';
 import * as PropTypes from 'prop-types';
 import Modal from 'react-native-modal';
-import {View} from 'react-native';
+import { View } from 'react-native';
 
 // Components
 import Text from '../Text';
@@ -36,6 +36,7 @@ function ModalBase(props) {
   } = props;
   return (
     <Modal
+      useNativeDriver
       isVisible={isVisibleModal}
       style={styles.container}
       animationIn="zoomInDown"
@@ -74,7 +75,7 @@ ModalBase.propTypes = {
 };
 
 ModalBase.defaultProps = {
-  onCloseModal: () => {},
+  onCloseModal: () => { },
   styleTitle: {},
   styleDescription: {},
 };

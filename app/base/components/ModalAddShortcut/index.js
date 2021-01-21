@@ -7,6 +7,7 @@ import Text from '../Text';
 import styles from './styles/index.css';
 import ModalComponent from '../ModalComponent';
 import message from './../../../core/msg/setting'
+import { red_bluezone } from '../../../core/color';
 const windowWidth = Dimensions.get('window').width;
 
 function ModalAddShortcut({
@@ -35,14 +36,14 @@ function ModalAddShortcut({
       <View style={styles.content}>
         <View style={styles.body}>
 
-          <Text style={styles.txRecomends}>Bạn có muốn thêm Tiện ích sức khoẻ vào Màn hình chính không?</Text>
+          <Text style={styles.txRecomends}>{formatMessage(message.AddShortcutText)}</Text>
 
           <TouchableOpacity
             onPress={selectHeight}
             activeOpacity={0.8}
             style={styles.btnSave}>
             <Text style={styles.txButton}>
-              Đồng Ý
+              {formatMessage(message.ShortcutAccept)}
             </Text>
           </TouchableOpacity>
 
@@ -50,12 +51,12 @@ function ModalAddShortcut({
             onPress={onCloseModal}
             activeOpacity={0.8}
             style={[styles.btnSave, {
-              backgroundColor: '#eee'
+              backgroundColor: 'transparent'
             }]}>
             <Text style={[styles.txButton, {
-              color: '#222'
+              color: red_bluezone
             }]}>
-              Không
+              {formatMessage(message.ShortcutCancel)}
             </Text>
           </TouchableOpacity>
 

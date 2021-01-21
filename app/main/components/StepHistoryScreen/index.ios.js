@@ -39,7 +39,6 @@ import {
   getFirstTimeOpen
 } from '../../../core/storage';
 import { objectOf } from 'prop-types';
-import { DATA_STEPS } from './BarChart/data';
 const PERMS = AppleHealthKit.Constants.Permissions;
 
 Date.prototype.getWeek = function (dowOffset) {
@@ -80,22 +79,22 @@ const StepCount = ({ props, intl, navigation }) => {
   const { formatMessage, locale } = intl;
 
   const [maxDomain, setMaxDomain] = useState(10000)
-  const [year,setYear] = useState(moment().format('YYYY'))
+  const [year, setYear] = useState(moment().format('YYYY'))
   const [widthChart, setWidthChart] = useState(screenWidth)
 
-  const [heightUser,setHeightUser] = useState(0)
-  const [weightUser,setWeightUser] = useState(0)
-  const [startTime,setStartTime] = useState('')
-  const [countTime,setCountTime] = useState(0)
+  const [heightUser, setHeightUser] = useState(0)
+  const [weightUser, setWeightUser] = useState(0)
+  const [startTime, setStartTime] = useState('')
+  const [countTime, setCountTime] = useState(0)
   const [countTimeHour, setCountTimeHour] = useState(0);
   const [selectDate, setSelectDate] = useState(true);
   const [selectWeek, setSelectWeek] = useState(false);
   const [selectMonth, setSelectMonth] = useState(false);
   const offset = new Date().getTimezoneOffset();
   const [time, setTime] = useState([]);
-  const [select,setSelect] = useState({
-    index:-1,
-    page:0
+  const [select, setSelect] = useState({
+    index: -1,
+    page: 0
   })
   const [countStep, setCountStep] = useState(null);
   const [countRest, setCountRest] = useState(0);
@@ -130,15 +129,15 @@ const StepCount = ({ props, intl, navigation }) => {
     let end = new Date();
     // let start = firstOpenApp
     // let start = new Date(2020,1,1).format('yyyy-MM-dd')
-    let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
+    let start = new Date(new Date() - 6 * 30 * 24 * 60 * 60 * 1000).format('yyyy-MM-dd')
     // console.log('monthAgomonthAgo',monthAgo)
     // console.log('anannanannanaan',start)
     getDataHealth(start, end.format('yyyy-MM-dd'), 'day');
     return () => {
       intervalNow.current && clearInterval(intervalNow.current);
-    // };
+      // };
     }
-    
+
   }, []);
 
   const onSetSelect = type => () => {
@@ -147,7 +146,7 @@ const StepCount = ({ props, intl, navigation }) => {
       // let start = startTime;
       // let start = new Date(2020,1,1).format('yyyy-MM-dd')
       // let start = moment('2020/01/01','yyyy/MM/DD');
-      let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
+      let start = new Date(new Date() - 6 * 30 * 24 * 60 * 60 * 1000).format('yyyy-MM-dd')
       getDataHealth(
         start,
         end.format('yyyy-MM-dd'),
@@ -161,7 +160,7 @@ const StepCount = ({ props, intl, navigation }) => {
     if (type == 2) {
       let end = moment();
       // let start = new Date(2020,1,1).format('yyyy-MM-dd')
-      let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
+      let start = new Date(new Date() - 6 * 30 * 24 * 60 * 60 * 1000).format('yyyy-MM-dd')
       // let start = startTime;
       getDataHealth(
         start,
@@ -175,7 +174,7 @@ const StepCount = ({ props, intl, navigation }) => {
     }
     if (type == 3) {
       let end = moment();
-      let start = new Date(new Date() - 6*30*24*60*60*1000).format('yyyy-MM-dd')
+      let start = new Date(new Date() - 6 * 30 * 24 * 60 * 60 * 1000).format('yyyy-MM-dd')
       // let start = new Date(2020,1,1).format('yyyy-MM-dd')
       // let start = startTime;
       getDataHealth(
@@ -248,9 +247,9 @@ const StepCount = ({ props, intl, navigation }) => {
       list = data.map(item => ({
         x: moment(item.startDate).isAfter(currentDay) ? formatMessage(message.today) : moment(item.startDate).format('DD/MM'),
         y: Number(item.quantity),
-        start:moment(item.startDate).format('YYYY/DD/MM'),
-        end:moment(item.startDate).format('YYYY/DD/MM'),
-        year:moment(item.startDate).format('YYYY')
+        start: moment(item.startDate).format('YYYY/DD/MM'),
+        end: moment(item.startDate).format('YYYY/DD/MM'),
+        year: moment(item.startDate).format('YYYY')
       }));
     } else if (type == 'month') {
       let currentMonth = moment(new Date()).month();
@@ -329,9 +328,9 @@ const StepCount = ({ props, intl, navigation }) => {
         list.push({
           x: label,
           y: steps,
-          start:startMonth.format('YYYY/DD/MM'),
-          end:endMonth.format('YYYY/DD/MM'),
-          year:startMonth.format('YYYY')
+          start: startMonth.format('YYYY/DD/MM'),
+          end: endMonth.format('YYYY/DD/MM'),
+          year: startMonth.format('YYYY')
           // year:moment(item.startDate).format('YYYY')
         })
         // list.reverse()
@@ -417,7 +416,7 @@ const StepCount = ({ props, intl, navigation }) => {
         //   label = `${formatMessage(message.month)}\n${key < currentMonth ? (parseInt(key) + 1) : 'này'}`
         // }
         let label = ''
-        if(locale == 'en'){
+        if (locale == 'en') {
           label = `${startWeek.format('DD')} - ${valueEnd}\n ${endWeek.locale('en').format('MMM')}`
         }
         else label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
@@ -425,9 +424,9 @@ const StepCount = ({ props, intl, navigation }) => {
         list.push({
           x: label,
           y: steps,
-          start:startWeek.format('YYYY/DD/MM'),
-          end:endWeek.format('YYYY/DD/MM'),
-          year:startWeek.format('YYYY')
+          start: startWeek.format('YYYY/DD/MM'),
+          end: endWeek.format('YYYY/DD/MM'),
+          year: startWeek.format('YYYY')
         })
       }
     }
@@ -442,29 +441,29 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const getSex = async () => {
     let profiles = (await getProfile()) || [];
-        // sex = profiles.gender
-        if(profiles){
-          sex = profiles[0].gender
-        }
+    // sex = profiles.gender
+    if (profiles) {
+      sex = profiles[0].gender
+    }
   }
   useEffect(() => {
     getWeightHeight()
-  },[weightUser,heightUser])
+  }, [weightUser, heightUser])
 
   const getWeightHeight = async () => {
     let profiles = (await getProfile()) || [];
     const weight = profiles[0].weight || 0
-    const weightCV = weight.replace('kg','').replace(',','.').replace(' ','')
+    const weightCV = weight.replace('kg', '').replace(',', '.').replace(' ', '')
     const height = profiles[0].height || 0
-    const heightCV = height.replace('cm','').replace(' ','')
+    const heightCV = height.replace('cm', '').replace(' ', '')
     setWeightUser(weightCV)
     setHeightUser(heightCV)
 
   }
   const getStepsRealTime = (result) => {
     let sexValue
-      if(sex == 1) sexValue = 0.415
-      else sexValue = 0.413
+    if (sex == 1) sexValue = 0.415
+    else sexValue = 0.413
     const healthKitOptions = {
       permissions: {
         read: [
@@ -486,14 +485,14 @@ const StepCount = ({ props, intl, navigation }) => {
       //distance 
       let options = {
         unit: 'mile', // optional; default 'meter'
-        startDate:(moment(`${result.start},'YYYY/DD/MM`).startOf('day')).toISOString(),
+        startDate: (moment(`${result.start},'YYYY/DD/MM`).startOf('day')).toISOString(),
         endDate: (moment(`${result.end},'YYYY/DD/MM`).endOf('day')).toISOString(), // optional; default now
       };
       AppleHealthKit.getDistanceWalkingRunning(options, (err, results) => {
         if (err) {
           return;
         }
-    });
+      });
       // get Ditance
       //get Sex
       // get to localStorage or get to redux
@@ -501,8 +500,8 @@ const StepCount = ({ props, intl, navigation }) => {
       // const timeSet = `${result.year}/${result.x}`
       // console.log('timeSettimeSettimeSet',timeSet)
       let optionsAll = {
-        startDate: (moment(`${result.start}`,'YYYY/DD/MM').startOf('day')).toISOString(),
-        endDate: (moment(`${result.end}`,'YYYY/DD/MM').endOf('day')).toISOString(),
+        startDate: (moment(`${result.start}`, 'YYYY/DD/MM').startOf('day')).toISOString(),
+        endDate: (moment(`${result.end}`, 'YYYY/DD/MM').endOf('day')).toISOString(),
         type: 'Walking', // one of: ['Walking', 'StairClimbing', 'Running', 'Cycling', 'Workout']
       };
       AppleHealthKit.getSamples(optionsAll, (err, results) => {
@@ -511,16 +510,16 @@ const StepCount = ({ props, intl, navigation }) => {
         }
         let timeInit = 0
         let initialValue = 0
-        
+
 
         //get Calor
         const a = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
-          let timeS = timeEnd - timeStart 
+          let timeS = timeEnd - timeStart
           // const tb = timeS / i.quantity
-          if(timeS == 0) timeS = 1
-          const stepRate = i.quantity/timeS
+          if (timeS == 0) timeS = 1
+          const stepRate = i.quantity / timeS
           let stepRateFactor
           if (stepRate < 1.6)
             stepRateFactor = 0.82;
@@ -538,47 +537,47 @@ const StepCount = ({ props, intl, navigation }) => {
             stepRateFactor = 1.85;
           else if (stepRate >= 4.0)
             stepRateFactor = 2.30;
-            let distanceInStep = sexValue * heightUser * stepRateFactor
-            let speed = distanceInStep * stepRate * 3.6
-            let calo
-            if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
-            else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
-            // setCountCarlo(calo.toFixed(2))
-          return k + calo*timeS*2
+          let distanceInStep = sexValue * heightUser * stepRateFactor
+          let speed = distanceInStep * stepRate * 3.6
+          let calo
+          if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+          else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightUser * 2 / 12000
+          // setCountCarlo(calo.toFixed(2))
+          return k + calo * timeS * 2
         }, initialValue)
-        setCountCarlo(parseInt(a*2/1000))
+        setCountCarlo(parseInt(a * 2 / 1000))
         //get time
-          const timeUse = results.reduce((k, i) => {
-            const timeStart = moment(i.start).unix()
-            const timeEnd = moment(i.end).unix()
-            const timeT = timeEnd - timeStart
-            return k + timeT
-          }, timeInit)
-          let timeT
-          // const timePush = (timeUse/60).toFixed(0)
-          let h = parseInt(timeUse / 3600)
-          let m
-          if(h == 0){
-             m = parseInt((timeUse/60))
-          }else{
-            m = parseInt((timeUse - h*3600) / 60)
-          }
-          
-          // if(timePush > 60) {
-          //  const h = timePush/60
-          //  const m = timePush - h*60
-          //  timeT = `${h.toFixed(0)}:${m}`
-          //  return timeT
-          // }
-          // else timeT = timePush
-          setCountTime(m)
-          setCountTimeHour(h)
+        const timeUse = results.reduce((k, i) => {
+          const timeStart = moment(i.start).unix()
+          const timeEnd = moment(i.end).unix()
+          const timeT = timeEnd - timeStart
+          return k + timeT
+        }, timeInit)
+        let timeT
+        // const timePush = (timeUse/60).toFixed(0)
+        let h = parseInt(timeUse / 3600)
+        let m
+        if (h == 0) {
+          m = parseInt((timeUse / 60))
+        } else {
+          m = parseInt((timeUse - h * 3600) / 60)
+        }
+
+        // if(timePush > 60) {
+        //  const h = timePush/60
+        //  const m = timePush - h*60
+        //  timeT = `${h.toFixed(0)}:${m}`
+        //  return timeT
+        // }
+        // else timeT = timePush
+        setCountTime(m)
+        setCountTimeHour(h)
         //get Distance
         const b = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
           const timeS = timeEnd - timeStart
-          const stepRate = i.quantity/timeS
+          const stepRate = i.quantity / timeS
           let stepRateFactor
           if (stepRate < 1.6)
             stepRateFactor = 0.82;
@@ -596,15 +595,15 @@ const StepCount = ({ props, intl, navigation }) => {
             stepRateFactor = 1.85;
           else if (stepRate >= 4.0)
             stepRateFactor = 2.30;
-            let distanceInStep = sexValue * heightUser * stepRateFactor
-            const distanceUser = parseFloat(distanceInStep*i.quantity/100000)
+          let distanceInStep = sexValue * heightUser * stepRateFactor
+          const distanceUser = parseFloat(distanceInStep * i.quantity / 100000)
           return k + distanceUser
         }, initialValue)
         setDistant(b.toFixed(2))
-        
+
       });
-  
-    
+
+
     });
   }
 
@@ -626,12 +625,12 @@ const StepCount = ({ props, intl, navigation }) => {
                 setWidthChart(widthTmp)
               }
               // type == 'month' && listDataChart.reverse() //: listDataChart
-              if(type == 'month'){
+              if (type == 'month') {
                 let firtItem = listDataChart[0]
-                listDataChart.splice(0,1)
+                listDataChart.splice(0, 1)
                 listDataChart.push(firtItem)
               }
-              
+
               setDataChart(listDataChart);
             } catch (e) {
             }
@@ -700,7 +699,7 @@ const StepCount = ({ props, intl, navigation }) => {
   //       .catch(err => { });
   //   } catch (e) { }
   // };
-  const onGetDataBySelect = (result,index,page) => {
+  const onGetDataBySelect = (result, index, page) => {
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
     let m = parseInt((time % 3600) / 60)
@@ -718,10 +717,10 @@ const StepCount = ({ props, intl, navigation }) => {
     // setTime(timeString);
     setYear(result.year)
     getStepsRealTime(result)
-    setCountStep(parseInt(result?.y) );
+    setCountStep(parseInt(result?.y));
     setSelect({
-      index:index,
-      page:page
+      index: index,
+      page: page
     })
   };
 
@@ -736,7 +735,7 @@ const StepCount = ({ props, intl, navigation }) => {
           widthChart={widthChart} />
       )
     }
-  }, [dataChart,select])
+  }, [dataChart, select])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -750,11 +749,13 @@ const StepCount = ({ props, intl, navigation }) => {
           fontSize: fontSize.bigger,
         }}
       />
-      <Text style={{textAlign:'center',
-      // paddingTop:RFValue(10),
-      color:'black',
-      fontSize:RFValue(18),
-      fontWeight:'600'}}>{year}</Text>
+      <Text style={{
+        textAlign: 'center',
+        // paddingTop:RFValue(10),
+        color: 'black',
+        fontSize: RFValue(18),
+        fontWeight: '600'
+      }}>{year}</Text>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         {/* <View>
                     <Text>Thống kê bước chân</Text>
@@ -780,7 +781,7 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_step.png')}
             />
-            <Text style={styles.txData}>{`${countStep || 0}`}</Text>
+            <Text style={styles.txData}>{`${numberWithCommas(countStep || 0)}`}</Text>
             <Text style={styles.txUnit}>{`${formatMessage(
               message.stepsNormal,
             )}`}</Text>
@@ -798,30 +799,30 @@ const StepCount = ({ props, intl, navigation }) => {
               style={styles.img}
               source={require('./images/ic_calories.png')}
             />
-            <Text style={styles.txData}>{countCarlo}</Text>
+            <Text style={styles.txData}>{numberWithCommas(countCarlo || 0)}</Text>
             <Text style={styles.txUnit}>{`kcal`}</Text>
           </View>
           <View style={styles.viewImgData}>
-                        <Image
-                            style={styles.img}
-                            source={require('./images/ic_time.png')}
-                        />
-                           {
+            <Image
+              style={styles.img}
+              source={require('./images/ic_time.png')}
+            />
+            {
               countTimeHour > 0 ? (
                 <View>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={[styles.txData, {
                       marginRight: 4,
-                      marginTop:10
+                      marginTop: 10
                     }]}>{countTimeHour}</Text>
-                    <Text style={[styles.txUnit,{marginTop:10}]}>{formatMessage(message.hour)}</Text>
+                    <Text style={[styles.txUnit, { marginTop: 10 }]}>{formatMessage(message.hour)}</Text>
                   </View>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={[styles.txData, {
                       marginRight: 4,
-                      marginTop:5
+                      marginTop: 5
                     }]}>{countTime}</Text>
-                    <Text style={[styles.txUnit,{marginTop:5}]}>{formatMessage(message.minute)}</Text>
+                    <Text style={[styles.txUnit, { marginTop: 5 }]}>{formatMessage(message.minute)}</Text>
                   </View>
                 </View>
               ) : (
@@ -831,7 +832,7 @@ const StepCount = ({ props, intl, navigation }) => {
                   </View>
                 )
             }
-                    </View>
+          </View>
         </View>
       </ScrollView>
       <View style={styles.viewBtn}>

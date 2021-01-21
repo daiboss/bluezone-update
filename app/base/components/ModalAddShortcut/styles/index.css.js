@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
-    paddingHorizontal: 30,
+    paddingHorizontal: 16,
     // justifyContent: 'center'
   },
 
@@ -75,7 +75,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#000',
     fontWeight: '700',
-    textAlign: 'center'
+    textAlign: 'center',
+    marginBottom: 40
   }
 });
 

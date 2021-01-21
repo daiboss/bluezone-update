@@ -138,6 +138,7 @@ const BmiScreen = ({ route, intl, navigation }) => {
             currentWeight={weight}
             onSelected={onSelectedValue}
           />
+
         </View>
         <View style={styles.buttonConfirm}>
           <ButtonIconText

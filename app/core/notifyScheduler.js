@@ -509,7 +509,6 @@ export const createShowStepNotification = async step => {
 // Thong bao so buoc con lai sau 7h toi, neu vuot chi tieu se khong thong bao
 export const createWarnningStepNotification = async step => {
   try {
-    console.log('BAN thong bao', step)
     const { iOSShowStepNotification } = configuration;
     let total = (await getResultSteps()) || { step: 10000 };
     if (total?.step <= step) {
@@ -520,7 +519,7 @@ export const createWarnningStepNotification = async step => {
       channelId: FCM_CHANNEL_ID, // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
       autoCancel: true, // (optional) default: true
       largeIcon: '', // (optional) default: "icon_bluezone". Use "" for no large icon.
-      smallIcon: 'icon_bluezone', // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
+      smallIcon: SMALL_ICON, // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
       vibrate: true, // (optional) default: true
       priority: 'max', // (optional) set notification priority, default: high
       visibility: 'private', // (optional) set notification visibility, default: private
@@ -579,7 +578,7 @@ export const createScheduleWarnningWeightNotification = async (time) => {
       channelId: FCM_CHANNEL_ID, // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
       autoCancel: true, // (optional) default: true
       largeIcon: '', // (optional) default: "icon_bluezone". Use "" for no large icon.
-      smallIcon: 'icon_bluezone', // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
+      smallIcon: SMALL_ICON, // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
       vibrate: true, // (optional) default: true
       priority: 'max', // (optional) set notification priority, default: high
       visibility: 'private', // (optional) set notification visibility, default: private
@@ -630,8 +629,8 @@ export const createWarnningWeightNotification = async () => {
       /* Android Only Properties */
       channelId: FCM_CHANNEL_ID, // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
       autoCancel: true, // (optional) default: true
-      largeIcon: 'icon_bluezone', // (optional) default: "icon_bluezone". Use "" for no large icon.
-      smallIcon: 'icon_bluezone', // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
+      largeIcon: '', // (optional) default: "icon_bluezone". Use "" for no large icon.
+      smallIcon: SMALL_ICON, // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
       vibrate: true, // (optional) default: true
       priority: 'max', // (optional) set notification priority, default: high
       visibility: 'private', // (optional) set notification visibility, default: private

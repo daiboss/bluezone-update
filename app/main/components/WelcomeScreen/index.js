@@ -26,7 +26,7 @@ import * as PropTypes from 'prop-types';
 import moment from 'moment';
 
 // Api
-import {dev} from '../../../core/apis/server';
+import { dev } from '../../../core/apis/server';
 
 // Components
 import {
@@ -44,9 +44,10 @@ import Header from './Header/Header';
 import HeaderFull from './Header/HeaderFull';
 import ImageBackgroundBase from './ImageBackgroundBase';
 
-import Text, {LightText} from '../../../base/components/Text';
+import Text, { LightText } from '../../../base/components/Text';
 import ButtonText from '../../../base/components/ButtonText';
 import ButtonIconText from '../../../base/components/ButtonIconText';
+import { CommonActions } from '@react-navigation/native';
 
 // Styles
 import styles, {
@@ -54,15 +55,15 @@ import styles, {
   HEIGHT_IMG,
   HEIGHT_DEFAULT,
 } from './styles/index.css';
-import {injectIntl, intlShape} from 'react-intl';
-import {Images, dataVi, dataEn, dayVi, dayEn, monthEn} from './styles/images';
+import { injectIntl, intlShape } from 'react-intl';
+import { Images, dataVi, dataEn, dayVi, dayEn, monthEn } from './styles/images';
 import * as fontSize from '../../../core/fontSize';
 
 // Utils
 import configuration from '../../../configuration';
 import getLunarDate from './utils/amlich-hnd';
-import {can, canEn, chi, chiEn} from './utils/ConvertToCanchi';
-import {ButtonConfirm} from '../../../base/components/ButtonText/ButtonModal';
+import { can, canEn, chi, chiEn } from './utils/ConvertToCanchi';
+import { ButtonConfirm } from '../../../base/components/ButtonText/ButtonModal';
 import ModalBase from '../../../base/components/ModalBase';
 import message from '../../../core/msg/welcome';
 import {
@@ -83,7 +84,7 @@ if (Platform.OS === 'android') {
 class WelcomeScreen extends React.Component {
   constructor(props) {
     super(props);
-    const {width} = Dimensions.get('window');
+    const { width } = Dimensions.get('window');
     this.state = {
       width: width,
       date: new Date(),
@@ -100,7 +101,7 @@ class WelcomeScreen extends React.Component {
   }
 
   async componentDidMount() {
-    const {Language} = configuration;
+    const { Language } = configuration;
     this.changeDisplay();
     const infoDates = await getDateOfWelcome();
     const date = infoDates ? infoDates.date : '';
@@ -142,7 +143,7 @@ class WelcomeScreen extends React.Component {
   async changeDisplay() {
     const displayImg = await getDisplayOriginalImg();
     if (displayImg) {
-      this.setState({display: displayImg});
+      this.setState({ display: displayImg });
     }
   }
 
@@ -151,8 +152,8 @@ class WelcomeScreen extends React.Component {
   };
 
   getDate = () => {
-    const {Language} = configuration;
-    const {date} = this.state;
+    const { Language } = configuration;
+    const { date } = this.state;
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
@@ -163,20 +164,18 @@ class WelcomeScreen extends React.Component {
   };
 
   getLunar = () => {
-    const {Language} = configuration;
-    const {date} = this.state;
+    const { Language } = configuration;
+    const { date } = this.state;
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     const lunarDate = getLunarDate(day, month, year);
     if (Language === 'vi') {
-      return `${lunarDate.day} tháng ${lunarDate.month} ${
-        can[(year + 6) % 10]
-      } ${chi[(year + 8) % 12]}`;
+      return `${lunarDate.day} tháng ${lunarDate.month} ${can[(year + 6) % 10]
+        } ${chi[(year + 8) % 12]}`;
     }
-    return `${monthEn[lunarDate.month - 1]} ${lunarDate.day}, ${
-      canEn[(year + 6) % 10]
-    } ${chiEn[(year + 8) % 12]} Year`;
+    return `${monthEn[lunarDate.month - 1]} ${lunarDate.day}, ${canEn[(year + 6) % 10]
+      } ${chiEn[(year + 8) % 12]} Year`;
   };
 
   onSelect = async () => {
@@ -185,14 +184,22 @@ class WelcomeScreen extends React.Component {
       let res = await getProfile();
       if (res) {
         this.props.navigation.navigate('stepCount');
+        // this.props.navigation.dispatch(
+        //   CommonActions.reset({
+        //     index: 1,
+        //     routes: [
+        //       { name: 'stepCount' },
+        //     ],
+        //   })
+        // );
       } else {
         this.props.navigation.navigate('Profile');
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   onClose = () => {
-    this.setState({isVisible: false});
+    this.setState({ isVisible: false });
   };
 
   onLayout = e => {
@@ -207,9 +214,9 @@ class WelcomeScreen extends React.Component {
       },
     });
     if (e.nativeEvent.layout.height > HEIGHT_DEFAULT) {
-      this.setState({setHeight: e.nativeEvent.layout.height - HEIGHT_DEFAULT});
+      this.setState({ setHeight: e.nativeEvent.layout.height - HEIGHT_DEFAULT });
     } else {
-      this.setState({setHeight: 0});
+      this.setState({ setHeight: 0 });
     }
   };
 
@@ -238,28 +245,28 @@ class WelcomeScreen extends React.Component {
         type: LayoutAnimation.Types.linear,
       },
     });
-    const {width} = this.state;
+    const { width } = this.state;
     this.setState({
       heightImg: width / (e.nativeEvent.width / e.nativeEvent.height),
     });
   };
 
   onChange = () => {
-    const {width, images, setHeight} = this.state;
+    const { width, images, setHeight } = this.state;
     const heightNatural = (width * images.height) / images.width;
     const bars = (HEIGHT_HEADER - setHeight - heightNatural) / HEIGHT_HEADER;
     if (bars > 0.15) {
       this.setState(prev => {
         const scale = prev.display === 'fit' ? 'full' : 'fit';
         setDisplayOriginalImg(scale);
-        return {display: scale};
+        return { display: scale };
       });
     }
   };
 
   onChangeImg = () => {
-    const {Language} = configuration;
-    const {images, info} = this.state;
+    const { Language } = configuration;
+    const { images, info } = this.state;
     const dayOfWeek = this.getDate();
     const data = Language === 'vi' ? dataVi : dataEn;
     const imgNumber =
@@ -280,8 +287,8 @@ class WelcomeScreen extends React.Component {
   };
 
   getTextByLevel = () => {
-    const {intl} = this.props;
-    const {formatMessage} = intl;
+    const { intl } = this.props;
+    const { formatMessage } = intl;
     return formatMessage(messageWarning.lableF);
   };
 
@@ -296,9 +303,9 @@ class WelcomeScreen extends React.Component {
       display,
       textF,
     } = this.state;
-    const {intl} = this.props;
-    const {formatMessage} = intl;
-    const {Language} = configuration;
+    const { intl } = this.props;
+    const { formatMessage } = intl;
+    const { Language } = configuration;
     const dow = Language === 'vi' ? dayVi : dayEn;
     const dayOfWeek = dow[moment().weekday()];
     const heightNatural = (width * images.height) / images.width;
@@ -315,7 +322,7 @@ class WelcomeScreen extends React.Component {
             top: 0,
           }}
         />
-        <View style={{zIndex: 200}}>
+        <View style={{ zIndex: 200 }}>
           <ImageBackgroundBase
             uri={images.uri}
             style={{
@@ -337,17 +344,17 @@ class WelcomeScreen extends React.Component {
                 onLoad={this.onLoad}
               />
             ) : (
-              <HeaderFull
-                styleImg={{
-                  width: width,
-                  height: HEIGHT_HEADER - setHeight,
-                  zIndex: 100,
-                  backgroundColor: 'rgba(0,0,0,0.34)',
-                }}
-                uri={images.uri}
-                onLoad={this.onLoad}
-              />
-            )}
+                <HeaderFull
+                  styleImg={{
+                    width: width,
+                    height: HEIGHT_HEADER - setHeight,
+                    zIndex: 100,
+                    backgroundColor: 'rgba(0,0,0,0.34)',
+                  }}
+                  uri={images.uri}
+                  onLoad={this.onLoad}
+                />
+              )}
             <LightText
               style={[
                 styles.titleImg,
@@ -416,7 +423,7 @@ class WelcomeScreen extends React.Component {
               onPress={this.onGoBack}
               text={formatMessage(message.close)}
               styleBtn={styles.closeButton}
-              styleText={{fontSize: fontSize.fontSize16, color: '#015cd0'}}
+              styleText={{ fontSize: fontSize.fontSize16, color: '#015cd0' }}
             />
           </View>
         </View>
