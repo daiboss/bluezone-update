@@ -78,6 +78,14 @@ export default defineMessages({
     now: {
         id: 'bluezone.stepCount.now',
         defaultMessage: 'bluezone.stepCount.now'
-    }
+    },
+    accept: {
+        id: 'bluezone.settings.shortcutAccept',
+        defaultMessage: 'bluezone.settings.shortcutAccept'
+    },
+    cancel: {
+        id: 'bluezone.settings.shortcutCancel',
+        defaultMessage: 'bluezone.settings.shortcutCancel'
+    },
    
 })

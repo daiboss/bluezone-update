@@ -115,7 +115,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
 
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.icon_bluezone_service)
-                .setSmallIcon(iconInt)
+//                .setSmallIcon(iconInt)
                 .setContentTitle(taskTitle)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(notificationLayout)

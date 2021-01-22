@@ -8,25 +8,18 @@ import {
   StyleSheet,
   ImageBackground,
   Image,
-  processColor,
-  Platform,
   NativeAppEventEmitter,
   ScrollView,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import Fitness from '@ovalmoney/react-native-fitness';
 import AppleHealthKit from 'rn-apple-healthkit';
-import { LineChart } from 'react-native-charts-wrapper';
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 import { Dimensions } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import ButtonIconText from '../../../base/components/ButtonIconText';
-import {blue_bluezone, red_bluezone} from '../../../core/color';
+import { blue_bluezone, red_bluezone } from '../../../core/color';
 
-import BackgroundTimer from 'react-native-background-timer';
-//db
-
-// import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
@@ -39,16 +32,12 @@ import {
   getProfile,
   getResultSteps,
   setResultSteps,
-  setEvents,
-  getEvents,
-  getTimestamp,
   getFirstTimeOpen,
   getSteps,
   getStepsTotal,
   setAutoChange,
   getAutoChange,
 } from '../../../core/storage';
-import ChartLine from './ChartLine';
 import ChartLineV from './ChartLineV';
 import {
   ResultSteps,
@@ -60,6 +49,7 @@ import {
 const screenWidth = Dimensions.get('window').width;
 import BackgroundFetch from 'react-native-background-fetch';
 import { getAbsoluteMonths } from '../../../core/steps';
+import ModalChangeTarget from './Components/ModalChangeTarget';
 const PERMS = AppleHealthKit.Constants.Permissions;
 export const scheduleTask = async name => {
   try {
@@ -82,7 +72,7 @@ export const stopScheduleTask = async task => {
   } catch (e) { }
 };
 export const onBackgroundFetchEvent = async taskId => {
-try {
+  try {
     let end = new Date();
     let start = new Date();
     end.setDate(end.getDate() + 1);
@@ -144,19 +134,19 @@ try {
   BackgroundFetch.finish(taskId);
 
 }
-  
-  // Required: Signal completion of your task to native code
-  // If you fail to do this, the OS can terminate your app
-  // or assign battery-blame for consuming too much background-time
+
+// Required: Signal completion of your task to native code
+// If you fail to do this, the OS can terminate your app
+// or assign battery-blame for consuming too much background-time
 const StepCount = ({ props, intl, navigation }) => {
   const timeInterval = useRef();
   let sex
-  const { formatMessage,locale } = intl;
+  const { formatMessage, locale } = intl;
   const [time, setTime] = useState([]);
   const [heightUser, setHeightUser] = useState(0)
   const [countTimeHour, setCountTimeHour] = useState(0);
   const [weightUser, setWeightUser] = useState(0)
-  const [weightHeight,setWeightHeight] = useState({weight:65,height:165})
+  const [weightHeight, setWeightHeight] = useState({ weight: 65, height: 165 })
   const [countTime, setCountTime] = useState(0)
   const [countStep, setCountStep] = useState(null);
   const [countRest, setCountRest] = useState(0);
@@ -179,58 +169,11 @@ const StepCount = ({ props, intl, navigation }) => {
   ];
   const [dataChart, setDataChart] = useState([]);
 
+  const [isShowModalAlert, setIsShowModalAlert] = useState(false)
 
-  // useEffect(() => {
-  //   BackgroundTimer.start()
-  //   // setTimeout(() => {
-  //   //   let optionsStepCurrent = {
-  //   //     startDate: moment().startOf('day'), // required
-  //   //     endDate: moment(), // optional; default now
-  //   // };
-  //   // let stepCurrent
-  //   // AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
-  //   //   if (err) {
-  //   //       return;
-  //   //   }
-  //   //   stepCurrent = results.value
-  //   //   console.log('vaovaovaovasaaaaaaaa',stepCurrent,new Date().format('mm:ss'))
-  //   //    scheduler.createWarnningStepNotification(stepCurrent || 0)
-  //   // })},5000)
-  //   BackgroundTimer.runBackgroundTimer(() => {
-  //     //code that will be called every 3 seconds 
-  //     let optionsStepCurrent = {
-  //       startDate: moment().startOf('day'), // required
-  //       endDate: moment(), // optional; default now
-  //     };
-  //     let stepCurrent
-  //     AppleHealthKit.getStepCount(optionsStepCurrent, (err, results) => {
-  //       if (err) {
-  //         return;
-  //       }
-  //       stepCurrent = results.value
-  //       // console.log('vaovaovaovasaaaaaaaa', stepCurrent, new Date().format('mm:ss'))
-  //       // scheduler.createWarnningStepNotification(stepCurrent || 0)
-  //     });
+  const openModalAlert7Day = () => setIsShowModalAlert(true)
 
-  //     // scheduler.createWarnningStepNotification(countRest || 0)
-  //   },
-  //     5000);
-  //   // BackgroundTimer.stopBackgroundTimer();
-  //   // BackgroundTimer.stop();
-  // }, [])
-
-  // const timeNotification = async () => {
-  //   BackgroundTimer.start()
-  //   BackgroundTimer.runBackgroundTimer(() => {
-  //     console.log('runBackgroundTimerrunBackgroundTimer', new moment().format('hh:mm:ss'))
-  //     BackgroundTimer.stopBackgroundTimer()
-  //   }, 3000)
-  //   BackgroundTimer.stop()
-  // }
-
-
-
-
+  const closeModalAlert7Day = () => setIsShowModalAlert(false)
 
   useEffect(() => {
     var end = new Date();
@@ -313,9 +256,6 @@ const StepCount = ({ props, intl, navigation }) => {
   };
   const getData = (start, end, startLine, endLine) => {
     onGetStepLine();
-    // onGetStepsRealTime(start, end);
-    // onGetCalories(start, end);
-    // onGetDistances(start, end);
   };
   const getPermission = async (start, end, startLine, endLine) => {
     try {
@@ -347,6 +287,9 @@ const StepCount = ({ props, intl, navigation }) => {
           })
           // data.length !== 0 && data.pop()
           setDataChart(data);
+
+          alert7dayLessThan1000(data)
+
           setTime(timeLine)
         } else {
         }
@@ -361,7 +304,7 @@ const StepCount = ({ props, intl, navigation }) => {
     getStepsRealTime()
     autoChangeStepsTarget()
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightHeight.height,totalCount])
+  }, [weightHeight.height, totalCount])
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
@@ -374,7 +317,7 @@ const StepCount = ({ props, intl, navigation }) => {
     end.setDate(end.getDate() - 1)
     let listHistory = await Fitness.getSteps({ startDate: start, endDate: end })
     let firtTimeOpen = await getFirstTimeOpen()
-    let firtTimeUnix = moment(firtTimeOpen,'yyyy-MM-DD').unix()
+    let firtTimeUnix = moment(firtTimeOpen, 'yyyy-MM-DD').unix()
     let stepTarget = await getResultSteps()
     if (!listHistory || listHistory.length <= 0) {
       return
@@ -382,37 +325,37 @@ const StepCount = ({ props, intl, navigation }) => {
     let todayUnix = moment().unix()
     // số bước chân của ngày hôm qua 
     let totalSteps
-    if(listHistory.length = 2){
+    if (listHistory.length = 2) {
       totalSteps = listHistory[1]?.quantity || 0
-    }else  totalSteps = listHistory[2]?.quantity || 0
+    } else totalSteps = listHistory[2]?.quantity || 0
     // nhỏ hơn 2 ngày
-    if(todayUnix < firtTimeUnix + 2*24*60*60){
+    if (todayUnix < firtTimeUnix + 2 * 24 * 60 * 60) {
       return
     }
     // từ 2-3 ngày
-    if(todayUnix > firtTimeUnix + 2*24*60*60 && todayUnix < firtTimeUnix + 3*24*60*60){
-      if(totalSteps >= stepTarget){
-         await setResultSteps({
+    if (todayUnix > firtTimeUnix + 2 * 24 * 60 * 60 && todayUnix < firtTimeUnix + 3 * 24 * 60 * 60) {
+      if (totalSteps >= stepTarget) {
+        await setResultSteps({
           step: stepTarget,
           date: new moment().unix()
         })
-      }else{
-         await setResultSteps({
+      } else {
+        await setResultSteps({
           step: totalSteps + 250,
           date: new moment().unix()
         })
-      } 
+      }
     }
     // bắt đầu ngày thứ 4
-    else{
-      if(totalSteps <= 1000){
-         await setResultSteps({
+    else {
+      if (totalSteps <= 1000) {
+        await setResultSteps({
           step: 1000,
           date: new moment().unix()
         })
       }
-      if(totalSteps > stepTarget){
-        if(stepTarget <=5000){
+      if (totalSteps > stepTarget) {
+        if (stepTarget <= 5000) {
           await setResultSteps({
             step: totalSteps + 250,
             date: new moment().unix()
@@ -451,21 +394,13 @@ const StepCount = ({ props, intl, navigation }) => {
     const weight = profiles[0].weight || 0
     const weightCV = weight.replace('kg', '').replace(',', '.').replace(' ', '')
     setWeightHeight({
-      height:parseFloat(heightCV),
-      weight:parseFloat(weightCV)
+      height: parseFloat(heightCV),
+      weight: parseFloat(weightCV)
     })
-    // setHeightUser(parseFloat(heightCV))
-    // setWeightUser(parseFloat(weightCV))
   }
   const getStepsRealTime = async () => {
     let stepCurrent
-    // let profiles = (await getProfile()) || [];
-    // const height = profiles[0].height || 0
-    // const heightCV = height.replace('cm', '').replace(' ', '')
-    // const weight = profiles[0].weight || 0
-    // const weightCV = weight.replace('kg', '').replace(',', '.').replace(' ', '')
-    // setHeightUser(parseFloat(heightCV))
-    // setWeightUser(parseFloat(weightCV))
+
     const healthKitOptions = {
       permissions: {
         read: [
@@ -486,21 +421,7 @@ const StepCount = ({ props, intl, navigation }) => {
       if (err) {
         return;
       }
-      // get Ditance
-      // let optionsDistance = {
-      //   date: (moment()).toISOString(), // optional; default now
-      // };
-      // AppleHealthKit.getDistanceWalkingRunning(optionsDistance, (err, results) => {
-      //   if (err) {
-      //     console.log('errerrerrerrerrerr', err)
-      //     return;
-      //   }
-      //   const total = results.value / 1000;
-      //   setDistant(total.toFixed(2));
-      // });
-      //get Sex
-      // get to localStorage or get to redux
-      //get stepCurrent
+
       let optionsStepCurrent = {
         startDate: moment().startOf('day'), // required
         endDate: moment(), // optional; default now
@@ -529,7 +450,7 @@ const StepCount = ({ props, intl, navigation }) => {
         let initialValue = 0
 
         //get Calo
-     
+
         const a = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
@@ -562,7 +483,7 @@ const StepCount = ({ props, intl, navigation }) => {
           // setCountCarlo(calo.toFixed(2))
           return k + calo * timeS * 2
         }, initialValue)
-        setCountCarlo(parseInt(a*2 / 1000))
+        setCountCarlo(parseInt(a * 2 / 1000))
         //get time
         let timeUse = results.reduce((k, i) => {
           const timeStart = moment(i.start).unix()
@@ -572,10 +493,10 @@ const StepCount = ({ props, intl, navigation }) => {
         }, timeInit)
         let h = parseInt(timeUse / 3600)
         let m
-        if(h == 0){
-           m = parseInt((timeUse/60))
-        }else{
-          m = parseInt((timeUse - h*3600) / 60)
+        if (h == 0) {
+          m = parseInt((timeUse / 60))
+        } else {
+          m = parseInt((timeUse - h * 3600) / 60)
         }
         setCountTime(m)
         setCountTimeHour(h)
@@ -664,22 +585,46 @@ const StepCount = ({ props, intl, navigation }) => {
       .catch(err => { });
   };
 
+  const alert7dayLessThan1000 = (steps) => {
+    if (steps.length >= 7) {
+      let check = true
+      steps.forEach(element => {
+        if ((element?.x || 0) >= 1000) {
+          check = false
+        }
+      });
+      if (check) {
+        showNotificationAlert7DayLessThan100()
+      }
+    }
+  }
+
+  const showNotificationAlert7DayLessThan100 = async () => {
+    let old = await getConfirmAlert()
+    if (old != (new moment().format('DD/MM/YYYY'))) {
+      openModalAlert7Day()
+    }
+  }
+
+  const confirmStepsTarget = async (type) => {
+    await setConfirmAlert(new moment().format('DD/MM/YYYY'))
+    let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+    if (type == 1) {
+      closeModalAlert7Day()
+    } else {
+      let resultSave = {
+        step: 10000,
+        date: currentTime
+      }
+      await setResultSteps(resultSave)
+      closeModalAlert7Day()
+    }
+  }
+
   const numberWithCommas = x => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
-  // const onGetCalories = (start, end) => {
-  //   Fitness.getCalories({ startDate: start, endDate: end })
-  //     .then(res => {
-  //       console.log('ressresresres', res)
-  //       //
-  //       var total = 0;
-  //       res.map(obj => {
-  //         total += obj.quantity;
-  //       });
-  //       setCountCarlo(total);
-  //     })
-  //     .catch(err => { });
-  // };
+
   const onBack = () => {
     try {
       navigation.pop();
@@ -693,19 +638,30 @@ const StepCount = ({ props, intl, navigation }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar />
       <Header
-          onBack={onBack}
-          colorIcon={'#FE4358'}
-          title={formatMessage(message.title)}
-          styleHeader={styles.header}
-          styleTitle={{
-            color: '#000',
-            fontSize: fontSize.bigger,
-          }}
-          showMenu={true}
-          onShowMenu={onShowMenu}
-        />
+        onBack={onBack}
+        colorIcon={'#FE4358'}
+        title={formatMessage(message.title)}
+        styleHeader={styles.header}
+        styleTitle={{
+          color: '#000',
+          fontSize: fontSize.bigger,
+        }}
+        showMenu={true}
+        onShowMenu={onShowMenu}
+      />
+
+      <ModalChangeTarget
+        isShowModalAlert={isShowModalAlert}
+        closeModalAlert7Day={closeModalAlert7Day}
+        confirmStepsTarget={confirmStepsTarget}
+        formatMessage={formatMessage}
+        message={message}
+        numberWithCommas={numberWithCommas}
+        totalCount={totalCount}
+      />
+
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-       
+
         <ImageBackground
           resizeMode={'stretch'}
           source={require('./images/bg_step_count.png')}
@@ -747,18 +703,18 @@ const StepCount = ({ props, intl, navigation }) => {
               source={require('./images/ic_step.png')}
             />
 
-           { locale != 'en' ? <View>
+            {locale != 'en' ? <View>
               <Text style={styles.txData}>{`${formatMessage(
                 message.stepsToTarget,
               )} ${numberWithCommas(countRest > 0 ? countRest : 0)}`}</Text>
               <Text style={styles.txUnit}>{`${formatMessage(
                 message.stepsNormal,
               )}`}</Text>
-            </View> :  <View>
-              <Text style={styles.txData}>{numberWithCommas(countRest > 0 ? countRest : 0)} <Text style={[styles.txUnit,{marginTop:10,fontWeight:'400'}]}>steps</Text> </Text>
-              <Text style={styles.txUnit}>to target</Text>
-            </View>}
-         
+            </View> : <View>
+                <Text style={styles.txData}>{numberWithCommas(countRest > 0 ? countRest : 0)} <Text style={[styles.txUnit, { marginTop: 10, fontWeight: '400' }]}>steps</Text> </Text>
+                <Text style={styles.txUnit}>to target</Text>
+              </View>}
+
           </View>
           <View style={styles.viewImgData}>
             <Image
@@ -782,50 +738,50 @@ const StepCount = ({ props, intl, navigation }) => {
               source={require('./images/ic_time.png')}
             />
             <View>
-            { 
+              {
                 countTimeHour > 0 ? (
                   <View>
-                           <View style={{ marginLeft: 4,flexDirection:'row' }}>
-                              <Text style={[styles.txData,{paddingRight:3,marginTop:10}]}>{countTimeHour}</Text>
-                              <Text style={[styles.txUnit,{marginTop:10}]}>{formatMessage(message.hour)}</Text>
-                            </View>
-                            <View style={{flexDirection:'row'}}>
-                              <Text style={[styles.txData,{paddingRight:3,marginTop:5}]}>{countTime}</Text>
-                              <Text style={[styles.txUnit,{marginTop:5}]}>{formatMessage(message.minute)}</Text>
-                          </View>
+                    <View style={{ marginLeft: 4, flexDirection: 'row' }}>
+                      <Text style={[styles.txData, { paddingRight: 3, marginTop: 10 }]}>{countTimeHour}</Text>
+                      <Text style={[styles.txUnit, { marginTop: 10 }]}>{formatMessage(message.hour)}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={[styles.txData, { paddingRight: 3, marginTop: 5 }]}>{countTime}</Text>
+                      <Text style={[styles.txUnit, { marginTop: 5 }]}>{formatMessage(message.minute)}</Text>
+                    </View>
                   </View>
-                 
+
                 ) : <View>
-                <Text style={[styles.txData,{paddingRight:3}]}>{countTime}</Text>
-                <Text style={[styles.txUnit,]}>{formatMessage(message.minute)}</Text>
-              </View>
+                    <Text style={[styles.txData, { paddingRight: 3 }]}>{countTime}</Text>
+                    <Text style={[styles.txUnit,]}>{formatMessage(message.minute)}</Text>
+                  </View>
               }
             </View>
-           
-            
-           
+
+
+
           </View>
         </View>
         <View style={styles.viewLineChart}>
           {(dataChart.length && <View>
             <ChartLineV totalCount={totalCount} data={dataChart} time={time} />
             <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() =>
-                  navigation.navigate('stepHistory', {
-                    dataHealth: { countStep, countRest, countCarlo, distant },
-                  })
-                }
-                style={{
-                  zIndex: 10000,
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%'
-                }}>
-              </TouchableOpacity>
-              </View>) ||
+              activeOpacity={0.8}
+              onPress={() =>
+                navigation.navigate('stepHistory', {
+                  dataHealth: { countStep, countRest, countCarlo, distant },
+                })
+              }
+              style={{
+                zIndex: 10000,
+                position: 'absolute',
+                width: '100%',
+                height: '100%'
+              }}>
+            </TouchableOpacity>
+          </View>) ||
             null}
-                
+
         </View>
         {/* <View style={styles.viewHeight} /> */}
       </ScrollView>
@@ -841,15 +797,15 @@ const StepCount = ({ props, intl, navigation }) => {
         </Text>
       </TouchableOpacity> */}
       <ButtonIconText
-               onPress={() =>
-                navigation.navigate('stepHistory', {
-                  dataHealth: { countStep, countRest, countCarlo, distant },
-                })
-              }
-              text= {formatMessage(message.viewHistory)}
-              styleBtn={[styles.colorButtonConfirm]}
-              styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
-            />
+        onPress={() =>
+          navigation.navigate('stepHistory', {
+            dataHealth: { countStep, countRest, countCarlo, distant },
+          })
+        }
+        text={formatMessage(message.viewHistory)}
+        styleBtn={[styles.colorButtonConfirm]}
+        styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
+      />
     </SafeAreaView>
   );
 };
@@ -871,7 +827,7 @@ const styles = StyleSheet.create({
     width: '60%',
     borderRadius: 25,
     paddingVertical: 0,
-    marginBottom:RFValue(10)
+    marginBottom: RFValue(10)
   },
   container: {
     flex: 1,

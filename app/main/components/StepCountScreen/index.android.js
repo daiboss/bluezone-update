@@ -8,13 +8,8 @@ import {
   StyleSheet,
   ImageBackground,
   Image,
-  DeviceEventEmitter,
-  Platform,
-  ScrollView,
-  BackHandler,
 
 } from 'react-native';
-import { LineChart } from 'react-native-charts-wrapper';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
@@ -29,62 +24,41 @@ import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
 import * as scheduler from '../../../core/notifyScheduler';
 import {
-  getProfile,
   getResultSteps,
   setResultSteps,
-  setEvents,
-  getEvents,
-  getTimestamp,
-  getSteps,
-  setAutoChange,
   getAutoChange,
-  setStepChange,
-  getStepChange,
   getIsShowNotification,
   getNotiStep,
-  getWeightWarning,
   setConfirmAlert,
   getConfirmAlert
 } from '../../../core/storage';
-import ChartLine from './ChartLine';
 import ChartLineV from './ChartLineV';
 import {
   ResultSteps,
-  autoChange,
-  realtime,
-  notiStep,
-  weightWarning,
-
 } from '../../../const/storage';
 const screenWidth = Dimensions.get('window').width;
 
 import {
-  getAbsoluteMonths,
   getDistances,
-  getStepCount,
   getStepsTotal,
   getStepsTotalPromise,
-  getTimeDate,
 } from '../../../core/calculation_steps';
 
 import BackgroundJob from './../../../core/service_stepcounter'
 import {
   addStepCounter,
-  getListStepDay,
-  removeAllStepDay,
   removeAllStep,
   getListHistory,
   addHistory,
-  removeAllHistory,
 } from './../../../core/db/SqliteDb'
 
-import KKK from './lll'
 import ButtonIconText from '../../../base/components/ButtonIconText';
 import { blue_bluezone, red_bluezone } from '../../../core/color';
 import { RFValue } from '../../../const/multiscreen';
 import { CommonActions } from '@react-navigation/native';
 
-import Modal from 'react-native-modal'
+import { CalculationStepTarget } from '../../../core/calculation_step_target';
+import ModalChangeTarget from './Components/ModalChangeTarget';
 
 const options = {
   taskName: 'Bluezone',
@@ -107,11 +81,8 @@ const options = {
 const StepCount = ({ props, intl, navigation }) => {
 
   useEffect(() => {
-    // removeAllStep()
-    // removeAllHistory()
     observerStepDrawUI();
     getListHistoryChart();
-
   }, [])
 
   const observerStepDrawUI = async () => {
@@ -140,11 +111,11 @@ const StepCount = ({ props, intl, navigation }) => {
     setDataChart(list)
     setTime(listTime)
 
-    // alert7dayLessThan1000(steps)
+    alert7dayLessThan1000(steps)
   }
 
   const alert7dayLessThan1000 = (steps) => {
-    if (steps.length == 7) {
+    if (steps.length >= 7) {
       let check = true
       steps.forEach(element => {
         let tmp = JSON.parse(element?.resultStep)
@@ -156,24 +127,6 @@ const StepCount = ({ props, intl, navigation }) => {
         showNotificationAlert7DayLessThan100()
       }
     }
-  }
-
-  useEffect(() => {
-    saveDataDemo()
-  }, [])
-
-  const saveDataDemo = async () => {
-    // await removeAllHistory()
-    // let tmp = new moment().startOf('years')
-    let tmp = new moment('2020-01-01')
-    let listHistory = await getListHistory(tmp.unix(), new moment().unix())
-    if (listHistory?.length > 10) {
-      return
-    }
-    // save data example
-    KKK.forEach(async element => {
-      await addHistory(element.starttime, element?.resultStep || {})
-    });
   }
 
   const getResultBindingUI = async () => {
@@ -295,62 +248,21 @@ const StepCount = ({ props, intl, navigation }) => {
     let startDay = new moment().subtract(4, 'days').set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     let listHistory = await getListHistory(startDay.unix(), new moment().unix())
-    if (listHistory?.length < 2) return
+    if (listHistory?.length <= 0) return
 
     let stepTarget = await getResultSteps()
 
-    let resultSave = {}
-    if (listHistory?.length == 2) {
-      let itemLast = listHistory[1]
-      let resultTmp = JSON.parse(itemLast?.resultStep)
-      if ((resultTmp?.step || 0) < 10000) {
-        let newTarget = (itemLast?.step || 0) + 250
-        resultSave = {
-          step: newTarget,
-          date: currentTime
-        }
-      }
-    } else {
-      let itemLast = listHistory[listHistory?.length - 1]
-      let resultTmp = JSON.parse(itemLast?.resultStep)
-      if (resultTmp?.step <= 1000) {
-        resultSave = {
-          step: 1000,
-          date: currentTime
-        }
-      } else if (resultTmp?.step > stepTarget?.step && stepTarget?.step <= 5000) {
-        let newTarget = (resultTmp?.step || 0) + 250
-        resultSave = {
-          step: newTarget,
-          date: currentTime
-        }
-      } else {
-        if (resultTmp?.step < stepTarget?.step) {
-          let tmp = stepTarget?.step - resultTmp?.step
-          let newTarget = parseInt(Math.abs(stepTarget?.step - 0.2 * tmp))
-          resultSave = {
-            step: newTarget,
-            date: currentTime
-          }
-        } else {
-          let tmp = resultTmp?.step - stepTarget?.step
-          let k = tmp / stepTarget?.step * 100
-          if (k >= 50) {
-            let newTarget = parseInt(Math.abs(stepTarget?.step + 0.2 * tmp))
-            resultSave = {
-              step: newTarget,
-              date: currentTime
-            }
-          } else {
-            let newTarget = parseInt(Math.abs(stepTarget?.step + 0.1 * tmp))
-            resultSave = {
-              step: newTarget,
-              date: currentTime
-            }
-          }
-        }
-      }
+    let listData = listHistory.map(element => {
+      let resultTmp = JSON.parse(element?.resultStep)
+      return (resultTmp?.step || 0)
+    })
+
+    let stepTargetNew = CalculationStepTarget(listData, stepTarget?.step || 10000)
+    let resultSave = {
+      step: stepTargetNew,
+      date: currentTime
     }
+
     await setResultSteps(resultSave)
     BackgroundJob.updateTypeNotification()
   }
@@ -445,16 +357,22 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const confirmStepsTarget = async (type) => {
     await setConfirmAlert(new moment().format('DD/MM/YYYY'))
-    if (type) {
+    let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+    if (type == 1) {
       closeModalAlert7Day()
     } else {
+      let resultSave = {
+        step: 10000,
+        date: currentTime
+      }
+      await setResultSteps(resultSave)
       closeModalAlert7Day()
     }
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <StatusBar /> */}
+      <StatusBar />
 
       <Header
         // onBack={onBack}
@@ -469,37 +387,15 @@ const StepCount = ({ props, intl, navigation }) => {
         onShowMenu={onShowMenu}
       />
 
-      <Modal
-        useNativeDriver
-        isVisible={isShowModalAlert}
-        onBackdropPress={closeModalAlert7Day}
-      >
-        <View style={styles.containerAlert}>
-          <Text style={styles.textAlert}>Bạn có muốn dữ mục tiêu là {numberWithCommas(totalCount)} không?</Text>
-          <View style={{
-            marginTop: RFValue(18),
-            flexDirection: 'row',
-            borderTopWidth: 1,
-            borderColor: '#d3d3d3'
-          }}>
-            <TouchableOpacity
-              onPress={() => confirmStepsTarget(0)}
-              activeOpacity={0.5}
-              style={{ flex: 1, justifyContent: 'center' }} >
-              <Text style={styles.btnAlert}>Không</Text>
-            </TouchableOpacity>
-            <View style={{ height: RFValue(36), width: 1, backgroundColor: '#d3d3d3' }} />
-            <TouchableOpacity
-              onPress={() => confirmStepsTarget(1)}
-              activeOpacity={0.5}
-              style={{ flex: 1, justifyContent: 'center' }} >
-              <Text style={[styles.btnAlert, {
-                color: blue_bluezone
-              }]}>Đồng ý</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <ModalChangeTarget
+        isShowModalAlert={isShowModalAlert}
+        closeModalAlert7Day={closeModalAlert7Day}
+        confirmStepsTarget={confirmStepsTarget}
+        formatMessage={formatMessage}
+        message={message}
+        numberWithCommas={numberWithCommas}
+        totalCount={totalCount}
+      />
 
       <ImageBackground
         resizeMode={'stretch'}
@@ -771,20 +667,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingVertical: 0,
     marginBottom: 10
-  },
-  containerAlert: {
-    backgroundColor: '#fff',
-    borderRadius: 6,
-  },
-  textAlert: {
-    textAlign: 'center',
-    fontSize: RFValue(12),
-    fontWeight: '700',
-    marginTop: RFValue(10)
-  },
-  btnAlert: {
-    textAlign: 'center',
-    fontWeight: '700'
   }
 });
 StepCount.propTypes = {
