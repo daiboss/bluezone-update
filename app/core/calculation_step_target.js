@@ -19,7 +19,7 @@ const CalculationStepTarget = (listStep, oldTarget) => {
             return oldTarget;
         } else if (lastItem > oldTarget) {
             if (oldTarget <= 5000) {
-                stepTarget = oldTarget + 250
+                stepTarget = lastItem + 250
             } else {
                 stepTarget = tableCalculator(lastItem, oldTarget)
             }
