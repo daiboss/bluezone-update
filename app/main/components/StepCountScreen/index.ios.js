@@ -36,7 +36,9 @@ import {
   getSteps,
   getStepsTotal,
   setAutoChange,
+  getConfirmAlert,
   getAutoChange,
+  setConfirmAlert
 } from '../../../core/storage';
 import { CalculationStepTarget } from '../../../core/calculation_step_target';
 import ChartLineV from './ChartLineV';
@@ -46,6 +48,7 @@ import {
   realtime,
   notiStep,
   weightWarning,
+  
 } from '../../../const/storage';
 const screenWidth = Dimensions.get('window').width;
 import BackgroundFetch from 'react-native-background-fetch';
@@ -622,7 +625,6 @@ const StepCount = ({ props, intl, navigation }) => {
   const alert7dayLessThan1000 = (steps) => {
     if (steps.length >= 7) {
       let check = true
-      console.log('stepsstepsstepssteps',steps)
       steps.forEach(element => {
         if ((element?.x || 0) >= 1000) {
           check = false
@@ -642,8 +644,10 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const confirmStepsTarget = async (type) => {
+    console.log('typetypetypetypetypetype',type)
     await setConfirmAlert(new moment().format('DD/MM/YYYY'))
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+    console.log('typetypetypetypetypetype',type)
     if (type == 1) {
       closeModalAlert7Day()
     } else {
