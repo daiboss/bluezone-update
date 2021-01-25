@@ -38,6 +38,7 @@ import {
   setAutoChange,
   getAutoChange,
 } from '../../../core/storage';
+import { CalculationStepTarget } from '../../../core/calculation_step_target';
 import ChartLineV from './ChartLineV';
 import {
   ResultSteps,
@@ -308,75 +309,108 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
-    if (!auto) {
+    if (auto != undefined && auto == false) {
       return
     }
     let start = new Date();
     let end = new Date();
-    start.setDate(start.getDate() - 3);
-    end.setDate(end.getDate() - 1)
-    let listHistory = await Fitness.getSteps({ startDate: start, endDate: end })
     let firtTimeOpen = await getFirstTimeOpen()
-    let firtTimeUnix = moment(firtTimeOpen, 'yyyy-MM-DD').unix()
-    let stepTarget = await getResultSteps()
-    if (!listHistory || listHistory.length <= 0) {
-      return
-    }
-    let todayUnix = moment().unix()
-    // số bước chân của ngày hôm qua 
-    let totalSteps
-    if (listHistory.length = 2) {
-      totalSteps = listHistory[1]?.quantity || 0
-    } else totalSteps = listHistory[2]?.quantity || 0
-    // nhỏ hơn 2 ngày
-    if (todayUnix < firtTimeUnix + 2 * 24 * 60 * 60) {
-      return
-    }
-    // từ 2-3 ngày
-    if (todayUnix > firtTimeUnix + 2 * 24 * 60 * 60 && todayUnix < firtTimeUnix + 3 * 24 * 60 * 60) {
-      if (totalSteps >= stepTarget) {
-        await setResultSteps({
-          step: stepTarget,
-          date: new moment().unix()
-        })
-      } else {
-        await setResultSteps({
-          step: totalSteps + 250,
-          date: new moment().unix()
-        })
+    let firtTimeUnix2d = moment(firtTimeOpen, 'yyyy-MM-DD').unix() + 2 * 24 * 60 * 60
+    let firtTimeUnix3d = moment(firtTimeOpen, 'yyyy-MM-DD').unix() + 3 * 24 * 60 * 60
+     let todayUnix = moment().unix()
+    //  if (todayUnix < firtTimeUnix2d) {
+    //   return
+    // }
+    if (todayUnix > firtTimeUnix2d && todayUnix < firtTimeUnix3d) {
+      start.setDate(start.getDate() - 2);
+      end.setDate(end.getDate() - 1)
+      let listHistory = await Fitness.getSteps({ startDate: start, endDate: end })
+      let CvList = listHistory.map(i => i.quantity)
+      let stepTarget = await getResultSteps()
+      let stepTargetNew = CalculationStepTarget(CvList, stepTarget?.step || 10000)
+      let resultSave = {
+        step: stepTargetNew,
+        date: moment().unix()
       }
+      await setResultSteps(resultSave)
     }
-    // bắt đầu ngày thứ 4
-    else {
-      if (totalSteps <= 1000) {
-        await setResultSteps({
-          step: 1000,
-          date: new moment().unix()
-        })
+    else{
+      start.setDate(start.getDate() - 3);
+      end.setDate(end.getDate() - 1)
+      let listHistory = await Fitness.getSteps({ startDate: start, endDate: end })
+      let CvList = listHistory.map(i => i.quantity)
+      let stepTarget = await getResultSteps()
+      if(stepTarget.date + 24*60*60 >= todayUnix){
+        return;
       }
-      if (totalSteps > stepTarget) {
-        if (stepTarget <= 5000) {
-          await setResultSteps({
-            step: totalSteps + 250,
-            date: new moment().unix()
-          })
-        }
-        let tmp = totalSteps / (stepTarget?.step || 10000) * 100;
-        let configurationStep = stepTarget?.step || 10000;
-        let stepDifferen = Math.abs(totalSteps - (stepTarget?.step || 10000))
-        if (tmp >= 150) {
-          configurationStep += parseInt(stepDifferen * 0.2)
-        } else if (tmp >= 100) {
-          configurationStep += parseInt(stepDifferen * 0.1)
-        } else {
-          configurationStep -= parseInt(stepDifferen * 0.2)
-        }
-        await setResultSteps({
-          step: configurationStep,
-          date: new moment().unix()
-        })
+      let stepTargetNew = CalculationStepTarget(CvList, stepTarget?.step || 10000)
+      let resultSave = {
+        step: stepTargetNew,
+        date: moment().unix()
       }
+      await setResultSteps(resultSave)
     }
+ 
+
+
+    // let stepTarget = await getResultSteps()
+    // if (!listHistory || listHistory.length <= 0) {
+    //   return
+    // }
+    // // số bước chân của ngày hôm qua 
+    // let totalSteps
+    // if (listHistory.length = 2) {
+    //   totalSteps = listHistory[1]?.quantity || 0
+    // } else totalSteps = listHistory[2]?.quantity || 0
+    // // nhỏ hơn 2 ngày
+    // if (todayUnix < firtTimeUnix + 2 * 24 * 60 * 60) {
+    //   return
+    // }
+    // // từ 2-3 ngày
+    // if (todayUnix > firtTimeUnix + 2 * 24 * 60 * 60 && todayUnix < firtTimeUnix + 3 * 24 * 60 * 60) {
+    //   if (totalSteps >= stepTarget) {
+    //     await setResultSteps({
+    //       step: stepTarget,
+    //       date: new moment().unix()
+    //     })
+    //   } else {
+    //     await setResultSteps({
+    //       step: totalSteps + 250,
+    //       date: new moment().unix()
+    //     })
+    //   }
+    // }
+    // // bắt đầu ngày thứ 4
+    // else {
+    //   if (totalSteps <= 1000) {
+    //     await setResultSteps({
+    //       step: 1000,
+    //       date: new moment().unix()
+    //     })
+    //   }
+    //   if (totalSteps > stepTarget) {
+    //     if (stepTarget <= 5000) {
+    //       await setResultSteps({
+    //         step: totalSteps + 250,
+    //         date: new moment().unix()
+    //       })
+    //     }
+    //     let tmp = totalSteps / (stepTarget?.step || 10000) * 100;
+    //     let configurationStep = stepTarget?.step || 10000;
+    //     let stepDifferen = Math.abs(totalSteps - (stepTarget?.step || 10000))
+    //     if (tmp >= 150) {
+    //       configurationStep += parseInt(stepDifferen * 0.2)
+    //     } else if (tmp >= 100) {
+    //       configurationStep += parseInt(stepDifferen * 0.1)
+    //     } else {
+    //       configurationStep -= parseInt(stepDifferen * 0.2)
+    //     }
+    //     await setResultSteps({
+    //       step: configurationStep,
+    //       date: new moment().unix()
+    //     })
+    //   }
+    // }
   }
 
   const getSex = async () => {
@@ -588,6 +622,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const alert7dayLessThan1000 = (steps) => {
     if (steps.length >= 7) {
       let check = true
+      console.log('stepsstepsstepssteps',steps)
       steps.forEach(element => {
         if ((element?.x || 0) >= 1000) {
           check = false
