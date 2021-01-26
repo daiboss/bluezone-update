@@ -284,7 +284,7 @@ const SettingScreen = ({ intl, navigation }) => {
         intl={intl}
         onSelected={saveStepsTarget}
         onCloseModal={closeModalTarget}
-        currentSteps={isHardwork ? totalStep : 10000}
+        currentSteps={10000}
         isVisibleModal={isShowModalTarget} />
 
       <ModalAddShortcut

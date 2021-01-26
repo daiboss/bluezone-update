@@ -21,19 +21,13 @@ import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
-import BarChart from './BarChart';
 import message from '../../../core/msg/stepCount';
 import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
-import { useRoute } from '@react-navigation/native';
-import dateUtils from 'mainam-react-native-date-utils';
-import BartChartHistory from './BarChart/BartChartHistory';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
 
-import { objectOf } from 'prop-types';
-import { getProfile, getStepChange } from '../../../core/storage';
 import { getAbsoluteMonths, getAllDistance, gender, getDistances } from '../../../core/calculation_steps';
-import { getListHistory, removeAllHistory } from '../../../core/db/SqliteDb';
-import BarChartConvert from './BarChart/BarChartConvert';
+import { getListHistory } from '../../../core/db/SqliteDb';
 import BarChart7Item from './BarChart/BarChart7Item';
 import { RFValue } from '../../../const/multiscreen';
 Date.prototype.getWeek = function (dowOffset) {
@@ -95,15 +89,16 @@ const StepCount = ({ props, intl, navigation }) => {
     index: -1
   })
 
-
-  useEffect(() => {
-    getDataHealth(
-      'day',
-    );
-    setSelectDate(true);
-    setSelectMonth(false);
-    setSelectWeek(false);
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getDataHealth(
+        'day',
+      );
+      setSelectDate(true);
+      setSelectMonth(false);
+      setSelectWeek(false);
+    }, [])
+  );
 
   const onSetSelect = type => async () => {
     if (type == 1) {
@@ -266,7 +261,7 @@ const StepCount = ({ props, intl, navigation }) => {
           })
         }
       } else if (type == 'week') {
-        
+
         const groups = step.reduce((acc, current) => {
           const yearWeek = moment.unix(current?.starttime).week();
           if (!acc[yearWeek]) {

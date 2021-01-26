@@ -217,9 +217,13 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const switchTimeToSchedule = async () => {
     let currentTime = new moment()
-    if (currentTime.format('HH:mm:ss') == '00:00:00') {
+    let tmpStart1 = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    let tmpEnd1 = new moment().set({ hour: 0, minute: 0, second: 9, millisecond: 59 })
+    let tmpStart2 = new moment().set({ hour: 19, minute: 0, second: 0, millisecond: 0 })
+    let tmpEnd2 = new moment().set({ hour: 19, minute: 0, second: 9, millisecond: 59 })
+    if (currentTime.isAfter(tmpStart1) && currentTime.isBefore(tmpEnd1)) {
       await scheduleLastDay()
-    } else if (currentTime.format('HH:mm:ss') == '19:00:00') {
+    } else if (currentTime.isAfter(tmpStart2) && currentTime.isBefore(tmpEnd2)) {
       await schedule7PM()
     }
   }
@@ -268,7 +272,6 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const saveHistory = async () => {
-    // await removeAllHistory()
     let tmp = new moment().subtract(1, 'days')
     let yesterdayStart = tmp.clone().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     let yesterdayEnd = tmp.clone().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix()
@@ -366,6 +369,7 @@ const StepCount = ({ props, intl, navigation }) => {
         date: currentTime
       }
       await setResultSteps(resultSave)
+      await resultSteps()
       closeModalAlert7Day()
     }
   }
@@ -540,7 +544,23 @@ const StepCount = ({ props, intl, navigation }) => {
 
       </View>
 
+
+      <TouchableOpacity
+        style={{
+          justifyContent: 'center',
+          marginBottom: 10,
+          alignSelf: 'center'
+        }}
+        onPress={() => {
+          navigation.navigate('DemoTarget')
+        }}>
+        <Text style={{
+
+        }}>Tính mục tiêu</Text>
+      </TouchableOpacity>
+
       <View style={{ flex: 0.7 }}>
+
         <ButtonIconText
           onPress={() =>
             navigation.navigate('stepHistory', {

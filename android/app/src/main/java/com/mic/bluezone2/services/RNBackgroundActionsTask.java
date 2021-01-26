@@ -78,7 +78,6 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
         final double currentSteps = bgOptions.getCurrentSteps();
         boolean isShowNofi = bgOptions.isShowStep();
         double targetSteps = bgOptions.getStepsTarget();
-        final double valueTarget = bgOptions.getvalueTarget();
         if (targetSteps == 0) {
             targetSteps = 10000;
         }
@@ -123,8 +122,8 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                 .setCustomBigContentView(notificationLayout)
                 .setAutoCancel(false)
                 .setOngoing(true)
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .setStyle(new NotificationCompat.BigPictureStyle())
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("Bluezone - App sức khoẻ"))
                 .build();
         return notification;
     }
@@ -274,9 +273,12 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                 map.putDouble(END_TIME, streakStartTime);
                 map.putDouble(EVENT_COUNTER, 1);
                 map.putDouble(TOTAL_STEP, stepCount);
+                if (streakStartTime - streakPrevTime > 1000) {
+                    streakPrevTime = streakStartTime - 1000;
+                }
                 map.putDouble(START_TIME, streakPrevTime);
                 emitValue(map);
-//                Log.e("StepCounter", "EMIT VALUEEE===: " + streakStartTime + " - " + ((float) (streakStartTime - streakPrevTime) / 1000) + " - " + stepCount + " - " + streakPrevTime);
+//                Log.e("StepCounter", "EMIT VALUEEE===: " + streakStartTime + " - " + ((int) (streakStartTime - streakPrevTime) / 1000) + " - " + stepCount + " - " + streakPrevTime);
                 streakPrevTime = streakStartTime;
             }
             PREVIOUS_STATE = CURRENT_STATE;

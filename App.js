@@ -115,6 +115,7 @@ import ResultBmiScreen from './app/main/components/ProfileScreen/ResultBmiScreen
 // animation transaction
 import { TransitionSpecs, HeaderStyleInterpolators } from '@react-navigation/stack';
 import { Platform } from 'react-native';
+import DemoTarget from './app/main/components/StepCountScreen/DemoTarget';
 
 const MyTransition = {
   gestureDirection: 'horizontal',
@@ -458,6 +459,7 @@ class App extends React.Component {
         <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
         <Stack.Screen name={'stepHistory'} component={StepHistory} />
         <Stack.Screen name={'settingScreen'} component={SettingScreen} />
+        <Stack.Screen name={'DemoTarget'} component={DemoTarget} />
       </Stack.Navigator>
     ) : (
           <Stack.Navigator
@@ -515,6 +517,7 @@ class App extends React.Component {
             <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
             <Stack.Screen name={'stepHistory'} component={StepHistory} />
             <Stack.Screen name={'settingScreen'} component={SettingScreen} />
+            <Stack.Screen name={'DemoTarget'} component={DemoTarget} />
 
             <Stack.Screen name="Profile2" component={ProfileScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />

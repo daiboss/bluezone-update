@@ -23,6 +23,7 @@
 
 import { Platform } from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
+import moment from 'moment'
 
 import { dev } from '../apis/server';
 
@@ -75,12 +76,14 @@ const close = () => {
 };
 
 const initDatabase = (success, failure) => {
+  console.log('lllllllinitDatabaseinitDatabaselllll')
   db = open();
   db.transaction(function (txn) {
     txn.executeSql(
       "SELECT name FROM sqlite_master WHERE type='table' AND name='notify'",
       [],
       function (tx, res) {
+        console.log('initDatabaseinitDatabase', res.rows)
         if (res.rows.length === 0) {
           tx.executeSql('DROP TABLE IF EXISTS notify');
           tx.executeSql(
@@ -399,21 +402,6 @@ const getCountBluezoneByDays = (timestamp, success, failure) => {
   });
 };
 
-const removeAllStepDay = async (time) => {
-  return new Promise((success, failure) => {
-    db = open();
-    db.transaction(function (txn) {
-      txn.executeSql(
-        'delete from stepcounter where starttime <= ?',
-        [time],
-        success,
-        failure,
-      );
-    });
-  })
-
-}
-
 export const removeAllHistory = async () => {
   return new Promise((resolve, reject) => {
     db = open();
@@ -473,7 +461,7 @@ const getListHistory = async (start, to) => {
     db = open();
     db.transaction(function (txn) {
       txn.executeSql(
-        'select * from historyStepcounter where starttime >= ? and starttime <= ?',
+        'select * from historyStepcounter where starttime >= ? and starttime <= ? order by starttime',
         [start, to],
         (txTemp, results) => {
           let temp = [];
@@ -494,6 +482,8 @@ const getListHistory = async (start, to) => {
 }
 
 const addHistory = async (time, value) => {
+  let tmpTime = new moment.unix(time)
+  console.log('saveHistory', time, tmpTime.format('DD/MM/YYYY'), value)
   return new Promise((resolve, reject) => {
     db = open();
     db.transaction(function (txn) {
@@ -539,7 +529,6 @@ export {
   getAllDevLog,
   clearDevLog,
   getCountBluezoneByDays,
-  removeAllStepDay,
   getListHistory,
   getListStepDay,
   addHistory,
