@@ -318,8 +318,11 @@ const StepCount = ({ props, intl, navigation }) => {
     let start = new Date();
     let end = new Date();
     let firtTimeOpen = await getFirstTimeOpen()
+    // let firtTimeOpen = moment().subtract(2,'days').startOf('day').unix()
     let firtTimeUnix2d = moment(firtTimeOpen, 'yyyy-MM-DD').unix() + 2 * 24 * 60 * 60
     let firtTimeUnix3d = moment(firtTimeOpen, 'yyyy-MM-DD').unix() + 3 * 24 * 60 * 60
+    // let firtTimeUnix2d = firtTimeOpen + 2 * 24 * 60 * 60
+    // let firtTimeUnix3d = firtTimeOpen + 3 * 24 * 60 * 60
      let todayUnix = moment().unix()
     //  if (todayUnix < firtTimeUnix2d) {
     //   return
@@ -331,6 +334,7 @@ const StepCount = ({ props, intl, navigation }) => {
       let CvList = listHistory.map(i => i.quantity)
       let stepTarget = await getResultSteps()
       let stepTargetNew = CalculationStepTarget(CvList, stepTarget?.step || 10000)
+      setTotalCount(parseInt(stepTargetNew))
       let resultSave = {
         step: stepTargetNew,
         date: moment().unix()
@@ -673,6 +677,22 @@ const StepCount = ({ props, intl, navigation }) => {
     navigation.openDrawer();
   };
   console.log('vaovaovaovaovaovaova')
+  const functionTest = () => {
+    let options = {
+      value: 10,
+      startDate: (moment().subtract(0,'days').startOf('day')).toISOString(),
+      endDate: (moment().subtract(0,'days').endOf('day')).toISOString(),
+    };
+    AppleHealthKit.saveSteps(options, (err, res) => {
+      if (err) {
+        console.log('ererererererererere',err)
+        return;
+      }
+      console.log('countresresresres',countRest)
+      console.log('resresresresresres',res)
+      // step count sample successfully saved
+    });
+  }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar />
@@ -836,7 +856,9 @@ const StepCount = ({ props, intl, navigation }) => {
         </Text>
       </TouchableOpacity> */}
       <ButtonIconText
-        onPress={() =>
+        onPress={
+          // functionTest
+          () =>
           navigation.navigate('stepHistory', {
             dataHealth: { countStep, countRest, countCarlo, distant },
           })

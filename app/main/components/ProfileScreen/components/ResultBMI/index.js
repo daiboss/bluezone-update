@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef, memo, useMemo } from 'react';
-import { View, Text, Animated } from 'react-native';
+import { View, Text, Animated,Dimensions } from 'react-native';
 import styles from './styles/index.css';
 import message from '../../../../../core/msg/profile';
 import NumberAnimate from './../../components/ResultBmiProgress/AnimateNumber'
+import { Position } from './PositionDot';
 import { injectIntl, intlShape } from 'react-intl';
+const {width,height} = Dimensions.get('window')
 const ResultBMI = ({ height, weight, intl, resultScreen }) => {
   const { formatMessage } = intl;
   const [bmi, setBmi] = useState(0);
@@ -25,24 +27,6 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
       useNativeDriver: false
     }).start();
   };
-  const getPositionDot = () => {
-    let per = '0%';
-    if (bmi < 18.5) {
-      per = bmi + '%';
-    } else if (bmi <= 22.9 && bmi >= 18.5) {
-      per = bmi * 0.6 + 20 + '%';
-    } else if (bmi <= 24.9 && bmi >= 23) {
-      per = bmi * 0.4 + 40 + '%';
-    } else if (bmi <= 29.9 && bmi >= 25) {
-      per = bmi * 1 + 40 + '%';
-    } else if (bmi >= 30 && bmi <= 34.9) {
-      per = '85%';
-    } else if (bmi >= 35) {
-      per = '98%';
-    }
-    return per;
-  };
-
   return (
     <View style={[styles.container2, {
       // overflow: 'hidden'
@@ -89,7 +73,7 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
             overflow: 'hidden',
             height: 6,
           }}>
-            <View style={[styles.line1, styles.line]} />
+            <View style={[styles.line1, styles.line]}/>
             <View style={[styles.line2, styles.line]} />
             <View style={[styles.line3, styles.line]} />
             <View style={[styles.line4, styles.line]} />
@@ -100,7 +84,7 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
             style={[
               styles.dot,
               {
-                left: getPositionDot(),
+                left: Position(bmi),
                 transform: [
                   {
                     translateX: fadeAnim.interpolate({
