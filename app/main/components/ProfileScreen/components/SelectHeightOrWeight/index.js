@@ -1,5 +1,5 @@
 import { injectIntl, intlShape } from 'react-intl';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,memo } from 'react';
 import AppleHealthKit from 'rn-apple-healthkit';
 import styles from './styles/index.css';
 import { View, TouchableOpacity, Text } from 'react-native';
@@ -102,4 +102,4 @@ const SelectHeightOrWeight = ({
   );
 };
 
-export default injectIntl(SelectHeightOrWeight);
+export default injectIntl(memo(SelectHeightOrWeight));

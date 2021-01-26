@@ -28,6 +28,29 @@ const { width, height } = Dimensions.get('window')
 
 const widthChart = width - 40 * 2
 
+const  dataTest = [
+  {x:1,y:65},
+  {x:2,y:67},
+  {x:3,y:1},
+  {x:4,y:69},
+  {x:5,y:68},
+  {x:6,y:66},
+  {x:7,y:78},
+  {x:8,y:67},
+  // {x:9,y:65},
+]
+
+  const tickdataTest = [
+    // '10/11',
+    '11/11',
+    '12/11',
+    '13/11',
+    '14/11',
+    '15/11',
+    '16/11',
+    '17/11',
+    '18/11'
+  ]
 class ChartLine extends React.Component {
   constructor(props) {
     super(props);
@@ -63,13 +86,55 @@ class ChartLine extends React.Component {
         x: index + 1
       }
     })
-    let b = datanew.slice(0, 7)
     // console.log('bbbbbbb', b)
-    this.setState({ dataConvert: b }, () => {
+    this.setState({ dataConvert: datanew }, () => {
       // console.log('dâtttatatata', this.state.dataConvert)
     })
   }
-
+  domainPaddingChart =  () => {
+    const {dataConvert} = this.state
+    let x = []
+    if(dataConvert.length == 1){
+      x = [0,0] 
+      return x
+    }
+    if(dataConvert.length == 2){
+      x = [RFValue(10),RFValue(10)] 
+      return x
+    }
+    if(dataConvert.length == 3){
+      x = [RFValue(10),RFValue(10)] 
+      return x
+    }
+    if(dataConvert.length == 4){
+      x = [RFValue(10),RFValue(10)] 
+      return x
+    }
+    if(dataConvert.length == 5){
+      x = [RFValue(10),RFValue(10)] 
+      return x
+    }
+    if(dataConvert.length == 6){
+      x = [RFValue(20),RFValue(20)] 
+      return x
+    }
+    if(dataConvert.length >= 7){
+      x = [RFValue(30),RFValue(30)] 
+      return x
+    }
+  }
+  widthChart = () => {
+    const {dataConvert} = this.state
+    let x
+    if(dataConvert.length <= 7){
+      x = width*0.8
+      return x
+    }
+    else{
+      x = dataConvert.length*width*0.12
+      return x
+    }
+  }
   getLeftLabel = () => {
     const value = this.state?.value?.length
     // console.log('topLabelbaelbel', this.state.leftLabel, value)
@@ -87,14 +152,16 @@ class ChartLine extends React.Component {
   renderMainChart = () => {
     return (
       <VictoryChart
-        padding={{ left: 20, right: 20, top: RFValue(20), bottom: 10 }}
+        singleQuadrantDomainPadding={false}
+        padding={{top: RFValue(20), bottom: 10 }}
         height={RFValue(120)}
         style={{
           parent: {
             // backgroundColor: 'red',
           },
         }}
-        width={widthChart}
+        width={this.widthChart()}
+        domainPadding={{ x:this.domainPaddingChart()}}
         // minDomain={{ y: 0 }}
         maxDomain={{ y: 300 }}
       // theme={VictoryTheme.material}
@@ -113,7 +180,7 @@ class ChartLine extends React.Component {
         <VictoryAxis
           //  crossAxis dependentAxis
           tickValues={this.props.time}
-          // tickValues={['10/11','11/11','12/11','13/11','14/11','15/11','16/11']}
+          // tickValues={tickdata}
           style={{
             grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'gray', strokeWidth: 0.5 },
             axis: { stroke: 'none' },
@@ -130,17 +197,10 @@ class ChartLine extends React.Component {
         <VictoryGroup
           style={{ labels: { fill: 'none' } }}
           data={this.state.dataConvert}
-        //    data = {[
-        //   {x:1,y:65},
-        //   {x:2,y:67},
-        //   {x:3,y:1},
-        //   {x:4,y:69},
-        //   {x:5,y:68},
-        //   {x:6,y:66},
-        //   {x:7,y:300},
-        // ]}
-        >
+          // data = {data}
+          >
           <VictoryArea
+            
             interpolation="natural"
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
           // data={sampleData}
@@ -153,9 +213,9 @@ class ChartLine extends React.Component {
             interpolation="natural"
             style={{
               data: { stroke: "#FE4358" },
-              parent: { border: "1px solid #ccc" }
+              parent: { border: "1px solid #ccc", },
+            
             }}
-
           />
 
           {this.state.showToolTip && <VictoryScatter
@@ -233,15 +293,24 @@ class ChartLine extends React.Component {
     )
   }
   render() {
+    console.log('yeyeyeyyyeye',this.state.dataConvert)
     return (
       <View style={[styles.container,]}>
-        <Text style={[styles.txtYear, { paddingTop: 5 }]}>{this.state.year}</Text>
+     
+        <Text style={[styles.txtYear, { paddingVertical: RFValue(10) }]}>{this.state.year || 2021}</Text>
+        <ScrollView 
+        bounces = {this.state?.dataConvert.length <= 7 ? false : true}
+        showsHorizontalScrollIndicator={false}
+        style={{flex:1,marginTop:RFValue(3),marginBottom:RFValue(10)}}
+        ref={ref => {this.scrollView = ref}}
+        onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}
+        scrollEnabled={true} horizontal={true}>
         {this.state.topLabel && this.state.leftLabel && this.state.showToolTip &&
           <View style={{
             position: 'absolute',
             backgroundColor: '#FE4358',
             zIndex: 1,
-            top: this.state.position.y - RFValue(22),
+            top: this.state.position.y - RFValue(40),
             left: this.state.position.x - RFValue(27),
             paddingHorizontal: RFValue(10),
             paddingVertical: RFValue(8),
@@ -259,7 +328,7 @@ class ChartLine extends React.Component {
                 width: RFValue(10),
                 height: RFValue(10),
                 position: 'absolute',
-                bottom: -6,
+                bottom: RFValue(-6),
                 alignSelf: 'center',
                 tintColor: '#FE4358',
                 // zIndex: 0
@@ -267,16 +336,16 @@ class ChartLine extends React.Component {
               source={require('../../../StepCountScreen/images/down-arrow.png')} />
           </View>
         }
-        <View>
+       
           {Platform.OS == 'android' ?
-            <Svg style={{ height: RFValue(120), alignSelf: 'center', width: '100%' }}>
+            <Svg style={{ height: RFValue(120), alignSelf: 'center'}}>
               {this.renderMainChart()}
             </Svg> :
-            <View style={{ height: RFValue(120), alignSelf: 'center', width: '100%' }}>
+            <View style={{ height: RFValue(120), alignSelf: 'center' }}>
               {this.renderMainChart()}
             </View>
           }
-        </View>
+        </ScrollView>
       </View>
     );
   }

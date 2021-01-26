@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState ,memo} from 'react';
 import * as PropTypes from 'prop-types';
 import {
   SafeAreaView,
@@ -44,6 +44,7 @@ const visibleModal = {
 };
 
 const ProfileScreen = ({ route, intl, navigation }) => {
+  console.log('vaovaoaoalai')
   const { formatMessage } = intl;
   const [gender, setGender] = useState(0);
   const [listProfile, setListProfile] = useState([]);
@@ -294,4 +295,4 @@ ProfileScreen.defaultProps = {
   disabled: true,
 };
 
-export default injectIntl(ProfileScreen);
+export default injectIntl(memo(ProfileScreen));
