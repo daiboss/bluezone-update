@@ -279,6 +279,7 @@
     "bluezone.stepCount.viewHistory": "Xem lịch sử",
     "bluezone.stepCount.stepCountHistory": "Lịch sử đếm bước",
     "bluezone.stepCount.minute": "phút",
+    "bluezone.stepCount.minutes":"phút",
     "bluezone.stepCount.hour": "giờ",
     "bluezone.stepCount.day": "Ngày",
     "bluezone.stepCount.week": "Tuần",

@@ -495,13 +495,13 @@ const StepCount = ({ props, intl, navigation }) => {
                         marginRight: 5,
                         marginTop: 5
                       }]}>{countTime}</Text>
-                      <Text style={[styles.txUnit, { marginTop: 5 }]}>{formatMessage(message.minute)}</Text>
+                      <Text style={[styles.txUnit, { marginTop: 5 }]}>{countTime <= 1 ? formatMessage(message.minute) : formatMessage(message.minutes)}</Text>
                     </View>
                   </View>
                 ) : (
                     <View>
                       <Text style={styles.txData}>{countTime}</Text>
-                      <Text style={styles.txUnit}>{formatMessage(message.minute)}</Text>
+                      <Text style={styles.txUnit}>{countTime <= 1 ? formatMessage(message.minute) : formatMessage(message.minutes)}</Text>
                     </View>
                   )
               }

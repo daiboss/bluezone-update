@@ -308,7 +308,7 @@ const StepCount = ({ props, intl, navigation }) => {
     getStepsRealTime()
     autoChangeStepsTarget()
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightHeight.height, totalCount])
+  }, [weightHeight.height, totalCount,countStep])
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
@@ -786,13 +786,13 @@ const StepCount = ({ props, intl, navigation }) => {
                     </View>
                     <View style={{ flexDirection: 'row' }}>
                       <Text style={[styles.txData, { paddingRight: 3, marginTop: 5 }]}>{countTime}</Text>
-                      <Text style={[styles.txUnit, { marginTop: 5 }]}>{formatMessage(message.minute)}</Text>
+                      <Text style={[styles.txUnit, { marginTop: 5 }]}>{countTime <= 1 ? formatMessage(message.minute) : formatMessage(message.minutes)}</Text>
                     </View>
                   </View>
 
                 ) : <View>
                     <Text style={[styles.txData, { paddingRight: 3 }]}>{countTime}</Text>
-                    <Text style={[styles.txUnit,]}>{formatMessage(message.minute)}</Text>
+                    <Text style={[styles.txUnit,]}>{countTime <= 1 ? formatMessage(message.minute) : formatMessage(message.minutes)}</Text>
                   </View>
               }
             </View>
