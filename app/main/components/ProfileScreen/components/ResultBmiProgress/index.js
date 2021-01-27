@@ -20,7 +20,7 @@ const ResultBmiProgress = ({ bmi, intl }) => {
   const animShowText = Animated.timing(animShow, {
     toValue: 1,
     useNativeDriver: true,
-    duration: 2000,
+    duration: 100,
     delay: TIME_ANIM,
     easing: Easing.linear,
   })
@@ -119,27 +119,6 @@ const ResultBmiProgress = ({ bmi, intl }) => {
         resizeMode={'contain'}>
         <View
           style={styles.group}>
-          {/* <AnimatedCircularProgress
-            size={200}
-            width={8}
-            fill={100}
-            tintColor={fill}
-            backgroundColor="#FFF">
-            {() => (
-              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Text
-                  style={[
-                    styles.textTotalBmi,
-                    {
-                      color: fill,
-                    },
-                  ]}>
-                  {bmi}
-                </Text>
-                <Text style={styles.textStatus}>{formatMessage(status)}</Text>
-              </View>
-            )}
-          </AnimatedCircularProgress> */}
           <View style={{
             width: 200,
             height: 200,

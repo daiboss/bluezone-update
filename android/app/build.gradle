@@ -152,8 +152,8 @@ android {
         applicationId 'com'
         minSdkVersion 23
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode  32 // 25
-        versionName '3.0.3-deploygate.dev' // "3.0.1-deploygate.dev" // "2.0.3" // "3.0.1-deploygate.dev" // 2.0.2-deploygate  2.0.2-deploygate.dev
+        versionCode  33 // 25
+        versionName '3.0.4-deploygate.dev' // "3.0.1-deploygate.dev" // "2.0.3" // "3.0.1-deploygate.dev" // 2.0.2-deploygate  2.0.2-deploygate.dev
         multiDexEnabled true
         missingDimensionStrategy 'react-native-camera', 'general'
     }

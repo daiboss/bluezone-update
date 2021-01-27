@@ -38,7 +38,7 @@ import {
   setTokenFirebase as setTokenFirebaseStorage,
   multiGet,
 } from './core/storage';
-import {getTokenFirebase} from './core/fcm';
+import { getTokenFirebase } from './core/fcm';
 import {
   scheduleNotificationChangeLanguageListener,
   scheduleNotificationSetConfigurationListener,
@@ -280,7 +280,7 @@ const configuration = {
   TimeAutoEnableBluetooth: 3600000,
 };
 
-const _defaultFunc = () => {};
+const _defaultFunc = () => { };
 
 const mergeConfiguration = (
   configObject,
@@ -339,7 +339,7 @@ const setPhoneNumber = PhoneNumber => {
   if (!PhoneNumber) {
     throw new Error('setPhoneNumber::PhoneNumber is required !');
   }
-  Object.assign(configuration, {PhoneNumber});
+  Object.assign(configuration, { PhoneNumber });
   setPhoneNumberStorage(PhoneNumber);
 };
 
@@ -348,7 +348,7 @@ const setPhoneNumber = PhoneNumber => {
  * @param Language
  */
 const setLanguage = Language => {
-  Object.assign(configuration, {Language});
+  Object.assign(configuration, { Language });
   setLanguageStorage(Language);
   Service.setLanguage(Language);
   scheduleNotificationChangeLanguageListener(Language);
@@ -356,7 +356,7 @@ const setLanguage = Language => {
 
 // TODO xem xet bo ham nay di
 const setStatusNotifyRegister = StatusNotifyRegister => {
-  Object.assign(configuration, {StatusNotifyRegister});
+  Object.assign(configuration, { StatusNotifyRegister });
   setStatusNotifyRegisterStorage(StatusNotifyRegister);
 };
 
@@ -373,7 +373,7 @@ const registerTokenFirebase = (
   failure = _defaultFunc,
 ) => {
   const _success = data => {
-    Object.assign(configuration, {TokenFirebase});
+    Object.assign(configuration, { TokenFirebase });
     setTokenFirebaseStorage(TokenFirebase);
 
     success(data);
@@ -396,7 +396,7 @@ const retryRegisterTokenFirebase = (
   timeRetry,
 ) => {
   const _success = data => {
-    Object.assign(configuration, {TokenFirebase});
+    Object.assign(configuration, { TokenFirebase });
     setTokenFirebaseStorage(TokenFirebase);
 
     success(data);
@@ -419,7 +419,7 @@ const updateTokenFirebase = (
   failure = _defaultFunc,
 ) => {
   const _success = data => {
-    Object.assign(configuration, {TokenFirebase: TokenFirebaseNew});
+    Object.assign(configuration, { TokenFirebase: TokenFirebaseNew });
     setTokenFirebaseStorage(TokenFirebaseNew);
 
     success(data);
@@ -445,7 +445,7 @@ const retryUpdateTokenFirebase = (
   timeRetry,
 ) => {
   const _success = data => {
-    Object.assign(configuration, {TokenFirebase: TokenFirebaseNew});
+    Object.assign(configuration, { TokenFirebase: TokenFirebaseNew });
     setTokenFirebaseStorage(TokenFirebaseNew);
 
     success(data);
@@ -478,7 +478,7 @@ const retryRegisterTokenFirebaseAgain = (
   timeRetry,
 ) => {
   const _success = data => {
-    Object.assign(configuration, {TokenFirebase: TokenFirebaseNew});
+    Object.assign(configuration, { TokenFirebase: TokenFirebaseNew });
     setTokenFirebaseStorage(TokenFirebaseNew);
 
     success(data);
@@ -494,7 +494,7 @@ const retryRegisterTokenFirebaseAgain = (
 };
 
 const setConfiguration = config => {
-  const oldConfig = {...configuration};
+  const oldConfig = { ...configuration };
 
   Object.assign(configuration, config);
   setConfigurationStorage(configuration);
@@ -529,9 +529,9 @@ const _registerOrUpdateTokenFirebase = (
     TokenFirebase
       ? success(TokenFirebase)
       : failure({
-          error:
-            'syncTokenFirebase::getTokenFirebase::NewTokenFirebase is null',
-        });
+        error:
+          'syncTokenFirebase::getTokenFirebase::NewTokenFirebase is null',
+      });
     return;
   }
 
@@ -571,7 +571,7 @@ const retryRegisterOrUpdateTokenFirebase = (
   timeRetry,
 ) => {
   // console.log('TokenFirebase: ' + NewTokenFirebase);
-  const {TokenFirebase} = configuration;
+  const { TokenFirebase } = configuration;
   _registerOrUpdateTokenFirebase(
     NewTokenFirebase,
     TokenFirebase,
@@ -590,7 +590,7 @@ const _syncTokenFirebase = (
   failure = _defaultFunc,
   timeRetry,
 ) => {
-  const {TokenFirebase} = configuration;
+  const { TokenFirebase } = configuration;
 
   getTokenFirebase(
     NewTokenFirebase => {
@@ -659,7 +659,7 @@ const _syncTokenFirebaseAgain = (
   failure = _defaultFunc,
   timeRetry,
 ) => {
-  const {TokenFirebase} = configuration;
+  const { TokenFirebase } = configuration;
 
   getTokenFirebase(
     NewTokenFirebase => {

@@ -61,6 +61,9 @@ import CustomDrawerContent from './app/main/components/CustomDrawerContent';
 // Api
 import { registerResourceLanguageChange } from './app/core/language';
 import { enableScreens } from 'react-native-screens';
+
+import ConfigurationNotification from './app/core/NotificationService'
+
 enableScreens();
 
 const isLastStepOfWizard = name => {
@@ -107,7 +110,7 @@ import {
   registerInitialNotification,
   removeDeliveredNotification,
 } from './app/core/fcm';
-import { getIsFirstLoading, setIsFirstLoading,setFirstTimeOpen,getFirstTimeOpen } from './app/core/storage';
+import { getIsFirstLoading, setIsFirstLoading, setFirstTimeOpen, getFirstTimeOpen } from './app/core/storage';
 import ProfileScreen from './app/main/components/ProfileScreen';
 import BmiScreen from './app/main/components/ProfileScreen/BmiScreen';
 import ResultBmiScreen from './app/main/components/ProfileScreen/ResultBmiScreen';
@@ -115,6 +118,7 @@ import ResultBmiScreen from './app/main/components/ProfileScreen/ResultBmiScreen
 // animation transaction
 import { TransitionSpecs, HeaderStyleInterpolators } from '@react-navigation/stack';
 import { Platform } from 'react-native';
+import DemoTarget from './app/main/components/StepCountScreen/DemoTarget';
 
 const MyTransition = {
   gestureDirection: 'horizontal',
@@ -247,9 +251,9 @@ class App extends React.Component {
   async componentDidMount() {
     // Check trạng thái lần đầu tiên vào app => hien: Dang khoi tao. Lan sau: Dang dong bo
     const dateInstall = moment().format('yyyy-MM-DD')
-    
+
     const firstOpenApp = await getFirstTimeOpen();
-    if(firstOpenApp == null){
+    if (firstOpenApp == null) {
       setFirstTimeOpen(dateInstall)
     }
     const isFirstLoading = await getIsFirstLoading();
@@ -433,6 +437,18 @@ class App extends React.Component {
           name="NotifyDetail"
           component={NotifyDetail}
         />
+
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Bmi" component={BmiScreen} />
+        <Stack.Screen name="resultBmi" component={ResultBmiScreen}
+          options={{
+            ...MyTransition
+          }} />
+        <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
+        <Stack.Screen name={'stepHistory'} component={StepHistory} />
+        <Stack.Screen name={'settingScreen'} component={SettingScreen} />
+        <Stack.Screen name={'DemoTarget'} component={DemoTarget} />
+
       </Stack.Navigator>
     ) : !isHome ? (
       <Stack.Navigator
@@ -458,6 +474,7 @@ class App extends React.Component {
         <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
         <Stack.Screen name={'stepHistory'} component={StepHistory} />
         <Stack.Screen name={'settingScreen'} component={SettingScreen} />
+        <Stack.Screen name={'DemoTarget'} component={DemoTarget} />
       </Stack.Navigator>
     ) : (
           <Stack.Navigator
@@ -515,6 +532,7 @@ class App extends React.Component {
             <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
             <Stack.Screen name={'stepHistory'} component={StepHistory} />
             <Stack.Screen name={'settingScreen'} component={SettingScreen} />
+            <Stack.Screen name={'DemoTarget'} component={DemoTarget} />
 
             <Stack.Screen name="Profile2" component={ProfileScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -548,6 +566,11 @@ class App extends React.Component {
       </Drawer.Navigator>
     );
   };
+
+  UNSAFE_componentWillMount() {
+    // ConfigurationNotification()
+  }
+
   // npx uri-scheme open mic.bluezone://bluezone/HomeStack/stepCount --android
   render() {
     const { translationMessagesState, loading, isHome } = this.state;

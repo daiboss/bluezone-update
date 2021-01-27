@@ -137,7 +137,6 @@ const setHistoryDays = (historyDays = []) => {
 
 const getIsFirstLoading = async () => {
   const result = await AsyncStorage.getItem(IsFirstLoading);
-  console.log('resusususususu',result)
   return _processOutput(result);
 };
 
@@ -181,7 +180,7 @@ const getFirstTimeOpen = async () => {
   return _processOutput(result);
 };
 
-const setFirstTimeOpen =async (firstTimeOpen = 0) => {
+const setFirstTimeOpen = async (firstTimeOpen = 0) => {
   const _resource = _processInput(firstTimeOpen);
   AsyncStorage.setItem(FirstTimeOpen, _resource);
 };
@@ -445,6 +444,18 @@ const getAutoChange = async () => {
   return _processOutput(result);
 };
 
+const getFirstTimeSetup = async () => {
+  const result = await AsyncStorage.getItem('FIRST_TIME')
+  return _processOutput(result)
+}
+
+const setFirstTimeSetup = async () => {
+  const _resource = _processInput({
+    time: new moment().unix()
+  })
+  await AsyncStorage.setItem('FIRST_TIME', _resource)
+}
+
 const setAutoChange = (value = true) => {
   const _resource = _processInput(value);
   AsyncStorage.setItem(autoChange, _resource);
@@ -546,5 +557,7 @@ export {
   getIsShowNotification,
   setIsShowNotification,
   setConfirmAlert,
-  getConfirmAlert
+  getConfirmAlert,
+  getFirstTimeSetup,
+  setFirstTimeSetup
 };

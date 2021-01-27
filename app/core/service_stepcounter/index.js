@@ -76,7 +76,7 @@ class BackgroundServer {
     async updateNotification(taskData) {
         if (Platform.OS !== 'android') return;
         if (!this.isRunning())
-            throw new Error('A BackgroundAction must be running before updating the notification');
+            throw new Error('updateNotification: A BackgroundAction must be running before updating the notification');
         this._currentOptions = this._normalizeOptions({ ...this._currentOptions, ...taskData });
         await RNBackgroundActions.updateNotification(this._currentOptions);
     }
@@ -113,6 +113,9 @@ class BackgroundServer {
     }
 
     updateTypeNotification() {
+        if (Platform.OS !== 'android') return;
+        if (!this.isRunning())
+            throw new Error('updateTypeNotification: A BackgroundAction must be running before updating the notification');
         RNBackgroundActions.updateTypeNotification()
     }
 
@@ -255,6 +258,9 @@ class BackgroundServer {
     }
 
     sendEmitSaveSuccess() {
+        if (Platform.OS !== 'android') return;
+        if (!this.isRunning())
+            throw new Error('sendEmitSaveSuccess: A BackgroundAction must be running before updating the notification');
         RNBackgroundActions.sendEmitSaveSuccess();
     }
 

@@ -30,7 +30,9 @@ import {
   getIsShowNotification,
   getNotiStep,
   setConfirmAlert,
-  getConfirmAlert
+  getConfirmAlert,
+  getFirstTimeSetup,
+  setFirstTimeSetup
 } from '../../../core/storage';
 import ChartLineV from './ChartLineV';
 import {
@@ -57,7 +59,7 @@ import { blue_bluezone, red_bluezone } from '../../../core/color';
 import { RFValue } from '../../../const/multiscreen';
 import { CommonActions } from '@react-navigation/native';
 
-import { CalculationStepTarget } from '../../../core/calculation_step_target';
+import { CalculationStepTarget, CalculationStepTargetAndroid } from '../../../core/calculation_step_target';
 import ModalChangeTarget from './Components/ModalChangeTarget';
 
 const options = {
@@ -83,6 +85,7 @@ const StepCount = ({ props, intl, navigation }) => {
   useEffect(() => {
     observerStepDrawUI();
     getListHistoryChart();
+    scheduler.createWarnningWeightNotification()
   }, [])
 
   const observerStepDrawUI = async () => {
@@ -155,13 +158,22 @@ const StepCount = ({ props, intl, navigation }) => {
     await new Promise(async () => {
       // scheduleLastDay()
       // schedule7PM();
+      let isFirst = await getFirstTimeSetup()
+      if (isFirst == undefined) {
+        await setFirstTimeSetup()
+      }
 
       loopTimeToSchedule()
 
       getStepsTotal(async total => {
         let targetSteps = await getResultSteps();
         let isShowStep = await getIsShowNotification()
-        BackgroundJob.updateNotification({ ...options, currentStep: total || 0, targetStep: targetSteps?.step || 10000, isShowStep: isShowStep })
+        BackgroundJob.updateNotification({
+          ...options,
+          currentStep: total || 0,
+          targetStep: targetSteps?.step || 10000,
+          isShowStep: isShowStep
+        })
       })
 
       BackgroundJob.observerStep(async steps => {
@@ -217,9 +229,13 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const switchTimeToSchedule = async () => {
     let currentTime = new moment()
-    if (currentTime.format('HH:mm:ss') == '00:00:00') {
+    let tmpStart1 = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    let tmpEnd1 = new moment().set({ hour: 0, minute: 0, second: 9, millisecond: 59 })
+    let tmpStart2 = new moment().set({ hour: 19, minute: 0, second: 0, millisecond: 0 })
+    let tmpEnd2 = new moment().set({ hour: 19, minute: 0, second: 9, millisecond: 59 })
+    if (currentTime.isAfter(tmpStart1) && currentTime.isBefore(tmpEnd1)) {
       await scheduleLastDay()
-    } else if (currentTime.format('HH:mm:ss') == '19:00:00') {
+    } else if (currentTime.isAfter(tmpStart2) && currentTime.isBefore(tmpEnd2)) {
       await schedule7PM()
     }
   }
@@ -242,13 +258,19 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
+
     if (auto != undefined && auto == false) {
       return
     }
+
     let startDay = new moment().subtract(4, 'days').set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     let listHistory = await getListHistory(startDay.unix(), new moment().unix())
     if (listHistory?.length <= 0) return
+
+    let lastTime = await getFirstTimeSetup()
+    let firstTime = new moment.unix(lastTime?.time)
+    let tmpDay = new moment().diff(firstTime, 'days')
 
     let stepTarget = await getResultSteps()
 
@@ -257,7 +279,7 @@ const StepCount = ({ props, intl, navigation }) => {
       return (resultTmp?.step || 0)
     })
 
-    let stepTargetNew = CalculationStepTarget(listData, stepTarget?.step || 10000)
+    let stepTargetNew = CalculationStepTargetAndroid(listData, stepTarget?.step || 10000, tmpDay)
     let resultSave = {
       step: stepTargetNew,
       date: currentTime
@@ -268,7 +290,6 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const saveHistory = async () => {
-    // await removeAllHistory()
     let tmp = new moment().subtract(1, 'days')
     let yesterdayStart = tmp.clone().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     let yesterdayEnd = tmp.clone().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix()
@@ -350,7 +371,8 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const showNotificationAlert7DayLessThan100 = async () => {
     let old = await getConfirmAlert()
-    if (old != (new moment().format('DD/MM/YYYY'))) {
+    let oldTime = new moment.unix(old?.date)
+    if (new moment.diff(oldTime, 'days') >= 7) {
       openModalAlert7Day()
     }
   }
@@ -359,6 +381,12 @@ const StepCount = ({ props, intl, navigation }) => {
     await setConfirmAlert(new moment().format('DD/MM/YYYY'))
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     if (type == 1) {
+      let targetSteps = await getResultSteps();
+      let resultSave = {
+        step: targetSteps?.step,
+        date: currentTime
+      }
+      await setResultSteps(resultSave)
       closeModalAlert7Day()
     } else {
       let resultSave = {
@@ -366,6 +394,7 @@ const StepCount = ({ props, intl, navigation }) => {
         date: currentTime
       }
       await setResultSteps(resultSave)
+      await resultSteps()
       closeModalAlert7Day()
     }
   }
@@ -540,7 +569,23 @@ const StepCount = ({ props, intl, navigation }) => {
 
       </View>
 
+
+      <TouchableOpacity
+        style={{
+          justifyContent: 'center',
+          marginBottom: 10,
+          alignSelf: 'center'
+        }}
+        onPress={() => {
+          navigation.navigate('DemoTarget')
+        }}>
+        <Text style={{
+
+        }}>Tính mục tiêu</Text>
+      </TouchableOpacity>
+
       <View style={{ flex: 0.7 }}>
+
         <ButtonIconText
           onPress={() =>
             navigation.navigate('stepHistory', {
