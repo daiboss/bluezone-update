@@ -58,7 +58,11 @@ class Header extends React.Component {
       onBack();
       return;
     }
-    this.props.navigation.goBack();
+    if (this.props.navigation.canGoBack()) {
+      this.props.navigation.goBack();
+    } else {
+      BackHandler.exitApp()
+    }
     return true;
   }
 

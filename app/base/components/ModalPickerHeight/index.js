@@ -35,7 +35,6 @@ function ModalPicker({
       return '165 cm';
     }
   });
-  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     setData(dataHeight);

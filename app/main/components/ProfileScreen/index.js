@@ -49,6 +49,8 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   const [listProfile, setListProfile] = useState([]);
   const [listTime, setListTime] = useState([]);
 
+  const [isAutoOpen, setIsAutoOpen] = useState(route?.params?.isAutoOpen || false)
+
   const [heightError, setHeightError] = useState(null);
   const [weightError, setWeightError] = useState(null);
   const [isVisibleVerifyError, setisVisibleVerifyError] = useState(false);
@@ -97,6 +99,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
         profile = profiles[0]
       }
       if (profile) {
+        console.log('profileprofileprofileprofile', profile)
         setGender(profile.gender);
         setHeight(profile.height);
         setWeight(profile.weight);
@@ -107,33 +110,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
     setGender(1);
     getListProfile();
   }, []);
-  const updateData = async () => {
-    if (weight) {
-      try {
-        let profiles = (await getProfile()) || [];
 
-        let index = profiles.findIndex(
-          profile =>
-            getAbsoluteMonths(moment(profile.date)) -
-            getAbsoluteMonths(moment()) ==
-            0,
-        );
-
-        let obj = {
-          weight: weight,
-          date: moment()
-            .toDate()
-            .getTime(),
-        };
-        if (index != -1) {
-          profiles.splice(index, 1, obj);
-        } else {
-          profiles.push(obj);
-        }
-        getProfileList(profiles);
-      } catch (error) { }
-    }
-  };
   // useEffect(() => {
   //   updateData();
   // }, [weight]);
@@ -194,6 +171,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   const onSelectWeight = async weight => {
     try {
       setWeightError(false);
+      console.log('weightweight', weight)
       setWeight(weight);
       let profiles = (await getProfile()) || [];
 
@@ -242,10 +220,12 @@ const ProfileScreen = ({ route, intl, navigation }) => {
               error={heightError ? formatMessage(message.heightError2) : null}
               onSelected={height => {
                 setHeightError(false);
+                console.log('heightheight', height)
                 setHeight(height);
               }}
             />
             <SelectHeightOrWeight
+              visiWeight={isAutoOpen}
               label={formatMessage(message.weight)}
               value={weight ? weight : 'kg'}
               error={weightError ? formatMessage(message.weightError2) : null}
