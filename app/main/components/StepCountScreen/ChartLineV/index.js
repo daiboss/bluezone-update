@@ -90,7 +90,9 @@ class ChartLine extends React.Component {
         height={RFValue(180)}
         minDomain={{ y: 0 }}
         padding={{ left: 40, right: 40, top: 30, bottom: 50 }}
-        maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
+        // maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
+        maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : (this.state.maxCounter + parseInt(this.state.maxCounter/3)) }}
+
       // theme={VictoryTheme.material}
       >
         <Defs>
@@ -126,7 +128,7 @@ class ChartLine extends React.Component {
         <VictoryGroup
           style={{ labels: { fill: 'none' } }}
           data={this.state.dataConvert}
-        // data = {[3000,4000,100,100,3000,2000,6000,7000]}
+        // data = {[3000,4000,100,100,30000,20000,16000,17000]}
         >
           <VictoryArea
             animate={{
@@ -223,7 +225,7 @@ class ChartLine extends React.Component {
           position: 'absolute',
           backgroundColor: '#FE4358',
           zIndex: 1,
-          top: height * 0.081,
+          top: height * 0.06,
           // left: ,
           alignSelf: 'center',
           paddingHorizontal: RFValue(10),
@@ -268,7 +270,7 @@ class ChartLine extends React.Component {
           width: width * 0.81,
           alignSelf: 'center',
           position: 'absolute',
-          top: height * 0.12
+          top: height * 0.1
         }}
           dashColor={'#FE4358'}
         />
