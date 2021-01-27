@@ -156,7 +156,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const [countRest, setCountRest] = useState(0);
   const [countCarlo, setCountCarlo] = useState(0);
   const [distant, setDistant] = useState(0);
-  const [totalCount, setTotalCount] = useState(10000);
+  const [totalCount, setTotalCount] = useState(0);
   const permissions = [
     {
       kind: Fitness.PermissionKinds.Steps,
@@ -718,9 +718,7 @@ const StepCount = ({ props, intl, navigation }) => {
         numberWithCommas={numberWithCommas}
         totalCount={totalCount}
       />
-
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-
+    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <ImageBackground
           resizeMode={'stretch'}
           source={require('./images/bg_step_count.png')}

@@ -37,8 +37,8 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
           <View style={[styles.container3]}>
             <Text style={styles.textLabel}>{formatMessage(message.result)}</Text>
             <NumberAnimate
-              steps={30}
-              interval={1300 / (30)}
+              steps={40}
+              interval={1500 / (40)}
               formatter={(val) => {
                 return parseFloat(val).toFixed(1)
               }}

@@ -30,26 +30,26 @@ const widthChart = width - 40 * 2
 
 const  dataTest = [
   {x:1,y:65},
-  {x:2,y:67},
-  {x:3,y:1},
-  {x:4,y:69},
-  {x:5,y:68},
-  {x:6,y:66},
-  {x:7,y:78},
-  {x:8,y:67},
+  // {x:2,y:67},
+  // {x:3,y:1},
+  // {x:4,y:69},
+  // {x:5,y:68},
+  // {x:6,y:66},
+  // {x:7,y:78},
+  // {x:8,y:67},
   // {x:9,y:65},
 ]
 
   const tickdataTest = [
     // '10/11',
-    '11/11',
-    '12/11',
-    '13/11',
-    '14/11',
-    '15/11',
-    '16/11',
+    // '11/11',
+    // '12/11',
+    // '13/11',
+    // '14/11',
+    // '15/11',
+    // '16/11',
     '17/11',
-    '18/11'
+    // '18/11'
   ]
 class ChartLine extends React.Component {
   constructor(props) {
@@ -76,10 +76,13 @@ class ChartLine extends React.Component {
     };
   }
   componentDidMount() {
+    this.convertData()
+  }
+  convertData = () => {
     console.log('this.propsthis.propsthis.propsthis.props', this.props)
     const { data } = this.props
     console.log('dadadadadadadata', data)
-    this.setState({ year: data[data?.length - 1]?.values?.[0]?.year })
+    this.setState({ year: data[0]?.values?.[0]?.year })
     const datanew = this.props.data[0]?.values.map((it, index) => {
       return {
         ...it,
@@ -91,6 +94,23 @@ class ChartLine extends React.Component {
       // console.log('dâtttatatata', this.state.dataConvert)
     })
   }
+  componentDidUpdate(prevProps) {
+    const array1 = this.props?.data[0]?.values
+    const array2 = prevProps?.data[0]?.values
+    const lengthArray1 = array1?.length
+    const lengthArray2 = array2?.length
+    const checkData = array1[lengthArray1 - 1].marker != array2[lengthArray2 - 1].marker
+    const lengthTime1 = prevProps?.time.length
+    const lengthTime2 = this.props?.time.length
+    if(lengthTime1 == lengthTime2){
+      return;
+    }
+    if(lengthArray1 != lengthArray2 || checkData) // Check if it's a new user, you can also use some unique property, like the ID  (this.props.user.id !== prevProps.user.id)
+    {
+      this.convertData()
+      // this.updateUser();
+    }
+  } 
   domainPaddingChart =  () => {
     const {dataConvert} = this.state
     let x = []
@@ -99,26 +119,30 @@ class ChartLine extends React.Component {
       return x
     }
     if(dataConvert.length == 2){
-      x = [RFValue(10),RFValue(10)] 
+      x = [RFValue(30),RFValue(20)] 
       return x
     }
     if(dataConvert.length == 3){
-      x = [RFValue(10),RFValue(10)] 
+      x = [RFValue(30),RFValue(20)] 
       return x
     }
     if(dataConvert.length == 4){
-      x = [RFValue(10),RFValue(10)] 
+      x = [RFValue(30),RFValue(20)] 
       return x
     }
     if(dataConvert.length == 5){
-      x = [RFValue(10),RFValue(10)] 
+      x = [RFValue(30),RFValue(20)] 
       return x
     }
     if(dataConvert.length == 6){
-      x = [RFValue(20),RFValue(20)] 
+      x = [RFValue(30),RFValue(20)] 
       return x
     }
-    if(dataConvert.length >= 7){
+    if(dataConvert.length == 7){
+      x = [RFValue(30),RFValue(20)] 
+      return x
+    }
+    if(dataConvert.length > 7){
       x = [RFValue(30),RFValue(30)] 
       return x
     }
@@ -180,7 +204,7 @@ class ChartLine extends React.Component {
         <VictoryAxis
           //  crossAxis dependentAxis
           tickValues={this.props.time}
-          // tickValues={tickdata}
+          // tickValues={tickdataTest}
           style={{
             grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'gray', strokeWidth: 0.5 },
             axis: { stroke: 'none' },
@@ -197,17 +221,20 @@ class ChartLine extends React.Component {
         <VictoryGroup
           style={{ labels: { fill: 'none' } }}
           data={this.state.dataConvert}
-          // data = {data}
+          // data = {dataTest}
           >
           <VictoryArea
-            
+             animate={{
+              duration: 2500,
+              onLoad: { duration: 1000 }
+            }}
             interpolation="natural"
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
           // data={sampleData}
           />
           <VictoryLine
             animate={{
-              duration: 1000,
+              duration: 2500,
               onLoad: { duration: 1000 }
             }}
             interpolation="natural"
@@ -293,7 +320,8 @@ class ChartLine extends React.Component {
     )
   }
   render() {
-    console.log('yeyeyeyyyeye',this.state.dataConvert)
+    console.log('Time ================', this.props)
+    console.log('Data ================>>>>>', this.props.data[0].values[3])
     return (
       <View style={[styles.container,]}>
      
