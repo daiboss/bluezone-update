@@ -44,9 +44,8 @@ const visibleModal = {
 };
 
 const ProfileScreen = ({ route, intl, navigation }) => {
-  console.log('vaovaoaoalai')
   const { formatMessage } = intl;
-  const [gender, setGender] = useState(0);
+  const [gender, setGender] = useState(1);
   const [listProfile, setListProfile] = useState([]);
   const [listTime, setListTime] = useState([]);
 
@@ -106,10 +105,9 @@ const ProfileScreen = ({ route, intl, navigation }) => {
     } catch (error) { }
   };
   useEffect(() => {
-    setGender(1);
+    // setGender(1);
     getListProfile();
   }, []);
-
   // useEffect(() => {
   //   updateData();
   // }, [weight]);
@@ -160,7 +158,6 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       //   })
       // );
     } catch (error) {
-      console.log('error: ', error);
       setisVisibleVerifyError(true);
     }
   };
@@ -217,7 +214,6 @@ const ProfileScreen = ({ route, intl, navigation }) => {
               error={heightError ? formatMessage(message.heightError2) : null}
               onSelected={height => {
                 setHeightError(false);
-                console.log('heightheight', height)
                 setHeight(height);
               }}
             />

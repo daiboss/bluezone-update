@@ -35,12 +35,19 @@ function ModalPicker({
   }, []);
 
   useEffect(() => {
-    if (gender == 1) {
-      setWeight('65,');
-    } else if (gender == 0) {
-      setWeight('50,');
+    if(currentWeight){
+      let index = currentWeight.indexOf(',')
+      let dataWeight = currentWeight.slice(0,index+1)
+      setWeight(dataWeight)
+    }else{
+      if (gender == 1) {
+        setWeight('65,');
+      } else if (gender == 0) {
+        setWeight('50,');
+      }
     }
-  }, [gender]);
+   
+  }, [gender,currentWeight]);
 
   const selectHeight = () => {
     onSelected && onSelected(`${weight}${weight2 || '0kg'}`);

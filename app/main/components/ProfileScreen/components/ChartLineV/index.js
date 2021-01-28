@@ -104,7 +104,6 @@ class ChartLine extends React.Component {
   } 
   domainPaddingChart =  () => {
     const {dataConvert} = this.state
-    console.log('dataConvertdataConvertdataConvert',dataConvert)
 
     let x = []
     if(dataConvert.length == 1){
@@ -313,8 +312,6 @@ class ChartLine extends React.Component {
     )
   }
   render() {
-    console.log('Time ================', this.props)
-    console.log('Data ================>>>>>', this.props.data[0].values[3])
     return (
       <View style={[styles.container,]}>
      
