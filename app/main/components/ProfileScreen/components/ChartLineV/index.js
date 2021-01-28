@@ -79,9 +79,7 @@ class ChartLine extends React.Component {
     this.convertData()
   }
   convertData = () => {
-    console.log('this.propsthis.propsthis.propsthis.props', this.props)
     const { data } = this.props
-    console.log('dadadadadadadata', data)
     this.setState({ year: data[0]?.values?.[0]?.year })
     const datanew = this.props.data[0]?.values.map((it, index) => {
       return {
@@ -89,9 +87,7 @@ class ChartLine extends React.Component {
         x: index + 1
       }
     })
-    // console.log('bbbbbbb', b)
     this.setState({ dataConvert: datanew }, () => {
-      // console.log('dâtttatatata', this.state.dataConvert)
     })
   }
   componentDidUpdate(prevProps) {
@@ -100,19 +96,16 @@ class ChartLine extends React.Component {
     const lengthArray1 = array1?.length
     const lengthArray2 = array2?.length
     const checkData = array1[lengthArray1 - 1].marker != array2[lengthArray2 - 1].marker
-    const lengthTime1 = prevProps?.time.length
-    const lengthTime2 = this.props?.time.length
-    if(lengthTime1 == lengthTime2){
-      return;
-    }
-    if(lengthArray1 != lengthArray2 || checkData) // Check if it's a new user, you can also use some unique property, like the ID  (this.props.user.id !== prevProps.user.id)
+
+    if(lengthArray1 != lengthArray2 || checkData)
     {
       this.convertData()
-      // this.updateUser();
     }
   } 
   domainPaddingChart =  () => {
     const {dataConvert} = this.state
+    console.log('dataConvertdataConvertdataConvert',dataConvert)
+
     let x = []
     if(dataConvert.length == 1){
       x = [0,0] 
@@ -225,7 +218,7 @@ class ChartLine extends React.Component {
           >
           <VictoryArea
              animate={{
-              duration: 2500,
+              duration: 1000,
               onLoad: { duration: 1000 }
             }}
             interpolation="natural"
@@ -234,7 +227,7 @@ class ChartLine extends React.Component {
           />
           <VictoryLine
             animate={{
-              duration: 2500,
+              duration: 1000,
               onLoad: { duration: 1000 }
             }}
             interpolation="natural"

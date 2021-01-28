@@ -38,7 +38,10 @@ import {
   setAutoChange,
   getConfirmAlert,
   getAutoChange,
-  setConfirmAlert
+  setConfirmAlert,
+  setFirstTimeOpen,
+  getFirstTimeSetup,
+  setFirstTimeSetup
 } from '../../../core/storage';
 import { CalculationStepTarget } from '../../../core/calculation_step_target';
 import ChartLineV from './ChartLineV';
@@ -251,8 +254,11 @@ const StepCount = ({ props, intl, navigation }) => {
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
+      console.log('resultSteps',resultSteps)
       if (!resultSteps) {
-        setResultSteps({ step: totalCount, date: new Date().getTime() });
+        console.log('vaovaovaovaovaovoavoaovaovoavoaovaovao=>>>')
+       await setResultSteps({ step: 10000, date: new Date().getTime() });
+       setTotalCount(10000);
       } else {
         setTotalCount(resultSteps.step);
       }
@@ -274,9 +280,10 @@ const StepCount = ({ props, intl, navigation }) => {
       getPermission();
     }
   };
-  const onGetStepLine = () => {
+  const onGetStepLine = async () => {
     let start = new Date();
     let end = new Date();
+    
     start.setDate(start.getDate() - 7);
     Fitness.getSteps({ startDate: start, endDate: end })
       .then(res => {
@@ -289,6 +296,7 @@ const StepCount = ({ props, intl, navigation }) => {
           let timeLine = res.map(obj => {
             return new Date(obj.startDate).format('dd/MM')
           })
+          console.log('datadata7day',data)
           // data.length !== 0 && data.pop()
           setDataChart(data);
 
@@ -355,69 +363,9 @@ const StepCount = ({ props, intl, navigation }) => {
         step: stepTargetNew,
         date: moment().unix()
       }
+
       await setResultSteps(resultSave)
     }
- 
-
-
-    // let stepTarget = await getResultSteps()
-    // if (!listHistory || listHistory.length <= 0) {
-    //   return
-    // }
-    // // số bước chân của ngày hôm qua 
-    // let totalSteps
-    // if (listHistory.length = 2) {
-    //   totalSteps = listHistory[1]?.quantity || 0
-    // } else totalSteps = listHistory[2]?.quantity || 0
-    // // nhỏ hơn 2 ngày
-    // if (todayUnix < firtTimeUnix + 2 * 24 * 60 * 60) {
-    //   return
-    // }
-    // // từ 2-3 ngày
-    // if (todayUnix > firtTimeUnix + 2 * 24 * 60 * 60 && todayUnix < firtTimeUnix + 3 * 24 * 60 * 60) {
-    //   if (totalSteps >= stepTarget) {
-    //     await setResultSteps({
-    //       step: stepTarget,
-    //       date: new moment().unix()
-    //     })
-    //   } else {
-    //     await setResultSteps({
-    //       step: totalSteps + 250,
-    //       date: new moment().unix()
-    //     })
-    //   }
-    // }
-    // // bắt đầu ngày thứ 4
-    // else {
-    //   if (totalSteps <= 1000) {
-    //     await setResultSteps({
-    //       step: 1000,
-    //       date: new moment().unix()
-    //     })
-    //   }
-    //   if (totalSteps > stepTarget) {
-    //     if (stepTarget <= 5000) {
-    //       await setResultSteps({
-    //         step: totalSteps + 250,
-    //         date: new moment().unix()
-    //       })
-    //     }
-    //     let tmp = totalSteps / (stepTarget?.step || 10000) * 100;
-    //     let configurationStep = stepTarget?.step || 10000;
-    //     let stepDifferen = Math.abs(totalSteps - (stepTarget?.step || 10000))
-    //     if (tmp >= 150) {
-    //       configurationStep += parseInt(stepDifferen * 0.2)
-    //     } else if (tmp >= 100) {
-    //       configurationStep += parseInt(stepDifferen * 0.1)
-    //     } else {
-    //       configurationStep -= parseInt(stepDifferen * 0.2)
-    //     }
-    //     await setResultSteps({
-    //       step: configurationStep,
-    //       date: new moment().unix()
-    //     })
-    //   }
-    // }
   }
 
   const getSex = async () => {
@@ -607,7 +555,6 @@ const StepCount = ({ props, intl, navigation }) => {
       if (steps > 0) {
         setCountStep(steps)
         const countR = totalCount - steps
-        // setCountRest(countR)
       }
     })
   }
@@ -627,6 +574,7 @@ const StepCount = ({ props, intl, navigation }) => {
   };
 
   const alert7dayLessThan1000 = (steps) => {
+    console.log('setetetetete',steps)
     if (steps.length >= 7) {
       let check = true
       steps.forEach(element => {
@@ -641,24 +589,27 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const showNotificationAlert7DayLessThan100 = async () => {
-    let old = await getConfirmAlert()
-    if (old != (new moment().format('DD/MM/YYYY'))) {
+    let old = await getFirstTimeSetup()
+    let today = moment().unix()
+  
+    if (today >= old?.time + 7*24*60*60) {
       openModalAlert7Day()
     }
   }
 
   const confirmStepsTarget = async (type) => {
-    console.log('typetypetypetypetypetype',type)
     await setConfirmAlert(new moment().format('DD/MM/YYYY'))
+    
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
-    console.log('typetypetypetypetypetype',type)
     if (type == 1) {
+      await setFirstTimeSetup()
       closeModalAlert7Day()
     } else {
       let resultSave = {
         step: 10000,
         date: currentTime
       }
+      await setFirstTimeSetup()
       await setResultSteps(resultSave)
       closeModalAlert7Day()
     }
@@ -685,12 +636,8 @@ const StepCount = ({ props, intl, navigation }) => {
     };
     AppleHealthKit.saveSteps(options, (err, res) => {
       if (err) {
-        console.log('ererererererererere',err)
         return;
       }
-      console.log('countresresresres',countRest)
-      console.log('resresresresresres',res)
-      // step count sample successfully saved
     });
   }
   return (
@@ -853,6 +800,12 @@ const StepCount = ({ props, intl, navigation }) => {
           {formatMessage(message.viewHistory)}
         </Text>
       </TouchableOpacity> */}
+      
+      <Text 
+      style={{color:'black'}}
+      onPress={() => navigation.navigate('DemoTarget')}>Test Buoc chan</Text>
+
+      
       <ButtonIconText
         onPress={
           // functionTest

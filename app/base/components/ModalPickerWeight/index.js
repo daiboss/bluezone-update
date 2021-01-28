@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, } from 'react';
 import * as PropTypes from 'prop-types';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Platform, TouchableOpacity, Dimensions } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import {
@@ -27,12 +28,12 @@ function ModalPicker({
 }) {
   const [weight, setWeight] = useState(gender == 1 ? '65,' : '50,');
   const [index, setIndex] = useState(0);
-
   const [weight2, setWeight2] = useState('0 kg');
   const [index2, setIndex2] = useState(0);
   useEffect(() => {
     setWeight('65,');
   }, []);
+
   useEffect(() => {
     if (gender == 1) {
       setWeight('65,');

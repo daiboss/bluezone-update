@@ -9,7 +9,6 @@ import {
     getProfile,
     getResultSteps,
     getStepChange,
-    setResultSteps,
     setStepChange,
 } from './storage';
 import moment from 'moment';

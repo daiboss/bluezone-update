@@ -93,14 +93,12 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       getProfileList(profiles);
       let profile = profiles.find(
         item =>
-          getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) ==
-          0,
+          getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(moment())
       );
       if (profile == undefined && profiles.length > 0) {
-        profile = profiles[0]
+        profile = profiles[profiles.length - 1]
       }
       if (profile) {
-        console.log('profileprofileprofileprofile', profile)
         setGender(profile.gender);
         setHeight(profile.height);
         setWeight(profile.weight);
@@ -116,9 +114,10 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   //   updateData();
   // }, [weight]);
   function getAbsoluteMonths(momentDate) {
-    var months = Number(momentDate.format('MM'));
-    var years = Number(momentDate.format('YYYY'));
-    return months + years * 12;
+    var days = String(momentDate.format('DD'))
+    var months = String(momentDate.format('MM'));
+    var years = String(momentDate.format('YYYY'));
+    return days + months + years ;
   }
   const onConfirm = async () => {
     try {
@@ -133,10 +132,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       let profiles = (await getProfile()) || [];
       let getWeighiNoti = await getWeightWarning()
       let index = profiles.findIndex(
-        profile =>
-          getAbsoluteMonths(moment(profile.date)) -
-          getAbsoluteMonths(moment()) ==
-          0,
+        profile => getAbsoluteMonths(moment(profile.date)) == getAbsoluteMonths(moment())
       );
 
       let obj = {
@@ -172,15 +168,15 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   const onSelectWeight = async weight => {
     try {
       setWeightError(false);
-      console.log('weightweight', weight)
       setWeight(weight);
       let profiles = (await getProfile()) || [];
 
       let index = profiles.findIndex(
-        profile =>
-          getAbsoluteMonths(profile.date) - getAbsoluteMonths(moment()) == 0,
+        profile => 
+          // console.log('getAbsoluteMonths(moment(profile.date)) == getAbsoluteMonths(moment())',getAbsoluteMonths(moment(profile.date)) == getAbsoluteMonths(moment()))
+         getAbsoluteMonths(moment(profile.date)) == getAbsoluteMonths(moment())
+        // }
       );
-
       let obj = {
         weight,
         date: moment()

@@ -110,7 +110,7 @@ import {
   registerInitialNotification,
   removeDeliveredNotification,
 } from './app/core/fcm';
-import { getIsFirstLoading, setIsFirstLoading, setFirstTimeOpen, getFirstTimeOpen } from './app/core/storage';
+import { getIsFirstLoading, setIsFirstLoading, setFirstTimeOpen, getFirstTimeOpen,setFirstTimeSetup } from './app/core/storage';
 import ProfileScreen from './app/main/components/ProfileScreen';
 import BmiScreen from './app/main/components/ProfileScreen/BmiScreen';
 import ResultBmiScreen from './app/main/components/ProfileScreen/ResultBmiScreen';
@@ -254,6 +254,7 @@ class App extends React.Component {
 
     const firstOpenApp = await getFirstTimeOpen();
     if (firstOpenApp == null) {
+      setFirstTimeSetup()
       setFirstTimeOpen(dateInstall)
     }
     const isFirstLoading = await getIsFirstLoading();
