@@ -609,7 +609,7 @@ export const createScheduleWarnningWeightNotification = async (time) => {
       title: 'Hãy cập nhật cân nặng để theo dõi tình trạng của bạn',
       userInfo: {
         screen: 'Profile',
-        params: { isAutoOpen: true }
+        params: { isAutoOpen: false }
       }, // (optional) default: {} (using null throws a JSON value '<null>' error)
       playSound: false, // (optional) default: true
       soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
@@ -662,7 +662,7 @@ export const createWarnningWeightNotification = async () => {
       message: 'Hãy cập nhật cân nặng để theo dõi tình trạng của bạn', // (required)
       userInfo: {
         screen: 'Profile',
-        params: { isAutoOpen: true }
+        params: { isAutoOpen: false }
       }, // (optional) default: {} (using null throws a JSON value '<null>' error)
       playSound: false, // (optional) default: true
       soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)

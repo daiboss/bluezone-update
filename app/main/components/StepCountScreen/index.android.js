@@ -85,7 +85,6 @@ const StepCount = ({ props, intl, navigation }) => {
   useEffect(() => {
     observerStepDrawUI();
     getListHistoryChart();
-    scheduler.createWarnningWeightNotification()
   }, [])
 
   const observerStepDrawUI = async () => {
@@ -200,6 +199,11 @@ const StepCount = ({ props, intl, navigation }) => {
         })
 
       })
+
+      BackgroundJob.observerHistorySaveChange(async () => {
+        console.log('observerStepSaveChange', 'ssjsjsjsj')
+        await autoChangeStepsTarget()
+      })
     })
   }
 
@@ -257,7 +261,16 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const autoChangeStepsTarget = async () => {
+    let lastTime = await getFirstTimeSetup()
+    let firstTime = new moment.unix(lastTime?.time)
+    let tmpDay = new moment().diff(firstTime, 'days')
+    console.log('autoChangeStepsTarget tmpDay', tmpDay)
+    if (tmpDay < 2) {
+      return
+    }
+
     let auto = await getAutoChange();
+
 
     if (auto != undefined && auto == false) {
       return
@@ -268,11 +281,8 @@ const StepCount = ({ props, intl, navigation }) => {
     let listHistory = await getListHistory(startDay.unix(), new moment().unix())
     if (listHistory?.length <= 0) return
 
-    let lastTime = await getFirstTimeSetup()
-    let firstTime = new moment.unix(lastTime?.time)
-    let tmpDay = new moment().diff(firstTime, 'days')
-
     let stepTarget = await getResultSteps()
+    console.log('autoChangeStepsTarget2222', tmpDay, stepTarget, listHistory)
 
     let listData = listHistory.map(element => {
       let resultTmp = JSON.parse(element?.resultStep)
@@ -305,9 +315,8 @@ const StepCount = ({ props, intl, navigation }) => {
     await addHistory(yesterdayStart, result)
 
     await removeAllStep()
+    BackgroundJob.sendEmitSaveHistorySuccess()
     BackgroundJob.updateTypeNotification()
-
-    await autoChangeStepsTarget()
   }
 
   const { formatMessage, locale } = intl;
@@ -371,8 +380,8 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const showNotificationAlert7DayLessThan100 = async () => {
     let old = await getConfirmAlert()
-    let oldTime = new moment.unix(old?.date)
-    if (new moment.diff(oldTime, 'days') >= 7) {
+    let oldTime = new moment.unix(old)
+    if (!old || new moment.diff(oldTime, 'days') >= 7) {
       openModalAlert7Day()
     }
   }

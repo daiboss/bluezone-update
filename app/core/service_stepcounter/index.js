@@ -264,9 +264,23 @@ class BackgroundServer {
         RNBackgroundActions.sendEmitSaveSuccess();
     }
 
+    sendEmitSaveHistorySuccess() {
+        if (Platform.OS !== 'android') return;
+        if (!this.isRunning())
+            throw new Error('sendEmitSaveSuccess: A BackgroundAction must be running before updating the notification');
+        RNBackgroundActions.sendEmitSaveHistorySuccess();
+    }
+
     observerStepSaveChange(callback) {
         DeviceEventEmitter.addListener(
             'EMIT_EVENT_STEP_SAVE',
+            () => callback()
+        )
+    }
+
+    observerHistorySaveChange(callback) {
+        DeviceEventEmitter.addListener(
+            'EMIT_EVENT_HISTORY_SAVE',
             () => callback()
         )
     }

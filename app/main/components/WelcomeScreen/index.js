@@ -75,6 +75,8 @@ import {
 } from '../../../core/storage';
 import messageWarning from '../../../core/msg/warning';
 
+import ConfigurationNotification from './../../../core/NotificationService'
+
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -101,6 +103,8 @@ class WelcomeScreen extends React.Component {
   }
 
   async componentDidMount() {
+    ConfigurationNotification()
+
     const { Language } = configuration;
     this.changeDisplay();
     const infoDates = await getDateOfWelcome();

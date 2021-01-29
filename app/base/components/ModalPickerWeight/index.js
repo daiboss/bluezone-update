@@ -26,6 +26,7 @@ function ModalPicker({
   gender,
   currentWeight,
 }) {
+  console.log('isVisibleModalisVisibleModalisVisibleModal',isVisibleModal)
   const [weight, setWeight] = useState(gender == 1 ? '65,' : '50,');
   const [index, setIndex] = useState(0);
   const [weight2, setWeight2] = useState('0 kg');

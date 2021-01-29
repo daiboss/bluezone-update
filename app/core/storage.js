@@ -450,8 +450,10 @@ const getFirstTimeSetup = async () => {
 }
 
 const setFirstTimeSetup = async () => {
+  let tmp = new moment()
+  tmp.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
   const _resource = _processInput({
-    time: new moment().unix()
+    time: tmp.unix()
   })
   await AsyncStorage.setItem('FIRST_TIME', _resource)
 }

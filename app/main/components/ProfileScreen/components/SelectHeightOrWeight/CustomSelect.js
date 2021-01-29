@@ -205,7 +205,7 @@ export default class
             if (Platform.OS === 'ios') {
                 this.isScrollTo = true;
             }
-            this.sview.scrollTo({ y: _y });
+            // this.sview.scrollTo({ y: _y });
         }
         if (this.state.selectedIndex === selectedIndex) {
             return;
@@ -264,7 +264,7 @@ export default class
             selectedIndex: ind,
         });
         let y = this.itemHeight * ind;
-        this.sview.scrollTo({ y: y, animated });
+        this.sview?.scrollTo({ y: y, animated });
     }
 
     getSelected() {

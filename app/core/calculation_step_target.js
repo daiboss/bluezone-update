@@ -4,7 +4,7 @@ const CalculationStepTargetAndroid = (listStep, oldTarget, days) => {
     if (days == 2 && listStep.length >= 2) {
         let tmp = listStep.slice(0, 2)
         return CalculationStepTarget(tmp, oldTarget, days)
-    } else if (days >= 3 && listStep.length >= 2) {
+    } else if (days >= 3 && listStep.length > 2) {
         return CalculationStepTarget(listStep, oldTarget, days)
     } else {
         return STEP_TARGET_DEFAULT

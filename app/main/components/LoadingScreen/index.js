@@ -23,8 +23,8 @@
 
 import React from 'react';
 import * as PropTypes from 'prop-types';
-import {injectIntl, intlShape} from 'react-intl';
-import {View, SafeAreaView, StatusBar, ActivityIndicator} from 'react-native';
+import { injectIntl, intlShape } from 'react-intl';
+import { View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native';
 
 // Components
 import Text from '../../../base/components/Text';
@@ -37,18 +37,20 @@ import {
 } from '../../../core/language';
 
 // Apis
-import {initConfiguration, syncConfiguration} from '../../../configuration';
+import { initConfiguration, syncConfiguration } from '../../../configuration';
 
 // Styles
 import styles from './styles/index.css';
-import {retrySyncTokenFirebase} from '../../../configuration';
+import { retrySyncTokenFirebase } from '../../../configuration';
 import IconBluezone from './styles/images/IconBluezone';
-import {LOGO_HEIGHT} from './styles/index.css';
-import {blue_bluezone} from '../../../core/color';
+import { LOGO_HEIGHT } from './styles/index.css';
+import { blue_bluezone } from '../../../core/color';
 
 // DB
-import {initDatabase} from '../../../core/db/SqliteDb';
-import {getIsFirstLoading} from '../../../core/storage';
+import { initDatabase } from '../../../core/db/SqliteDb';
+import { getIsFirstLoading } from '../../../core/storage';
+
+import ConfigurationNotification from './../../../core/NotificationService'
 
 const PROCESS_WORK_TIMEOUT = 5000;
 
@@ -81,6 +83,8 @@ class LoadingScreen extends React.Component {
   }
 
   componentDidMount() {
+    ConfigurationNotification()
+
     // Check trạng thái lần đầu tiên vào app.
     this.checkAuth();
 
@@ -89,7 +93,7 @@ class LoadingScreen extends React.Component {
     initResourceLanguage(() => {
       this.finishedAPI('initResourceLanguage', true);
       this.initResourceLanguageFinally();
-    }).then(() => {});
+    }).then(() => { });
 
     // 2. Dong bo cau hinh
     // Khoi tao configuration
@@ -102,7 +106,7 @@ class LoadingScreen extends React.Component {
         this.finishedAPI('initConfiguration', false);
         this.initConfigurationFinally();
       },
-    ).then(() => {});
+    ).then(() => { });
 
     // 4. Khởi tạo db.
     initDatabase();
@@ -116,7 +120,7 @@ class LoadingScreen extends React.Component {
 
   async checkAuth() {
     const isFirstLoading = await getIsFirstLoading();
-    this.setState({isFirstLoading});
+    this.setState({ isFirstLoading });
   }
 
   initConfigurationFinally() {
@@ -142,7 +146,7 @@ class LoadingScreen extends React.Component {
   }
 
   doFinishedWorks() {
-    const {onFinished, name} = this.props;
+    const { onFinished, name } = this.props;
     onFinished(name, {}, !this.works.retrySyncTokenFirebase);
   }
 
@@ -156,9 +160,9 @@ class LoadingScreen extends React.Component {
   }
 
   render() {
-    const {isFirstLoading} = this.state;
-    const {intl} = this.props;
-    const {formatMessage} = intl;
+    const { isFirstLoading } = this.state;
+    const { intl } = this.props;
+    const { formatMessage } = intl;
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar hidden={true} />
@@ -189,7 +193,7 @@ LoadingScreen.propTypes = {
 };
 
 LoadingScreen.defaultProps = {
-  onFinished: () => {},
+  onFinished: () => { },
   isFirstLoading: false,
   name: '',
 };

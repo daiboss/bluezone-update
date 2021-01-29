@@ -1,16 +1,9 @@
-import React, { useEffect, useMemo, useState ,memo} from 'react';
+import React, { useEffect, useMemo, useState, memo } from 'react';
 import * as PropTypes from 'prop-types';
 import {
   SafeAreaView,
   View,
   ScrollView,
-  ActivityIndicator,
-  TextInput,
-  Keyboard,
-  Animated,
-  Platform,
-  KeyboardAvoidingView,
-  TouchableOpacity,
 } from 'react-native';
 import { injectIntl, intlShape } from 'react-intl';
 
@@ -18,7 +11,6 @@ import Header from '../../../base/components/Header';
 import ButtonIconText from '../../../base/components/ButtonIconText';
 import ModalBase from '../../../base/components/ModalBase';
 
-import { blue_bluezone, red_bluezone } from '../../../core/color';
 import message from '../../../core/msg/profile';
 
 // Styles
@@ -27,13 +19,11 @@ import * as fontSize from '../../../core/fontSize';
 import SelectGender from './components/SelectGender';
 import SelectHeightOrWeight from './components/SelectHeightOrWeight';
 import { getProfile, setProfile, getWeightWarning } from '../../../core/storage';
-const TIMEOUT_LOADING = 800;
 import moment from 'moment';
 import { ButtonClose } from '../../../base/components/ButtonText/ButtonModal';
 import * as scheduler from '../../../core/notifyScheduler';
 import ResultBMI from './components/ResultBMI';
 import PushNotification from 'react-native-push-notification';
-import { CommonActions } from '@react-navigation/native';
 
 const visibleModal = {
   isProcessing: false,
@@ -49,7 +39,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   const [listProfile, setListProfile] = useState([]);
   const [listTime, setListTime] = useState([]);
 
-  const [isAutoOpen, setIsAutoOpen] = useState(route?.params?.isAutoOpen || false)
+  const [isAutoOpen, setIsAutoOpen] = useState(false)
 
   const [heightError, setHeightError] = useState(null);
   const [weightError, setWeightError] = useState(null);
@@ -101,9 +91,17 @@ const ProfileScreen = ({ route, intl, navigation }) => {
         setGender(profile.gender);
         setHeight(profile.height);
         setWeight(profile.weight);
+
       }
     } catch (error) { }
   };
+
+  useEffect(() => {
+    if (height && gender != undefined && weight && listProfile?.length > 0 && listTime?.length > 0) {
+      setIsAutoOpen(route?.params?.isAutoOpen || false)
+    }
+  }, [gender, height, weight, listTime, listProfile])
+
   useEffect(() => {
     // setGender(1);
     getListProfile();
@@ -115,7 +113,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
     var days = String(momentDate.format('DD'))
     var months = String(momentDate.format('MM'));
     var years = String(momentDate.format('YYYY'));
-    return days + months + years ;
+    return days + months + years;
   }
   const onConfirm = async () => {
     try {
@@ -149,14 +147,6 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       }
       setProfile(profiles);
       navigation.navigate('stepCount');
-      // navigation.dispatch(
-      //   CommonActions.reset({
-      //     index: 1,
-      //     routes: [
-      //       { name: 'stepCount' },
-      //     ],
-      //   })
-      // );
     } catch (error) {
       setisVisibleVerifyError(true);
     }
@@ -169,9 +159,9 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       let profiles = (await getProfile()) || [];
 
       let index = profiles.findIndex(
-        profile => 
+        profile =>
           // console.log('getAbsoluteMonths(moment(profile.date)) == getAbsoluteMonths(moment())',getAbsoluteMonths(moment(profile.date)) == getAbsoluteMonths(moment()))
-         getAbsoluteMonths(moment(profile.date)) == getAbsoluteMonths(moment())
+          getAbsoluteMonths(moment(profile.date)) == getAbsoluteMonths(moment())
         // }
       );
       let obj = {
@@ -229,9 +219,10 @@ const ProfileScreen = ({ route, intl, navigation }) => {
               time={listTime}
               onSelected={onSelectWeight}
             />
-            {height && weight ? (
+            {height && weight && (
               <ResultBMI height={height} weight={weight} />
-            ) : null}
+            )
+            }
           </View>
           <View style={styles.buttonConfirm}>
             <ButtonIconText

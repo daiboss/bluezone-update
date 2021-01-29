@@ -568,10 +568,6 @@ class App extends React.Component {
     );
   };
 
-  UNSAFE_componentWillMount() {
-    // ConfigurationNotification()
-  }
-
   // npx uri-scheme open mic.bluezone://bluezone/HomeStack/stepCount --android
   render() {
     const { translationMessagesState, loading, isHome } = this.state;
