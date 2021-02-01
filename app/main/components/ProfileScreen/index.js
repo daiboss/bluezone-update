@@ -236,7 +236,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       }}
         color={red_bluezone}
       />
-  }, [height, weight, gender, heightError, weightError, isLoadingFinish])
+  }, [height, weight, gender, heightError, weightError, isLoadingFinish, listTime, listProfile])
 
   return (
     <SafeAreaView style={styles.container}>

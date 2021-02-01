@@ -110,7 +110,7 @@ import {
   registerInitialNotification,
   removeDeliveredNotification,
 } from './app/core/fcm';
-import { getIsFirstLoading, setIsFirstLoading, setFirstTimeOpen, getFirstTimeOpen,setFirstTimeSetup } from './app/core/storage';
+import { getIsFirstLoading, setIsFirstLoading, setFirstTimeOpen, getFirstTimeOpen, setFirstTimeSetup } from './app/core/storage';
 import ProfileScreen from './app/main/components/ProfileScreen';
 import BmiScreen from './app/main/components/ProfileScreen/BmiScreen';
 import ResultBmiScreen from './app/main/components/ProfileScreen/ResultBmiScreen';
@@ -439,7 +439,7 @@ class App extends React.Component {
           component={NotifyDetail}
         />
 
-        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} path={'Profile'} />
         <Stack.Screen name="Bmi" component={BmiScreen} />
         <Stack.Screen name="resultBmi" component={ResultBmiScreen}
           options={{
@@ -465,7 +465,7 @@ class App extends React.Component {
           name={WELCOME_INITIAL_ROUTE}
           component={currentComponent.WelcomeProps}
         />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} path={'Profile'} />
         <Stack.Screen name="Bmi" component={BmiScreen} />
         <Stack.Screen name="resultBmi" component={ResultBmiScreen}
           options={{
@@ -536,7 +536,7 @@ class App extends React.Component {
             <Stack.Screen name={'DemoTarget'} component={DemoTarget} />
 
             <Stack.Screen name="Profile2" component={ProfileScreen} />
-            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="Profile" component={ProfileScreen} path={'Profile'} />
             <Stack.Screen name="Bmi" component={BmiScreen} />
             <Stack.Screen name="resultBmi" component={ResultBmiScreen}
               options={{

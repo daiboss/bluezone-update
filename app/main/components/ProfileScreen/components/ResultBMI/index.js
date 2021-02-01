@@ -1,11 +1,15 @@
 import React, { useEffect, useState, useRef, memo, useMemo } from 'react';
-import { View, Text, Animated,Dimensions } from 'react-native';
+import { View, Text, Animated, Dimensions } from 'react-native';
 import styles from './styles/index.css';
 import message from '../../../../../core/msg/profile';
 import NumberAnimate from './../../components/ResultBmiProgress/AnimateNumber'
 import { Position } from './PositionDot';
 import { injectIntl, intlShape } from 'react-intl';
-const {width,height} = Dimensions.get('window')
+import { RFValue } from '../../../../../const/multiscreen';
+const { width, height } = Dimensions.get('window')
+
+const WIDTH_ITEM = (width - ((RFValue(15) + 20) * 2)) / 5
+
 const ResultBMI = ({ height, weight, intl, resultScreen }) => {
   const { formatMessage } = intl;
   const [bmi, setBmi] = useState(0);
@@ -16,17 +20,22 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
       let w = Number(weight?.replace('kg', '')?.replace(',', '.')?.replace(' ', '') || 0);
       let totalBmi = parseFloat(w / (h * h)).toFixed(1);
       setBmi(totalBmi);
+      handleAnim(totalBmi);
     }
-    handleAnim();
   }, [height, weight]);
-  const handleAnim = () => {
+
+  const handleAnim = (bmii) => {
     fadeAnim.setValue(0)
+
+    let valueX = Position(Number(bmii), WIDTH_ITEM)
+
     Animated.timing(fadeAnim, {
-      toValue: 1,
+      toValue: valueX,
       duration: 1500,
       useNativeDriver: false
     }).start();
   };
+
   return (
     <View style={[styles.container2, {
       // overflow: 'hidden'
@@ -73,7 +82,7 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
             overflow: 'hidden',
             height: 6,
           }}>
-            <View style={[styles.line1, styles.line]}/>
+            <View style={[styles.line1, styles.line]} />
             <View style={[styles.line2, styles.line]} />
             <View style={[styles.line3, styles.line]} />
             <View style={[styles.line4, styles.line]} />
@@ -84,13 +93,10 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
             style={[
               styles.dot,
               {
-                left: Position(bmi),
+                left: 0,
                 transform: [
                   {
-                    translateX: fadeAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [-150, 0], // 0 : 150, 0.5 : 75, 1 : 0
-                    }),
+                    translateX: fadeAnim
                   },
                 ],
               },
