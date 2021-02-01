@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   View,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { injectIntl, intlShape } from 'react-intl';
 
@@ -24,6 +25,7 @@ import { ButtonClose } from '../../../base/components/ButtonText/ButtonModal';
 import * as scheduler from '../../../core/notifyScheduler';
 import ResultBMI from './components/ResultBMI';
 import PushNotification from 'react-native-push-notification';
+import { red_bluezone } from '../../../core/color';
 
 const visibleModal = {
   isProcessing: false,
@@ -38,6 +40,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   const [gender, setGender] = useState(1);
   const [listProfile, setListProfile] = useState([]);
   const [listTime, setListTime] = useState([]);
+  const [isLoadingFinish, setIsLoadingFinish] = useState(false)
 
   const [isAutoOpen, setIsAutoOpen] = useState(false)
 
@@ -78,8 +81,9 @@ const ProfileScreen = ({ route, intl, navigation }) => {
 
   const getListProfile = async () => {
     try {
+      setIsLoadingFinish(false)
       let profiles = (await getProfile()) || [];
-      getProfileList(profiles);
+      await getProfileList(profiles);
       let profile = profiles.find(
         item =>
           getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(moment())
@@ -89,11 +93,14 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       }
       if (profile) {
         setGender(profile.gender);
-        setHeight(profile.height);
-        setWeight(profile.weight);
+        setHeight(profile.height || '');
+        setWeight(profile.weight || '');
 
       }
-    } catch (error) { }
+      setIsLoadingFinish(true)
+    } catch (error) {
+      setIsLoadingFinish(true)
+    }
   };
 
   useEffect(() => {
@@ -154,7 +161,9 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   const onCloseModalProfile = () => setisVisibleVerifyError(false);
   const onSelectWeight = async weight => {
     try {
+      // setIsLoadingFinish(false)
       setWeightError(false);
+      setIsAutoOpen(false)
       setWeight(weight);
       let profiles = (await getProfile()) || [];
 
@@ -175,9 +184,59 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       } else {
         profiles.push(obj);
       }
-      getProfileList(profiles);
-    } catch (error) { }
+      await getProfileList(profiles);
+      setIsLoadingFinish(true)
+    } catch (error) {
+      setIsLoadingFinish(true)
+    }
   };
+
+  const renderContentView = () => {
+    return (
+      <View>
+        <SelectGender gender={gender} onSelectGender={onSelectGender} />
+        <SelectHeightOrWeight
+          label={formatMessage(message.height)}
+          value={height ? height : 'cm'}
+          gender={gender}
+          type="height"
+          currentHeight={height}
+          error={heightError ? formatMessage(message.heightError2) : null}
+          onSelected={height => {
+            setHeightError(false);
+            setHeight(height);
+          }}
+        />
+        <SelectHeightOrWeight
+          visiWeight={isAutoOpen}
+          label={formatMessage(message.weight)}
+          value={weight ? weight : 'kg'}
+          error={weightError ? formatMessage(message.weightError2) : null}
+          type="weight"
+          currentWeight={weight}
+          gender={gender}
+          listProfile={listProfile}
+          time={listTime}
+          onSelected={onSelectWeight}
+        />
+        {height && weight && (
+          <ResultBMI height={height} weight={weight} />
+        )
+        }
+      </View>
+    )
+  }
+
+  const renderBody = useMemo(() => {
+    if (isLoadingFinish) {
+      return renderContentView()
+    } else
+      return <ActivityIndicator style={{
+
+      }}
+        color={red_bluezone}
+      />
+  }, [height, weight, gender, heightError, weightError, isLoadingFinish])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -193,47 +252,21 @@ const ProfileScreen = ({ route, intl, navigation }) => {
       />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.group}>
-          <View>
-            <SelectGender gender={gender} onSelectGender={onSelectGender} />
-            <SelectHeightOrWeight
-              label={formatMessage(message.height)}
-              value={height ? height : 'cm'}
-              gender={gender}
-              type="height"
-              currentHeight={height}
-              error={heightError ? formatMessage(message.heightError2) : null}
-              onSelected={height => {
-                setHeightError(false);
-                setHeight(height);
-              }}
-            />
-            <SelectHeightOrWeight
-              visiWeight={isAutoOpen}
-              label={formatMessage(message.weight)}
-              value={weight ? weight : 'kg'}
-              error={weightError ? formatMessage(message.weightError2) : null}
-              type="weight"
-              currentWeight={weight}
-              gender={gender}
-              listProfile={listProfile}
-              time={listTime}
-              onSelected={onSelectWeight}
-            />
-            {height && weight && (
-              <ResultBMI height={height} weight={weight} />
-            )
-            }
-          </View>
-          <View style={styles.buttonConfirm}>
-            <ButtonIconText
-              onPress={onConfirm}
-              text={formatMessage(message.finish)}
-              styleBtn={[styles.colorButtonConfirm]}
-              styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
-            />
-          </View>
+          {
+            renderBody
+          }
         </View>
       </ScrollView>
+
+      <View style={styles.buttonConfirm}>
+        <ButtonIconText
+          onPress={onConfirm}
+          text={formatMessage(message.finish)}
+          styleBtn={[styles.colorButtonConfirm]}
+          styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
+        />
+      </View>
+
       <ModalBase
         isVisibleModal={isVisibleVerifyError}
         title={formatMessage(message.titleSendError)}

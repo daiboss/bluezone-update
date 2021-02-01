@@ -85,6 +85,7 @@ const StepCount = ({ props, intl, navigation }) => {
   useEffect(() => {
     observerStepDrawUI();
     getListHistoryChart();
+    // scheduler.createWarnningWeightNotification()
   }, [])
 
   const observerStepDrawUI = async () => {

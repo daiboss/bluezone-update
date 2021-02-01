@@ -18,6 +18,7 @@ import Text from '../Text';
 import styles from './styles/index.css';
 import ModalComponent from '../ModalComponent';
 import CustomSelect from './../../../main/components/ProfileScreen/components/SelectHeightOrWeight/CustomSelect'
+import NewSelectedView from './../../../main/components/ProfileScreen/components/NewSelectedView/NewSelectedView'
 
 function ModalPicker({
   isVisibleModal,
@@ -26,32 +27,32 @@ function ModalPicker({
   gender,
   currentWeight,
 }) {
-  console.log('isVisibleModalisVisibleModalisVisibleModal',isVisibleModal)
   const [weight, setWeight] = useState(gender == 1 ? '65,' : '50,');
-  const [index, setIndex] = useState(0);
   const [weight2, setWeight2] = useState('0 kg');
-  const [index2, setIndex2] = useState(0);
   useEffect(() => {
     setWeight('65,');
   }, []);
 
   useEffect(() => {
-    if(currentWeight){
+    if (currentWeight) {
       let index = currentWeight.indexOf(',')
-      let dataWeight = currentWeight.slice(0,index+1)
-      setWeight(dataWeight)
-    }else{
+      if (index != -1) {
+        let tmp = currentWeight.split(",")
+        setWeight(`${tmp[0]},`)
+        setWeight2(tmp[1])
+      }
+    } else {
       if (gender == 1) {
         setWeight('65,');
       } else if (gender == 0) {
         setWeight('50,');
       }
     }
-   
-  }, [gender,currentWeight]);
+
+  }, [gender, currentWeight]);
 
   const selectHeight = () => {
-    onSelected && onSelected(`${weight}${weight2 || '0kg'}`);
+    onSelected && onSelected(`${weight}${weight2 || '0 kg'}`);
     onCloseModal();
   };
   return (
@@ -64,7 +65,7 @@ function ModalPicker({
       animationOutTiming={500}
       style={styles.modal}>
       <View style={styles.content}>
-        <CustomSelect
+        <NewSelectedView
           onValueChange={setWeight}
           dataSource={DATA_LEFT}
           selectedIndex={
@@ -77,7 +78,8 @@ function ModalPicker({
                   : 50
           }
           containerStyle={{
-            marginVertical: 30
+            marginVertical: 30,
+            flex: 1
           }}
           textStyle={{
             alignSelf: 'flex-end',
@@ -85,7 +87,7 @@ function ModalPicker({
           }}
         />
 
-        <CustomSelect
+        <NewSelectedView
           onValueChange={setWeight2}
           dataSource={DATA_RIGHT}
           selectedIndex={
@@ -98,7 +100,8 @@ function ModalPicker({
                   : 50
           }
           containerStyle={{
-            marginVertical: 30
+            marginVertical: 30,
+            flex: 1
           }}
           textStyle={{
             alignSelf: 'flex-start',

@@ -113,7 +113,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
 
 
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.icon_bluezone_service)
+                .setSmallIcon(R.mipmap.icon_bluezone)
 //                .setSmallIcon(iconInt)
                 .setContentTitle(taskTitle)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
@@ -123,7 +123,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                 .setAutoCancel(false)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText("Bluezone - App sức khoẻ"))
+//                .setStyle(new NotificationCompat.BigTextStyle().bigText("Bluezone - App sức khoẻ"))
                 .build();
         return notification;
     }

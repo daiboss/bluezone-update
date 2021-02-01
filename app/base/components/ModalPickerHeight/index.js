@@ -13,6 +13,7 @@ import Text from '../Text';
 import styles from './styles/index.css';
 import ModalComponent from '../ModalComponent';
 import CustomSelect from './../../../main/components/ProfileScreen/components/SelectHeightOrWeight/CustomSelect'
+import NewSelectedView from './../../../main/components/ProfileScreen/components/NewSelectedView/NewSelectedView'
 
 const windowWidth = Dimensions.get('window').width;
 let dataHeight = [];
@@ -64,7 +65,7 @@ function ModalPicker({
       backdropTransitionInTiming={1000}
       backdropTransitionOutTiming={1000}>
       <View style={styles.content}>
-        <CustomSelect
+        <NewSelectedView
           onValueChange={setHeight}
           dataSource={data}
           selectedIndex={

@@ -34,6 +34,7 @@ import { ButtonClose } from '../../../base/components/ButtonText/ButtonModal';
 import ResultBMI from './components/ResultBMI';
 import Modal from 'react-native-modal'
 import { DATA_LEFT } from '../../../base/components/ModalPickerWeight/data';
+import NewSelectedView from './components/NewSelectedView/NewSelectedView';
 
 const visibleModal = {
   isProcessing: false,
@@ -146,41 +147,7 @@ const BmiScreen = ({ route, intl, navigation }) => {
             currentWeight={weight}
             onSelected={onSelectedValue}
           />
-          {/* <TouchableOpacity onPress={openM}>
-            <Text>MOMOMO</Text>
-          </TouchableOpacity> */}
-          <Modal style={{
 
-          }}
-            useNativeDriver
-            isVisible={isShow}
-            onBackdropPress={closeM}
-          >
-            <View style={{
-              width: '100%',
-              paddingVertical: 70,
-              backgroundColor: '#fff'
-            }}>
-              <FlatList
-                data={DATA_LEFT}
-                keyExtractor={(item) => item}
-                renderItem={({ item, index }) => (
-                  <View>
-                    <Text>{item}</Text>
-                  </View>
-                )}
-              />
-
-              {/* {
-                DATA_LEFT.map(item => (
-                  <View key={item}>
-                    <Text>{item}</Text>
-                  </View>
-                ))
-              } */}
-              <Text>dsjhak</Text>
-            </View>
-          </Modal>
         </View>
         <View style={styles.buttonConfirm}>
           <ButtonIconText
