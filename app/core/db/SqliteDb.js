@@ -424,7 +424,7 @@ export const removeAllStep = async () => {
         'delete from stepcounter',
         [],
         resolve,
-        reject,
+        resolve,
       );
     })
   })

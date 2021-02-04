@@ -84,14 +84,18 @@ const StepCount = ({ props, intl, navigation }) => {
 
   useEffect(() => {
     observerStepDrawUI();
-    getListHistoryChart();
-    // scheduler.createWarnningWeightNotification()
+    scheduler.createWarnningWeightNotification()
   }, [])
 
   const observerStepDrawUI = async () => {
     getResultBindingUI()
+    getListHistoryChart();
     BackgroundJob.observerStepSaveChange(() => {
       getResultBindingUI()
+    })
+    BackgroundJob.observerHistorySaveChange(async () => {
+      getListHistoryChart();
+      getResultBindingUI();
     })
   }
 
@@ -202,7 +206,6 @@ const StepCount = ({ props, intl, navigation }) => {
       })
 
       BackgroundJob.observerHistorySaveChange(async () => {
-        console.log('observerStepSaveChange', 'ssjsjsjsj')
         await autoChangeStepsTarget()
       })
     })
@@ -265,7 +268,7 @@ const StepCount = ({ props, intl, navigation }) => {
     let lastTime = await getFirstTimeSetup()
     let firstTime = new moment.unix(lastTime?.time)
     let tmpDay = new moment().diff(firstTime, 'days')
-    console.log('autoChangeStepsTarget tmpDay', tmpDay)
+    // console.log('autoChangeStepsTarget tmpDay', tmpDay)
     if (tmpDay < 2) {
       return
     }
@@ -283,7 +286,7 @@ const StepCount = ({ props, intl, navigation }) => {
     if (listHistory?.length <= 0) return
 
     let stepTarget = await getResultSteps()
-    console.log('autoChangeStepsTarget2222', tmpDay, stepTarget, listHistory)
+    // console.log('autoChangeStepsTarget2222', tmpDay, stepTarget, listHistory)
 
     let listData = listHistory.map(element => {
       let resultTmp = JSON.parse(element?.resultStep)
@@ -357,22 +360,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const numberWithCommas = x => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  };
-
-  const onBack = () => {
-    try {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [
-            { name: 'Home' },
-            {
-              name: 'Welcome',
-            },
-          ],
-        })
-      );
-    } catch (e) { }
   };
 
   const onShowMenu = () => {
@@ -573,7 +560,6 @@ const StepCount = ({ props, intl, navigation }) => {
               </TouchableOpacity>
             </View>
           )
-
           ) || null}
         </View>
 

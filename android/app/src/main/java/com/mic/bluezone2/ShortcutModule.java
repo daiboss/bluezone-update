@@ -75,7 +75,7 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
         ReadableMap icon = shortcut.getMap("icon");
         ReadableMap link = shortcut.getMap("link");
 
-        Log.e("SHORTCUTTTTTTTT", "Tren bitmap");
+//        Log.e("SHORTCUTTTTTTTT", "Tren bitmap");
         BitmapDrawable drawable = null;
         try {
             Class<?> clazz = Class.forName("prscx.imagehelper.RNImageHelperModule");
@@ -85,9 +85,9 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
             drawable = (BitmapDrawable) method.invoke(null, icon);
         } catch (Exception e) {
         }
-        Log.e("SHORTCUTTTTTTTT", "Duoi bitmap");
+//        Log.e("SHORTCUTTTTTTTT", "Duoi bitmap");
         if (Build.VERSION.SDK_INT > 26) {
-            Log.e("SHORTCUTTTTTTTT", "Tren 26");
+//            Log.e("SHORTCUTTTTTTTT", "Tren 26");
             ShortcutManager mShortcutManager = getReactApplicationContext().getSystemService(ShortcutManager.class);
 
             Intent shortcutIntent = new Intent(getReactApplicationContext(), ShortcutModule.class);

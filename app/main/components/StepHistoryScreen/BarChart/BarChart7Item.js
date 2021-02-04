@@ -21,9 +21,9 @@ const BarChart7Item = ({
     onGetDataBySelect,
     selectedItem
 }) => {
-    console.log('selectedItemselectedItemselectedItem',{ data,
-        onGetDataBySelect,
-        selectedItem})
+    // console.log('selectedItemselectedItemselectedItem',{ data,
+    // onGetDataBySelect,
+    // selectedItem})
     const [isLast, setIsLast] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 

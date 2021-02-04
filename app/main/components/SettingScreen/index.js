@@ -60,7 +60,7 @@ import Toast from 'react-native-simple-toast';
 
 import ModalPickerStepsTarget from './../../../base/components/ModalPickerStepsTarget'
 
-import ImgStep from './../StepCountScreen/images/ic_step.png'
+import ImgHealth from './../StepCountScreen/images/ic_health.png'
 import ModalAddShortcut from '../../../base/components/ModalAddShortcut';
 import MyShortcut from './CreateShortcut'
 import * as scheduler from '../../../core/notifyScheduler';
@@ -268,7 +268,7 @@ const SettingScreen = ({ intl, navigation }) => {
     MyShortcut.AddPinnedShortcut({
       label: 'Sức khoẻ Bluezone',
       description: 'Sức khoẻ Bluezone',
-      icon: ImgStep,
+      icon: ImgHealth,
       link: { url: 'mic.bluezone://bluezone/HomeStack/stepCount' },
       onDone: () => {
         closeAlertAddShortcut()

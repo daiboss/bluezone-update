@@ -62,8 +62,6 @@ import CustomDrawerContent from './app/main/components/CustomDrawerContent';
 import { registerResourceLanguageChange } from './app/core/language';
 import { enableScreens } from 'react-native-screens';
 
-import ConfigurationNotification from './app/core/NotificationService'
-
 enableScreens();
 
 const isLastStepOfWizard = name => {

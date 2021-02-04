@@ -45,8 +45,6 @@ import {registerBluetoothStateListener} from '../core/bluetooth';
 import * as scheduler from '../core/notifyScheduler';
 import * as analytic from '../core/analytics';
 
-import ConfigurationNotification from './../core/NotificationService'
-
 /**
  * Thực hiện toàn bộ các kịch bản cần thực thi ngay khi app start lên
  * @param AppStack
@@ -59,7 +57,6 @@ function decorateMainAppStart(AppStack) {
     }
 
     async componentDidMount() {
-      ConfigurationNotification()
       // Xu ly lay FirebaseToken ngay khi appstart
       requestTokenFirebase();
 
