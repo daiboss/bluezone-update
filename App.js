@@ -400,7 +400,7 @@ class App extends React.Component {
   HomeStack = currentProps => () => {
     const currentComponent = currentProps.currentComponent;
     const { loading, isHome } = currentProps.currentComponent.state;
-    return loading ? (
+    return !loading ? (
       <Stack.Navigator
         id="auth"
         headerMode="none"
