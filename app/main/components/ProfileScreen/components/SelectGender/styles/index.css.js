@@ -13,9 +13,12 @@
  */
 'use strict';
 
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import * as fontSize from '../../../../../../core/fontSize';
-import {blue_bluezone, red_bluezone} from '../../../../../../core/color';
+import { blue_bluezone, red_bluezone } from '../../../../../../core/color';
+import { RFValue } from '../../../../../../const/multiscreen';
+
+const SIZE = RFValue(80)
 
 const styles = StyleSheet.create({
   textGender: {
@@ -28,7 +31,7 @@ const styles = StyleSheet.create({
   },
   buttonSelectGender: {
     borderRadius: 20,
-    paddingVertical:7,
+    paddingVertical: 7,
     paddingHorizontal: 15,
     overflow: 'hidden'
   },
@@ -39,12 +42,12 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   containerSelectGender: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 3,
-    borderRadius: 20,
-    borderColor: '#00000020',
-    borderWidth: 1,
+    // flexDirection: 'row',
+    // alignItems: 'center',
+    // padding: 3,
+    // borderRadius: 20,
+    // borderColor: '#00000020',
+    // borderWidth: 1,
   },
   container2: {
     shadowColor: "#000",
@@ -67,6 +70,58 @@ const styles = StyleSheet.create({
   },
   colorUnSelected: {
     color: '#949494',
+  },
+
+  container: {
+    width: RFValue(100),
+    backgroundColor: '#fff',
+    height: SIZE * 0.48,
+    borderRadius: SIZE * 0.25,
+    // elevation: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+    borderWidth: 1,
+    paddingHorizontal: RFValue(3),
+    borderColor: '#00000020'
+  },
+  absoluteLayer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "absolute",
+    width: '100%',
+    height: (SIZE * 1) / 2,
+  },
+  smallZero: {
+    color: '#949494',
+    fontSize: RFValue(11),
+    paddingLeft: SIZE * 0.16
+  },
+  smallOne: {
+    color: '#949494',
+    fontSize: RFValue(11),
+    textAlign: 'right',
+    paddingRight: SIZE * 0.16
+  },
+  overLay:
+  {
+    height: SIZE * 0.4,
+    backgroundColor: red_bluezone,
+    borderRadius: SIZE * 0.25,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  overLayOne: {
+    color: '#fff',
+    fontSize: RFValue(11),
+    position: "absolute",
+  },
+  overLayZero: {
+    color: '#fff',
+    fontSize: RFValue(11),
+    position: "absolute",
   },
 });
 

@@ -159,6 +159,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
         profiles.push(obj);
       }
       setProfile(profiles);
+      navigation.goBack();
       navigation.navigate('stepCount');
     } catch (error) {
       setisVisibleVerifyError(true);
