@@ -152,7 +152,6 @@ class ChartLine extends React.Component {
   }
   getLeftLabel = () => {
     const value = this.state?.value?.length
-    // console.log('topLabelbaelbel', this.state.leftLabel, value)
 
     if (value == 1) {
       return this.state.leftLabel - width * 0.12
