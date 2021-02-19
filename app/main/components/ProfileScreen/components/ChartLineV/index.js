@@ -97,17 +97,16 @@ class ChartLine extends React.Component {
     const lengthArray2 = array2?.length
     const checkData = array1[lengthArray1 - 1].marker != array2[lengthArray2 - 1].marker
 
-    if(lengthArray1 != lengthArray2 || checkData)
-    {
+    if (lengthArray1 != lengthArray2 || checkData) {
       this.convertData()
     }
-  } 
-  domainPaddingChart =  () => {
-    const {dataConvert} = this.state
+  }
+  domainPaddingChart = () => {
+    const { dataConvert } = this.state
 
     let x = []
-    if(dataConvert.length == 1){
-      x = [0,0] 
+    if (dataConvert.length == 1) {
+      x = [0, 0]
       return x
     }
     if(dataConvert.length >= 2|| dataConvert.length <=7 ){
@@ -140,20 +139,19 @@ class ChartLine extends React.Component {
     }
   }
   widthChart = () => {
-    const {dataConvert} = this.state
+    const { dataConvert } = this.state
     let x
-    if(dataConvert.length <= 7){
-      x = width*0.8
+    if (dataConvert.length <= 7) {
+      x = width * 0.8
       return x
     }
-    else{
-      x = dataConvert.length*width*0.12
+    else {
+      x = dataConvert.length * width * 0.12
       return x
     }
   }
   getLeftLabel = () => {
     const value = this.state?.value?.length
-    // console.log('topLabelbaelbel', this.state.leftLabel, value)
 
     if (value == 1) {
       return this.state.leftLabel - width * 0.12
@@ -169,15 +167,16 @@ class ChartLine extends React.Component {
     return (
       <VictoryChart
         singleQuadrantDomainPadding={false}
-        padding={{top: RFValue(20), bottom: 10 }}
+        padding={{ top: RFValue(20), bottom: 10, left: 5, right: 10 }}
         height={RFValue(120)}
         style={{
           parent: {
             // backgroundColor: 'red',
+            overflow: 'visible'
           },
         }}
         width={this.widthChart()}
-        domainPadding={{ x:this.domainPaddingChart()}}
+        domainPadding={{ x: this.domainPaddingChart() }}
         // minDomain={{ y: 0 }}
         maxDomain={{ y: 300 }}
       // theme={VictoryTheme.material}
@@ -213,10 +212,10 @@ class ChartLine extends React.Component {
         <VictoryGroup
           style={{ labels: { fill: 'none' } }}
           data={this.state.dataConvert}
-          // data = {dataTest}
-          >
+        // data = {dataTest}
+        >
           <VictoryArea
-             animate={{
+            animate={{
               duration: 1000,
               onLoad: { duration: 1000 }
             }}
@@ -233,7 +232,7 @@ class ChartLine extends React.Component {
             style={{
               data: { stroke: "#FE4358" },
               parent: { border: "1px solid #ccc", },
-            
+
             }}
           />
 
@@ -313,8 +312,8 @@ class ChartLine extends React.Component {
   }
   render() {
     return (
-      <View style={[styles.container,]}>
-     
+      <View style={[styles.container]}>
+
         <Text style={[styles.txtYear, { paddingVertical: RFValue(10) }]}>{this.state.year || 2021}</Text>
         <ScrollView 
         bounces = {this.state?.dataConvert.length <= 7 ? false : true}
@@ -356,7 +355,7 @@ class ChartLine extends React.Component {
         }
        
           {Platform.OS == 'android' ?
-            <Svg style={{ height: RFValue(120), alignSelf: 'center'}}>
+            <Svg style={{ height: RFValue(120), alignSelf: 'center' }}>
               {this.renderMainChart()}
             </Svg> :
             <View style={{ height: RFValue(120), alignSelf: 'center' }}>

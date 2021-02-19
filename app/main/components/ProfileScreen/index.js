@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, memo } from 'react';
+import React, { useEffect, useMemo, useState, memo, useRef } from 'react';
 import * as PropTypes from 'prop-types';
 import {
   SafeAreaView,
@@ -42,7 +42,8 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   const [listTime, setListTime] = useState([]);
   const [isLoadingFinish, setIsLoadingFinish] = useState(false)
 
-  const [isAutoOpen, setIsAutoOpen] = useState(false)
+  const [isAutoOpen, setIsAutoOpen] = useState(undefined)
+  const prevIsAutoOpenRef = useRef();
 
   const [heightError, setHeightError] = useState(null);
   const [weightError, setWeightError] = useState(null);
@@ -95,7 +96,6 @@ const ProfileScreen = ({ route, intl, navigation }) => {
         setGender(profile.gender);
         setHeight(profile.height || '');
         setWeight(profile.weight || '');
-
       }
       setIsLoadingFinish(true)
     } catch (error) {
@@ -104,8 +104,14 @@ const ProfileScreen = ({ route, intl, navigation }) => {
   };
 
   useEffect(() => {
+    prevIsAutoOpenRef.current = isAutoOpen
+  })
+
+  useEffect(() => {
     if (height && gender != undefined && weight && listProfile?.length > 0 && listTime?.length > 0) {
-      setIsAutoOpen(route?.params?.isAutoOpen || false)
+      if (prevIsAutoOpenRef.current == undefined) {
+        setIsAutoOpen(route?.params?.isAutoOpen || false)
+      }
     }
   }, [gender, height, weight, listTime, listProfile])
 
@@ -153,6 +159,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
         profiles.push(obj);
       }
       setProfile(profiles);
+      navigation.goBack();
       navigation.navigate('stepCount');
     } catch (error) {
       setisVisibleVerifyError(true);
@@ -208,7 +215,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
           }}
         />
         <SelectHeightOrWeight
-          visiWeight={isAutoOpen}
+          visiWeight={isAutoOpen || false}
           label={formatMessage(message.weight)}
           value={weight ? weight : 'kg'}
           error={weightError ? formatMessage(message.weightError2) : null}

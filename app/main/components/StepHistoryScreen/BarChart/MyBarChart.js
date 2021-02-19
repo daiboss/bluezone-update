@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from 'react'
-import { View, Text, FlatList, Animated, TouchableOpacity ,Platform} from 'react-native'
+import { View, Text, FlatList, Animated, TouchableOpacity, Platform } from 'react-native'
 import { red_bluezone } from '../../../../core/color'
 import { RFValue } from '../../../../const/multiscreen';
 const HEIGHT_CHART = 280
@@ -12,14 +12,51 @@ const MyBarChart = ({
     maxDomain,
     selectedItem
 }) => {
+    const [valueFlex, setValueFlex] = useState(0)
+
+    useEffect(() => {
+        let k = 0;
+        switch (data.length) {
+            case 0:
+            case 1:
+                k = 0;
+                break;
+            case 2:
+                k = 1.2;
+                break;
+            case 3:
+                k = 0.65;
+                break;
+            case 4:
+                k = 0.35;
+                break;
+            case 5:
+                k = 0.18;
+                break;
+            case 6:
+                k = 0.05;
+                break;
+            case 7:
+                k = 0;
+                break;
+            default:
+                k = 0;
+        }
+        setValueFlex(k)
+    }, [data])
+
     return (
         <View style={{
-            width: '100%',
-            flex: 1
+            flex: 1,
+            flexDirection: 'row',
+            marginHorizontal: RFValue(10)
         }}>
+            <View style={{ flex: valueFlex }} />
             <FlatList
                 data={data}
-                style={{marginHorizontal:RFValue(10)}}
+                style={{
+                    flex: 1,
+                }}
                 keyExtractor={(item, index) => `Key_column_${flIndex}_${index}`}
                 numColumns={7}
                 renderItem={({ item, index }) => <ChartColumn
@@ -30,6 +67,7 @@ const MyBarChart = ({
                     flIndex={flIndex}
                     selectedItem={selectedItem} />}
             />
+            <View style={{ flex: valueFlex }} />
         </View>
     )
 }
@@ -77,7 +115,7 @@ const ChartColumn = ({ item,
                 fontSize: Platform.OS == 'android' ? 10 : RFValue(10),
                 fontWeight: '700',
                 textAlign: 'center',
-                paddingTop:3,
+                paddingTop: 3,
                 color: selectedItem?.index == index && selectedItem?.page == flIndex ? red_bluezone : '#a1a1a1'
             }}>{item?.x}</Text>
             <Animated.View style={{

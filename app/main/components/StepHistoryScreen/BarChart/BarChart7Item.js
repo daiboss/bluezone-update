@@ -21,8 +21,6 @@ const BarChart7Item = ({
     onGetDataBySelect,
     selectedItem
 }) => {
-    const dataMax = Math.max.apply(Math,data.map(i => i.y))
-    console.log('maxxxxxxxxx',dataMax)
     console.log('selectedItemselectedItemselectedItem',{ data,
         onGetDataBySelect,
         selectedItem})

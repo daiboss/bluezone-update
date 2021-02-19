@@ -110,7 +110,6 @@ const NewSelectedView = ({
                     );
 
                     if (onItemIndexChange) {
-                        console.log('newIndexnewIndex', newIndex)
                         onItemIndexChange(newIndex);
                         onValueChange && onValueChange(dataSource[newIndex])
                     }

@@ -83,8 +83,6 @@ class LoadingScreen extends React.Component {
   }
 
   componentDidMount() {
-    ConfigurationNotification()
-
     // Check trạng thái lần đầu tiên vào app.
     this.checkAuth();
 
@@ -148,6 +146,8 @@ class LoadingScreen extends React.Component {
   doFinishedWorks() {
     const { onFinished, name } = this.props;
     onFinished(name, {}, !this.works.retrySyncTokenFirebase);
+
+    ConfigurationNotification()
   }
 
   finishedAPI(work, status) {

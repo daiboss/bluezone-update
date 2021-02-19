@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
 
   buttonConfirm: {
     // marginHorizontal: 43,
-    marginBottom: 27,
-    marginTop: 40,
+    marginBottom: RFValue(20),
+    paddingTop: 6
   },
   colorButtonConfirm: {
     backgroundColor: red_bluezone,

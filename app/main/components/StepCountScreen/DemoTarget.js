@@ -48,7 +48,6 @@ import {
 import BackgroundJob from './../../../core/service_stepcounter'
 import {
     addStepCounter,
-    removeAllStep,
     getListHistory,
     addHistory,
 } from './../../../core/db/SqliteDb'

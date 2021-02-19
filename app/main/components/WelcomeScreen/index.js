@@ -104,7 +104,7 @@ class WelcomeScreen extends React.Component {
 
   async componentDidMount() {
     ConfigurationNotification()
-
+    
     const { Language } = configuration;
     this.changeDisplay();
     const infoDates = await getDateOfWelcome();

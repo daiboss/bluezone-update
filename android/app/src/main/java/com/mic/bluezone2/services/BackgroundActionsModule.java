@@ -22,6 +22,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 @SuppressWarnings("WeakerAccess")
@@ -34,6 +35,7 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
     private static final String EMIT_EVENT_HISTORY_SAVE = "EMIT_EVENT_HISTORY_SAVE";
 
     private final ReactContext reactContext;
+    private static ReactApplicationContext reactContextStatic;
 
     private Intent currentServiceIntent;
 
@@ -59,6 +61,7 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
     public BackgroundActionsModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        this.reactContextStatic = reactContext;
         this.powerManager = (PowerManager) getReactApplicationContext().getSystemService(reactContext.POWER_SERVICE);
         this.wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "rohit_bg_wakelock");
         reactContext.addLifecycleEventListener(listener);
@@ -188,5 +191,11 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void sendEmitSaveHistorySuccess(){
         sendEvent(reactContext, EMIT_EVENT_HISTORY_SAVE);
+    }
+
+    public static void sendEvent(String event, WritableNativeMap params) {
+        reactContextStatic
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(event, params);
     }
 }
