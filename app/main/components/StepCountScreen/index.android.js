@@ -44,6 +44,7 @@ import {
   getDistances,
   getStepsTotal,
   getStepsTotalPromise,
+  getDistancesWithData
 } from '../../../core/calculation_steps';
 
 import BackgroundJob from './../../../core/service_stepcounter'
@@ -52,6 +53,11 @@ import {
   removeAllStep,
   getListHistory,
   addHistory,
+  removeAllStepDay,
+  getListStepDayBefore,
+  getListStartDateHistory,
+  getListStepDay,
+  getListStepsBefore
 } from './../../../core/db/SqliteDb'
 
 import ButtonIconText from '../../../base/components/ButtonIconText';
@@ -84,7 +90,8 @@ const StepCount = ({ props, intl, navigation }) => {
 
   useEffect(() => {
     observerStepDrawUI();
-    scheduler.createWarnningWeightNotification()
+    // scheduler.createWarnningWeightNotification()
+    synchronizeDatabaseStepsHistory()
   }, [])
 
   const observerStepDrawUI = async () => {
@@ -100,9 +107,15 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const getListHistoryChart = async () => {
-    let start = new moment().subtract(8, 'days').unix()
-    let end = new moment().subtract(1, 'days').unix()
+    let curentTime = moment().unix()
+    // let start = moment().subtract(8, 'days').unix()
+    // let end = moment().subtract(1, 'days').unix()
+    let start = curentTime - 86400 * 8
+    let end = curentTime - 86400
     let steps = await getListHistory(start, end)
+    if(steps.length > 7){
+      steps.splice(0, 1)
+    }
 
     let list = steps.map(item => {
       let tmp = JSON.parse(item?.resultStep || {})
@@ -115,13 +128,14 @@ const StepCount = ({ props, intl, navigation }) => {
     list.forEach(e => {
       listTime.push(e?.x)
     });
+    console.log('sAASSASASAS', start, end, list, listTime)
     setDataChart(list)
     setTime(listTime)
 
-    alert7dayLessThan1000(steps)
+    await alert7dayLessThan1000(steps)
   }
 
-  const alert7dayLessThan1000 = (steps) => {
+  const alert7dayLessThan1000 = async (steps) => {
     if (steps.length >= 7) {
       let check = true
       steps.forEach(element => {
@@ -131,7 +145,7 @@ const StepCount = ({ props, intl, navigation }) => {
         }
       });
       if (check) {
-        showNotificationAlert7DayLessThan100()
+        await showNotificationAlert7DayLessThan100()
       }
     }
   }
@@ -187,10 +201,14 @@ const StepCount = ({ props, intl, navigation }) => {
         // console.log('STEP------->>>', steps)
 
         if (steps.stepCounter) {
-          await addStepCounter(steps?.startTime,
-            steps?.endTime,
-            steps?.stepCounter)
-          BackgroundJob.sendEmitSaveSuccess()
+          try {
+            await addStepCounter(steps?.startTime,
+              steps?.endTime,
+              steps?.stepCounter)
+            BackgroundJob.sendEmitSaveSuccess()
+          } catch (er) {
+            console.log('LUUUUERRORORO', er)
+          }
         }
 
         getStepsTotal(total => {
@@ -202,7 +220,6 @@ const StepCount = ({ props, intl, navigation }) => {
             valueTarget: 123
           })
         })
-
       })
 
       BackgroundJob.observerHistorySaveChange(async () => {
@@ -210,6 +227,84 @@ const StepCount = ({ props, intl, navigation }) => {
       })
     })
   }
+
+
+  const synchronizeDatabaseStepsHistory = async () => {
+    try {
+      let listStepBefore = await getListStepsBefore();
+      console.log('listStepBefore', listStepBefore)
+      if (listStepBefore?.length == 0) {
+        await saveHistoryEmpty()
+        return
+      }
+      const group = listStepBefore.reduce((acc, current) => {
+        const time = moment.unix(parseInt(current.starttime / 1000)).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+        if (!acc[time]) {
+          acc[time] = [];
+        }
+        acc[time].push(current);
+        return acc;
+      }, {})
+
+      for (const [key, value] of Object.entries(group)) {
+        let timeMoment = moment.unix(key)
+        let startTime = timeMoment.startOf('day').unix()
+        let endTime = timeMoment.endOf('day').unix()
+
+        // Nếu ngày đó trong lịch sử chưa có, sẽ lưu lại giá trị
+        let result = await getDistancesWithData(value);
+        if (Object.keys(result).length <= 0) {
+          return;
+        }
+        await addHistory(startTime, result)
+
+        await removeAllStepDay(startTime * 1000, endTime * 1000)
+      }
+
+      await saveHistoryEmpty()
+    } catch (error) {
+      console.log('ERROR synchronizeDatabaseStepsHistory', error)
+    }
+  }
+
+  const saveHistoryEmpty = async () => {
+    let currentTime = moment().startOf('day').unix()
+    // Lọc ra tất cả thời gian trên db
+    let listDayStart = await getListStartDateHistory(currentTime)
+    listDayStart = listDayStart.map(t => t.starttime)
+    if (!listDayStart.some(t => t == currentTime)) {
+      listDayStart.push(currentTime)
+    }
+    if (listDayStart.length <= 1) {
+      BackgroundJob.sendEmitSaveHistorySuccess()
+      return
+    }
+    // Nếu ngày nào chưa có trong db sẽ tự động thêm, nhưng dữ liệu sẽ mặc định là 0 0 0 0
+    let tmp = []
+    listDayStart.forEach((item, index) => {
+      if (index > 0) {
+        let kAbstract = item - listDayStart[index - 1]
+        if (kAbstract > 86400) {
+          let x = parseInt(kAbstract / 86400) - 1
+          let listFor = Array.from(Array(x).keys())
+          listFor.forEach(e => {
+            tmp.push(item - (e + 1) * 86400)
+          })
+        }
+      }
+    });
+
+    await Promise.all(tmp.map(async element => {
+      await addHistory(element, {
+        step: 0,
+        distance: 0.00,
+        calories: 0,
+        time: 0,
+      })
+    }))
+    BackgroundJob.sendEmitSaveHistorySuccess()
+  }
+
 
   const loopTimeToSchedule = async (oldId) => {
     if (oldId) {
@@ -307,18 +402,28 @@ const StepCount = ({ props, intl, navigation }) => {
     let tmp = new moment().subtract(1, 'days')
     let yesterdayStart = tmp.clone().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     let yesterdayEnd = tmp.clone().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix()
-    let listHistory = await getListHistory(yesterdayStart, yesterdayEnd)
-    if (listHistory?.length > 0) {
-      return
-    }
-    let result = await getDistances();
+    // let listHistory = await getListHistory(yesterdayStart * 1000, yesterdayEnd * 1000)
+    // if (listHistory?.length > 0) {
+    //   return
+    // }
+    let listStepYesterday = await getListStepDayBefore()
+    let result = await getDistancesWithData(listStepYesterday);
     if (Object.keys(result).length <= 0) {
       return;
     }
 
-    await addHistory(yesterdayStart, result)
+    try {
+      await addHistory(yesterdayStart, result)
+    } catch (err) {
+      console.log('addHistory ERROR', err)
+    }
 
-    await removeAllStep()
+    try {
+      await removeAllStepDay(yesterdayStart * 1000, yesterdayEnd * 1000)
+    } catch (err) {
+      console.log('removeAllStepDay ERROR', err)
+    }
+
     BackgroundJob.sendEmitSaveHistorySuccess()
     BackgroundJob.updateTypeNotification()
   }
@@ -368,8 +473,8 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const showNotificationAlert7DayLessThan100 = async () => {
     let old = await getConfirmAlert()
-    let oldTime = new moment.unix(old)
-    if (!old || new moment.diff(oldTime, 'days') >= 7) {
+    let oldTime = moment(old, 'DD/MM/YYYY')
+    if (!old || (oldTime && moment().diff(oldTime, 'days') >= 7)) {
       openModalAlert7Day()
     }
   }

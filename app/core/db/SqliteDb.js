@@ -76,7 +76,6 @@ const close = () => {
 };
 
 const initDatabase = (success, failure) => {
-  console.log('lllllllinitDatabaseinitDatabaselllll')
   db = open();
   db.transaction(function (txn) {
     txn.executeSql(
@@ -430,9 +429,79 @@ export const removeAllStep = async () => {
   })
 }
 
-const getListStepDay = async () => {
-  let SQL_QUERY = 'SELECT * FROM stepcounter';
+export const removeAllStepDay = async (startDay, endDay) => {
 
+  return new Promise((resolve, reject) => {
+    db = open();
+    db.transaction(function (txn) {
+      txn.executeSql(
+        'delete from stepcounter where starttime >= ? and endtime <= ?',
+        [startDay, endDay],
+        resolve,
+        resolve,
+      );
+    })
+  })
+}
+
+const getListStepDay = async () => {
+  let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix() * 1000
+  let currentEndTime = moment().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix() * 1000
+  let SQL_QUERY = `SELECT * FROM stepcounter where starttime >= ${currentTime} and starttime < ${currentEndTime}`;
+  return new Promise((resolve, reject) => {
+    db = open();
+    db.transaction(tx => {
+      tx.executeSql(
+        SQL_QUERY,
+        [],
+        (txTemp, results) => {
+          let temp = [];
+          if (results.rows.length > 0) {
+            for (let i = 0; i < results.rows.length; ++i) {
+              temp.push(results.rows.item(i));
+            }
+          }
+          resolve(temp);
+        },
+        () => {
+          resolve([]);
+        },
+      );
+    })
+  })
+};
+
+// lấy tất cả các bước đi từ trước chưa lưu
+const getListStepsBefore = async () => {
+  let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+  let SQL_QUERY = `SELECT * FROM stepcounter where  starttime < ${currentTime * 1000}`;
+  return new Promise((resolve, reject) => {
+    db = open();
+    db.transaction(tx => {
+      tx.executeSql(
+        SQL_QUERY,
+        [],
+        (txTemp, results) => {
+          let temp = [];
+          if (results.rows.length > 0) {
+            for (let i = 0; i < results.rows.length; ++i) {
+              temp.push(results.rows.item(i));
+            }
+          }
+          resolve(temp);
+        },
+        () => {
+          resolve([]);
+        },
+      );
+    })
+  })
+};
+
+// lấy tất cả các bước đi hôm qua
+const getListStepDayBefore = async () => {
+  let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+  let SQL_QUERY = `SELECT * FROM stepcounter where starttime >= ${(currentTime - 86400) * 1000} and starttime < ${currentTime * 1000}`;
   return new Promise((resolve, reject) => {
     db = open();
     db.transaction(tx => {
@@ -478,24 +547,69 @@ const getListHistory = async (start, to) => {
       );
     });
   })
+}
 
+const getListStartDateHistory = async (currentTime) => {
+  return new Promise((resolve, reject) => {
+    db = open();
+    db.transaction(function (txn) {
+      txn.executeSql(
+        `select starttime from historyStepcounter where starttime < ${currentTime} order by starttime`,
+        [],
+        (txTemp, results) => {
+          let temp = [];
+          if (results.rows.length > 0) {
+            for (let i = 0; i < results.rows.length; ++i) {
+              temp.push(results.rows.item(i));
+            }
+          }
+          resolve(temp);
+        },
+        () => {
+          resolve([]);
+        },
+      );
+    });
+  })
 }
 
 const addHistory = async (time, value) => {
   let tmpTime = new moment.unix(time)
   console.log('saveHistory', time, tmpTime.format('DD/MM/YYYY'), value)
-  return new Promise((resolve, reject) => {
-    db = open();
-    db.transaction(function (txn) {
-      txn.executeSql('INSERT INTO historyStepcounter(starttime, resultStep) VALUES (?,?)', [
-        time,
-        JSON.stringify(value),
-      ],
-        (txTemp, results) => resolve(results),
-        () => reject());
-    });
-  })
-
+  let itemExist = await getListHistory(time, time + 86399)
+  if (itemExist.length > 0) {
+    let item = itemExist[0]
+    // let valueOld = JSON.parse(item?.resultStep)
+    // valueOld = {
+    //   step: valueOld?.step + value?.step,
+    //   distance: valueOld?.distance + value?.distance,
+    //   calories: valueOld?.calories + value?.calories,
+    //   time: valueOld?.time + value?.time
+    // }
+    return new Promise((resolve, reject) => {
+      db = open();
+      db.transaction(function (txn) {
+        txn.executeSql('UPDATE historyStepcounter set resultStep = ? where id = ?', [
+          JSON.stringify(value),
+          // JSON.stringify(valueOld),
+          item?.id
+        ],
+          (txTemp, results) => resolve(results),
+          () => reject());
+      });
+    })
+  } else
+    return new Promise((resolve, reject) => {
+      db = open();
+      db.transaction(function (txn) {
+        txn.executeSql('INSERT INTO historyStepcounter(starttime, resultStep) VALUES (?,?)', [
+          time,
+          JSON.stringify(value),
+        ],
+          (txTemp, results) => resolve(results),
+          () => reject());
+      });
+    })
 }
 
 const addStepCounter = async (start, end, steps) => {
@@ -532,5 +646,8 @@ export {
   getListHistory,
   getListStepDay,
   addHistory,
-  addStepCounter
+  addStepCounter,
+  getListStepDayBefore,
+  getListStartDateHistory,
+  getListStepsBefore
 };
