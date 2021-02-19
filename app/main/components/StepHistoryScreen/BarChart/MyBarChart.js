@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef, useState } from 'react'
 import { View, Text, FlatList, Animated, TouchableOpacity ,Platform} from 'react-native'
 import { red_bluezone } from '../../../../core/color'
 import { RFValue } from '../../../../const/multiscreen';
-const HEIGHT_CHART = 200
+const HEIGHT_CHART = 280
 const TIME_ANIM = 1000
 
 const MyBarChart = ({
@@ -44,7 +44,7 @@ const ChartColumn = ({ item,
     const refAnim = useRef(new Animated.Value(0)).current
 
     useEffect(() => {
-        let tmp = item?.y / maxDomain * HEIGHT_CHART
+        let tmp =  Platform.OS === 'android' ? (item?.y / maxDomain) * HEIGHT_CHART * 1.35 : (item?.y / maxDomain) * HEIGHT_CHART * 0.99
         Animated.timing(refAnim, {
             toValue: tmp,
             duration: TIME_ANIM,
@@ -62,7 +62,7 @@ const ChartColumn = ({ item,
             activeOpacity={0.8}
             style={{
                 flex: 1,
-                height: HEIGHT_CHART + HEIGHT_CHART * 0.3,
+                height: HEIGHT_CHART,
                 justifyContent: 'space-between',
                 alignItems: 'center',
             }}>

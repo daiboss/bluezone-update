@@ -21,6 +21,8 @@ const BarChart7Item = ({
     onGetDataBySelect,
     selectedItem
 }) => {
+    const dataMax = Math.max.apply(Math,data.map(i => i.y))
+    console.log('maxxxxxxxxx',dataMax)
     console.log('selectedItemselectedItemselectedItem',{ data,
         onGetDataBySelect,
         selectedItem})
@@ -48,7 +50,7 @@ const BarChart7Item = ({
             let tmp = (width - 60) / 6;
             widthChart = tmp * (arrTmp.length - 1)
         }
-        let maxDomain = Math.max.apply(Math, arrTmp.map(function (o) { return o.y; }))
+        let maxDomain = Math.max.apply(Math, data.map(function (o) { return o.y; }))
         let listValue = [...listData]
         if (index == 0) {
             listValue = []
@@ -101,6 +103,7 @@ const BarChart7Item = ({
     }, [isLoading, isLast])
 
     const renderItemChart = ({ item, index }) => {
+        console.log('itemtemtmetmemtemt',item)
         return (
             <ItemPage
                 key={`item_page_${index}`}

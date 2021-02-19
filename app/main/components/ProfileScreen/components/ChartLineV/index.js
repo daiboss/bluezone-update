@@ -30,26 +30,26 @@ const widthChart = width - 40 * 2
 
 const  dataTest = [
   {x:1,y:65},
-  // {x:2,y:67},
-  // {x:3,y:1},
-  // {x:4,y:69},
-  // {x:5,y:68},
-  // {x:6,y:66},
-  // {x:7,y:78},
-  // {x:8,y:67},
-  // {x:9,y:65},
+  {x:2,y:67},
+  {x:3,y:1},
+  {x:4,y:69},
+  {x:5,y:68},
+  {x:6,y:66},
+  {x:7,y:78},
+  {x:8,y:67},
+  {x:9,y:65},
 ]
 
   const tickdataTest = [
-    // '10/11',
-    // '11/11',
-    // '12/11',
-    // '13/11',
-    // '14/11',
-    // '15/11',
-    // '16/11',
+    '10/11',
+    '11/11',
+    '12/11',
+    '13/11',
+    '14/11',
+    '15/11',
+    '16/11',
     '17/11',
-    // '18/11'
+    '18/11'
   ]
 class ChartLine extends React.Component {
   constructor(props) {
@@ -87,8 +87,8 @@ class ChartLine extends React.Component {
         x: index + 1
       }
     })
-    this.setState({ dataConvert: datanew }, () => {
-    })
+    this.setState({ dataConvert: datanew })
+    // this.setState({ dataConvert: dataTest })
   }
   componentDidUpdate(prevProps) {
     const array1 = this.props?.data[0]?.values
@@ -110,30 +110,30 @@ class ChartLine extends React.Component {
       x = [0,0] 
       return x
     }
-    if(dataConvert.length == 2){
-      x = [RFValue(30),RFValue(20)] 
+    if(dataConvert.length >= 2|| dataConvert.length <=7 ){
+      x = [RFValue(30),RFValue(30)] 
       return x
     }
-    if(dataConvert.length == 3){
-      x = [RFValue(30),RFValue(20)] 
-      return x
-    }
-    if(dataConvert.length == 4){
-      x = [RFValue(30),RFValue(20)] 
-      return x
-    }
-    if(dataConvert.length == 5){
-      x = [RFValue(30),RFValue(20)] 
-      return x
-    }
-    if(dataConvert.length == 6){
-      x = [RFValue(30),RFValue(20)] 
-      return x
-    }
-    if(dataConvert.length == 7){
-      x = [RFValue(30),RFValue(20)] 
-      return x
-    }
+    // if(dataConvert.length == 3){
+    //   x = [RFValue(30),RFValue(20)] 
+    //   return x
+    // }
+    // if(dataConvert.length == 4){
+    //   x = [RFValue(30),RFValue(20)] 
+    //   return x
+    // }
+    // if(dataConvert.length == 5){
+    //   x = [RFValue(30),RFValue(20)] 
+    //   return x
+    // }
+    // if(dataConvert.length == 6){
+    //   x = [RFValue(30),RFValue(20)] 
+    //   return x
+    // }
+    // if(dataConvert.length == 7){
+    //   x = [RFValue(30),RFValue(20)] 
+    //   return x
+    // }
     if(dataConvert.length > 7){
       x = [RFValue(30),RFValue(30)] 
       return x
@@ -330,8 +330,8 @@ class ChartLine extends React.Component {
             zIndex: 1,
             top: this.state.position.y - RFValue(40),
             left: this.state.position.x - RFValue(27),
-            paddingHorizontal: RFValue(10),
-            paddingVertical: RFValue(8),
+            paddingHorizontal: RFValue(5),
+            paddingVertical: RFValue(5),
             borderRadius: 15,
             width: RFValue(54)
           }}>
