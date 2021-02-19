@@ -110,7 +110,7 @@ class ChartLine extends React.Component {
       return x
     }
     if(dataConvert.length >= 2|| dataConvert.length <=7 ){
-      x = [RFValue(30),RFValue(30)] 
+      x = Platform.OS == 'android' ? [RFValue(30),RFValue(30)] : [RFValue(30),RFValue(20)] 
       return x
     }
     // if(dataConvert.length == 3){
