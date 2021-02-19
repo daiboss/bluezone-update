@@ -117,6 +117,49 @@ export const getDistances = async () => {
     }
 };
 
+export const getDistancesWithData = async (res) => {
+    try {
+        let stepData = [];
+        Array.prototype.push.apply(stepData, res);
+
+        let profiles = (await getProfile()) || [];
+        let profile = profiles.find(
+            item =>
+                getAbsoluteMonths(moment(item.date)) - getAbsoluteMonths(moment()) == 0,
+        );
+        if (profile == undefined && profiles.length > 0) {
+            profile = profiles[0]
+        }
+        let sex = gender[profile?.gender || 0];
+        let height = Number(profile?.height?.replace('cm', '')?.trim() || 0);
+        let weight = Number(
+            profile?.weight?.replace('kg', '')?.replace(',', '.')?.replace(' ', '') || 0
+        );
+        if (stepData.length) {
+            let result = getAllDistance(stepData, sex, height, weight);
+            return {
+                step: result?.step,
+                distance: result?.distance,
+                calories: result?.calories,
+                time: result?.time || 1,
+            };
+        }
+        return {
+            step: 0,
+            distance: 0.00,
+            calories: 0,
+            time: 0,
+        };
+    } catch (error) {
+        return {
+            step: 0,
+            distance: 0.00,
+            calories: 0,
+            time: 0,
+        };
+    }
+};
+
 export const getStepsTotal = async (callback) => {
     getListStepDay().then(res => {
         let total = res?.reduce((t, e) => t + e?.step, 0)
