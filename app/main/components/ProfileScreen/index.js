@@ -71,7 +71,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
     if (profiles?.length) {
       let time = profiles
         .sort((a, b) => a.date - b.date)
-        .map(e => moment(e.date)?.format('DD/MM'));
+        .map(e => moment(e.date)?.format('DD/MM/YYYY'));
       setListTime(time);
       setListProfile([data]);
     } else {

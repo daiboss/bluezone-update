@@ -62,7 +62,7 @@ function ModalPicker({
       onBackdropPress={selectHeight}
       backdropOpacity={0.5}
       animationInTiming={500}
-      animationOutTiming={500}
+      animationOutTiming={1}
       style={styles.modal}>
       <View style={styles.content}>
         <NewSelectedView

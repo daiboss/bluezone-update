@@ -60,10 +60,11 @@ function ModalPicker({
       onBackdropPress={selectHeight}
       backdropOpacity={0.5}
       animationInTiming={500}
-      animationOutTiming={500}
+      animationOutTiming={1}
       style={styles.modal}
-      backdropTransitionInTiming={1000}
-      backdropTransitionOutTiming={1000}>
+      backdropTransitionInTiming={1}
+      backdropTransitionOutTiming={1}
+      >
       <View style={styles.content}>
         <NewSelectedView
           onValueChange={setHeight}

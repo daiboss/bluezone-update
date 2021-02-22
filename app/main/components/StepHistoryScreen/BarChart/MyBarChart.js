@@ -82,7 +82,9 @@ const ChartColumn = ({ item,
     const refAnim = useRef(new Animated.Value(0)).current
 
     useEffect(() => {
-        let tmp =  Platform.OS === 'android' ? (item?.y / maxDomain) * HEIGHT_CHART * 1.35 : (item?.y / maxDomain) * HEIGHT_CHART * 0.99
+        console.log('maxdomain========>',maxDomain,item)
+        let tmp =  Platform.OS === 'android' ? (item?.y / maxDomain) * HEIGHT_CHART * 0.9 : (item?.y / maxDomain) * HEIGHT_CHART * 0.9
+        console.log('tmppppppmp',tmp)
         Animated.timing(refAnim, {
             toValue: tmp,
             duration: TIME_ANIM,
@@ -100,7 +102,7 @@ const ChartColumn = ({ item,
             activeOpacity={0.8}
             style={{
                 flex: 1,
-                height: HEIGHT_CHART,
+                height: HEIGHT_CHART ,
                 justifyContent: 'space-between',
                 alignItems: 'center',
             }}>
@@ -119,6 +121,7 @@ const ChartColumn = ({ item,
                 color: selectedItem?.index == index && selectedItem?.page == flIndex ? red_bluezone : '#a1a1a1'
             }}>{item?.x}</Text>
             <Animated.View style={{
+                marginTop:RFValue(10),
                 width: 12,
                 height: refAnim,
                 backgroundColor: selectedItem?.index == index && selectedItem?.page == flIndex ? red_bluezone : '#a1a1a1',
