@@ -30,6 +30,8 @@ import { getAbsoluteMonths, getAllDistance, gender, getDistances } from '../../.
 import { getListHistory } from '../../../core/db/SqliteDb';
 import BarChart7Item from './BarChart/BarChart7Item';
 import { RFValue } from '../../../const/multiscreen';
+
+
 Date.prototype.getWeek = function (dowOffset) {
   /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
 
@@ -129,6 +131,7 @@ const StepCount = ({ props, intl, navigation }) => {
       return;
     }
   };
+
   const getDataHealth = async (type) => {
     let stepToday = listStepToday
     let step = [...listTotalSteps]
@@ -304,6 +307,7 @@ const StepCount = ({ props, intl, navigation }) => {
       setDataChart(list);
     } catch (error) { }
   };
+
   const onBack = () => {
     try {
       navigation.pop();
@@ -339,6 +343,7 @@ const StepCount = ({ props, intl, navigation }) => {
           }}>{new moment().format('YYYY')}</Text>
 
           <BarChart7Item
+            dataTodayOld={listStepToday}
             data={dataChart}
             maxDomain={maxDomain}
             selectedItem={selectedItem}
@@ -460,6 +465,7 @@ const StepCount = ({ props, intl, navigation }) => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   viewBtn: {
     flexDirection: 'row',
@@ -577,6 +583,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+
 StepCount.propTypes = {
   intl: intlShape.isRequired,
 };

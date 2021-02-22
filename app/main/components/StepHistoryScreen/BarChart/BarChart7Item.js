@@ -9,30 +9,85 @@ import {
 } from 'victory-native'
 import { red_bluezone } from '../../../../core/color';
 import { Svg } from 'react-native-svg';
-import { getDistances } from '@ovalmoney/react-native-fitness';
 
 const { width } = Dimensions.get('screen')
 const widthItemChart = 14
 import moment from 'moment'
 import MyBarChart from './MyBarChart';
+import BackgroundJob from './../../../../core/service_stepcounter'
+import { getDistances } from '../../../../core/calculation_steps';
 
 const BarChart7Item = ({
     data,
     onGetDataBySelect,
-    selectedItem
+    selectedItem,
+    dataTodayOld
 }) => {
-    console.log('selectedItemselectedItemselectedItem',{ data,
-        onGetDataBySelect,
-        selectedItem})
     const [isLast, setIsLast] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 
     const [listData, setListData] = useState([])
 
+    const [currentDayData, setCurrentDayData] = useState()
+
     useEffect(() => {
         setIsLast(false)
         setListData([])
     }, [data])
+
+    // useEffect(() => {
+    //     observerableStep()
+    //     return () => {
+    //         BackgroundJob.removeObserverStepChange()
+    //     }
+    // }, [])
+
+    useEffect(() => {
+        if (currentDayData) {
+            syncValueTodayData()
+        }
+    }, [currentDayData])
+
+    const syncValueTodayData = () => {
+        if (listData.length > 0) {
+            let currentItem = listData[0]
+            let itemToday = currentItem?.list[currentItem?.list?.length - 1]
+            let old = JSON.parse(dataTodayOld?.resultStep)
+            // console.log('KKOKOKOKOKO', currentDayData?.step , old?.step , itemToday?.results?.step)
+            let value = {
+                step: currentDayData?.step,
+                distance: currentDayData?.distance,
+                calories: currentDayData?.calories,
+                time: currentDayData?.time,
+                // step: Math.abs(currentDayData?.step - old?.step + itemToday?.results?.step),
+                // distance: Math.abs(currentDayData?.distance - old?.distance + itemToday?.results?.distance),
+                // calories: Math.abs(currentDayData?.calories - old?.step + itemToday?.results?.calories),
+                // time: Math.abs(currentDayData?.time - old?.step + itemToday?.results?.time),
+            }
+            itemToday.results = value
+            onGetDataBySelect(itemToday, currentItem?.list?.length - 1, 0)
+        }
+    }
+
+    const observerableStep = async () => {
+        BackgroundJob.observerStepSaveChange(() => {
+            getDataToday()
+        })
+    }
+
+
+    const getDataToday = async () => {
+        let result = await getDistances();
+        let time = result?.time || 0;
+
+        let stepToday = {
+            step: result?.step || 0,
+            distance: result?.distance || 0,
+            calories: result?.calories || 0,
+            time: time
+        }
+        setCurrentDayData(stepToday)
+    }
 
     const addMoreData = (index) => {
         setIsLoading(true)
@@ -101,7 +156,6 @@ const BarChart7Item = ({
     }, [isLoading, isLast])
 
     const renderItemChart = ({ item, index }) => {
-        console.log('itemtemtmetmemtemt',item)
         return (
             <ItemPage
                 key={`item_page_${index}`}

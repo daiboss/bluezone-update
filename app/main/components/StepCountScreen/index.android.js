@@ -63,7 +63,6 @@ import {
 import ButtonIconText from '../../../base/components/ButtonIconText';
 import { blue_bluezone, red_bluezone } from '../../../core/color';
 import { RFValue } from '../../../const/multiscreen';
-import { CommonActions } from '@react-navigation/native';
 
 import { CalculationStepTarget, CalculationStepTargetAndroid } from '../../../core/calculation_step_target';
 import ModalChangeTarget from './Components/ModalChangeTarget';
@@ -95,14 +94,16 @@ const StepCount = ({ props, intl, navigation }) => {
   }, [])
 
   const observerStepDrawUI = async () => {
-    getResultBindingUI()
+    getResultBindingUI();
     getListHistoryChart();
+    autoChangeStepsTarget();
     BackgroundJob.observerStepSaveChange(() => {
       getResultBindingUI()
     })
     BackgroundJob.observerHistorySaveChange(async () => {
       getListHistoryChart();
       getResultBindingUI();
+      autoChangeStepsTarget();
     })
   }
 
@@ -113,7 +114,7 @@ const StepCount = ({ props, intl, navigation }) => {
     let start = curentTime - 86400 * 8
     let end = curentTime - 86400
     let steps = await getListHistory(start, end)
-    if(steps.length > 7){
+    if (steps.length > 7) {
       steps.splice(0, 1)
     }
 
@@ -128,7 +129,7 @@ const StepCount = ({ props, intl, navigation }) => {
     list.forEach(e => {
       listTime.push(e?.x)
     });
-    console.log('sAASSASASAS', start, end, list, listTime)
+    // console.log('sAASSASASAS', start, end, list, listTime)
     setDataChart(list)
     setTime(listTime)
 
@@ -232,7 +233,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const synchronizeDatabaseStepsHistory = async () => {
     try {
       let listStepBefore = await getListStepsBefore();
-      console.log('listStepBefore', listStepBefore)
+      // console.log('listStepBefore', listStepBefore)
       if (listStepBefore?.length == 0) {
         await saveHistoryEmpty()
         return
@@ -360,16 +361,24 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const autoChangeStepsTarget = async () => {
+    let stepTarget = await getResultSteps()
+    if (stepTarget != undefined) {
+      let currentTime = moment().format('DD/MM/YYYY')
+      let lastUpdateTarget = moment.unix(stepTarget?.date).format('DD/MM/YYYY')
+      if (currentTime == lastUpdateTarget) {
+        console.log('autoChangeStepsTarget exist')
+        return
+      }
+    }
+
     let lastTime = await getFirstTimeSetup()
     let firstTime = new moment.unix(lastTime?.time)
     let tmpDay = new moment().diff(firstTime, 'days')
-    // console.log('autoChangeStepsTarget tmpDay', tmpDay)
     if (tmpDay < 2) {
       return
     }
 
     let auto = await getAutoChange();
-
 
     if (auto != undefined && auto == false) {
       return
@@ -380,7 +389,7 @@ const StepCount = ({ props, intl, navigation }) => {
     let listHistory = await getListHistory(startDay.unix(), new moment().unix())
     if (listHistory?.length <= 0) return
 
-    let stepTarget = await getResultSteps()
+    // let stepTarget = await getResultSteps()
     // console.log('autoChangeStepsTarget2222', tmpDay, stepTarget, listHistory)
 
     let listData = listHistory.map(element => {
@@ -645,7 +654,22 @@ const StepCount = ({ props, intl, navigation }) => {
         <View style={styles.viewLineChart}>
           {(dataChart.length && (
             <View>
-              <ChartLineV totalCount={totalCount} data={dataChart} time={time} />
+              <ChartLineV
+                totalCount={totalCount}
+                data={dataChart}
+                // data={
+                //   [
+                //     { "x": 1, "y": 34 },
+                //     { "x": 2, "y": 74 },
+                //     { "x": 3, "y": 273 },
+                //     { "x": 4, "y": 1000 },
+                //     { "x": 5, "y": 2 },
+                //     { "x": 6, "y": 2 },
+                //     { "x": 6, "y": 2000 },
+                //   ]
+                // }
+                time={time}
+              />
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() =>

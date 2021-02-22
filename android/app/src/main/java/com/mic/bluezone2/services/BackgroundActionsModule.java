@@ -141,6 +141,14 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void updateStepTargetSuccess() {
+        WritableMap params = Arguments.createMap();
+        this.reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit("EMIT_EVENT_STEP_TARGET", params);
+    }
+
+    @ReactMethod
     public void startSchedule(final int delay) {
         if (!wakeLock.isHeld()) wakeLock.acquire();
 

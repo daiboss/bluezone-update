@@ -100,7 +100,6 @@ const SettingScreen = ({ intl, navigation }) => {
     let profiles = (await getProfile()) || [];
     const time = profiles?.[profiles.length - 1]?.date
     setTimeWeight(time)
-    console.log('profilesprofilesprofilesprofiles', profiles)
   }
   const alertPermission = (type) => {
     if (type == 'step') setAlertStep(!alertStep)
@@ -121,7 +120,6 @@ const SettingScreen = ({ intl, navigation }) => {
   }
   const getStatus = async () => {
     try {
-      console.log('vaviaviaviaviaivaiviavgetStatus')
       let result = await getResultSteps()
       setTotalStep(parseInt(result.step))
       setIsHardwork(result?.hardwork || false)
@@ -252,7 +250,6 @@ const SettingScreen = ({ intl, navigation }) => {
   const closeModalTarget = () => setIsShowModalTarget(false)
 
   const saveStepsTarget = async (steps) => {
-    console.log('vaovoaovaovoaovaoSAVE')
     setTotalStep(steps)
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     await setResultSteps({ step: steps, date: currentTime, hardwork: true })

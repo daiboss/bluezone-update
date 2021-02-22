@@ -25,32 +25,33 @@ import { Svg, Circle, Defs, Rect, G, Use, LinearGradient, Stop } from 'react-nat
 const distanceToLoadMore = 10;
 const pageSize = 10;
 const { width, height } = Dimensions.get('window')
+import moment from 'moment'
 
 const widthChart = width - 40 * 2
 
-const  dataTest = [
-  {x:1,y:65},
-  {x:2,y:67},
-  {x:3,y:1},
-  {x:4,y:69},
-  {x:5,y:68},
-  {x:6,y:66},
-  {x:7,y:78},
-  {x:8,y:67},
-  {x:9,y:65},
+const dataTest = [
+  { x: 1, y: 65 },
+  { x: 2, y: 67 },
+  { x: 3, y: 1 },
+  { x: 4, y: 69 },
+  { x: 5, y: 68 },
+  { x: 6, y: 66 },
+  { x: 7, y: 78 },
+  { x: 8, y: 67 },
+  { x: 9, y: 65 },
 ]
 
-  const tickdataTest = [
-    '10/11',
-    '11/11',
-    '12/11',
-    '13/11',
-    '14/11',
-    '15/11',
-    '16/11',
-    '17/11',
-    '18/11'
-  ]
+const tickdataTest = [
+  '10/11',
+  '11/11',
+  '12/11',
+  '13/11',
+  '14/11',
+  '15/11',
+  '16/11',
+  '17/11',
+  '18/11'
+]
 class ChartLine extends React.Component {
   constructor(props) {
     super(props);
@@ -87,6 +88,12 @@ class ChartLine extends React.Component {
         x: index + 1
       }
     })
+    if (datanew.length > 0) {
+      let valueEnd = datanew[datanew.length - 1]
+      this.setState({
+        year: valueEnd?.year
+      })
+    }
     this.setState({ dataConvert: datanew })
     // this.setState({ dataConvert: dataTest })
   }
@@ -109,8 +116,8 @@ class ChartLine extends React.Component {
       x = [0, 0]
       return x
     }
-    if(dataConvert.length >= 2|| dataConvert.length <=7 ){
-      x = Platform.OS == 'android' ? [RFValue(30),RFValue(30)] : [RFValue(30),RFValue(20)] 
+    if (dataConvert.length >= 2 || dataConvert.length <= 7) {
+      x = Platform.OS == 'android' ? [RFValue(30), RFValue(30)] : [RFValue(30), RFValue(20)]
       return x
     }
     // if(dataConvert.length == 3){
@@ -133,8 +140,8 @@ class ChartLine extends React.Component {
     //   x = [RFValue(30),RFValue(20)] 
     //   return x
     // }
-    if(dataConvert.length > 7){
-      x = [RFValue(30),RFValue(30)] 
+    if (dataConvert.length > 7) {
+      x = [RFValue(30), RFValue(30)]
       return x
     }
   }
@@ -314,46 +321,46 @@ class ChartLine extends React.Component {
     return (
       <View style={[styles.container]}>
 
-        <Text style={[styles.txtYear, { paddingVertical: RFValue(10) }]}>{this.state.year || 2021}</Text>
-        <ScrollView 
-        bounces = {this.state?.dataConvert.length <= 7 ? false : true}
-        showsHorizontalScrollIndicator={false}
-        style={{flex:1,marginTop:RFValue(3),marginBottom:RFValue(10)}}
-        ref={ref => {this.scrollView = ref}}
-        onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}
-        scrollEnabled={true} horizontal={true}>
-        {this.state.topLabel && this.state.leftLabel && this.state.showToolTip &&
-          <View style={{
-            position: 'absolute',
-            backgroundColor: '#FE4358',
-            zIndex: 1,
-            top: this.state.position.y - RFValue(40),
-            left: this.state.position.x - RFValue(27),
-            paddingHorizontal: RFValue(5),
-            paddingVertical: RFValue(5),
-            borderRadius: 15,
-            width: RFValue(54)
-          }}>
-            <Text style={{
-              color: 'white',
-              fontSize: 10,
-              textAlign: 'center',
-              fontWeight: '700',
-            }}>{this.state.value} kg</Text>
-            <Image
-              style={{
-                width: RFValue(10),
-                height: RFValue(10),
-                position: 'absolute',
-                bottom: RFValue(-6),
-                alignSelf: 'center',
-                tintColor: '#FE4358',
-                // zIndex: 0
-              }}
-              source={require('../../../StepCountScreen/images/down-arrow.png')} />
-          </View>
-        }
-       
+        <Text style={[styles.txtYear, { paddingVertical: RFValue(10) }]}>{this.state.year || moment().year}</Text>
+        <ScrollView
+          bounces={this.state?.dataConvert.length <= 7 ? false : true}
+          showsHorizontalScrollIndicator={false}
+          style={{ flex: 1, marginTop: RFValue(3), marginBottom: RFValue(10) }}
+          ref={ref => { this.scrollView = ref }}
+          onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}
+          scrollEnabled={true} horizontal={true}>
+          {this.state.topLabel && this.state.leftLabel && this.state.showToolTip &&
+            <View style={{
+              position: 'absolute',
+              backgroundColor: '#FE4358',
+              zIndex: 1,
+              top: this.state.position.y - RFValue(40),
+              left: this.state.position.x - RFValue(27),
+              paddingHorizontal: RFValue(5),
+              paddingVertical: RFValue(5),
+              borderRadius: 15,
+              width: RFValue(54)
+            }}>
+              <Text style={{
+                color: 'white',
+                fontSize: 10,
+                textAlign: 'center',
+                fontWeight: '700',
+              }}>{this.state.value} kg</Text>
+              <Image
+                style={{
+                  width: RFValue(10),
+                  height: RFValue(10),
+                  position: 'absolute',
+                  bottom: RFValue(-6),
+                  alignSelf: 'center',
+                  tintColor: '#FE4358',
+                  // zIndex: 0
+                }}
+                source={require('../../../StepCountScreen/images/down-arrow.png')} />
+            </View>
+          }
+
           {Platform.OS == 'android' ?
             <Svg style={{ height: RFValue(120), alignSelf: 'center' }}>
               {this.renderMainChart()}

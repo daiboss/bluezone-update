@@ -24,6 +24,7 @@ import {
   VictoryScatter, VictoryAxis, VictoryArea
 } from 'victory-native';
 import { Svg, Circle, Defs, Rect, G, Use, LinearGradient, Stop } from 'react-native-svg';
+import { getResultSteps } from '../../../../core/storage';
 const distanceToLoadMore = 10;
 const pageSize = 10;
 const { width, height } = Dimensions.get('window')
@@ -52,11 +53,15 @@ class ChartLine extends React.Component {
       position: { x: -100, y: -100 }
     };
   }
-  componentDidMount() {
+  async componentDidMount() {
+    let stepTarget = await getResultSteps()
+    let tmpDif = parseInt(10000 / (stepTarget?.step == undefined ? 10000 : stepTarget?.step == 0 ? 10000 : stepTarget?.step))
+
     const datanew = this.props.data.map((it, index) => {
       return {
         ...it,
-        x: index + 1
+        x: index + 1,
+        y: it.y * tmpDif
       }
     })
     const max = Math.max.apply(Math, datanew.map(i => i.y));
@@ -91,7 +96,7 @@ class ChartLine extends React.Component {
         minDomain={{ y: 0 }}
         padding={{ left: 40, right: 40, top: 30, bottom: 50 }}
         // maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
-        maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : (this.state.maxCounter + parseInt(this.state.maxCounter/3)) }}
+        maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : (this.state.maxCounter + parseInt(this.state.maxCounter / 3)) }}
 
       // theme={VictoryTheme.material}
       >
@@ -253,18 +258,6 @@ class ChartLine extends React.Component {
             }}
             source={require('../images/down-arrow.png')} />
         </View>
-        {/* <View style={{
-          height: 0,
-          width: width * 0.81,
-          alignSelf: 'center',
-          backgroundColor: 'white',
-          position: 'absolute',
-          top: height * 0.12,
-          borderColor: '#FE4358',
-          borderWidth: 1,
-          borderStyle: 'dashed',
-          borderRadius: 1,
-        }} /> */}
         <Dash style={{
           height: 1,
           width: width * 0.81,

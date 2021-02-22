@@ -119,6 +119,13 @@ class BackgroundServer {
         RNBackgroundActions.updateTypeNotification()
     }
 
+    updateStepTargetSuccess() {
+        if (Platform.OS !== 'android') return;
+        if (!this.isRunning())
+            throw new Error('updateStepTargetSuccess: A BackgroundAction must be running before updating the notification');
+        RNBackgroundActions.updateStepTargetSuccess()
+    }
+
     /**
      * @param {(taskData: any) => Promise<void>} task
      * @param {BackgroundTaskOptions & {parameters?: any}} options
@@ -278,11 +285,19 @@ class BackgroundServer {
         )
     }
 
+    removeObserverStepChange() {
+        DeviceEventEmitter.removeListener('EMIT_EVENT_STEP_SAVE')
+    }
+
     observerHistorySaveChange(callback) {
         DeviceEventEmitter.addListener(
             'EMIT_EVENT_HISTORY_SAVE',
             () => callback()
         )
+    }
+
+    removeObserverHistoryChange() {
+        DeviceEventEmitter.removeListener('EMIT_EVENT_HISTORY_SAVE')
     }
 }
 
