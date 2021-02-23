@@ -37,9 +37,9 @@ const  dataTest = [
   {x:5,y:60.3},
   {x:6,y:15},
   {x:7,y:15},
-  // {x:8,y:300.9},
-  // {x:9,y:60,},
-  // {x:10,y:60,},
+  {x:8,y:300.9},
+  {x:9,y:60,},
+  {x:10,y:60,},
   // {x:11,y:60,},
   // {x:12,y:60,},
   // {x:13,y:60,},
@@ -80,9 +80,9 @@ const  dataTest = [
     '14/11/2021',
     '15/11/2021',
     '16/11/2021',
-    // '17/11/2021',
-    // '18/11/2020',
-    // '19/11/2020',
+    '17/11/2021',
+    '18/11/2020',
+    '19/11/2020',
     // '20/11/2020',
     // '21/11/2020',
     // '22/11/2020',
@@ -159,8 +159,8 @@ class ChartLine extends React.Component {
         year: valueEnd?.year
       })
     }
-    // this.setState({ dataConvert: datanew })
-    this.setState({ dataConvert: dataTest })
+    this.setState({ dataConvert: datanew })
+    // this.setState({ dataConvert: dataTest })
   }
   componentDidUpdate(prevProps) {
     const array1 = this.props?.data[0]?.values
@@ -182,7 +182,6 @@ class ChartLine extends React.Component {
       return x
     }
     if(dataConvert.length >= 2 && dataConvert.length <=7 ){
-     
       x = Platform.OS == 'android' ? [RFValue(30),RFValue(30)] : [RFValue(30),RFValue(26)] 
       return x
     }
@@ -254,10 +253,10 @@ class ChartLine extends React.Component {
           return ( */}
               <VictoryAxis
                         //  crossAxis dependentAxis
-                        tickValues={tickdataTest}
-                        tickFormat={tickdataTest.map(i => i.slice(0,5))}
-                        // tickValues={this.props.time}
-                        // tickFormat={this.props.time.map(i => i.slice(0,5))}
+                        // tickValues={tickdataTest}
+                        // tickFormat={tickdataTest.map(i => i.slice(0,5))}
+                        tickValues={this.props.time}
+                        tickFormat={this.props.time.map(i => i.slice(0,5))}
                         style={{
                           grid: { stroke: ({ tick, index }) => index == this.props.time.length - 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
                           axis: { stroke: 'none' },
