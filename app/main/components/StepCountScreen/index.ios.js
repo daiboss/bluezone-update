@@ -803,11 +803,6 @@ const StepCount = ({ props, intl, navigation }) => {
         </Text>
       </TouchableOpacity> */}
       
-      <Text 
-      style={{color:'black'}}
-      onPress={() => navigation.navigate('DemoTarget')}>Test Buoc chan</Text>
-
-      
       <ButtonIconText
         onPress={
           // functionTest

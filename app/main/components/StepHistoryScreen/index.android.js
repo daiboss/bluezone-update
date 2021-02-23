@@ -10,6 +10,7 @@ import {
   Image,
   processColor,
   BackHandler,
+  ActivityIndicator,
 } from 'react-native';
 // import { BarChart } from 'react-native-charts-wrapper';
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
@@ -30,6 +31,7 @@ import { getAbsoluteMonths, getAllDistance, gender, getDistances } from '../../.
 import { getListHistory } from '../../../core/db/SqliteDb';
 import BarChart7Item from './BarChart/BarChart7Item';
 import { RFValue } from '../../../const/multiscreen';
+import { red_bluezone } from '../../../core/color';
 
 
 Date.prototype.getWeek = function (dowOffset) {
@@ -350,6 +352,12 @@ const StepCount = ({ props, intl, navigation }) => {
             onGetDataBySelect={updateDistance}
           />
         </View>
+      )
+    } else {
+      return (
+        <ActivityIndicator color={red_bluezone} style={{
+          alignSelf: 'center'
+        }} />
       )
     }
   }, [dataChart, selectedItem])
