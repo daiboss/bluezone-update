@@ -31,14 +31,14 @@ const widthChart = width - 40 * 2
 
 const  dataTest = [
   {x:1,y:65},
-  {x:2,y:20},
-  {x:3,y:20.9},
+  {x:2,y:5},
+  {x:3,y:1.9},
   {x:4,y:60},
   {x:5,y:60.3},
-  {x:6,y:70},
-  {x:7,y:78},
+  {x:6,y:1},
+  {x:7,y:1},
   {x:8,y:67},
-  {x:9,y:300,},
+  // {x:9,y:60,},
 ]
 
   const tickdataTest = [
@@ -50,7 +50,7 @@ const  dataTest = [
     '15/11/2021',
     '16/11/2021',
     '17/11/2021',
-    '17/11/2020'
+    // '17/11/2020'
   ]
 class ChartLine extends React.Component {
   constructor(props) {
@@ -77,7 +77,6 @@ class ChartLine extends React.Component {
     };
   }
   componentDidMount() {
-    console.log('=======>props',this.props.time)
     this.convertData()
   }
   convertData = () => {
@@ -95,8 +94,8 @@ class ChartLine extends React.Component {
         year: valueEnd?.year
       })
     }
-    this.setState({ dataConvert: datanew })
-    // this.setState({ dataConvert: dataTest })
+    // this.setState({ dataConvert: datanew })
+    this.setState({ dataConvert: dataTest })
   }
   componentDidUpdate(prevProps) {
     const array1 = this.props?.data[0]?.values
@@ -117,32 +116,13 @@ class ChartLine extends React.Component {
       x = [0, 0]
       return x
     }
-    if(dataConvert.length >= 2|| dataConvert.length <=7 ){
-      x = Platform.OS == 'android' ? [RFValue(35),RFValue(30)] : [RFValue(30),RFValue(20)] 
+    if(dataConvert.length >= 2 && dataConvert.length <=7 ){
+     
+      x = Platform.OS == 'android' ? [RFValue(30),RFValue(30)] : [RFValue(30),RFValue(20)] 
       return x
     }
-    // if(dataConvert.length == 3){
-    //   x = [RFValue(30),RFValue(20)] 
-    //   return x
-    // }
-    // if(dataConvert.length == 4){
-    //   x = [RFValue(30),RFValue(20)] 
-    //   return x
-    // }
-    // if(dataConvert.length == 5){
-    //   x = [RFValue(30),RFValue(20)] 
-    //   return x
-    // }
-    // if(dataConvert.length == 6){
-    //   x = [RFValue(30),RFValue(20)] 
-    //   return x
-    // }
-    // if(dataConvert.length == 7){
-    //   x = [RFValue(30),RFValue(20)] 
-    //   return x
-    // }
     if(dataConvert.length > 7){
-      x = [RFValue(35),RFValue(35)] 
+      x = [RFValue(30),RFValue(20)] 
       return x
     }
   }
@@ -175,7 +155,7 @@ class ChartLine extends React.Component {
     return (
       <VictoryChart
         singleQuadrantDomainPadding={false}
-        padding={{ top: RFValue(20), bottom: 10, left: 5, right: 10 }}
+        padding={{ top: RFValue(20), bottom: RFValue(10) , left: RFValue(0) , right: RFValue(0) }}
         height={RFValue(120)}
         style={{
           parent: {
@@ -185,7 +165,7 @@ class ChartLine extends React.Component {
         }}
         width={this.widthChart()}
         domainPadding={{ x: this.domainPaddingChart() }}
-        // minDomain={{ y: 0 }}
+        minDomain={{ y: 0 }}
         maxDomain={{ y: 400 }}
       // theme={VictoryTheme.material}
       >
@@ -204,18 +184,18 @@ class ChartLine extends React.Component {
           return ( */}
               <VictoryAxis
                         //  crossAxis dependentAxis
-                        // tickValues={tickdataTest}
-                        // tickFormat={tickdataTest.map(i => i.slice(0,5))}
-                        tickValues={this.props.time}
-                        tickFormat={this.props.time.map(i => i.slice(0,5))}
+                        tickValues={tickdataTest}
+                        tickFormat={tickdataTest.map(i => i.slice(0,5))}
+                        // tickValues={this.props.time}
+                        // tickFormat={this.props.time.map(i => i.slice(0,5))}
                         style={{
-                          grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'gray', strokeWidth: 0.5 },
+                          grid: { stroke: ({ tick, index }) => index == this.props.time.length - 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
                           axis: { stroke: 'none' },
                           ticks: {
                             size: 0,
                         },
                           tickLabels: {
-                            fill: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'black',
+                            fill: ({ tick, index }) => index == this.props.time.length - 1 ? '#FE4358' : 'black',
                             fontFamily: 'helvetica',
                             fontSize: RFValue(10),
                             fontWeight: '700'
@@ -236,7 +216,7 @@ class ChartLine extends React.Component {
               duration: 1000,
               onLoad: { duration: 1000 }
             }}
-            interpolation="natural"
+            interpolation='monotoneX'
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
           // data={sampleData}
           />
@@ -249,7 +229,7 @@ class ChartLine extends React.Component {
               bottom: () => 7,
               top: () => 7
           }}
-            interpolation="natural"
+            interpolation='monotoneX'
             style={{
               data: { stroke: "#FE4358" },
               parent: { border: "1px solid #ccc", },
@@ -353,6 +333,7 @@ class ChartLine extends React.Component {
 
         <Text style={[styles.txtYear, { paddingVertical: RFValue(10) }]}>{this.state.year || 2021}</Text>
         <ScrollView 
+
         bounces = {this.state?.dataConvert.length <= 7 ? false : true}
         showsHorizontalScrollIndicator={false}
         style={{flex:1,marginTop:RFValue(3),marginBottom:RFValue(10)}}

@@ -8,8 +8,8 @@ import { RFValue } from '../../../../../const/multiscreen';
 const SIZE = RFValue(94)
 
 const SelectGender = ({ intl, onSelectGender, gender }) => {
-  const { formatMessage } = intl;
-
+  const { formatMessage,locale} = intl;
+  console.log('intlintltlltltlt',intl)
   const translateX = useRef(new Animated.Value(0)).current;
 
   const selectGender = gender => () => {
@@ -65,7 +65,8 @@ const SelectGender = ({ intl, onSelectGender, gender }) => {
         <Animated.View style={styles.container}>
           <View style={styles.absoluteLayer}>
             <Animated.Text style={styles.smallZero}>{formatMessage(message.male)}</Animated.Text>
-            <Animated.Text style={styles.smallOne} >{formatMessage(message.female)}</Animated.Text>
+    
+            <Animated.Text style={[styles.smallOne,{paddingRight: locale == 'vi' ? SIZE * 0.16 : SIZE * 0.02}]} >{formatMessage(message.female)}</Animated.Text>
           </View>
           <Animated.View style={[styles.overLay, {
             width: translateX.interpolate({

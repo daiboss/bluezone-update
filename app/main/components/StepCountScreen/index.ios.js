@@ -159,7 +159,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const [countRest, setCountRest] = useState(0);
   const [countCarlo, setCountCarlo] = useState(0);
   const [distant, setDistant] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(1);
   const permissions = [
     {
       kind: Fitness.PermissionKinds.Steps,
@@ -311,6 +311,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
 
   useEffect(() => {
+    console.log('ttotototoototot',totalCount,countRest)
     getWeightHeight()
     getSex()
     getStepsRealTime()
@@ -420,6 +421,7 @@ const StepCount = ({ props, intl, navigation }) => {
           return;
         }
         stepCurrent = results.value
+        console.log('stepCurrentstepCurrentstepCurrent',stepCurrent)
         const countR = totalCount - stepCurrent
         setCountRest(countR)
 
@@ -678,7 +680,7 @@ const StepCount = ({ props, intl, navigation }) => {
               width={6}
               rotation={0}
               lineCap="round"
-              fill={((totalCount - countRest) / totalCount) * 100}
+              fill={(countStep / totalCount) * 100}
               tintColor="#FE4358"
               backgroundColor="#e5e5e5">
               {fill => (

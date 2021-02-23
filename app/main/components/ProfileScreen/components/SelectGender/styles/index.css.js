@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
     color: '#949494',
     fontSize: RFValue(11),
     textAlign: 'right',
-    paddingRight: SIZE * 0.16
   },
   overLay:
   {
