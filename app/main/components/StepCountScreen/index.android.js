@@ -652,7 +652,7 @@ const StepCount = ({ props, intl, navigation }) => {
         </View>
 
         <View style={styles.viewLineChart}>
-          {(dataChart.length && (
+          {/* {(dataChart.length && ( */}
             <View>
               <ChartLineV
                 totalCount={totalCount}
@@ -663,8 +663,8 @@ const StepCount = ({ props, intl, navigation }) => {
                 //     { "x": 2, "y": 74 },
                 //     { "x": 3, "y": 273 },
                 //     { "x": 4, "y": 1000 },
-                //     { "x": 5, "y": 2 },
-                //     { "x": 6, "y": 2 },
+                //     { "x": 5, "y": 0 },
+                //     { "x": 6, "y": 0 },
                 //     { "x": 6, "y": 2000 },
                 //   ]
                 // }
@@ -688,26 +688,11 @@ const StepCount = ({ props, intl, navigation }) => {
                 }}>
               </TouchableOpacity>
             </View>
-          )
-          ) || null}
+          {/* )
+          ) || null} */}
         </View>
 
       </View>
-
-
-      <TouchableOpacity
-        style={{
-          justifyContent: 'center',
-          marginBottom: 10,
-          alignSelf: 'center'
-        }}
-        onPress={() => {
-          navigation.navigate('DemoTarget')
-        }}>
-        <Text style={{
-
-        }}>Tính mục tiêu</Text>
-      </TouchableOpacity>
 
       <View style={{ flex: 0.7 }}>
 

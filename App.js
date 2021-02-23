@@ -116,7 +116,6 @@ import ResultBmiScreen from './app/main/components/ProfileScreen/ResultBmiScreen
 // animation transaction
 import { TransitionSpecs, HeaderStyleInterpolators } from '@react-navigation/stack';
 import { Platform } from 'react-native';
-import DemoTarget from './app/main/components/StepCountScreen/DemoTarget';
 
 const MyTransition = {
   gestureDirection: 'horizontal',
@@ -247,7 +246,7 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-  //   // Check trạng thái lần đầu tiên vào app => hien: Dang khoi tao. Lan sau: Dang dong bo
+    //   // Check trạng thái lần đầu tiên vào app => hien: Dang khoi tao. Lan sau: Dang dong bo
     const dateInstall = moment().format('yyyy-MM-DD')
 
     const firstOpenApp = await getFirstTimeOpen();
@@ -261,20 +260,20 @@ class App extends React.Component {
     //   setIsFirstLoading(false);
     // }
 
-  //   this.removeNotificationOpenedListener = registerNotificationOpened(
-  //     this.onNotificationOpened,
-  //   );
+    this.removeNotificationOpenedListener = registerNotificationOpened(
+      this.onNotificationOpened,
+    );
 
-  //   // Check whether an initial notification is available
-  //   registerInitialNotification(this.onNotificationOpened);
+    // Check whether an initial notification is available
+    registerInitialNotification(this.onNotificationOpened);
 
-  //   this.removeMessageListener = registerMessageHandler(async notifyObj => {
-  //     // TODO can sua ve dung dev trong server.js het => Khong duoc, __DEV__ nay chi dung cho debugger thoi
-  //     if (__DEV__) {
-  //       alert(JSON.stringify(notifyObj));
-  //     }
-  //     await remoteMessageListener(notifyObj);
-  //   });
+    //   this.removeMessageListener = registerMessageHandler(async notifyObj => {
+    //     // TODO can sua ve dung dev trong server.js het => Khong duoc, __DEV__ nay chi dung cho debugger thoi
+    //     if (__DEV__) {
+    //       alert(JSON.stringify(notifyObj));
+    //     }
+    //     await remoteMessageListener(notifyObj);
+    //   });
   }
 
   componentWillUnmount() {
@@ -446,7 +445,6 @@ class App extends React.Component {
         <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
         <Stack.Screen name={'stepHistory'} component={StepHistory} />
         <Stack.Screen name={'settingScreen'} component={SettingScreen} />
-        <Stack.Screen name={'DemoTarget'} component={DemoTarget} />
 
       </Stack.Navigator>
     ) : !isHome ? (
@@ -473,7 +471,6 @@ class App extends React.Component {
         <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
         <Stack.Screen name={'stepHistory'} component={StepHistory} />
         <Stack.Screen name={'settingScreen'} component={SettingScreen} />
-        <Stack.Screen name={'DemoTarget'} component={DemoTarget} />
       </Stack.Navigator>
     ) : (
           <Stack.Navigator
@@ -531,7 +528,6 @@ class App extends React.Component {
             <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
             <Stack.Screen name={'stepHistory'} component={StepHistory} />
             <Stack.Screen name={'settingScreen'} component={SettingScreen} />
-            <Stack.Screen name={'DemoTarget'} component={DemoTarget} />
 
             <Stack.Screen name="Profile2" component={ProfileScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} path={'Profile'} />

@@ -29,29 +29,29 @@ import moment from 'moment'
 
 const widthChart = width - 40 * 2
 
-const  dataTest = [
-  {x:1,y:65},
-  {x:2,y:20},
-  {x:3,y:20.9},
-  {x:4,y:60},
-  {x:5,y:60.3},
-  {x:6,y:70},
-  {x:7,y:78},
-  {x:8,y:67},
-  {x:9,y:300,},
+const dataTest = [
+  { x: 1, y: 65 },
+  { x: 2, y: 20 },
+  { x: 3, y: 20.9 },
+  { x: 4, y: 60 },
+  { x: 5, y: 60.3 },
+  { x: 6, y: 70 },
+  { x: 7, y: 78 },
+  { x: 8, y: 67 },
+  { x: 9, y: 300, },
 ]
 
-  const tickdataTest = [
-    '10/11/2021',
-    '11/11/2021',
-    '12/11/2021',
-    '13/11/2021',
-    '14/11/2021',
-    '15/11/2021',
-    '16/11/2021',
-    '17/11/2021',
-    '17/11/2020'
-  ]
+const tickdataTest = [
+  '10/11/2021',
+  '11/11/2021',
+  '12/11/2021',
+  '13/11/2021',
+  '14/11/2021',
+  '15/11/2021',
+  '16/11/2021',
+  '17/11/2021',
+  '17/11/2020'
+]
 class ChartLine extends React.Component {
   constructor(props) {
     super(props);
@@ -77,7 +77,7 @@ class ChartLine extends React.Component {
     };
   }
   componentDidMount() {
-    console.log('=======>props',this.props.time)
+    console.log('=======>props', this.props.time)
     this.convertData()
   }
   convertData = () => {
@@ -117,8 +117,8 @@ class ChartLine extends React.Component {
       x = [0, 0]
       return x
     }
-    if(dataConvert.length >= 2|| dataConvert.length <=7 ){
-      x = Platform.OS == 'android' ? [RFValue(35),RFValue(30)] : [RFValue(30),RFValue(20)] 
+    if (dataConvert.length >= 2 || dataConvert.length <= 7) {
+      x = Platform.OS == 'android' ? [RFValue(35), RFValue(30)] : [RFValue(30), RFValue(20)]
       return x
     }
     // if(dataConvert.length == 3){
@@ -141,8 +141,8 @@ class ChartLine extends React.Component {
     //   x = [RFValue(30),RFValue(20)] 
     //   return x
     // }
-    if(dataConvert.length > 7){
-      x = [RFValue(35),RFValue(35)] 
+    if (dataConvert.length > 7) {
+      x = [RFValue(10), RFValue(35)]
       return x
     }
   }
@@ -175,12 +175,13 @@ class ChartLine extends React.Component {
     return (
       <VictoryChart
         singleQuadrantDomainPadding={false}
-        padding={{ top: RFValue(20), bottom: 10, left: 5, right: 10 }}
+        padding={{ top: RFValue(20), bottom: 10, left: 0, right: 0 }}
         height={RFValue(120)}
         style={{
           parent: {
             // backgroundColor: 'red',
-            overflow: 'visible'
+            overflow: 'visible',
+            // backgroundColor: 'rgba(0, 231, 231, 0.2)'
           },
         }}
         width={this.widthChart()}
@@ -202,28 +203,28 @@ class ChartLine extends React.Component {
         </Defs>
         {/* {tickdataTest.map((v,i) => {
           return ( */}
-              <VictoryAxis
-                        //  crossAxis dependentAxis
-                        // tickValues={tickdataTest}
-                        // tickFormat={tickdataTest.map(i => i.slice(0,5))}
-                        tickValues={this.props.time}
-                        tickFormat={this.props.time.map(i => i.slice(0,5))}
-                        style={{
-                          grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'gray', strokeWidth: 0.5 },
-                          axis: { stroke: 'none' },
-                          ticks: {
-                            size: 0,
-                        },
-                          tickLabels: {
-                            fill: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'black',
-                            fontFamily: 'helvetica',
-                            fontSize: RFValue(10),
-                            fontWeight: '700'
-                          }
-                        }}
-                        orientation="top"
-                      />
-          {/* )
+        <VictoryAxis
+          //  crossAxis dependentAxis
+          // tickValues={tickdataTest}
+          // tickFormat={tickdataTest.map(i => i.slice(0,5))}
+          tickValues={this.props.time}
+          tickFormat={this.props.time.map(i => i.slice(0, 5))}
+          style={{
+            grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'gray', strokeWidth: 0.5 },
+            axis: { stroke: 'none' },
+            ticks: {
+              size: 0,
+            },
+            tickLabels: {
+              fill: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'black',
+              fontFamily: 'helvetica',
+              fontSize: RFValue(10),
+              fontWeight: '700'
+            }
+          }}
+          orientation="top"
+        />
+        {/* )
         })} */}
 
         <VictoryGroup
@@ -248,7 +249,7 @@ class ChartLine extends React.Component {
             cornerRadius={{
               bottom: () => 7,
               top: () => 7
-          }}
+            }}
             interpolation="natural"
             style={{
               data: { stroke: "#FE4358" },
@@ -352,45 +353,51 @@ class ChartLine extends React.Component {
       <View style={[styles.container]}>
 
         <Text style={[styles.txtYear, { paddingVertical: RFValue(10) }]}>{this.state.year || 2021}</Text>
-        <ScrollView 
-        bounces = {this.state?.dataConvert.length <= 7 ? false : true}
-        showsHorizontalScrollIndicator={false}
-        style={{flex:1,marginTop:RFValue(3),marginBottom:RFValue(10)}}
-        ref={ref => {this.scrollView = ref}}
-        onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}
-        scrollEnabled={true} horizontal={true}>
-        {this.state.topLabel && this.state.leftLabel && this.state.showToolTip &&
-          <View style={{
-            position: 'absolute',
-            backgroundColor: '#FE4358',
-            zIndex: 1,
-            top: this.state.position.y - RFValue(40),
-            left: this.state.position.x - RFValue(27),
-            paddingHorizontal: RFValue(5),
-            paddingVertical: RFValue(5),
-            borderRadius: 15,
-            width: RFValue(54)
-          }}>
-            <Text style={{
-              color: 'white',
-              fontSize: RFValue(9),
-              textAlign: 'center',
-              fontWeight: '700',
-            }}>{this.state.value} kg</Text>
-            <Image
-              style={{
-                width: RFValue(10),
-                height: RFValue(10),
-                position: 'absolute',
-                bottom: RFValue(-6),
-                alignSelf: 'center',
-                tintColor: '#FE4358',
-                // zIndex: 0
-              }}
-              source={require('../../../StepCountScreen/images/down-arrow.png')} />
-          </View>
-        }
-       
+        <ScrollView
+          bounces={this.state?.dataConvert.length <= 7 ? false : true}
+          showsHorizontalScrollIndicator={false}
+          style={{
+            flex: 1,
+            marginTop: RFValue(3),
+            marginBottom: RFValue(10),
+            // backgroundColor: '#f8f',
+            paddingLeft: RFValue(2)
+          }}
+          ref={ref => { this.scrollView = ref }}
+          onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}
+          scrollEnabled={true} horizontal={true}>
+          {this.state.topLabel && this.state.leftLabel && this.state.showToolTip &&
+            <View style={{
+              position: 'absolute',
+              backgroundColor: '#FE4358',
+              zIndex: 1,
+              top: this.state.position.y - RFValue(40),
+              left: this.state.position.x - RFValue(20),
+              // paddingHorizontal: RFValue(5),
+              paddingVertical: RFValue(7),
+              borderRadius: 15,
+              width: RFValue(40)
+            }}>
+              <Text style={{
+                color: 'white',
+                fontSize: RFValue(8),
+                textAlign: 'center',
+                fontWeight: '700',
+              }}>{this.state.value} kg</Text>
+              <Image
+                style={{
+                  width: RFValue(10),
+                  height: RFValue(10),
+                  position: 'absolute',
+                  bottom: RFValue(-4),
+                  alignSelf: 'center',
+                  tintColor: '#FE4358',
+                  // zIndex: 0
+                }}
+                source={require('../../../StepCountScreen/images/down-arrow.png')} />
+            </View>
+          }
+
           {Platform.OS == 'android' ?
             <Svg style={{ height: RFValue(120), alignSelf: 'center' }}>
               {this.renderMainChart()}
