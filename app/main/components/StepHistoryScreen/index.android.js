@@ -379,7 +379,7 @@ const StepCount = ({ props, intl, navigation }) => {
             fontSize: fontSize.bigger,
           }}
         />
-        <View style={[styles.viewLineChart, { marginTop: 0 }]}>
+        <View style={[styles.viewLineChart, { marginTop: 0, }]}>
           {/* {dataChart?.length ? <BartChartHistory
             data={dataChart} /> : null} */}
           {renderChart}

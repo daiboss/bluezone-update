@@ -27,7 +27,8 @@ const CalculationStepTarget = (listStep, oldTarget) => {
     } else {
         lastItem = listStep[listStep.length - 1]
         if (lastItem <= 1000) {
-            stepTarget = oldTarget;
+            // stepTarget = oldTarget;
+            stepTarget = 1000;
         } else if (lastItem > oldTarget) {
             if (oldTarget <= 5000) {
                 stepTarget = lastItem + 250

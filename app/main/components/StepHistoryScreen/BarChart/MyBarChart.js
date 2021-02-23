@@ -82,9 +82,7 @@ const ChartColumn = ({ item,
     const refAnim = useRef(new Animated.Value(0)).current
 
     useEffect(() => {
-        console.log('maxdomain========>',maxDomain,item)
         let tmp =  Platform.OS === 'android' ? (item?.y / maxDomain) * HEIGHT_CHART * 0.9 : (item?.y / maxDomain) * HEIGHT_CHART * 0.9
-        console.log('tmppppppmp',tmp)
         Animated.timing(refAnim, {
             toValue: tmp,
             duration: TIME_ANIM,
