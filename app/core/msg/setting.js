@@ -107,6 +107,10 @@ export default defineMessages({
         id: 'bluezone.settings.notificationRealtime',
         defaultMessage: 'bluezone.settings.notificationRealtime'
     },
+    OnOffApp:{
+        id : 'bluezone.settings.onOffApp',
+        defaultMessage: 'bluezone.settings.onOffApp'
+    },
     NotificationTarget: {
         id: 'bluezone.settings.notificationTarget',
         defaultMessage: 'bluezone.settings.notificationTarget'

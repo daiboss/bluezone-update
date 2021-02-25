@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
-  Linking
+  Linking,
 } from 'react-native';
 // import Header from '../Header';
 import Header from '../../../base/components/Header';
@@ -78,6 +78,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const [alertStep, setAlertStep] = useState(undefined);
   const [alertTarget, setAlertTarget] = useState(false);
   const [alertBmi, setAlertBmi] = useState(false);
+  const [onOffApp,setOnOffApp] = useState(true)
   const [totalStep, setTotalStep] = useState(0);
   const [isHardwork, setIsHardwork] = useState(true)
   const [timeWeight, setTimeWeight] = useState(0)
@@ -85,6 +86,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const [isShowModalShortcut, setIsShowModalShortcut] = useState(false)
 
   useEffect(() => {
+    const a = moment.unix(1614078381000).format('yyyy/MM/dd')
     getStatus();
     getProfileUser()
     // scheduler.createScheduleWarnningWeightNotification(alertStep)
@@ -331,7 +333,17 @@ const SettingScreen = ({ intl, navigation }) => {
         </View>
       </TouchableOpacity>
       <Text style={styles.txNotification}>{formatMessage(message.Notification)}</Text>
-      <View style={[styles.viewTx, styles.borderBottom]}>
+      {/* <View style={[styles.viewTx, styles.borderBottom]}>
+        <Text style={styles.txLabel}>{formatMessage(message.OnOffApp)}</Text>
+        <Switch
+          trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
+          thumbColor={alertBmi ? '#fe4358' : '#a5a5a5'}
+          ios_backgroundColor="#fff"
+          onValueChange={alertBmiSwitch}
+          value={alertBmi}
+        />
+      </View> */}
+     {Platform.OS == 'android' && <View style={[styles.viewTx, styles.borderBottom]}>
         <Text style={styles.txLabel}>{formatMessage(message.NotificationRealtime)}</Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
@@ -340,8 +352,8 @@ const SettingScreen = ({ intl, navigation }) => {
           onValueChange={alertStepSwitch}
           value={alertStep || false}
         />
-      </View>
-      <View style={[styles.viewTx, styles.borderBottom]}>
+      </View> }
+      {Platform.OS == 'android' && <View style={[styles.viewTx, styles.borderBottom]}>
         <Text style={styles.txLabel}>{formatMessage(message.NotificationTarget)}</Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
@@ -350,7 +362,7 @@ const SettingScreen = ({ intl, navigation }) => {
           onValueChange={alertTargetSwitch}
           value={alertTarget}
         />
-      </View>
+      </View>}
       <View style={[styles.viewTx, styles.borderBottom]}>
         <Text style={styles.txLabel}>{formatMessage(message.NotificationWeight)}</Text>
         <Switch
@@ -361,6 +373,7 @@ const SettingScreen = ({ intl, navigation }) => {
           value={alertBmi}
         />
       </View>
+      
       {
         Platform.OS == 'android' && (
           <TouchableOpacity
