@@ -104,7 +104,6 @@ const ChartLine = ({
             animate={{
               duration: 100,
               onLoad: { duration: 800 },
-
             }}
             interpolation="monotoneX"
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}

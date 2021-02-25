@@ -302,6 +302,7 @@
     "bluezone.settings.stepADay": "steps a day",
     "bluezone.settings.save": "Save",
     "bluezone.settings.addShortcut": "Add shortcut to the main screen",
+    "bluezone.settings.onOffApp":"Bật tiện ích sức khoẻ",
     "bluezone.settings.notification": "Notifications",
     "bluezone.settings.notificationRealtime": "Notice the number of steps per day",
     "bluezone.settings.notificationTarget": "Notify when the goal is not completed",

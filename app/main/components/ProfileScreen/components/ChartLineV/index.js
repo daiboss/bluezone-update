@@ -29,29 +29,93 @@ import moment from 'moment'
 
 const widthChart = width - 40 * 2
 
-const dataTest = [
-  { x: 1, y: 65 },
-  { x: 2, y: 20 },
-  { x: 3, y: 20.9 },
-  { x: 4, y: 60 },
-  { x: 5, y: 60.3 },
-  { x: 6, y: 70 },
-  { x: 7, y: 78 },
-  { x: 8, y: 67 },
-  { x: 9, y: 300, },
+const  dataTest = [
+  {x:1,y:65},
+  {x:2,y:15},
+  {x:3,y:15},
+  {x:4,y:60},
+  {x:5,y:60.3},
+  {x:6,y:15},
+  {x:7,y:15},
+  // {x:8,y:300.9},
+  // {x:9,y:60,},
+  // {x:10,y:60,},
+  // {x:11,y:60,},
+  // {x:12,y:60,},
+  // {x:13,y:60,},
+  // {x:14,y:60,},
+  // {x:15,y:60,},
+  // {x:16,y:60,},
+  // {x:17,y:60,},
+  // {x:18,y:60,},
+  // {x:19,y:60,},
+  // {x:20,y:60,},
+  // {x:21,y:65},
+  // {x:22,y:5},
+  // {x:23,y:1.9},
+  // {x:24,y:60},
+  // {x:25,y:60.3},
+  // {x:26,y:1},
+  // {x:27,y:1},
+  // {x:28,y:300.9},
+  // {x:29,y:60,},
+  // {x:30,y:60,},
+  // {x:31,y:60,},
+  // {x:32,y:60,},
+  // {x:33,y:60,},
+  // {x:34,y:60,},
+  // {x:35,y:60,},
+  // {x:36,y:60,},
+  // {x:37,y:60,},
+  // {x:38,y:60,},
+  // {x:39,y:60,},
+  // {x:40,y:60,},
 ]
 
-const tickdataTest = [
-  '10/11/2021',
-  '11/11/2021',
-  '12/11/2021',
-  '13/11/2021',
-  '14/11/2021',
-  '15/11/2021',
-  '16/11/2021',
-  '17/11/2021',
-  '17/11/2020'
-]
+  const tickdataTest = [
+    '10/11/2021',
+    '11/11/2021',
+    '12/11/2021',
+    '13/11/2021',
+    '14/11/2021',
+    '15/11/2021',
+    '16/11/2021',
+    // '17/11/2021',
+    // '18/11/2020',
+    // '19/11/2020',
+    // '20/11/2020',
+    // '21/11/2020',
+    // '22/11/2020',
+    // '23/11/2020',
+    // '24/11/2020',
+    // '25/11/2020',
+    // '26/11/2020',
+    // '27/11/2020',
+    // '28/11/2020',
+    // '29/11/2020',
+    // '30/11/2021',
+    // '31/11/2021',
+    // '32/11/2021',
+    // '33/11/2021',
+    // '34/11/2021',
+    // '35/11/2021',
+    // '36/11/2021',
+    // '37/11/2021',
+    // '38/11/2020',
+    // '39/11/2020',
+    // '40/11/2020',
+    // '41/11/2020',
+    // '42/11/2020',
+    // '43/11/2020',
+    // '44/11/2020',
+    // '45/11/2020',
+    // '46/11/2020',
+    // '47/11/2020',
+    // '48/11/2020',
+    // '49/11/2020',
+    
+
+  ]
 class ChartLine extends React.Component {
   constructor(props) {
     super(props);
@@ -77,7 +141,7 @@ class ChartLine extends React.Component {
     };
   }
   componentDidMount() {
-    console.log('=======>props', this.props.time)
+    console.log('dadadadadadadada',width)
     this.convertData()
   }
   convertData = () => {
@@ -117,32 +181,12 @@ class ChartLine extends React.Component {
       x = [0, 0]
       return x
     }
-    if (dataConvert.length >= 2 || dataConvert.length <= 7) {
-      x = Platform.OS == 'android' ? [RFValue(35), RFValue(30)] : [RFValue(30), RFValue(20)]
+    if(dataConvert.length >= 2 && dataConvert.length <=7 ){
+      x = Platform.OS == 'android' ? [RFValue(30),RFValue(30)] : [RFValue(30),RFValue(26)] 
       return x
     }
-    // if(dataConvert.length == 3){
-    //   x = [RFValue(30),RFValue(20)] 
-    //   return x
-    // }
-    // if(dataConvert.length == 4){
-    //   x = [RFValue(30),RFValue(20)] 
-    //   return x
-    // }
-    // if(dataConvert.length == 5){
-    //   x = [RFValue(30),RFValue(20)] 
-    //   return x
-    // }
-    // if(dataConvert.length == 6){
-    //   x = [RFValue(30),RFValue(20)] 
-    //   return x
-    // }
-    // if(dataConvert.length == 7){
-    //   x = [RFValue(30),RFValue(20)] 
-    //   return x
-    // }
-    if (dataConvert.length > 7) {
-      x = [RFValue(10), RFValue(35)]
+    if(dataConvert.length > 7){
+      x = [RFValue(35),RFValue(25)] 
       return x
     }
   }
@@ -153,8 +197,12 @@ class ChartLine extends React.Component {
       x = width * 0.8
       return x
     }
+    else if(dataConvert.length == 8 || dataConvert.length == 9){
+      x = Platform.OS == 'android' ? dataConvert.length * width *0.12 - dataConvert.length : dataConvert.length * width *0.12 - dataConvert.length * 0.5
+      return x
+    }
     else {
-      x = dataConvert.length * width * 0.12
+      x = Platform.OS == 'android' ? dataConvert.length * width *0.12 -  dataConvert.length * 1.5 : dataConvert.length * width *0.12 -  dataConvert.length 
       return x
     }
   }
@@ -175,7 +223,7 @@ class ChartLine extends React.Component {
     return (
       <VictoryChart
         singleQuadrantDomainPadding={false}
-        padding={{ top: RFValue(20), bottom: 10, left: 0, right: 0 }}
+        padding={{ top: RFValue(20), bottom: RFValue(10) , left: RFValue(0) , right: RFValue(0) }}
         height={RFValue(120)}
         style={{
           parent: {
@@ -186,7 +234,7 @@ class ChartLine extends React.Component {
         }}
         width={this.widthChart()}
         domainPadding={{ x: this.domainPaddingChart() }}
-        // minDomain={{ y: 0 }}
+        minDomain={{ y: 0 }}
         maxDomain={{ y: 400 }}
       // theme={VictoryTheme.material}
       >
@@ -203,28 +251,28 @@ class ChartLine extends React.Component {
         </Defs>
         {/* {tickdataTest.map((v,i) => {
           return ( */}
-        <VictoryAxis
-          //  crossAxis dependentAxis
-          // tickValues={tickdataTest}
-          // tickFormat={tickdataTest.map(i => i.slice(0,5))}
-          tickValues={this.props.time}
-          tickFormat={this.props.time.map(i => i.slice(0, 5))}
-          style={{
-            grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'gray', strokeWidth: 0.5 },
-            axis: { stroke: 'none' },
-            ticks: {
-              size: 0,
-            },
-            tickLabels: {
-              fill: ({ tick, index }) => this.state.valueX == index + 1 && this.state.showToolTip ? '#FE4358' : 'black',
-              fontFamily: 'helvetica',
-              fontSize: RFValue(10),
-              fontWeight: '700'
-            }
-          }}
-          orientation="top"
-        />
-        {/* )
+              <VictoryAxis
+                        //  crossAxis dependentAxis
+                        // tickValues={tickdataTest}
+                        // tickFormat={tickdataTest.map(i => i.slice(0,5))}
+                        tickValues={this.props.time}
+                        tickFormat={this.props.time.map(i => i.slice(0,5))}
+                        style={{
+                          grid: { stroke: ({ tick, index }) => index == this.props.time.length - 1 ? '#FE4358' : 'gray', strokeWidth: 0.5 },
+                          axis: { stroke: 'none' },
+                          ticks: {
+                            size: 0,
+                        },
+                          tickLabels: {
+                            fill: ({ tick, index }) => index == this.props.time.length - 1 ? '#FE4358' : 'black',
+                            fontFamily: 'helvetica',
+                            fontSize: RFValue(10),
+                            fontWeight: '700'
+                          }
+                        }}
+                        orientation="top"
+                      />
+          {/* )
         })} */}
 
         <VictoryGroup
@@ -237,7 +285,7 @@ class ChartLine extends React.Component {
               duration: 1000,
               onLoad: { duration: 1000 }
             }}
-            interpolation="natural"
+            interpolation='monotoneX'
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
           // data={sampleData}
           />
@@ -249,8 +297,8 @@ class ChartLine extends React.Component {
             cornerRadius={{
               bottom: () => 7,
               top: () => 7
-            }}
-            interpolation="natural"
+          }}
+            interpolation='monotoneX'
             style={{
               data: { stroke: "#FE4358" },
               parent: { border: "1px solid #ccc", },
@@ -361,7 +409,7 @@ class ChartLine extends React.Component {
             marginTop: RFValue(3),
             marginBottom: RFValue(10),
             // backgroundColor: '#f8f',
-            paddingLeft: RFValue(2)
+            // marginLeft: RFValue(-10)
           }}
           ref={ref => { this.scrollView = ref }}
           onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}
