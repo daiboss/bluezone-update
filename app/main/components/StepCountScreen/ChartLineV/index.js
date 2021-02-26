@@ -41,13 +41,13 @@ const ChartLine = ({
 
   const handleData = async () => {
     let stepTarget = await getResultSteps()
-    let tmpDif = parseInt(10000 / (stepTarget?.step == undefined ? 10000 : stepTarget?.step == 0 ? 10000 : stepTarget?.step))
+    let tmpDif = Number(10000 / (stepTarget?.step == undefined ? 10000 : stepTarget?.step == 0 ? 10000 : stepTarget?.step))
 
     const datanew = data.map((it, index) => {
       return {
         ...it,
         x: index + 1,
-        y: it.y * tmpDif
+        y: (it.y) * tmpDif + 200
       }
     })
     const max = Math.max.apply(Math, datanew.map(i => i.y));
@@ -81,7 +81,7 @@ const ChartLine = ({
 
         <VictoryAxis
           tickValues={time}
-          // tickValues = {['11','12','13','14','16','17','18']}
+          // tickValues={['11', '12', '13', '14', '16', '17', '18']}
           style={{
             grid: { stroke: ({ tick, index }) => '#f3f3f3', strokeWidth: 1 },
             axis: { stroke: 'none' },
@@ -96,9 +96,11 @@ const ChartLine = ({
         />
 
         <VictoryGroup
-          style={{ labels: { fill: 'none' } }}
+          style={{
+            labels: { fill: 'none' },
+          }}
           data={dataConvert}
-        // data = {[3000,4000,100,100,30000,20000,16000,17000]}
+        // data={[3000, 4000, 0, 100, 30000, 20000, 16000, 17000]}
         >
           <VictoryArea
             animate={{
@@ -108,19 +110,6 @@ const ChartLine = ({
             interpolation="monotoneX"
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
           // data={sampleData}
-          />
-          <VictoryLine
-
-            animate={{
-              duration: 100,
-              onLoad: { duration: 800 },
-            }}
-            interpolation="monotoneX"
-            style={{
-              data: { stroke: red_bluezone },
-              parent: { border: "1px solid #ccc" }
-            }}
-
           />
 
           <VictoryScatter
@@ -139,6 +128,17 @@ const ChartLine = ({
             labels={() => null}
           />
 
+          <VictoryLine
+            animate={{
+              duration: 100,
+              onLoad: { duration: 800 },
+            }}
+            interpolation="monotoneX"
+            style={{
+              data: { stroke: red_bluezone },
+              parent: { border: "1px solid #ccc" }
+            }}
+          />
 
         </VictoryGroup>
 

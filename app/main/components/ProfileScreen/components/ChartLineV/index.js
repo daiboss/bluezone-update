@@ -141,7 +141,6 @@ class ChartLine extends React.Component {
     };
   }
   componentDidMount() {
-    console.log('dadadadadadadada',width)
     this.convertData()
   }
   convertData = () => {
