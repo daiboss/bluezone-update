@@ -13,9 +13,8 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
-import { Dimensions } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-// import { LineChart, Grid } from 'react-native-svg-charts'
+
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
@@ -38,7 +37,6 @@ import ChartLineV from './ChartLineV';
 import {
   ResultSteps,
 } from '../../../const/storage';
-const screenWidth = Dimensions.get('window').width;
 
 import {
   getDistances,
@@ -60,13 +58,8 @@ import {
   getListStepsBefore
 } from './../../../core/db/RealmDb'
 
-import {
-  addStepCounter as addStepCounterRealm,
-  getListStepDay as getListStepDayRealm
-} from './../../../core/db/RealmDb'
-
 import ButtonIconText from '../../../base/components/ButtonIconText';
-import { blue_bluezone, red_bluezone } from '../../../core/color';
+import { red_bluezone } from '../../../core/color';
 import { RFValue } from '../../../const/multiscreen';
 
 import { CalculationStepTargetAndroid } from '../../../core/calculation_step_target';
@@ -96,10 +89,52 @@ const StepCount = ({ props, intl, navigation }) => {
     observerStepDrawUI();
     // scheduler.createWarnningWeightNotification()
     synchronizeDatabaseStepsHistory()
+    // fakeData()
     return () => {
       BackgroundJob.removeTargetChange();
     }
   }, [])
+
+  const fakeData = async () => {
+    try {
+      let start = moment('01/01/2020', 'DD/MM/YYYY').unix()
+      let end = moment('30/12/2020', 'DD/MM/YYYY').unix()
+      let listHistorya = await getListHistory(start, end)
+      console.log(listHistorya)
+      return
+      console.log('BATDAU', new Date().getTime())
+
+      const VA = 86400
+      let curentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+      let listHistory = await getListHistory(curentTime - VA * 10, curentTime)
+      if (listHistory.length <= 1) {
+        let count = 0
+        while (count < 1000) {
+          curentTime -= VA
+          if (count % 17 != 0) {
+            let save = await addHistory(curentTime, {
+              id: `${curentTime}`,
+              starttime: `${curentTime}`,
+              endtime: `${curentTime + VA - 100}`,
+              step: Math.floor(Math.random() * 20000)
+            })
+            console.log('SAVEEE HISTORY', save)
+          } else {
+            let sumV = Math.floor(Math.random() * 10000) + 300
+            while (sumV >= 0) {
+              let s = Math.floor(Math.random() * 14) + 1
+              let tmp = await addStepCounter(curentTime * 1000 + sumV - 300, curentTime * 1000 + sumV, s)
+              sumV--;
+            }
+          }
+          count++;
+        }
+      }
+    } catch (err) {
+      console.log('fakeDATA ERROR', err)
+    }
+    console.log('KETHUC', new Date().getTime())
+  }
 
   const observerStepDrawUI = async () => {
     getResultBindingUI();
@@ -750,6 +785,7 @@ const StepCount = ({ props, intl, navigation }) => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   img: {
     width: RFValue(56),
@@ -864,6 +900,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   }
 });
+
 StepCount.propTypes = {
   intl: intlShape.isRequired,
 };
