@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Text,
   View,
@@ -25,13 +25,8 @@ const ChartLine = ({
   data,
   totalCount
 }) => {
-  const [year, setYear] = useState(null)
-  const [topLabel, setTopLabel] = useState(null)
-
   const [maxCounter, setMaxCounter] = useState(0)
-  const [leftLabel, setLeftLabel] = useState(null)
   const [dataConvert, setDataConvert] = useState([])
-  const [position, setPosition] = useState({ x: -100, y: -100 })
 
   useEffect(() => {
     if (data) {
@@ -47,7 +42,7 @@ const ChartLine = ({
       return {
         ...it,
         x: index + 1,
-        y: (it.y) * tmpDif + 200
+        y: (it.y) * tmpDif + 200,
       }
     })
     const max = Math.max.apply(Math, datanew.map(i => i.y));
@@ -55,18 +50,16 @@ const ChartLine = ({
     setMaxCounter(max)
   }
 
-  renderCharMain = () => {
+  const renderCharMain = () => {
     return (
       <VictoryChart
-        // padding=""
-        // width={400}
         height={RFValue(180)}
+        width={width}
         minDomain={{ y: 0 }}
         padding={{ left: 40, right: 40, top: 30, bottom: 50 }}
         maxDomain={{ y: maxCounter <= 10000 ? RFValue(12000) : (maxCounter + parseInt(maxCounter / 3)) }}
-
-      // theme={VictoryTheme.material}
       >
+
         <Defs>
           <LinearGradient id="gradientStroke"
             x1="0%"
@@ -81,7 +74,6 @@ const ChartLine = ({
 
         <VictoryAxis
           tickValues={time}
-          // tickValues={['11', '12', '13', '14', '16', '17', '18']}
           style={{
             grid: { stroke: ({ tick, index }) => '#f3f3f3', strokeWidth: 1 },
             axis: { stroke: 'none' },
@@ -102,14 +94,18 @@ const ChartLine = ({
           data={dataConvert}
         // data={[3000, 4000, 0, 100, 30000, 20000, 16000, 17000]}
         >
+
           <VictoryArea
-            animate={{
-              duration: 100,
-              onLoad: { duration: 800 },
-            }}
             interpolation="monotoneX"
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
-          // data={sampleData}
+            // data={sampleData}
+            animate={{
+              // duration: 100,
+              easing: 'sinIn',
+              onEnter: {
+                duration: 100,
+              }
+            }}
           />
 
           <VictoryScatter
@@ -126,12 +122,22 @@ const ChartLine = ({
             }}
             size={6}
             labels={() => null}
+            animate={{
+              // duration: 100,
+              easing: 'sinIn',
+              onEnter: {
+                duration: 100,
+              }
+            }}
           />
 
           <VictoryLine
             animate={{
-              duration: 100,
-              onLoad: { duration: 800 },
+              // duration: 100,
+              easing: 'sinIn',
+              onEnter: {
+                duration: 100,
+              }
             }}
             interpolation="monotoneX"
             style={{
@@ -151,92 +157,66 @@ const ChartLine = ({
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
 
-  return (
-    <View
-      style={styles.container}>
-      <Text style={styles.txtYear}>{year}</Text>
-      {topLabel && leftLabel &&
-        <View style={{
-          position: 'absolute',
-          backgroundColor: red_bluezone,
-          zIndex: 1,
-          top: topLabel - height * (Platform.OS == 'ios' ? 0.045 : 0.06),
-          left: position.x - RFValue(25),
-          paddingHorizontal: RFValue(10),
-          paddingVertical: RFValue(5),
-          borderWidth: 1,
-          borderRadius: 15,
-          borderColor: 'red',
-          width: RFValue(50)
-        }}>
-          <Text style={{
-            color: 'white',
-            fontSize: 10,
-            textAlign: 'center',
-            fontWeight: '700'
-          }}>{value}</Text>
-          <Image
-            style={{
-              zIndex: -1,
-              width: 10,
-              height: 10,
-              position: 'absolute',
-              bottom: -8,
-              alignSelf: 'center',
-              tintColor: red_bluezone
-            }}
-            source={require('../images/down-arrow.png')} />
-        </View>
-      }
-      <View style={{
-        position: 'absolute',
-        backgroundColor: red_bluezone,
-        zIndex: 1,
-        top: height * 0.06,
-        // left: ,
-        alignSelf: 'center',
-        paddingHorizontal: RFValue(10),
-        paddingVertical: RFValue(Platform.OS == 'ios' ? 5 : 3),
-        borderWidth: 1,
-        borderRadius: 15,
-        borderColor: 'red',
-        // width: RFValue(63)
-      }}>
-        <Text style={{
-          color: 'white',
-          fontSize: RFValue(10),
-          textAlign: 'center',
-          fontWeight: '600'
-        }}>{numberWithCommas(totalCount || 10000)}</Text>
-        <Image
-          style={{
-            zIndex: -1,
-            width: RFValue(10),
-            height: RFValue(10),
+  const renderView = useMemo(() => {
+    if (totalCount && time?.length > 0 && dataConvert?.length > 0) {
+      return (
+        <View
+          style={styles.container}>
+          <Text style={styles.txtYear}></Text>
+          <View style={{
             position: 'absolute',
-            bottom: -8,
+            backgroundColor: red_bluezone,
+            zIndex: 1,
+            top: height * 0.06,
+            // left: ,
             alignSelf: 'center',
-            tintColor: red_bluezone
+            paddingHorizontal: RFValue(10),
+            paddingVertical: RFValue(Platform.OS == 'ios' ? 5 : 3),
+            borderWidth: 1,
+            borderRadius: 15,
+            borderColor: 'red',
+            // width: RFValue(63)
+          }}>
+            <Text style={{
+              color: 'white',
+              fontSize: RFValue(10),
+              textAlign: 'center',
+              fontWeight: '600'
+            }}>{numberWithCommas(totalCount || 10000)}</Text>
+            <Image
+              style={{
+                zIndex: -1,
+                width: RFValue(10),
+                height: RFValue(10),
+                position: 'absolute',
+                bottom: -8,
+                alignSelf: 'center',
+                tintColor: red_bluezone
+              }}
+              source={require('../images/down-arrow.png')} />
+          </View>
+          <Dash style={{
+            height: 1,
+            width: width * 0.81,
+            alignSelf: 'center',
+            position: 'absolute',
+            top: height * 0.1
           }}
-          source={require('../images/down-arrow.png')} />
-      </View>
-      <Dash style={{
-        height: 1,
-        width: width * 0.81,
-        alignSelf: 'center',
-        position: 'absolute',
-        top: height * 0.1
-      }}
-        dashColor={red_bluezone}
-      />
-      {
-        renderCharMain()
-      }
-      {/* <Svg> */}
-      {/* </Svg> */}
+            dashColor={red_bluezone}
+          />
+          {
+            renderCharMain()
+          }
+          {/* <Svg> */}
+          {/* </Svg> */}
 
-    </View>
-  );
+        </View>
+      );
+    }
+    return <View />
+  }, [totalCount, time, dataConvert])
+
+  return renderView
 }
 
 export default ChartLine;

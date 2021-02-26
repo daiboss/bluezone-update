@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   View,
   SafeAreaView,
@@ -55,7 +55,8 @@ import {
   getListStepDayBefore,
   getListStartDateHistory,
   getListStepDay,
-  getListStepsBefore
+  getListStepsBefore,
+  removeAllHistory
 } from './../../../core/db/RealmDb'
 
 import ButtonIconText from '../../../base/components/ButtonIconText';
@@ -64,6 +65,7 @@ import { RFValue } from '../../../const/multiscreen';
 
 import { CalculationStepTargetAndroid } from '../../../core/calculation_step_target';
 import ModalChangeTarget from './Components/ModalChangeTarget';
+import { DATA_FAKE } from './DataFakeHistory';
 
 const options = {
   taskName: 'Bluezone',
@@ -89,62 +91,49 @@ const StepCount = ({ props, intl, navigation }) => {
     observerStepDrawUI();
     // scheduler.createWarnningWeightNotification()
     synchronizeDatabaseStepsHistory()
-    // fakeData()
+    fakeData()
     return () => {
       BackgroundJob.removeTargetChange();
+      BackgroundJob.removeObserverHistoryChange();
     }
   }, [])
 
   const fakeData = async () => {
     try {
+      // return
       let start = moment('01/01/2020', 'DD/MM/YYYY').unix()
       let end = moment('30/12/2020', 'DD/MM/YYYY').unix()
       let listHistorya = await getListHistory(start, end)
-      console.log(listHistorya)
-      return
-      console.log('BATDAU', new Date().getTime())
-
-      const VA = 86400
-      let curentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
-      let listHistory = await getListHistory(curentTime - VA * 10, curentTime)
-      if (listHistory.length <= 1) {
-        let count = 0
-        while (count < 1000) {
-          curentTime -= VA
-          if (count % 17 != 0) {
-            let save = await addHistory(curentTime, {
-              id: `${curentTime}`,
-              starttime: `${curentTime}`,
-              endtime: `${curentTime + VA - 100}`,
-              step: Math.floor(Math.random() * 20000)
+      if (listHistorya.length <= 1) {
+        DATA_FAKE.map(async element => {
+          let save = await addHistory(element.starttime,
+            {
+              "calories": Math.floor(Math.random() * 5000) + 10,
+              "distance": Math.floor(Math.random() * 5000),
+              "step": Math.floor(Math.random() * 15000),
+              "time": Math.floor(Math.random() * 5000)
             })
-            console.log('SAVEEE HISTORY', save)
-          } else {
-            let sumV = Math.floor(Math.random() * 10000) + 300
-            while (sumV >= 0) {
-              let s = Math.floor(Math.random() * 14) + 1
-              let tmp = await addStepCounter(curentTime * 1000 + sumV - 300, curentTime * 1000 + sumV, s)
-              sumV--;
-            }
-          }
-          count++;
-        }
+          console.log('SSS', save)
+        });
+
       }
     } catch (err) {
       console.log('fakeDATA ERROR', err)
     }
-    console.log('KETHUC', new Date().getTime())
   }
 
   const observerStepDrawUI = async () => {
     getResultBindingUI();
-    getListHistoryChart();
     // checkAutoChangeStepsTarget();
     BackgroundJob.observerStepSaveChange(() => {
       getResultBindingUI()
     })
     BackgroundJob.observerHistorySaveChange(async () => {
+      // let tmpCurrent = moment().unix()
+      // let startDay = moment().startOf('days').unix()
+      // if (Math.abs(tmpCurrent - startDay) <= 10) {
       getListHistoryChart();
+      // }
       getResultBindingUI();
       // await checkAutoChangeStepsTarget();
     })
@@ -156,8 +145,6 @@ const StepCount = ({ props, intl, navigation }) => {
   const getListHistoryChart = async () => {
     try {
       let curentTime = moment().unix()
-      // let start = moment().subtract(8, 'days').unix()
-      // let end = moment().subtract(1, 'days').unix()
       let start = curentTime - 86400 * 8
       let end = curentTime - 86400
       let steps = await getListHistory(start, end)
@@ -175,7 +162,6 @@ const StepCount = ({ props, intl, navigation }) => {
       list.forEach(e => {
         listTime.push(e?.x)
       });
-      // console.log('sAASSASASAS', start, end, list, listTime)
       setDataChart(list)
       setTime(listTime)
 
@@ -585,6 +571,48 @@ const StepCount = ({ props, intl, navigation }) => {
     }
   }
 
+  const renderChart = useMemo(() => {
+    if (dataChart?.length > 0) {
+      return (
+        <View>
+          <ChartLineV
+            totalCount={totalCount}
+            data={dataChart}
+            time={time}
+          // data={
+          //   [
+          //     { "x": 1, "y": 10004 },
+          //     { "x": 2, "y": 74 },
+          //     { "x": 3, "y": 273 },
+          //     { "x": 4, "y": 20000 },
+          //     { "x": 5, "y": 0 },
+          //     { "x": 6, "y": 0 },
+          //     { "x": 6, "y": 2000 },
+          //   ]
+          // }
+          />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() =>
+              navigation.navigate('stepHistory', {
+                dataHealth: {
+                  countStep, countRest: (totalCount - countStep) > 0 ? (totalCount - countStep) : 0
+                  , countCarlo, distant
+                },
+              })
+            }
+            style={{
+              zIndex: 10000,
+              position: 'absolute',
+              width: '100%',
+              height: '100%'
+            }}>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+  }, [dataChart, time, totalCount])
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar />
@@ -727,44 +755,9 @@ const StepCount = ({ props, intl, navigation }) => {
         </View>
 
         <View style={styles.viewLineChart}>
-          {(dataChart.length && (
-            <View>
-              <ChartLineV
-                totalCount={totalCount}
-                data={dataChart}
-                time={time}
-              // data={
-              //   [
-              //     { "x": 1, "y": 10004 },
-              //     { "x": 2, "y": 74 },
-              //     { "x": 3, "y": 273 },
-              //     { "x": 4, "y": 20000 },
-              //     { "x": 5, "y": 0 },
-              //     { "x": 6, "y": 0 },
-              //     { "x": 6, "y": 2000 },
-              //   ]
-              // }
-              />
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() =>
-                  navigation.navigate('stepHistory', {
-                    dataHealth: {
-                      countStep, countRest: (totalCount - countStep) > 0 ? (totalCount - countStep) : 0
-                      , countCarlo, distant
-                    },
-                  })
-                }
-                style={{
-                  zIndex: 10000,
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%'
-                }}>
-              </TouchableOpacity>
-            </View>
-          )
-          ) || null}
+          {
+            renderChart
+          }
         </View>
 
       </View>
