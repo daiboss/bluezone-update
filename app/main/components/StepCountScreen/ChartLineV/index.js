@@ -100,11 +100,7 @@ const ChartLine = ({
             style={{ data: { fill: 'url(#gradientStroke)', opacity: 0.5 } }}
             // data={sampleData}
             animate={{
-              // duration: 100,
-              easing: 'sinIn',
-              onEnter: {
-                duration: 100,
-              }
+              duration: 50,
             }}
           />
 
@@ -123,21 +119,13 @@ const ChartLine = ({
             size={6}
             labels={() => null}
             animate={{
-              // duration: 100,
-              easing: 'sinIn',
-              onEnter: {
-                duration: 100,
-              }
+              duration: 50,
             }}
           />
 
           <VictoryLine
             animate={{
-              // duration: 100,
-              easing: 'sinIn',
-              onEnter: {
-                duration: 100,
-              }
+              duration: 50,
             }}
             interpolation="monotoneX"
             style={{

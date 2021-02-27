@@ -91,7 +91,7 @@ const StepCount = ({ props, intl, navigation }) => {
     observerStepDrawUI();
     // scheduler.createWarnningWeightNotification()
     synchronizeDatabaseStepsHistory()
-    fakeData()
+    // fakeData()
     return () => {
       BackgroundJob.removeTargetChange();
       BackgroundJob.removeObserverHistoryChange();
