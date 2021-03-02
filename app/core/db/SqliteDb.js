@@ -401,7 +401,7 @@ const getCountBluezoneByDays = (timestamp, success, failure) => {
   });
 };
 
-export const removeAllHistory = async () => {
+const removeAllHistory = async () => {
   return new Promise((resolve, reject) => {
     db = open();
     db.transaction(function (txn) {
@@ -415,7 +415,7 @@ export const removeAllHistory = async () => {
   })
 }
 
-export const removeAllStep = async () => {
+const removeAllStep = async () => {
   return new Promise((resolve, reject) => {
     db = open();
     db.transaction(function (txn) {
@@ -429,7 +429,7 @@ export const removeAllStep = async () => {
   })
 }
 
-export const removeAllStepDay = async (startDay, endDay) => {
+const removeAllStepDay = async (startDay, endDay) => {
 
   return new Promise((resolve, reject) => {
     db = open();
@@ -649,5 +649,8 @@ export {
   addStepCounter,
   getListStepDayBefore,
   getListStartDateHistory,
-  getListStepsBefore
+  getListStepsBefore,
+  removeAllHistory,
+  removeAllStep,
+  removeAllStepDay,
 };

@@ -1,63 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
   Text,
-  Button,
   View,
-  processColor, Image,
-  ScrollView,
+  Image,
   Dimensions,
   Platform,
-  TouchableOpacity
 } from 'react-native';
-import update from 'immutability-helper';
 import styles from './styles/index.css';
-import { LineChart } from 'react-native-charts-wrapper';
-import { red_bluezone, blue_bluezone } from '../../../../core/color';
+import { red_bluezone, } from '../../../../core/color';
 import { RFValue } from '../../../../const/multiscreen';
 import Dash from 'react-native-dash';
 
 import {
-  VictoryChart, VictoryLine, VictoryTheme, VictoryGroup,
-  VictoryTooltip, VictoryLabel,
+  VictoryChart, VictoryLine, VictoryGroup,
   VictoryScatter, VictoryAxis, VictoryArea
 } from 'victory-native';
 import { Svg, Circle, Defs, Rect, G, Use, LinearGradient, Stop } from 'react-native-svg';
 import { getResultSteps } from '../../../../core/storage';
-const distanceToLoadMore = 10;
-const pageSize = 10;
+
 const { width, height } = Dimensions.get('window')
 
-class ChartLine extends React.Component {
-  constructor(props) {
-    super(props);
-    this.xMin = 6;
-    this.xMax = 7;
-    this.state = {
-      data: {},
-      year: null,
-      xAxis: {
-        granularityEnabled: true,
-        granularity: 1,
-        axisLineWidth: 0,
-        position: 'TOP',
-        labelCount: 6,
-        // drawAxisLines: true,
-        avoidFirstLastClipping: true,
-      },
-      topLabel: null,
-      maxCounter: 0,
-      leftLabel: null,
-      dataConvert: [],
-      position: { x: -100, y: -100 }
-    };
-  }
-  async componentDidMount() {
+const ChartLine = ({
+  time,
+  data,
+  totalCount
+}) => {
+  const [year, setYear] = useState(null)
+  const [topLabel, setTopLabel] = useState(null)
+
+  const [maxCounter, setMaxCounter] = useState(0)
+  const [leftLabel, setLeftLabel] = useState(null)
+  const [dataConvert, setDataConvert] = useState([])
+  const [position, setPosition] = useState({ x: -100, y: -100 })
+
+  useEffect(() => {
+    if (data) {
+      handleData()
+    }
+  }, [data])
+
+  const handleData = async () => {
     let stepTarget = await getResultSteps()
     let tmpDif = parseInt(10000 / (stepTarget?.step == undefined ? 10000 : stepTarget?.step == 0 ? 10000 : stepTarget?.step))
 
-    const datanew = this.props.data.map((it, index) => {
+    const datanew = data.map((it, index) => {
       return {
         ...it,
         x: index + 1,
@@ -65,26 +51,8 @@ class ChartLine extends React.Component {
       }
     })
     const max = Math.max.apply(Math, datanew.map(i => i.y));
-    this.setState({ dataConvert: datanew, maxCounter: max })
-  }
-
-  getLeftLabel = () => {
-    const value = this.state?.value?.length
-    if (value == 1) {
-      return this.state.leftLabel - width * 0.04
-    }
-    if (value == 2) {
-      return this.state.leftLabel - width * 0.05
-    }
-    if (value == 3) {
-      return this.state.leftLabel - width * 0.055
-    }
-    if (value == 4) {
-      return this.state.leftLabel - width * 0.07
-    }
-    if (value == 5) {
-      return this.state.leftLabel - width * 0.08
-    }
+    setDataConvert(datanew)
+    setMaxCounter(max)
   }
 
   renderCharMain = () => {
@@ -97,7 +65,7 @@ class ChartLine extends React.Component {
         minDomain={{ y: 0 }}
         padding={{ left: 40, right: 40, top: 30, bottom:50 }}
         // maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
-        maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : (this.state.maxCounter + parseInt(this.state.maxCounter / 3)) }}
+        maxDomain={{ y: maxCounter <= 10000 ? RFValue(12000) : (maxCounter + parseInt(maxCounter / 3)) }}
 
       // theme={VictoryTheme.material}
       >
@@ -108,23 +76,21 @@ class ChartLine extends React.Component {
             y1="0%"
             y2="100%"
           >
-            <Stop offset="0%" stopColor="#FE4358" stopOpacity="0.8" />
-            <Stop offset="70%" stopColor="#FE4358" stopOpacity="0.1" />
+            <Stop offset="0%" stopColor={red_bluezone} stopOpacity="0.8" />
+            <Stop offset="70%" stopColor={red_bluezone} stopOpacity="0.1" />
           </LinearGradient>
         </Defs>
 
         <VictoryAxis
-          tickValues={this.props.time}
+          tickValues={time}
           // tickValues = {['11','12','13','14','16','17','18']}
           style={{
-            grid: { stroke: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : '#f3f3f3', strokeWidth: 1 },
+            grid: { stroke: ({ tick, index }) => '#f3f3f3', strokeWidth: 1 },
             axis: { stroke: 'none' },
-
             tickLabels: {
-              fill: ({ tick, index }) => this.state.valueX == index + 1 ? '#FE4358' : '#3F3F3F',
+              fill: ({ tick, index }) => '#3F3F3F',
               fontSize: RFValue(11),
               fontWeight: '700',
-              // fontWeight: '350',
               fontFamily: 'helvetica',
             }
           }}
@@ -133,8 +99,8 @@ class ChartLine extends React.Component {
 
         <VictoryGroup
           style={{ labels: { fill: 'none' } }}
-          data={this.state.dataConvert}
-        // data = {[3000,4000,1000,10,10,2000,1600,1700]}
+          data={dataConvert}
+        // data = {[3000,4000,100,100,30000,20000,16000,17000]}
         >
           <VictoryArea
             animate={{
@@ -153,7 +119,7 @@ class ChartLine extends React.Component {
             }}
             interpolation="monotoneX"
             style={{
-              data: { stroke: "#FE4358" },
+              data: { stroke: red_bluezone },
               parent: { border: "1px solid #ccc" }
             }}
 
@@ -162,13 +128,13 @@ class ChartLine extends React.Component {
           <VictoryScatter
             style={{
               data: {
-                fill: ({ datum }) => "#FE4358",
-                stroke: ({ datum }) => "#FE4358",
+                fill: ({ datum }) => red_bluezone,
+                stroke: ({ datum }) => red_bluezone,
                 strokeWidth: ({ datum }) => 0,
               },
               labels: {
                 fontSize: 15,
-                fill: "#FE4358"
+                fill: red_bluezone
               }
             }}
             size={6}
@@ -183,102 +149,96 @@ class ChartLine extends React.Component {
     )
   }
 
-  numberWithCommas = x => {
+  const numberWithCommas = x => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
 
-  render() {
-    return (
-      <View
-        style={styles.container}>
-        <Text style={styles.txtYear}>{this.state.year}</Text>
-        {this.state.topLabel && this.state.leftLabel &&
-          <View style={{
-            position: 'absolute',
-            backgroundColor: '#FE4358',
-            zIndex: 1,
-            top: this.state.topLabel - height * (Platform.OS == 'ios' ? 0.045 : 0.06),
-            // left: this.getLeftLabel(),
-            left: this.state.position.x - RFValue(25),
-            paddingHorizontal: RFValue(10),
-            paddingVertical: RFValue(5),
-            borderWidth: 1,
-            borderRadius: 15,
-            borderColor: 'red',
-            width: RFValue(50)
-          }}>
-            <Text style={{
-              color: 'white',
-              fontSize: 10,
-              textAlign: 'center',
-              fontWeight: '700'
-            }}>{this.state.value}</Text>
-            <Image
-              style={{
-                zIndex: -1,
-                width: 10,
-                height: 10,
-                position: 'absolute',
-                bottom: -8,
-                alignSelf: 'center',
-                tintColor: '#FE4358'
-              }}
-              source={require('../images/down-arrow.png')} />
-          </View>
-        }
+  return (
+    <View
+      style={styles.container}>
+      <Text style={styles.txtYear}>{year}</Text>
+      {topLabel && leftLabel &&
         <View style={{
           position: 'absolute',
-          backgroundColor: '#FE4358',
+          backgroundColor: red_bluezone,
           zIndex: 1,
-          top: height * 0.06,
-          // left: ,
-          alignSelf: 'center',
+          top: topLabel - height * (Platform.OS == 'ios' ? 0.045 : 0.06),
+          left: position.x - RFValue(25),
           paddingHorizontal: RFValue(10),
-          paddingVertical: RFValue(Platform.OS == 'ios' ? 5 : 3),
+          paddingVertical: RFValue(5),
           borderWidth: 1,
           borderRadius: 15,
           borderColor: 'red',
-          // width: RFValue(63)
+          width: RFValue(50)
         }}>
           <Text style={{
             color: 'white',
-            fontSize: RFValue(10),
+            fontSize: 10,
             textAlign: 'center',
-            fontWeight: '600'
-          }}>{this.numberWithCommas(this.props.totalCount || 10000)}</Text>
+            fontWeight: '700'
+          }}>{value}</Text>
           <Image
             style={{
               zIndex: -1,
-              width: RFValue(10),
-              height: RFValue(10),
+              width: 10,
+              height: 10,
               position: 'absolute',
               bottom: -8,
               alignSelf: 'center',
-              tintColor: '#FE4358'
+              tintColor: red_bluezone
             }}
             source={require('../images/down-arrow.png')} />
         </View>
-        <Dash style={{
-          height: 1,
-          width: width * 0.81,
-          alignSelf: 'center',
-          position: 'absolute',
-          top: height * 0.1
-        }}
-          dashColor={'#FE4358'}
-        />
-        {
-          // <View style={{backgroundColor:'red'}}>
-            this.renderCharMain()
-          // </View>
-         
-        }
-        {/* <Svg> */}
-        {/* </Svg> */}
-
+      }
+      <View style={{
+        position: 'absolute',
+        backgroundColor: red_bluezone,
+        zIndex: 1,
+        top: height * 0.06,
+        // left: ,
+        alignSelf: 'center',
+        paddingHorizontal: RFValue(10),
+        paddingVertical: RFValue(Platform.OS == 'ios' ? 5 : 3),
+        borderWidth: 1,
+        borderRadius: 15,
+        borderColor: 'red',
+        // width: RFValue(63)
+      }}>
+        <Text style={{
+          color: 'white',
+          fontSize: RFValue(10),
+          textAlign: 'center',
+          fontWeight: '600'
+        }}>{numberWithCommas(totalCount || 10000)}</Text>
+        <Image
+          style={{
+            zIndex: -1,
+            width: RFValue(10),
+            height: RFValue(10),
+            position: 'absolute',
+            bottom: -8,
+            alignSelf: 'center',
+            tintColor: red_bluezone
+          }}
+          source={require('../images/down-arrow.png')} />
       </View>
-    );
-  }
+      <Dash style={{
+        height: 1,
+        width: width * 0.81,
+        alignSelf: 'center',
+        position: 'absolute',
+        top: height * 0.1
+      }}
+        dashColor={red_bluezone}
+      />
+      {
+        renderCharMain()
+      }
+      {/* <Svg> */}
+      {/* </Svg> */}
+
+    </View>
+  );
 }
 
 export default ChartLine;

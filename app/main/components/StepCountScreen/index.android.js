@@ -91,19 +91,25 @@ const StepCount = ({ props, intl, navigation }) => {
     observerStepDrawUI();
     // scheduler.createWarnningWeightNotification()
     synchronizeDatabaseStepsHistory()
+    return () => {
+      BackgroundJob.removeTargetChange();
+    }
   }, [])
 
   const observerStepDrawUI = async () => {
     getResultBindingUI();
     getListHistoryChart();
-    autoChangeStepsTarget();
+    // checkAutoChangeStepsTarget();
     BackgroundJob.observerStepSaveChange(() => {
       getResultBindingUI()
     })
     BackgroundJob.observerHistorySaveChange(async () => {
       getListHistoryChart();
       getResultBindingUI();
-      autoChangeStepsTarget();
+      // await checkAutoChangeStepsTarget();
+    })
+    BackgroundJob.observerTargetChange(async () => {
+      await resultSteps()
     })
   }
 
@@ -229,11 +235,9 @@ const StepCount = ({ props, intl, navigation }) => {
     })
   }
 
-
   const synchronizeDatabaseStepsHistory = async () => {
     try {
       let listStepBefore = await getListStepsBefore();
-      // console.log('listStepBefore', listStepBefore)
       if (listStepBefore?.length == 0) {
         await saveHistoryEmpty()
         return
@@ -273,9 +277,19 @@ const StepCount = ({ props, intl, navigation }) => {
     // Lọc ra tất cả thời gian trên db
     let listDayStart = await getListStartDateHistory(currentTime)
     listDayStart = listDayStart.map(t => t.starttime)
-    if (!listDayStart.some(t => t == currentTime)) {
-      listDayStart.push(currentTime)
+    let lastTime = await getFirstTimeSetup()
+    if (!lastTime) {
+      lastTime = { time: currentTime }
     }
+    if (listDayStart.length == 0 && (currentTime - lastTime?.time == 86400)) {
+      listDayStart.push(lastTime?.time - 86400)
+      listDayStart.push(currentTime)
+    } else {
+      if (!listDayStart.some(t => t == currentTime)) {
+        listDayStart.push(currentTime)
+      }
+    }
+
     if (listDayStart.length <= 1) {
       BackgroundJob.sendEmitSaveHistorySuccess()
       return
@@ -305,7 +319,6 @@ const StepCount = ({ props, intl, navigation }) => {
     }))
     BackgroundJob.sendEmitSaveHistorySuccess()
   }
-
 
   const loopTimeToSchedule = async (oldId) => {
     if (oldId) {
@@ -363,9 +376,15 @@ const StepCount = ({ props, intl, navigation }) => {
   const autoChangeStepsTarget = async () => {
     let stepTarget = await getResultSteps()
     if (stepTarget != undefined) {
-      let currentTime = moment().format('DD/MM/YYYY')
-      let lastUpdateTarget = moment.unix(stepTarget?.date).format('DD/MM/YYYY')
-      if (currentTime == lastUpdateTarget) {
+      let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      let tmp = `${stepTarget?.date}`
+      if(tmp.length >= 13){
+        tmp = tmp.slice(0, 10)
+      }
+      let v = parseInt(tmp)
+      let lastUpdateTarget = moment.unix(v).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+
+      if (currentTime.isBefore(lastUpdateTarget, 'seconds') || (currentTime.format('DD/MM/YYYY') == lastUpdateTarget.format('DD/MM/YYYY'))) {
         console.log('autoChangeStepsTarget exist')
         return
       }
@@ -402,8 +421,13 @@ const StepCount = ({ props, intl, navigation }) => {
       step: stepTargetNew,
       date: currentTime
     }
-
-    await setResultSteps(resultSave)
+    try {
+      console.log('DATASAVEEE', resultSave)
+      await setResultSteps(resultSave)
+    } catch (err) {
+      console.log('setResultSteps error', err)
+    }
+    BackgroundJob.sendEmitSaveTargetSuccess()
     BackgroundJob.updateTypeNotification()
   }
 
@@ -652,7 +676,7 @@ const StepCount = ({ props, intl, navigation }) => {
         </View>
 
         <View style={styles.viewLineChart}>
-          {/* {(dataChart.length && ( */}
+          {(dataChart.length && (
             <View>
               <ChartLineV
                 totalCount={totalCount}
@@ -688,8 +712,8 @@ const StepCount = ({ props, intl, navigation }) => {
                 }}>
               </TouchableOpacity>
             </View>
-          {/* )
-          ) || null} */}
+          )
+          ) || null}
         </View>
 
       </View>
@@ -778,13 +802,13 @@ const styles = StyleSheet.create({
   },
   txCountStep: {
     color: '#fe4358',
-    fontSize: 37,
+    fontSize: RFValue(32),
     fontWeight: 'bold',
     textAlign: 'center',
   },
   txCountTarget: {
     color: '#949494',
-    fontSize: 14,
+    fontSize: RFValue(12),
   },
   chart: {
     flex: 1,
@@ -806,7 +830,7 @@ const styles = StyleSheet.create({
   },
   txToday: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: RFValue(12),
     marginVertical: RFValue(14),
     textAlign: 'center',
   },

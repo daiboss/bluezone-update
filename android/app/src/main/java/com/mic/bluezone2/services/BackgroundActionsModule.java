@@ -33,6 +33,7 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
     private static final String EMIT_EVENT_TIMEOUT = "EMIT_EVENT_TIMEOUT";
     private static final String EMIT_EVENT_STEP_SAVE = "EMIT_EVENT_STEP_SAVE";
     private static final String EMIT_EVENT_HISTORY_SAVE = "EMIT_EVENT_HISTORY_SAVE";
+    private static final String EMIT_EVENT_TARGET_SAVE = "EMIT_EVENT_TARGET_SAVE";
 
     private final ReactContext reactContext;
     private static ReactApplicationContext reactContextStatic;
@@ -199,6 +200,11 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void sendEmitSaveHistorySuccess(){
         sendEvent(reactContext, EMIT_EVENT_HISTORY_SAVE);
+    }
+
+    @ReactMethod
+    public void sendEmitSaveTargetSuccess(){
+        sendEvent(reactContext, EMIT_EVENT_TARGET_SAVE);
     }
 
     public static void sendEvent(String event, WritableNativeMap params) {

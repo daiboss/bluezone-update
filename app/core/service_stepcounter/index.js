@@ -299,6 +299,24 @@ class BackgroundServer {
     removeObserverHistoryChange() {
         DeviceEventEmitter.removeListener('EMIT_EVENT_HISTORY_SAVE')
     }
+
+    sendEmitSaveTargetSuccess() {
+        if (Platform.OS !== 'android') return;
+        if (!this.isRunning())
+            throw new Error('sendEmitSaveTargetSuccess: A BackgroundAction must be running before updating the notification');
+        RNBackgroundActions.sendEmitSaveTargetSuccess();
+    }
+
+    removeTargetChange() {
+        DeviceEventEmitter.removeListener('EMIT_EVENT_TARGET_SAVE')
+    }
+
+    observerTargetChange(callback) {
+        DeviceEventEmitter.addListener(
+            'EMIT_EVENT_TARGET_SAVE',
+            () => callback()
+        )
+    }
 }
 
 const backgroundStepCounter = new BackgroundServer();
