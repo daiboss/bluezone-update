@@ -79,10 +79,11 @@ const ChartColumn = ({ item,
     onGetDataBySelect,
     selectedItem
 }) => {
+    console.log('maxDomainmaxDomainmaxDomainmaxDomain',maxDomain)
     const refAnim = useRef(new Animated.Value(0)).current
 
     useEffect(() => {
-        let tmp =  (item?.y / maxDomain) * HEIGHT_CHART * 0.9
+        let tmp =  (item?.y / maxDomain) * HEIGHT_CHART * 0.8
         Animated.timing(refAnim, {
             toValue: tmp,
             duration: TIME_ANIM,
@@ -109,7 +110,7 @@ const ChartColumn = ({ item,
                 width: 1,
                 height: '100%',
                 backgroundColor: '#f3f3f3',
-                marginTop: 28
+                marginTop: RFValue(28)
             }} />
             <Text style={{
                 fontSize: Platform.OS == 'android' ? 10 : RFValue(10),

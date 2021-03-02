@@ -29,8 +29,17 @@ const BarChart7Item = ({
     const [listData, setListData] = useState([])
 
     const [currentDayData, setCurrentDayData] = useState()
-
+    // const data = [
+    //     {x: "Tháng 2", y: 19466, start: "2021/01/02", end: "2021/28/02", year: "2021"},
+    //     {x: "Tháng này", y: 283, start: "2021/01/03", end: "2021/31/03", year: "2021"},
+    //     {x: "Tháng 12", y: 38491, start: "2020/01/11", end: "2020/30/11", year: "2020"},
+    //     {x: "Tháng 1", y: 489900, start: "2020/01/11", end: "2020/30/11", year: "2020"},
+    //     {x: "Tháng 3", y: 489780, start: "2020/01/11", end: "2020/30/11", year: "2020"},
+    //     {x: "Tháng 4", y: 30333, start: "2020/01/11", end: "2020/30/11", year: "2020"},
+    //     {x: "Tháng 5", y: 39207, start: "2020/01/11", end: "2020/30/11", year: "2020"}
+    // ]
     useEffect(() => {
+        console.log('datatatatatatatatatata',data)
         setIsLast(false)
         setListData([])
     }, [data])
@@ -96,6 +105,7 @@ const BarChart7Item = ({
             setIsLast(true)
             return
         }
+        console.log('datadata======',data)
         let arrTmp = data.slice((end - 7) < 0 ? 0 : (end - 7), end)
 
         let widthChart = width
@@ -104,6 +114,7 @@ const BarChart7Item = ({
             widthChart = tmp * (arrTmp.length - 1)
         }
         let maxDomain = Math.max.apply(Math, data.map(function (o) { return o.y; }))
+        console.log('maxDomain======',maxDomain)
         let listValue = [...listData]
         if (index == 0) {
             listValue = []
@@ -119,6 +130,7 @@ const BarChart7Item = ({
             maxDomain: maxDomain + 1000,
             widthChart: widthChart
         })
+        console.log('listValuelistValuelistValuelistValuelistValuelistValue',listValue)
         setListData(listValue)
         setIsLoading(false)
     }

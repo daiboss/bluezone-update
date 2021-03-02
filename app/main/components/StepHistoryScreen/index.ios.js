@@ -619,19 +619,32 @@ const StepCount = ({ props, intl, navigation }) => {
               setMaxDomain(max + 1000)
               if (listDataChart.length <= 7) {
                 setWidthChart(screenWidth)
+                setDataChart(listDataChart);
               } else {
                 let tmp = (screenWidth - (type == 'month' ? 30 : type == 'day' ? 80 : 60)) / 6;
                 let widthTmp = tmp * (listDataChart.length - 1)
                 setWidthChart(widthTmp)
+                setDataChart(listDataChart);
               }
               // type == 'month' && listDataChart.reverse() //: listDataChart
               if (type == 'month') {
-                let firtItem = listDataChart[0]
-                listDataChart.splice(0, 1)
-                listDataChart.push(firtItem)
+                // const thisMonth = moment().format('M')
+                const arrMonth =  listDataChart.map(i => i.x)
+                const indexThisMonth = arrMonth.indexOf('This\nmonth')
+                const indexThangNay = arrMonth.indexOf('Tháng\nnày')
+                if(indexThisMonth !== -1){
+                  const arrSlice = listDataChart.splice(0, indexThisMonth + 1)
+                  const listDataChartConvert = arrSlice.concat(listDataChart)
+                  setDataChart(listDataChartConvert);
+                }else{
+                  const arrSlice = listDataChart.splice(0, indexThangNay + 1)
+                  const listDataChartConvert = listDataChart.concat(arrSlice)
+                  setDataChart(listDataChartConvert);
+                }
+               
               }
 
-              setDataChart(listDataChart);
+
             } catch (e) {
             }
           }
@@ -649,6 +662,9 @@ const StepCount = ({ props, intl, navigation }) => {
   //     })
   //     .catch(err => { });
   // };
+  const getthisMonth = () => {
+
+  }
   const addDays = (date, days = 1) => {
     var list = [];
     const result = new Date(date);
