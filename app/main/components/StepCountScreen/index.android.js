@@ -438,7 +438,7 @@ const StepCount = ({ props, intl, navigation }) => {
       }
 
       let startDay = new moment().subtract(4, 'days').set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-      let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+      let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toDate().getTime()
       let listHistory = await getListHistory(startDay.unix(), new moment().unix())
       if (listHistory?.length <= 0) return
 
@@ -525,8 +525,9 @@ const StepCount = ({ props, intl, navigation }) => {
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
+      let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toDate().getTime()
       if (!resultSteps) {
-        setResultSteps({ step: totalCount, date: new Date().getTime() });
+        setResultSteps({ step: totalCount, date: currentTime });
       } else {
         setTotalCount(resultSteps.step);
       }
@@ -551,19 +552,19 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const confirmStepsTarget = async (type) => {
     await setConfirmAlert(new moment().format('DD/MM/YYYY'))
-    let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+    let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
     if (type == 1) {
       let targetSteps = await getResultSteps();
       let resultSave = {
         step: targetSteps?.step,
-        date: currentTime
+        date: currentTime.toDate().getTime()
       }
       await setResultSteps(resultSave)
       closeModalAlert7Day()
     } else {
       let resultSave = {
         step: 10000,
-        date: currentTime
+        date: currentTime.toDate().getTime()
       }
       await setResultSteps(resultSave)
       await resultSteps()
