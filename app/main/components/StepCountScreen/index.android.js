@@ -418,7 +418,8 @@ const StepCount = ({ props, intl, navigation }) => {
         let v = parseInt(tmp)
         let lastUpdateTarget = moment.unix(v).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
 
-        if (currentTime.isBefore(lastUpdateTarget, 'seconds') || (currentTime.format('DD/MM/YYYY') == lastUpdateTarget.format('DD/MM/YYYY'))) {
+        if (currentTime.isBefore(lastUpdateTarget, 'seconds') ||
+          (currentTime.format('DD/MM/YYYY') == lastUpdateTarget.format('DD/MM/YYYY'))) {
           console.log('autoChangeStepsTarget exist')
           return
         }
@@ -449,7 +450,6 @@ const StepCount = ({ props, intl, navigation }) => {
         let resultTmp = JSON.parse(element?.resultStep)
         return (resultTmp?.step || 0)
       })
-
       let stepTargetNew = CalculationStepTargetAndroid(listData, stepTarget?.step || 10000, tmpDay)
       let resultSave = {
         step: stepTargetNew,

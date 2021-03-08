@@ -79,7 +79,6 @@ const getListHistory = async (start, to) => {
 
 // Thêm vào lịch sử, nếu tồn tại sẽ update giá trị mới nhất
 const addHistory = async (time, value) => {
-    console.log('AAAA', value)
     let itemExist = await getListHistory(time, time + 86399)
     if (itemExist.length > 0) {
         let item = itemExist[0]

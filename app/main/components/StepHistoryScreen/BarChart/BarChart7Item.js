@@ -52,7 +52,7 @@ const BarChart7Item = ({
         if (listData.length > 0) {
             let currentItem = listData[0]
             let itemToday = currentItem?.list[currentItem?.list?.length - 1]
-            let old = JSON.parse(dataTodayOld?.resultStep)
+            // let old = JSON.parse(dataTodayOld?.resultStep)
             // console.log('KKOKOKOKOKO', currentDayData?.step , old?.step , itemToday?.results?.step)
             let value = {
                 step: currentDayData?.step,

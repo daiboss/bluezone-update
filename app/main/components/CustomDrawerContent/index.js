@@ -2,10 +2,9 @@ import React, { useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import message from '../../../core/msg/setting';
 import { injectIntl, intlShape } from 'react-intl';
-import * as fontSize from '../../../core/fontSize';
 import { View, Text, TouchableOpacity, Image, StyleSheet, SafeAreaView, Platform } from 'react-native'
-const CustomDrawer = ({ intl,navigation }) => {
 
+const CustomDrawer = ({ intl, navigation }) => {
     const { formatMessage } = intl;
 
     const closeMenu = () => {
@@ -20,14 +19,14 @@ const CustomDrawer = ({ intl,navigation }) => {
     }
     const toSetting = () => {
         navigation.navigate('settingScreen')
-
-
     }
     return (
         <SafeAreaView>
             <View style={styles.container}>
                 <View style={{}}>
-                    <TouchableOpacity onPress={closeMenu} style={[styles.btnMenu,]}>
+                    <TouchableOpacity
+                        onPress={closeMenu}
+                        style={[styles.btnMenu,]}>
                         <Ionicons
                             name={'ios-menu'}
                             size={28}
@@ -35,7 +34,7 @@ const CustomDrawer = ({ intl,navigation }) => {
                         />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={toProfile} style={[styles.btn,{paddingTop:0}]}>
+                <TouchableOpacity onPress={toProfile} style={[styles.btn, { paddingTop: 0 }]}>
                     <Image style={styles.image} resizeMode={'contain'} source={require('./images/ic_profile.png')}></Image>
                     <Text style={styles.txBtn}>{formatMessage(message.profile)}</Text>
 
@@ -89,7 +88,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         marginTop: 30
     },
-    iconMenu:{
+    iconMenu: {
         paddingLeft: 20,
         paddingRight: 20,
         ...Platform.select({
