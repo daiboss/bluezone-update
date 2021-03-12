@@ -2,23 +2,16 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   SafeAreaView,
-  StatusBar,
   Text,
   TouchableOpacity,
   StyleSheet,
-  ImageBackground,
   Image,
-  processColor,
-  BackHandler,
   ActivityIndicator,
 } from 'react-native';
-// import { BarChart } from 'react-native-charts-wrapper';
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 
 import { Dimensions } from 'react-native';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { ScrollView } from 'react-native-gesture-handler';
-// import { LineChart, Grid } from 'react-native-svg-charts'
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
@@ -27,8 +20,8 @@ import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 
-import { getAbsoluteMonths, getAllDistance, gender, getDistances } from '../../../core/calculation_steps';
-import { getListHistory } from '../../../core/db/SqliteDb';
+import { getDistances } from '../../../core/calculation_steps';
+import { getListHistory } from '../../../core/db/RealmDb';
 import BarChart7Item from './BarChart/BarChart7Item';
 import { RFValue } from '../../../const/multiscreen';
 import { red_bluezone } from '../../../core/color';
@@ -65,21 +58,16 @@ Date.prototype.getWeek = function (dowOffset) {
   }
   return weeknum;
 };
-const screenWidth = Dimensions.get('window').width;
 const StepCount = ({ props, intl, navigation }) => {
-  const route = useRoute();
-
   const { formatMessage, locale } = intl;
 
   const [selectDate, setSelectDate] = useState(true);
   const [selectWeek, setSelectWeek] = useState(false);
   const [selectMonth, setSelectMonth] = useState(false);
-  const offset = new Date().getTimezoneOffset();
-  const [time, setTime] = useState(0);
+
   const [countTime, setCountTime] = useState(0);
   const [countTimeHour, setCountTimeHour] = useState(0);
   const [countStep, setCountStep] = useState(null);
-  const [countRest, setCountRest] = useState(0);
   const [countCarlo, setCountCarlo] = useState(0);
   const [distant, setDistant] = useState(0);
   const [dataChart, setDataChart] = useState([]);
@@ -138,30 +126,30 @@ const StepCount = ({ props, intl, navigation }) => {
     let stepToday = listStepToday
     let step = [...listTotalSteps]
 
-    if (!stepToday) {
-      let result = await getDistances();
-      let time = result?.time || 0;
-
-      let start = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
-      let jj = JSON.stringify({
-        step: result?.step || 0,
-        distance: result?.distance || 0,
-        calories: result?.calories || 0,
-        time: time
-      })
-      stepToday = {
-        starttime: start,
-        resultStep: jj
-      }
-      setListStepToday(stepToday)
-    }
-    if (step.length == 0) {
-      step = await getListHistory(startTime, endTime)
-      step.push(stepToday)
-      setListTotalSteps(step)
-    }
-
     try {
+      if (!stepToday) {
+        let result = await getDistances();
+        let time = result?.time || 0;
+
+        let start = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+        let jj = JSON.stringify({
+          step: result?.step || 0,
+          distance: result?.distance || 0,
+          calories: result?.calories || 0,
+          time: time
+        })
+        stepToday = {
+          starttime: start,
+          resultStep: jj
+        }
+        setListStepToday(stepToday)
+      }
+      if (step.length == 0) {
+        step = await getListHistory(startTime, endTime)
+        step.push(stepToday)
+        setListTotalSteps(step)
+      }
+
       if (!step || step.length <= 0) {
         return
       }
@@ -307,7 +295,9 @@ const StepCount = ({ props, intl, navigation }) => {
       setMaxDomain(max + 1000)
 
       setDataChart(list);
-    } catch (error) { }
+    } catch (error) {
+      console.log('getDataHealth error', error)
+    }
   };
 
   const onBack = () => {

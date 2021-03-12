@@ -31,7 +31,6 @@ import * as fontSize from '../../../core/fontSize';
 import { useRoute } from '@react-navigation/native';
 import dateUtils from 'mainam-react-native-date-utils';
 import BartChartHistory from './BarChart/BartChartHistory';
-import BarChartConvert from './BarChart/BarChartConvert';
 import BarChart7Item from './BarChart/BarChart7Item';
 import {
   getProfile,

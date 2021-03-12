@@ -1,6 +1,7 @@
 const STEP_TARGET_DEFAULT = 10000
 
 const CalculationStepTargetAndroid = (listStep, oldTarget, days) => {
+    console.log('CalculationStepTargetAndroid', listStep, oldTarget, days)
     if (days == 2 && listStep.length >= 2) {
         let tmp = listStep.slice(0, 2)
         return CalculationStepTarget(tmp, oldTarget, days)

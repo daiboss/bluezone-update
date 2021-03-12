@@ -78,7 +78,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const [alertStep, setAlertStep] = useState(undefined);
   const [alertTarget, setAlertTarget] = useState(false);
   const [alertBmi, setAlertBmi] = useState(false);
-  const [onOffApp,setOnOffApp] = useState(true)
+  const [onOffApp, setOnOffApp] = useState(true)
   const [totalStep, setTotalStep] = useState(0);
   const [isHardwork, setIsHardwork] = useState(true)
   const [timeWeight, setTimeWeight] = useState(0)
@@ -248,7 +248,7 @@ const SettingScreen = ({ intl, navigation }) => {
 
   const saveStepsTarget = async (steps) => {
     setTotalStep(steps)
-    let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+    let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toDate().getTime()
     await setResultSteps({ step: steps, date: currentTime, hardwork: true })
     if (Platform.OS == 'android') {
       BackgroundJob.updateTypeNotification()
@@ -338,7 +338,7 @@ const SettingScreen = ({ intl, navigation }) => {
           value={alertBmi}
         />
       </View> */}
-     {Platform.OS == 'android' && <View style={[styles.viewTx, styles.borderBottom]}>
+      {Platform.OS == 'android' && <View style={[styles.viewTx, styles.borderBottom]}>
         <Text style={styles.txLabel}>{formatMessage(message.NotificationRealtime)}</Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
@@ -347,7 +347,7 @@ const SettingScreen = ({ intl, navigation }) => {
           onValueChange={alertStepSwitch}
           value={alertStep || false}
         />
-      </View> }
+      </View>}
       {Platform.OS == 'android' && <View style={[styles.viewTx, styles.borderBottom]}>
         <Text style={styles.txLabel}>{formatMessage(message.NotificationTarget)}</Text>
         <Switch
@@ -368,7 +368,7 @@ const SettingScreen = ({ intl, navigation }) => {
           value={alertBmi}
         />
       </View>
-      
+
       {
         Platform.OS == 'android' && (
           <TouchableOpacity

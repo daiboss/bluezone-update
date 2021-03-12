@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   View,
   SafeAreaView,
@@ -13,9 +13,8 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
-import { Dimensions } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-// import { LineChart, Grid } from 'react-native-svg-charts'
+
 import moment from 'moment';
 import 'moment/locale/vi'; // without this line it didn't work
 import Header from '../../../base/components/Header';
@@ -38,7 +37,6 @@ import ChartLineV from './ChartLineV';
 import {
   ResultSteps,
 } from '../../../const/storage';
-const screenWidth = Dimensions.get('window').width;
 
 import {
   getDistances,
@@ -57,15 +55,17 @@ import {
   getListStepDayBefore,
   getListStartDateHistory,
   getListStepDay,
-  getListStepsBefore
-} from './../../../core/db/SqliteDb'
+  getListStepsBefore,
+  removeAllHistory
+} from './../../../core/db/RealmDb'
 
 import ButtonIconText from '../../../base/components/ButtonIconText';
-import { blue_bluezone, red_bluezone } from '../../../core/color';
+import { red_bluezone } from '../../../core/color';
 import { RFValue } from '../../../const/multiscreen';
 
-import { CalculationStepTarget, CalculationStepTargetAndroid } from '../../../core/calculation_step_target';
+import { CalculationStepTargetAndroid } from '../../../core/calculation_step_target';
 import ModalChangeTarget from './Components/ModalChangeTarget';
+import { DATA_FAKE } from './DataFakeHistory';
 
 const options = {
   taskName: 'Bluezone',
@@ -91,20 +91,49 @@ const StepCount = ({ props, intl, navigation }) => {
     observerStepDrawUI();
     // scheduler.createWarnningWeightNotification()
     synchronizeDatabaseStepsHistory()
+    // fakeData()
     return () => {
       BackgroundJob.removeTargetChange();
+      BackgroundJob.removeObserverHistoryChange();
     }
   }, [])
 
+  const fakeData = async () => {
+    try {
+      // return
+      let start = moment('01/01/2020', 'DD/MM/YYYY').unix()
+      let end = moment('30/12/2020', 'DD/MM/YYYY').unix()
+      let listHistorya = await getListHistory(start, end)
+      if (listHistorya.length <= 1) {
+        DATA_FAKE.map(async element => {
+          let save = await addHistory(element.starttime,
+            {
+              "calories": Math.floor(Math.random() * 5000) + 10,
+              "distance": Math.floor(Math.random() * 5000),
+              "step": Math.floor(Math.random() * 15000),
+              "time": Math.floor(Math.random() * 5000)
+            })
+          console.log('SSS', save)
+        });
+
+      }
+    } catch (err) {
+      console.log('fakeDATA ERROR', err)
+    }
+  }
+
   const observerStepDrawUI = async () => {
     getResultBindingUI();
-    getListHistoryChart();
     // checkAutoChangeStepsTarget();
     BackgroundJob.observerStepSaveChange(() => {
       getResultBindingUI()
     })
     BackgroundJob.observerHistorySaveChange(async () => {
+      // let tmpCurrent = moment().unix()
+      // let startDay = moment().startOf('days').unix()
+      // if (Math.abs(tmpCurrent - startDay) <= 10) {
       getListHistoryChart();
+      // }
       getResultBindingUI();
       // await checkAutoChangeStepsTarget();
     })
@@ -114,31 +143,32 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const getListHistoryChart = async () => {
-    let curentTime = moment().unix()
-    // let start = moment().subtract(8, 'days').unix()
-    // let end = moment().subtract(1, 'days').unix()
-    let start = curentTime - 86400 * 8
-    let end = curentTime - 86400
-    let steps = await getListHistory(start, end)
-    if (steps.length > 7) {
-      steps.splice(0, 1)
-    }
-
-    let list = steps.map(item => {
-      let tmp = JSON.parse(item?.resultStep || {})
-      return {
-        x: moment.unix(item?.starttime).format('DD/MM'),
-        y: tmp?.step || 0,
+    try {
+      let curentTime = moment().unix()
+      let start = curentTime - 86400 * 8
+      let end = curentTime - 86400
+      let steps = await getListHistory(start, end)
+      if (steps.length > 7) {
+        steps.splice(0, 1)
       }
-    });
-    let listTime = []
-    list.forEach(e => {
-      listTime.push(e?.x)
-    });
-    setDataChart(list)
-    setTime(listTime)
+      let list = steps.map(item => {
+        let tmp = JSON.parse(item?.resultStep || {})
+        return {
+          x: moment.unix(item?.starttime).format('DD/MM'),
+          y: tmp?.step || 0,
+        }
+      });
+      let listTime = []
+      list.forEach(e => {
+        listTime.push(e?.x)
+      });
+      setDataChart(list)
+      setTime(listTime)
 
-    await alert7dayLessThan1000(steps)
+      await alert7dayLessThan1000(steps)
+    } catch (err) {
+      console.log('getListHistoryChart error', err)
+    }
   }
 
   const alert7dayLessThan1000 = async (steps) => {
@@ -270,51 +300,55 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const saveHistoryEmpty = async () => {
-    let currentTime = moment().startOf('day').unix()
-    // Lọc ra tất cả thời gian trên db
-    let listDayStart = await getListStartDateHistory(currentTime)
-    listDayStart = listDayStart.map(t => t.starttime)
-    let lastTime = await getFirstTimeSetup()
-    if (!lastTime) {
-      lastTime = { time: currentTime }
-    }
-    if (listDayStart.length == 0 && (currentTime - lastTime?.time == 86400)) {
-      listDayStart.push(lastTime?.time - 86400)
-      listDayStart.push(currentTime)
-    } else {
-      if (!listDayStart.some(t => t == currentTime)) {
-        listDayStart.push(currentTime)
+    try {
+      let currentTime = moment().startOf('day').unix()
+      // Lọc ra tất cả thời gian trên db
+      let listDayStart = await getListStartDateHistory(currentTime)
+      listDayStart = listDayStart.map(t => t.starttime)
+      let lastTime = await getFirstTimeSetup()
+      if (!lastTime) {
+        lastTime = { time: currentTime }
       }
-    }
-
-    if (listDayStart.length <= 1) {
-      BackgroundJob.sendEmitSaveHistorySuccess()
-      return
-    }
-    // Nếu ngày nào chưa có trong db sẽ tự động thêm, nhưng dữ liệu sẽ mặc định là 0 0 0 0
-    let tmp = []
-    listDayStart.forEach((item, index) => {
-      if (index > 0) {
-        let kAbstract = item - listDayStart[index - 1]
-        if (kAbstract > 86400) {
-          let x = parseInt(kAbstract / 86400) - 1
-          let listFor = Array.from(Array(x).keys())
-          listFor.forEach(e => {
-            tmp.push(item - (e + 1) * 86400)
-          })
+      if (listDayStart.length == 0 && (currentTime - lastTime?.time == 86400)) {
+        listDayStart.push(lastTime?.time - 86400)
+        listDayStart.push(currentTime)
+      } else {
+        if (!listDayStart.some(t => t == currentTime)) {
+          listDayStart.push(currentTime)
         }
       }
-    });
 
-    await Promise.all(tmp.map(async element => {
-      await addHistory(element, {
-        step: 0,
-        distance: 0.00,
-        calories: 0,
-        time: 0,
-      })
-    }))
-    BackgroundJob.sendEmitSaveHistorySuccess()
+      if (listDayStart.length <= 1) {
+        BackgroundJob.sendEmitSaveHistorySuccess()
+        return
+      }
+      // Nếu ngày nào chưa có trong db sẽ tự động thêm, nhưng dữ liệu sẽ mặc định là 0 0 0 0
+      let tmp = []
+      listDayStart.forEach((item, index) => {
+        if (index > 0) {
+          let kAbstract = item - listDayStart[index - 1]
+          if (kAbstract > 86400) {
+            let x = parseInt(kAbstract / 86400) - 1
+            let listFor = Array.from(Array(x).keys())
+            listFor.forEach(e => {
+              tmp.push(item - (e + 1) * 86400)
+            })
+          }
+        }
+      });
+
+      await Promise.all(tmp.map(async element => {
+        await addHistory(element, {
+          step: 0,
+          distance: 0.00,
+          calories: 0,
+          time: 0,
+        })
+      }))
+      BackgroundJob.sendEmitSaveHistorySuccess()
+    } catch (error) {
+      console.log('saveHistoryEmpty error', error)
+    }
   }
 
   const loopTimeToSchedule = async (oldId) => {
@@ -371,53 +405,54 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const autoChangeStepsTarget = async () => {
-    let stepTarget = await getResultSteps()
-    if (stepTarget != undefined) {
-      let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-      let tmp = `${stepTarget?.date}`
-      if(tmp.length >= 13){
-        tmp = tmp.slice(0, 10)
-      }
-      let v = parseInt(tmp)
-      let lastUpdateTarget = moment.unix(v).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    try {
+      let stepTarget = await getResultSteps()
+      if (stepTarget != undefined) {
+        let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        let tmp = `${stepTarget?.date}`
+        if (tmp.length >= 13) {
+          tmp = tmp.slice(0, 10)
+        }
+        let v = parseInt(tmp)
+        let lastUpdateTarget = moment.unix(v).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
 
-      if (currentTime.isBefore(lastUpdateTarget, 'seconds') || (currentTime.format('DD/MM/YYYY') == lastUpdateTarget.format('DD/MM/YYYY'))) {
+        if (currentTime.isBefore(lastUpdateTarget, 'seconds') ||
+          (currentTime.format('DD/MM/YYYY') == lastUpdateTarget.format('DD/MM/YYYY'))) {
+          console.log('autoChangeStepsTarget exist')
+          return
+        }
+      }
+
+      let lastTime = await getFirstTimeSetup()
+      let firstTime = new moment.unix(lastTime?.time)
+      let tmpDay = new moment().diff(firstTime, 'days')
+      if (tmpDay < 2) {
         return
       }
-    }
 
-    let lastTime = await getFirstTimeSetup()
-    let firstTime = new moment.unix(lastTime?.time)
-    let tmpDay = new moment().diff(firstTime, 'days')
-    if (tmpDay < 2) {
-      return
-    }
+      let auto = await getAutoChange();
 
-    let auto = await getAutoChange();
+      if (auto != undefined && auto == false) {
+        return
+      }
 
-    if (auto != undefined && auto == false) {
-      return
-    }
+      let startDay = new moment().subtract(4, 'days').set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toDate().getTime()
+      let listHistory = await getListHistory(startDay.unix(), new moment().unix())
+      if (listHistory?.length <= 0) return
 
-    let startDay = new moment().subtract(4, 'days').set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-    let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
-    let listHistory = await getListHistory(startDay.unix(), new moment().unix())
-    if (listHistory?.length <= 0) return
+      // let stepTarget = await getResultSteps()
+      // console.log('autoChangeStepsTarget2222', tmpDay, stepTarget, listHistory)
 
-    // let stepTarget = await getResultSteps()
-    // console.log('autoChangeStepsTarget2222', tmpDay, stepTarget, listHistory)
-
-    let listData = listHistory.map(element => {
-      let resultTmp = JSON.parse(element?.resultStep)
-      return (resultTmp?.step || 0)
-    })
-
-    let stepTargetNew = CalculationStepTargetAndroid(listData, stepTarget?.step || 10000, tmpDay)
-    let resultSave = {
-      step: stepTargetNew,
-      date: currentTime
-    }
-    try {
+      let listData = listHistory.map(element => {
+        let resultTmp = JSON.parse(element?.resultStep)
+        return (resultTmp?.step || 0)
+      })
+      let stepTargetNew = CalculationStepTargetAndroid(listData, stepTarget?.step || 10000, tmpDay)
+      let resultSave = {
+        step: stepTargetNew,
+        date: currentTime
+      }
       await setResultSteps(resultSave)
     } catch (err) {
       console.log('setResultSteps error', err)
@@ -427,33 +462,37 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const saveHistory = async () => {
-    let tmp = new moment().subtract(1, 'days')
-    let yesterdayStart = tmp.clone().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
-    let yesterdayEnd = tmp.clone().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix()
-    // let listHistory = await getListHistory(yesterdayStart * 1000, yesterdayEnd * 1000)
-    // if (listHistory?.length > 0) {
-    //   return
-    // }
-    let listStepYesterday = await getListStepDayBefore()
-    let result = await getDistancesWithData(listStepYesterday);
-    if (Object.keys(result).length <= 0) {
-      return;
-    }
-
     try {
-      await addHistory(yesterdayStart, result)
-    } catch (err) {
-      console.log('addHistory ERROR', err)
-    }
+      let tmp = new moment().subtract(1, 'days')
+      let yesterdayStart = tmp.clone().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+      let yesterdayEnd = tmp.clone().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix()
+      // let listHistory = await getListHistory(yesterdayStart * 1000, yesterdayEnd * 1000)
+      // if (listHistory?.length > 0) {
+      //   return
+      // }
+      let listStepYesterday = await getListStepDayBefore()
+      let result = await getDistancesWithData(listStepYesterday);
+      if (Object.keys(result).length <= 0) {
+        return;
+      }
 
-    try {
-      await removeAllStepDay(yesterdayStart * 1000, yesterdayEnd * 1000)
-    } catch (err) {
-      console.log('removeAllStepDay ERROR', err)
-    }
+      try {
+        await addHistory(yesterdayStart, result)
+      } catch (err) {
+        console.log('addHistory ERROR', err)
+      }
 
-    BackgroundJob.sendEmitSaveHistorySuccess()
-    BackgroundJob.updateTypeNotification()
+      try {
+        await removeAllStepDay(yesterdayStart * 1000, yesterdayEnd * 1000)
+      } catch (err) {
+        console.log('removeAllStepDay ERROR', err)
+      }
+
+      BackgroundJob.sendEmitSaveHistorySuccess()
+      BackgroundJob.updateTypeNotification()
+    } catch (error) {
+      console.log('saveHistory error', error)
+    }
   }
 
   const { formatMessage, locale } = intl;
@@ -477,14 +516,16 @@ const StepCount = ({ props, intl, navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       resultSteps();
+      getListHistoryChart();
     }, [])
   );
 
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
+      let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toDate().getTime()
       if (!resultSteps) {
-        setResultSteps({ step: totalCount, date: new Date().getTime() });
+        setResultSteps({ step: totalCount, date: currentTime });
       } else {
         setTotalCount(resultSteps.step);
       }
@@ -509,25 +550,67 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const confirmStepsTarget = async (type) => {
     await setConfirmAlert(new moment().format('DD/MM/YYYY'))
-    let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+    let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
     if (type == 1) {
       let targetSteps = await getResultSteps();
       let resultSave = {
         step: targetSteps?.step,
-        date: currentTime
+        date: currentTime.toDate().getTime()
       }
       await setResultSteps(resultSave)
       closeModalAlert7Day()
     } else {
       let resultSave = {
         step: 10000,
-        date: currentTime
+        date: currentTime.toDate().getTime()
       }
       await setResultSteps(resultSave)
       await resultSteps()
       closeModalAlert7Day()
     }
   }
+
+  const renderChart = useMemo(() => {
+    if (dataChart?.length > 0) {
+      return (
+        <View>
+          <ChartLineV
+            totalCount={totalCount}
+            data={dataChart}
+            time={time}
+          // data={
+          //   [
+          //     { "x": 1, "y": 10004 },
+          //     { "x": 2, "y": 74 },
+          //     { "x": 3, "y": 273 },
+          //     { "x": 4, "y": 20000 },
+          //     { "x": 5, "y": 0 },
+          //     { "x": 6, "y": 0 },
+          //     { "x": 6, "y": 2000 },
+          //   ]
+          // }
+          />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() =>
+              navigation.navigate('stepHistory', {
+                dataHealth: {
+                  countStep, countRest: (totalCount - countStep) > 0 ? (totalCount - countStep) : 0
+                  , countCarlo, distant
+                },
+              })
+            }
+            style={{
+              zIndex: 10000,
+              position: 'absolute',
+              width: '100%',
+              height: '100%'
+            }}>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+  }, [dataChart, time, totalCount])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -671,44 +754,9 @@ const StepCount = ({ props, intl, navigation }) => {
         </View>
 
         <View style={styles.viewLineChart}>
-          {(dataChart.length && (
-            <View>
-              <ChartLineV
-                totalCount={totalCount}
-                data={dataChart}
-                // data={
-                //   [
-                //     { "x": 1, "y": 34 },
-                //     { "x": 2, "y": 74 },
-                //     { "x": 3, "y": 273 },
-                //     { "x": 4, "y": 1000 },
-                //     { "x": 5, "y": 0 },
-                //     { "x": 6, "y": 0 },
-                //     { "x": 6, "y": 2000 },
-                //   ]
-                // }
-                time={time}
-              />
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() =>
-                  navigation.navigate('stepHistory', {
-                    dataHealth: {
-                      countStep, countRest: (totalCount - countStep) > 0 ? (totalCount - countStep) : 0
-                      , countCarlo, distant
-                    },
-                  })
-                }
-                style={{
-                  zIndex: 10000,
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%'
-                }}>
-              </TouchableOpacity>
-            </View>
-          )
-          ) || null}
+          {
+            renderChart
+          }
         </View>
 
       </View>
@@ -729,6 +777,7 @@ const StepCount = ({ props, intl, navigation }) => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   img: {
     width: RFValue(56),
@@ -843,6 +892,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   }
 });
+
 StepCount.propTypes = {
   intl: intlShape.isRequired,
 };
