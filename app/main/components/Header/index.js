@@ -3,7 +3,6 @@ import { View, TouchableOpacity, StyleSheet, Image, Text } from 'react-native'
 import * as fontSize from '../../../core/fontSize';
 
 const Header = (props) => {
-    console.log('props: ', props);
 
 
     return (

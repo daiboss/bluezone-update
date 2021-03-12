@@ -39,7 +39,6 @@ const BarChart7Item = ({
     //     {x: "Tháng 5", y: 39207, start: "2020/01/11", end: "2020/30/11", year: "2020"}
     // ]
     useEffect(() => {
-        console.log('datatatatatatatatatata',data)
         setIsLast(false)
         setListData([])
     }, [data])
@@ -105,7 +104,6 @@ const BarChart7Item = ({
             setIsLast(true)
             return
         }
-        console.log('datadata======',data)
         let arrTmp = data.slice((end - 7) < 0 ? 0 : (end - 7), end)
 
         let widthChart = width
@@ -114,7 +112,6 @@ const BarChart7Item = ({
             widthChart = tmp * (arrTmp.length - 1)
         }
         let maxDomain = Math.max.apply(Math, data.map(function (o) { return o.y; }))
-        console.log('maxDomain======',maxDomain)
         let listValue = [...listData]
         if (index == 0) {
             listValue = []
@@ -130,7 +127,6 @@ const BarChart7Item = ({
             maxDomain: maxDomain + 1000,
             widthChart: widthChart
         })
-        console.log('listValuelistValuelistValuelistValuelistValuelistValue',listValue)
         setListData(listValue)
         setIsLoading(false)
     }

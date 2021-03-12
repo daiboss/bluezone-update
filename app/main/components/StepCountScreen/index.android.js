@@ -135,7 +135,6 @@ const StepCount = ({ props, intl, navigation }) => {
     list.forEach(e => {
       listTime.push(e?.x)
     });
-    // console.log('sAASSASASAS', start, end, list, listTime)
     setDataChart(list)
     setTime(listTime)
 
@@ -205,7 +204,6 @@ const StepCount = ({ props, intl, navigation }) => {
         let targetSteps = await getResultSteps();
         let isShowStep = await getIsShowNotification()
 
-        // console.log('STEP------->>>', steps)
 
         if (steps.stepCounter) {
           try {
@@ -214,7 +212,6 @@ const StepCount = ({ props, intl, navigation }) => {
               steps?.stepCounter)
             BackgroundJob.sendEmitSaveSuccess()
           } catch (er) {
-            console.log('LUUUUERRORORO', er)
           }
         }
 
@@ -385,7 +382,6 @@ const StepCount = ({ props, intl, navigation }) => {
       let lastUpdateTarget = moment.unix(v).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
 
       if (currentTime.isBefore(lastUpdateTarget, 'seconds') || (currentTime.format('DD/MM/YYYY') == lastUpdateTarget.format('DD/MM/YYYY'))) {
-        console.log('autoChangeStepsTarget exist')
         return
       }
     }
@@ -422,7 +418,6 @@ const StepCount = ({ props, intl, navigation }) => {
       date: currentTime
     }
     try {
-      console.log('DATASAVEEE', resultSave)
       await setResultSteps(resultSave)
     } catch (err) {
       console.log('setResultSteps error', err)

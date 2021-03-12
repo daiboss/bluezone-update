@@ -62,7 +62,6 @@ const NewSelectedView = ({
         }
         // setIndexSelected(indexTmp)
         // onValueChange && onValueChange(dataSource[indexTmp])
-        console.log('indexTmpindexTmp', indexTmp)
     }
 
     const onItemIndexChange = React.useCallback(setIndexSelected, []);
@@ -84,7 +83,6 @@ const NewSelectedView = ({
                 }}
                 data={listData}
                 onScrollToIndexFailed={(error) => {
-                    console.log('ERROR', error)
                     refFlatList.current?.scrollToOffset({ offset: error.averageItemLength * error.index, animated: true });
                     setTimeout(() => {
                         if (listData.length !== 0 && refFlatList.current !== null) {

@@ -99,7 +99,6 @@ class AnimatedGradient extends Component {
           .concat(customColors.slice(0, preferColors.length + 1))
       )
     }
-    console.log('Array.from({ length: customColors.length + 1 },', Array.from({ length: customColors.length + 1 }), preferColors)
     const interpolatedColors = [color0, color1].map((animatedColor, index) => {
       return animatedColor.interpolate({
         inputRange: Array.from({ length: customColors.length + 1 }, (v, k) => k),

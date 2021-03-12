@@ -98,43 +98,7 @@ class ChartLine extends React.Component {
   };
 
   handleChange = event => {
-    // let nativeEvent = event.nativeEvent;
-    // if (nativeEvent.action == 'chartTranslated') {
-    //   let {left, right, centerX} = nativeEvent;
-    //   console.log(
-    //     'data is from ' +
-    //       this.xMin +
-    //       ' to ' +
-    //       this.xMax +
-    //       ' left ' +
-    //       left +
-    //       ' right ' +
-    //       right +
-    //       ' isLoading ' +
-    //       this.isLoading,
-    //   );
-    //   if (!this.isLoading) {
-    //     if (left < 2) {
-    //       this.isLoading = true;
-    //       if (this.timeout) clearTimeout(this.timeout);
-    //       this.timeout = setTimeout(() => {
-    //         this.props.loadMore && this.props.loadMore();
-    //         this.isLoading = false;
-    //       }, 500);
-    //       // Because of the implementation of MpAndroidChart, if the action of setDataAndLockIndex is triggered by user dragging,
-    //       // then the size of new data should be equal to original data, otherwise the calculation of position transition won't be accurate,
-    //       // use may find the chart suddenly blink to another position.
-    //       // This restriction only exists in android, in iOS, we have no such problem.
-    //       // this.mockLoadDataFromServer(
-    //       //   centerX - pageSize,
-    //       //   centerX + pageSize,
-    //       // ).then(data => {
-    //       //   this.refs.chart.setDataAndLockIndex(data);
-    //       //   this.isLoading = false;
-    //       // });
-    //     }
-    //   }
-    // }
+   
   };
   handleSelect = event => {
     let entry = event.nativeEvent;

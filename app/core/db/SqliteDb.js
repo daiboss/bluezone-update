@@ -82,7 +82,6 @@ const initDatabase = (success, failure) => {
       "SELECT name FROM sqlite_master WHERE type='table' AND name='notify'",
       [],
       function (tx, res) {
-        console.log('initDatabaseinitDatabase', res.rows)
         if (res.rows.length === 0) {
           tx.executeSql('DROP TABLE IF EXISTS notify');
           tx.executeSql(
@@ -116,7 +115,6 @@ const initDatabase = (success, failure) => {
             'CREATE TABLE IF NOT EXISTS stepcounter(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, starttime INTEGER, endtime INTEGER, step INTEGER)',
             [],
             (tx, results) => {
-              console.log("Query completed", results);
             }
           );
         }
@@ -575,7 +573,6 @@ const getListStartDateHistory = async (currentTime) => {
 
 const addHistory = async (time, value) => {
   let tmpTime = new moment.unix(time)
-  console.log('saveHistory', time, tmpTime.format('DD/MM/YYYY'), value)
   let itemExist = await getListHistory(time, time + 86399)
   if (itemExist.length > 0) {
     let item = itemExist[0]

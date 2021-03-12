@@ -92,9 +92,6 @@ const SettingScreen = ({ intl, navigation }) => {
     // scheduler.createScheduleWarnningWeightNotification(alertStep)
   }, [timeWeight]);
   useEffect(() => {
-    // console.log('alertStepalertStepalertStep', alertStep)
-    // const a = PushNotification.getScheduledLocalNotifications();
-    // console.log('aabdhasbdhbsahdbsadsa',a)
     alertBmi ? scheduler.createScheduleWarnningWeightNotification(timeWeight) : PushNotification.cancelAllLocalNotifications()
   }, [alertBmi])
 
@@ -164,14 +161,13 @@ const SettingScreen = ({ intl, navigation }) => {
     } else
       try {
         PushNotification.requestPermissions().then(res => {
-          console.log('resresres', res)
           if (res.notificationCenter) {
             setAlertStep(!alertStep);
           }
           else {
             alertPermission('step')
           }
-        }).catch(er => console.log('errerjeirjeijre', er))
+        }).catch(er => console.log('er: ', er))
         setRealtime(value);
 
       } catch (error) { }
@@ -235,7 +231,6 @@ const SettingScreen = ({ intl, navigation }) => {
   const getListShortcut = () => {
     MyShortcut.GetAllShortcut({
       onDone: shortcuts => {
-        // console.log('shortcutsshortcuts', JSON.parse(shortcuts))
         if (shortcuts.toString().length > 2) {
           Toast.show('Đã thêm lối tắt vào màn hình chính', Toast.SHORT);
         } else {

@@ -79,7 +79,6 @@ const ChartColumn = ({ item,
     onGetDataBySelect,
     selectedItem
 }) => {
-    console.log('maxDomainmaxDomainmaxDomainmaxDomain',maxDomain)
     const refAnim = useRef(new Animated.Value(0)).current
 
     useEffect(() => {

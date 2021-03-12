@@ -317,7 +317,6 @@ const initConfiguration = async callBack => {
       PhoneNumber,
     } = results;
 
-    console.log('TokenFirebase', TokenFirebase);
     mergeConfiguration(
       Configuration,
       TokenFirebase,
@@ -570,7 +569,6 @@ const retryRegisterOrUpdateTokenFirebase = (
   failure,
   timeRetry,
 ) => {
-  // console.log('TokenFirebase: ' + NewTokenFirebase);
   const { TokenFirebase } = configuration;
   _registerOrUpdateTokenFirebase(
     NewTokenFirebase,
@@ -594,7 +592,6 @@ const _syncTokenFirebase = (
 
   getTokenFirebase(
     NewTokenFirebase => {
-      console.log('NewTokenFirebase', NewTokenFirebase);
       _registerOrUpdateTokenFirebase(
         NewTokenFirebase,
         TokenFirebase,

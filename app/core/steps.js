@@ -116,9 +116,7 @@ export const getDistances = async () => {
       let data = step.filter(
         e => new Date(e.time).compareDate(new Date()) == 0,
       );
-      console.log('data: ', data);
       let result = getAllDistance(data, sex, height, weight);
-      console.log('result: ', result);
       return {
         step: result?.step,
         distance: result?.distance,
@@ -146,7 +144,6 @@ export const getStepsTotal = async (start, end) => {
             getTimeDate(date.getTime(), e.time) >= -1,
         )
         .reduce((current, obj) => (current > obj.step ? current : obj.step), 0);
-      console.log('step: ', step);
 
       if (step > totalStep) {
         let a = parseInt((step / totalStep) * 100);
@@ -178,7 +175,6 @@ export const getStepsTotal = async (start, end) => {
       }
     }
   } catch (error) {
-    console.log('error: ', error);
   }
 };
 const getStepRateFactor = (deltaSteps, time) => {

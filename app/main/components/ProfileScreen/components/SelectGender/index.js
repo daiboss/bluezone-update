@@ -9,7 +9,6 @@ const SIZE = RFValue(94)
 
 const SelectGender = ({ intl, onSelectGender, gender }) => {
   const { formatMessage,locale} = intl;
-  console.log('intlintltlltltlt',intl)
   const translateX = useRef(new Animated.Value(0)).current;
 
   const selectGender = gender => () => {

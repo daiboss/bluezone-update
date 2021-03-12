@@ -210,7 +210,6 @@ export default class
         if (this.state.selectedIndex === selectedIndex) {
             return;
         }
-        // console.log('selectedIndexselectedIndex', selectedIndex)
         // onValueChange
         if (this.props.onValueChange) {
             let selectedValue = this.props.dataSource[selectedIndex];

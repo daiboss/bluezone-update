@@ -117,15 +117,8 @@ const StepCount = ({ props, intl, navigation }) => {
     },
   ];
   const [dataChart, setDataChart] = useState([]);
-  // useEffect(async () => {
-  //   const firstOpenApp = await getFirstTimeOpen();
-  //   setStartTime(firstOpenApp)
-  //   console.log('firstOpenAppfirstOpenApp',firstOpenApp)
-  // },[])
+
   useEffect(() => {
-    // async () => {
-    // //   const firstOpenApp = await getFirstTimeOpen();
-    // // setStartTime(firstOpenApp)
     let end = new Date();
     // let start = firstOpenApp
     // let start = new Date(2020,1,1).format('yyyy-MM-dd')
@@ -420,7 +413,6 @@ const StepCount = ({ props, intl, navigation }) => {
           label = `${startWeek.format('DD')} - ${valueEnd}\n ${endWeek.locale('en').format('MMM')}`
         }
         else label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
-        // console.log('abllaabcsabdshbaduhsadsadsadas',labels)
         list.push({
           x: label,
           y: steps,

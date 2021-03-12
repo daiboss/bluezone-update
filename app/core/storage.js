@@ -307,7 +307,6 @@ const setQuestionFAQ = (value = '') => {
 
 const getProfile = async () => {
   const result = await AsyncStorage.getItem(Profile);
-  // console.log('resultresultresultresult',result)
   return _processOutput(result);
 };
 

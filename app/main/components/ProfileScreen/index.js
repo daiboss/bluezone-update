@@ -176,7 +176,6 @@ const ProfileScreen = ({ route, intl, navigation }) => {
 
       let index = profiles.findIndex(
         profile =>
-          // console.log('getAbsoluteMonths(moment(profile.date)) == getAbsoluteMonths(moment())',getAbsoluteMonths(moment(profile.date)) == getAbsoluteMonths(moment()))
           getAbsoluteMonths(moment(profile.date)) == getAbsoluteMonths(moment())
         // }
       );

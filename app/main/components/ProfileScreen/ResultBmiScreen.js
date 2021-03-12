@@ -41,7 +41,6 @@ const visibleModal = {
 };
 
 const ResultBmiScreen = ({ route, intl, navigation }) => {
-  console.log('route: ', route);
   const { formatMessage } = intl;
   const [gender, setGender] = useState(1);
   const [listProfile, setListProfile] = useState([]);

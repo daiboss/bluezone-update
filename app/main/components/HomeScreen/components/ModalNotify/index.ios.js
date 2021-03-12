@@ -141,7 +141,6 @@ class ModalNotify extends React.Component {
   }
 
   setStatusBluetooth(status) {
-    console.log('setStatusBluetooth', status);
     if (this.vesionIOS < 13 || (!this.checkBLT && this.vesionIOS > 12)) {
       this.setState({ isVisibleBLE: !status });
     }

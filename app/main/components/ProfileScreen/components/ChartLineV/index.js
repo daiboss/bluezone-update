@@ -380,22 +380,7 @@ class ChartLine extends React.Component {
       </VictoryChart>
     )
   }
-  // leftTooltip = (x) => {
-  //   const valueString = this.state.value.toString()
-  //   console.log('valueStringvalueString',valueString)
-  //   if(valueString.length == 2 ){
-  //     return Platform.OS == 'ios' ?  x - RFValue(23.5) : x - RFValue(20)
-  //   }
-  //   else if (valueString.length == 3){
-  //     return Platform.OS == 'ios' ?  x - RFValue(25.5) : x - RFValue(22)
-  //   }
-  //   else if (valueString.length == 4){
-  //     return Platform.OS == 'ios' ?  x - RFValue(27.5) : x - RFValue(23)
-  //   }
-  //   else {
-  //     return Platform.OS == 'ios' ?  x - RFValue(33) : x - RFValue(26)
-  //   }
-  // }
+
   render() {
     return (
       <View style={[styles.container]}>

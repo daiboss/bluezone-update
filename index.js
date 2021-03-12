@@ -76,24 +76,9 @@ const permissions = [
 ];
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
 PushNotification.configure({
-  // (optional) Called when Token is generated (iOS and Android)
   onRegister: function (token) {
-    console.log("TOKEN:", token);
   },
-
-  // (required) Called when a remote is received or opened, or local notification is opened
-
-  // // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
-  // onAction: function (notification) {
-  //   console.log("ACTION:", notification.action);
-  //   console.log("NOTIFICATION:", notification);
-
-  //   // process the action
-  // },
-
-  // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
   onRegistrationError: function (err) {
-    // console.error(err.message, err);
   },
 
   // IOS ONLY (optional): default: all - Permissions to register.
@@ -122,83 +107,6 @@ function getAbsoluteMonths(momentDate) {
   var years = Number(momentDate.format('YYYY'));
   return months + years * 12;
 }
-// const onBackgroundFetchEvent = async taskId => {
-//   // console.log('taskId: ', taskId?.taskId);
-//   try {
-//     let end = new Date();
-//     let start = new Date();
-//     end.setDate(end.getDate() + 1);
-//     if (Platform.OS == 'ios') {
-//     let resPermissions = await Fitness.requestPermissions(permissions);
-//     console.log('resPermissions: ', resPermissions);
-//       let resAuth = await Fitness.isAuthorized(permissions);
-//       console.log('resAuth: ', resAuth);
-//     }
-//     let step = await getSteps(start, end);
-//     console.log('step: ', step);
-//     let today = moment();
-//     let resultSteps = await getResultSteps();
-//     console.log('resultSteps: ', resultSteps);
-
-//     switch (taskId?.taskId) {
-//       case autoChange:
-//         if (resultSteps) {
-//           let storageDate = moment(resultSteps?.date).format('DD');
-//           if (storageDate != today.format('DD')) {
-//             if (Platform.OS == 'ios')
-//               getStepsTotal(start, end);
-//           }
-//         }
-//         break;
-//       case weightWarning:
-//         let profiles = (await getProfile()) || [];
-//         let profile = profiles.find(
-//           item =>
-//             getAbsoluteMonths(moment(item.date)) == getAbsoluteMonths(today),
-//         );
-
-//         if (profile) {
-//           let nextWeek = new Date().getTime();
-//           let isWarning = parseInt(
-//             (nextWeek - profile?.date) / (1000 * 3600 * 24),
-//           );
-
-//           if (isWarning >= 7) {
-//             scheduler.createWarnningWeightNotification();
-//           }
-//         }
-//         break;
-//       case notiStep:
-//         if (resultSteps) {
-//           if (today.format('HH') >= 19) {
-//             scheduler.createWarnningStepNotification(step?.step);
-//           }
-//         }
-//         break;
-//       case realtime:
-//         scheduler.createShowStepNotification(step?.step);
-//         break;
-//       default:
-//         break;
-//     }
-//     if (taskId?.taskId === 'react-native-background-fetch') {
-//       // Test initiating a #scheduleTask when the periodic fetch event is received.
-//       let auto = await getAutoChange();
-//       console.log('auto: ', auto);
-//       if (auto == undefined || auto == null) {
-//         await scheduleTask(autoChange);
-//         setAutoChange(true);
-//       }
-//     }
-//   } catch (e) {
-//     console.log('e: aaaaaaaaaaaaaaaaaaa', e);
-//   }
-//   // Required: Signal completion of your task to native code
-//   // If you fail to do this, the OS can terminate your app
-//   // or assign battery-blame for consuming too much background-time
-//   BackgroundFetch.finish(taskId?.taskId);
-// };
-// BackgroundFetch.registerHeadlessTask(onBackgroundFetchEvent);
 async function handleBackgroundMessage(message: RemoteMessage) {
   const language = await getLanguage();
   await remoteMessageListener(message, language);

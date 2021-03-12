@@ -254,9 +254,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const resultSteps = async () => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
-      console.log('resultSteps',resultSteps)
       if (!resultSteps) {
-        console.log('vaovaovaovaovaovoavoaovaovoavoaovaovao=>>>')
        await setResultSteps({ step: 10000, date: new Date().getTime() });
        setTotalCount(10000);
       } else {
@@ -296,7 +294,6 @@ const StepCount = ({ props, intl, navigation }) => {
           let timeLine = res.map(obj => {
             return new Date(obj.startDate).format('dd/MM')
           })
-          console.log('datadata7day',data)
           // data.length !== 0 && data.pop()
           setDataChart(data);
 
@@ -311,7 +308,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
 
   useEffect(() => {
-    console.log('ttotototoototot',totalCount,countRest)
     getWeightHeight()
     getSex()
     getStepsRealTime()
@@ -421,7 +417,6 @@ const StepCount = ({ props, intl, navigation }) => {
           return;
         }
         stepCurrent = results.value
-        console.log('stepCurrentstepCurrentstepCurrent',stepCurrent)
         const countR = totalCount - stepCurrent
         setCountRest(countR)
 
@@ -468,7 +463,6 @@ const StepCount = ({ props, intl, navigation }) => {
           let distanceInStep = sexValue * weightHeight.height * stepRateFactor
           let speed = distanceInStep * stepRate * 3.6
           let calo
-          // console.log('weightUserweightUserweightUser',weightUser,distanceInStep,stepRate)
           if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightHeight.weight * 2 / 12000
           else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightHeight.weight * 2 / 12000
           // setCountCarlo(calo.toFixed(2))
@@ -576,7 +570,6 @@ const StepCount = ({ props, intl, navigation }) => {
   };
 
   const alert7dayLessThan1000 = (steps) => {
-    console.log('setetetetete',steps)
     if (steps.length >= 7) {
       let check = true
       steps.forEach(element => {
@@ -629,7 +622,6 @@ const StepCount = ({ props, intl, navigation }) => {
   const onShowMenu = () => {
     navigation.openDrawer();
   };
-  console.log('vaovaovaovaovaovaova')
   const functionTest = () => {
     let options = {
       value: 10,

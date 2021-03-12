@@ -24,7 +24,6 @@ const SelectHeightOrWeight = ({
   visiHeight = false,
   visiWeight = false
 }) => {
-  console.log('currentWeight', currentWeight, currentHeight)
   const { formatMessage } = intl;
   const [isVisibleHeight, setIsVisibleHeight] = useState(visiHeight);
   const [isVisibleWeight, setIsVisibleWeight] = useState(visiWeight);
