@@ -270,6 +270,9 @@ const SettingScreen = ({ intl, navigation }) => {
       },
     });
   }
+  const actionOnOffApp = () => {
+    setOnOffApp(!onOffApp)
+  }
 
   return (
     <SafeAreaView>
@@ -328,16 +331,16 @@ const SettingScreen = ({ intl, navigation }) => {
         </View>
       </TouchableOpacity>
       <Text style={styles.txNotification}>{formatMessage(message.Notification)}</Text>
-      {/* <View style={[styles.viewTx, styles.borderBottom]}>
+      <View style={[styles.viewTx, styles.borderBottom]}>
         <Text style={styles.txLabel}>{formatMessage(message.OnOffApp)}</Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
-          thumbColor={alertBmi ? '#fe4358' : '#a5a5a5'}
+          thumbColor={onOffApp ? '#fe4358' : '#a5a5a5'}
           ios_backgroundColor="#fff"
-          onValueChange={alertBmiSwitch}
-          value={alertBmi}
+          onValueChange={actionOnOffApp}
+          value={onOffApp}
         />
-      </View> */}
+      </View>
       {Platform.OS == 'android' && <View style={[styles.viewTx, styles.borderBottom]}>
         <Text style={styles.txLabel}>{formatMessage(message.NotificationRealtime)}</Text>
         <Switch
