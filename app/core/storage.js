@@ -55,7 +55,8 @@ import {
   stepChange,
   IsShowNotification,
   lastWeightWarning,
-  ConfirmAlert
+  ConfirmAlert,
+  onOfApp
 } from '../const/storage';
 import Fitness from '@ovalmoney/react-native-fitness';
 import moment from 'moment';
@@ -492,6 +493,16 @@ const setWeightWarning = (value = '') => {
   AsyncStorage.setItem(weightWarning, _resource);
 };
 
+const getIsOnOfApp = async () => {
+  const result = await AsyncStorage.getItem(onOfApp);
+  return _processOutput(result);
+};
+
+const setIsOnOfApp = (value = true) => {
+  const _resource = _processInput(value);
+  AsyncStorage.setItem(onOfApp, _resource);
+};
+
 export {
   setStepChange,
   getStepChange,
@@ -560,5 +571,7 @@ export {
   setConfirmAlert,
   getConfirmAlert,
   getFirstTimeSetup,
-  setFirstTimeSetup
+  setFirstTimeSetup,
+  getIsOnOfApp,
+  setIsOnOfApp
 };

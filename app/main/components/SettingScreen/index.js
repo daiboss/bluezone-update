@@ -52,7 +52,9 @@ import {
   getResultSteps,
   setResultSteps,
   getIsShowNotification,
-  setIsShowNotification
+  setIsShowNotification,
+  setIsOnOfApp,
+  getIsOnOfApp
 } from '../../../core/storage';
 import { scheduleTask, stopScheduleTask } from '../StepCountScreen';
 import PushNotification from 'react-native-push-notification';
@@ -86,7 +88,22 @@ const SettingScreen = ({ intl, navigation }) => {
   const [isShowModalShortcut, setIsShowModalShortcut] = useState(false)
 
   useEffect(() => {
-    const a = moment.unix(1614078381000).format('yyyy/MM/dd')
+    getIsOnOffAppFromStorage()
+  }, [])
+
+  const getIsOnOffAppFromStorage = async () => {
+    try {
+      let res = await getIsOnOfApp()
+      if (res == undefined) {
+        res = true
+      }
+      setOnOffApp(res)
+    } catch (error) {
+      console.log('getIsOnOffAppFromStorage error', error)
+    }
+  }
+
+  useEffect(() => {
     getStatus();
     getProfileUser()
     // scheduler.createScheduleWarnningWeightNotification(alertStep)
@@ -94,6 +111,15 @@ const SettingScreen = ({ intl, navigation }) => {
   useEffect(() => {
     alertBmi ? scheduler.createScheduleWarnningWeightNotification(timeWeight) : PushNotification.cancelAllLocalNotifications()
   }, [alertBmi])
+
+  useEffect(() => {
+    if (onOffApp == false) {
+      PushNotification.cancelAllLocalNotifications()
+    } else {
+      if (alertBmi)
+        scheduler.createScheduleWarnningWeightNotification(timeWeight)
+    }
+  }, [onOffApp])
 
   const getProfileUser = async () => {
     let profiles = (await getProfile()) || [];
@@ -146,7 +172,6 @@ const SettingScreen = ({ intl, navigation }) => {
   };
   const autoTargetSwitch = async value => {
     setAutoTarget(!autoTarget);
-
   };
 
   useEffect(() => {
@@ -256,6 +281,7 @@ const SettingScreen = ({ intl, navigation }) => {
   }
 
   const showAlertAddShortcut = () => setIsShowModalShortcut(true)
+
   const closeAlertAddShortcut = () => setIsShowModalShortcut(false)
 
   const createShortcut = () => {
@@ -270,8 +296,15 @@ const SettingScreen = ({ intl, navigation }) => {
       },
     });
   }
-  const actionOnOffApp = () => {
-    setOnOffApp(!onOffApp)
+
+  const actionOnOffApp = async (value) => {
+    try {
+      setIsOnOfApp(value)
+      setOnOffApp(value)
+      navigation.goBack()
+    } catch (err) {
+      console.log('actionOnOffApp error', error)
+    }
   }
 
   return (

@@ -31,7 +31,8 @@ import {
   setConfirmAlert,
   getConfirmAlert,
   getFirstTimeSetup,
-  setFirstTimeSetup
+  setFirstTimeSetup,
+  getIsOnOfApp
 } from '../../../core/storage';
 import ChartLineV from './ChartLineV';
 import {
@@ -65,7 +66,6 @@ import { RFValue } from '../../../const/multiscreen';
 
 import { CalculationStepTargetAndroid } from '../../../core/calculation_step_target';
 import ModalChangeTarget from './Components/ModalChangeTarget';
-import { DATA_FAKE } from './DataFakeHistory';
 
 const options = {
   taskName: 'Bluezone',
@@ -91,51 +91,20 @@ const StepCount = ({ props, intl, navigation }) => {
     observerStepDrawUI();
     // scheduler.createWarnningWeightNotification()
     synchronizeDatabaseStepsHistory()
-    // fakeData()
     return () => {
       BackgroundJob.removeTargetChange();
       BackgroundJob.removeObserverHistoryChange();
     }
   }, [])
 
-  const fakeData = async () => {
-    try {
-      // return
-      let start = moment('01/01/2020', 'DD/MM/YYYY').unix()
-      let end = moment('30/12/2020', 'DD/MM/YYYY').unix()
-      let listHistorya = await getListHistory(start, end)
-      if (listHistorya.length <= 1) {
-        DATA_FAKE.map(async element => {
-          let save = await addHistory(element.starttime,
-            {
-              "calories": Math.floor(Math.random() * 5000) + 10,
-              "distance": Math.floor(Math.random() * 5000),
-              "step": Math.floor(Math.random() * 15000),
-              "time": Math.floor(Math.random() * 5000)
-            })
-          console.log('SSS', save)
-        });
-
-      }
-    } catch (err) {
-      console.log('fakeDATA ERROR', err)
-    }
-  }
-
   const observerStepDrawUI = async () => {
     getResultBindingUI();
-    // checkAutoChangeStepsTarget();
     BackgroundJob.observerStepSaveChange(() => {
       getResultBindingUI()
     })
     BackgroundJob.observerHistorySaveChange(async () => {
-      // let tmpCurrent = moment().unix()
-      // let startDay = moment().startOf('days').unix()
-      // if (Math.abs(tmpCurrent - startDay) <= 10) {
       getListHistoryChart();
-      // }
       getResultBindingUI();
-      // await checkAutoChangeStepsTarget();
     })
     BackgroundJob.observerTargetChange(async () => {
       await resultSteps()
@@ -197,16 +166,6 @@ const StepCount = ({ props, intl, navigation }) => {
     setCountTimeHour(h)
     setCountStep(result?.step || 0);
   }
-
-  useEffect(() => {
-    let isRun = BackgroundJob.isRunning();
-    if (!isRun) {
-      BackgroundJob.start(taskStepCounter, options);
-    }
-    // else {
-    //   BackgroundJob.stop();
-    // }
-  }, [BackgroundJob])
 
   const taskStepCounter = async () => {
     await new Promise(async () => {
@@ -515,10 +474,28 @@ const StepCount = ({ props, intl, navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
+      startOrOffApp();
       resultSteps();
       getListHistoryChart();
     }, [])
   );
+
+  const startOrOffApp = async () => {
+    try {
+      let checkOnOff = await getIsOnOfApp()
+      if (checkOnOff == undefined) {
+        checkOnOff = true
+      }
+      let isRun = BackgroundJob.isRunning();
+      if (!isRun && checkOnOff) {
+        BackgroundJob.start(taskStepCounter, options);
+      } else if (isRun && !checkOnOff) {
+        BackgroundJob.stop()
+      }
+    } catch (err) {
+      console.log('startOrOffApp error', err)
+    }
+  }
 
   const resultSteps = async () => {
     try {

@@ -50,3 +50,4 @@ export const notiStep = 'com.bluezone.notiStep';
 export const weightWarning = 'com.bluezone.weight';
 export const lastWeightWarning = 'com.bluezone.lastWeightWarning';
 export const stepChange = 'com.bluezone.stepChange';
+export const onOfApp = 'com.bluezone.onOfApp';
