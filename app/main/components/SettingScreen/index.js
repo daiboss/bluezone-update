@@ -249,8 +249,10 @@ const SettingScreen = ({ intl, navigation }) => {
     } else {
       await setIsShowNotification(false)
     }
-    if (Platform.OS == 'android')
-      BackgroundJob.updateTypeNotification()
+    try {
+      if (Platform.OS == 'android')
+        BackgroundJob.updateTypeNotification()
+    } catch (_) { }
   }
 
   const getListShortcut = () => {
@@ -276,7 +278,9 @@ const SettingScreen = ({ intl, navigation }) => {
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toDate().getTime()
     await setResultSteps({ step: steps, date: currentTime, hardwork: true })
     if (Platform.OS == 'android') {
-      BackgroundJob.updateTypeNotification()
+      try {
+        BackgroundJob.updateTypeNotification()
+      } catch (_) { }
     }
   }
 
@@ -382,6 +386,7 @@ const SettingScreen = ({ intl, navigation }) => {
           ios_backgroundColor="#fff"
           onValueChange={alertStepSwitch}
           value={alertStep || false}
+        // disabled={!onOffApp}
         />
       </View>}
       {Platform.OS == 'android' && <View style={[styles.viewTx, styles.borderBottom]}>
@@ -392,6 +397,7 @@ const SettingScreen = ({ intl, navigation }) => {
           ios_backgroundColor="#fff"
           onValueChange={alertTargetSwitch}
           value={alertTarget}
+        // disabled={!onOffApp}
         />
       </View>}
       <View style={[styles.viewTx, styles.borderBottom]}>
@@ -402,6 +408,7 @@ const SettingScreen = ({ intl, navigation }) => {
           ios_backgroundColor="#fff"
           onValueChange={alertBmiSwitch}
           value={alertBmi}
+        // disabled={!onOffApp}
         />
       </View>
 
