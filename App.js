@@ -341,6 +341,8 @@ class App extends React.Component {
     this.setState({ translationMessagesState: resource });
   }
 
+  // handle open screen when click notification
+
   onNotificationOpened = remoteMessage => {
     const { loading } = this.state;
 
@@ -447,7 +449,7 @@ class App extends React.Component {
         <Stack.Screen name={'settingScreen'} component={SettingScreen} />
 
       </Stack.Navigator>
-    ) : !isHome ? (
+    ) : isHome ? (
       <Stack.Navigator
         id="Welcome"
         headerMode="none"

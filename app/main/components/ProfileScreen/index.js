@@ -129,8 +129,10 @@ const ProfileScreen = ({ route, intl, navigation }) => {
     return days + months + years;
   }
   const onConfirm = async () => {
+    console.log('vaovaovoavoavoavoaovaovaovao')
     try {
-      await PushNotification.cancelAllLocalNotifications()
+      // await PushNotification.cancelAllLocalNotifications()
+      await scheduler.clearScheduleUpdateWeightNotification()
       if (!height) {
         setHeightError(true);
       }
@@ -148,11 +150,10 @@ const ProfileScreen = ({ route, intl, navigation }) => {
         gender,
         height,
         weight,
-        date: moment()
-          .toDate()
-          .getTime(),
+        date: new Date().getTime(),
       };
-      getWeighiNoti && scheduler.createScheduleWarnningWeightNotification(obj.date)
+      console.log('getWeighiNotigetWeighiNoti',obj.date)
+     await scheduler.creatScheduleUpdateWeightNotification(obj.date)
       if (index != -1) {
         profiles.splice(index, 1, obj);
       } else {

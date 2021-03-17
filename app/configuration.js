@@ -226,6 +226,21 @@ const configuration = {
     bigText: 'Bạn hãy vào ứng dụng và cập nhật số điện thoại nhé.',
     bigTextEn: 'Please open Bluezone and add your mobile number.',
   },
+  ScheduleUpdateWeightNotification: {
+    itemRepeat: [
+      {
+        id: '103',
+        dayStartTime: 1000,
+        repeatTime: 86400000,
+      },
+    ],
+    title: 'Sức khoẻ.',
+    titleEn: 'Health.',
+    message: 'Hãy cập nhật cân nặng để theo dõi tình trạng của bạn.',
+    messageEn: 'Please update your weight to monitor your condition.',
+    bigText: 'Hãy cập nhật cân nặng để theo dõi tình trạng của bạn.',
+    bigTextEn: 'Please update your weight to monitor your condition.',
+  },
   ScheduleUpdateAppNotification: {
     itemRepeat: [
       {

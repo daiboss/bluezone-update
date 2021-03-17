@@ -109,7 +109,7 @@ const SettingScreen = ({ intl, navigation }) => {
     // scheduler.createScheduleWarnningWeightNotification(alertStep)
   }, [timeWeight]);
   useEffect(() => {
-    alertBmi ? scheduler.createScheduleWarnningWeightNotification(timeWeight) : PushNotification.cancelAllLocalNotifications()
+    alertBmi ? scheduler.creatScheduleUpdateWeightNotification(timeWeight) : scheduler.clearScheduleUpdateWeightNotification()
   }, [alertBmi])
 
   useEffect(() => {
@@ -117,7 +117,7 @@ const SettingScreen = ({ intl, navigation }) => {
       PushNotification.cancelAllLocalNotifications()
     } else {
       if (alertBmi)
-        scheduler.createScheduleWarnningWeightNotification(timeWeight)
+        scheduler.creatScheduleUpdateWeightNotification(timeWeight)
     }
   }, [onOffApp])
 

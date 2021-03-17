@@ -21,7 +21,7 @@
 
 'use strict';
 
-import { Platform } from 'react-native';
+import { ClippingRectangle, Platform } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import configuration from '../configuration';
@@ -55,6 +55,21 @@ const createScheduleNotifications = (scheduleNotifications, language) => {
       );
     });
 };
+const createScheduleNotificationsWeight = (scheduleNotifications, language,date) => {
+  const { itemRepeat = [] } = scheduleNotifications || {};
+  itemRepeat.length > 0 &&
+    itemRepeat.forEach(item => {
+      let iDate = new Date().getTime() + item.dayStartTime;
+      if (iDate < new Date().getTime()) {
+        iDate += 86400000;
+      }
+      createSchedulingNotificationWeight(
+        _createNotification(item.id, scheduleNotifications, language),
+        iDate,
+      );
+    });
+};
+
 
 const clearScheduleNotifications = scheduleScanNotifications => {
   const { itemRepeat = [] } = scheduleScanNotifications || {};
@@ -233,6 +248,20 @@ const clearScheduleRegisterNotification = () => {
   clearScheduleNotifications(ScheduleRegisterNotification);
 };
 
+/**
+ * Dat lich nhac khai bao can nang hang tuan
+ */
+ const creatScheduleUpdateWeightNotification = (date) => {
+   console.log('dateadateadadaetete',date)
+  const { ScheduleUpdateWeightNotification, Language } = configuration;
+  createScheduleNotificationsWeight(ScheduleUpdateWeightNotification, Language,date);
+};
+const clearScheduleUpdateWeightNotification = () => {
+  console.log('vaovaovoavoaCLear')
+  const { ScheduleUpdateWeightNotification } = configuration;
+  clearScheduleNotifications(ScheduleUpdateWeightNotification);
+};
+
 const scheduleRegisterNotification_ChangeLanguage = () => {
   const { ScheduleRegisterNotification, PhoneNumber } = configuration;
   if (PhoneNumber) {
@@ -296,6 +325,7 @@ const scheduleUpdateAppNotification_SetConfig = (oldConfig, newConfig) => {
 };
 // -------------------------------------------------------------------------------------
 const _createNotification = (id, n, language) => {
+  console.log('nnnnnnnnnnnnnn',n)
   const isVI = language === 'vi';
   const title = (isVI ? n.title : n.titleEn) || n.title || n.titleEn;
   const text = (isVI ? n.message : n.messageEn) || n.message || n.messageEn;
@@ -313,6 +343,7 @@ const _createNotification = (id, n, language) => {
     .android.setSmallIcon(SMALL_ICON)
     .android.setLargeIcon(n.largeIcon);
 
+    console.log('notificationnotification',notification)
   if (buttonText) {
     const action = new firebase.notifications.Android.Action(
       'open',
@@ -325,6 +356,13 @@ const _createNotification = (id, n, language) => {
 };
 
 const createSchedulingNotification = (notification, time) => {
+  scheduleNotification(notification, {
+    fireDate: time,
+    repeatInterval: 'day',
+  });
+};
+const createSchedulingNotificationWeight = (notification, time) => {
+  console.log('notificationnotificationnotificationnotificationnotification',notification,time)
   scheduleNotification(notification, {
     fireDate: time,
     repeatInterval: 'day',
@@ -453,58 +491,59 @@ const scheduleNotificationSetConfigurationListener = oldConfig => {
 };
 
 // Xử lý thông báo ngay lập tức khi app thiếu chức năng để scan -------------------
-export const createShowStepNotification = async step => {
-  try {
-    const { iOSShowStepNotification } = configuration;
-    let total = (await getResultSteps()) || { step: 10000 };
 
-    PushNotification.localNotification({
-      /* Android Only Properties */
-      channelId: FCM_CHANNEL_ID, // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
-      autoCancel: true, // (optional) default: true
-      largeIcon: 'icon_bluezone', // (optional) default: "icon_bluezone". Use "" for no large icon.
-      smallIcon: 'icon_bluezone', // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
-      vibrate: false, // (optional) default: true
-      priority: 'max', // (optional) set notification priority, default: high
-      visibility: 'private', // (optional) set notification visibility, default: private
-      ignoreInForeground: false, // (optional) if true, the notification will not be visible when the app is in the foreground (useful for parity with how iOS notifications appear). should be used in combine with `com.dieam.reactnativepushnotification.notification_foreground` setting
-      onlyAlertOnce: false, // (optional) alert will open only once with sound and notify, default: false
+// export const createShowStepNotification = async step => {
+//   try {
+//     const { iOSShowStepNotification } = configuration;
+//     let total = (await getResultSteps()) || { step: 10000 };
 
-      when: null, // (optionnal) Add a timestamp pertaining to the notification (usually the time the event occurred). For apps targeting Build.VERSION_CODES.N and above, this time is not shown anymore by default and must be opted into by using `showWhen`, default: null.
-      usesChronometer: false, // (optional) Show the `when` field as a stopwatch. Instead of presenting `when` as a timestamp, the notification will show an automatically updating display of the minutes and seconds since when. Useful when showing an elapsed time (like an ongoing phone call), default: false.
-      timeoutAfter: null, // (optional) Specifies a duration in milliseconds after which this notification should be canceled, if it is not already canceled, default: null
+//     PushNotification.localNotification({
+//       /* Android Only Properties */
+//       channelId: FCM_CHANNEL_ID, // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
+//       autoCancel: true, // (optional) default: true
+//       largeIcon: 'icon_bluezone', // (optional) default: "icon_bluezone". Use "" for no large icon.
+//       smallIcon: 'icon_bluezone', // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
+//       vibrate: false, // (optional) default: true
+//       priority: 'max', // (optional) set notification priority, default: high
+//       visibility: 'private', // (optional) set notification visibility, default: private
+//       ignoreInForeground: false, // (optional) if true, the notification will not be visible when the app is in the foreground (useful for parity with how iOS notifications appear). should be used in combine with `com.dieam.reactnativepushnotification.notification_foreground` setting
+//       onlyAlertOnce: false, // (optional) alert will open only once with sound and notify, default: false
 
-      /* iOS only properties */
-      alertAction: 'view', // (optional) default: view
-      category: '', // (optional) default: empty string
+//       when: null, // (optionnal) Add a timestamp pertaining to the notification (usually the time the event occurred). For apps targeting Build.VERSION_CODES.N and above, this time is not shown anymore by default and must be opted into by using `showWhen`, default: null.
+//       usesChronometer: false, // (optional) Show the `when` field as a stopwatch. Instead of presenting `when` as a timestamp, the notification will show an automatically updating display of the minutes and seconds since when. Useful when showing an elapsed time (like an ongoing phone call), default: false.
+//       timeoutAfter: null, // (optional) Specifies a duration in milliseconds after which this notification should be canceled, if it is not already canceled, default: null
 
-      /* iOS and Android properties */
-      id: 0, // (optional) Valid unique 32 bit integer specified as string. default: Autogenerated Unique ID
-      title: moment().format('DD/MM/YYYY'), // (optional)
-      message: step + '/' + total?.step + ' bước', // (required)
-      userInfo: {}, // (optional) default: {} (using null throws a JSON value '<null>' error)
-      playSound: false, // (optional) default: true
-      soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
-      number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
-      repeatType: 'time', // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
-    });
-    return;
-    // const {Language} = configuration;
-    // pushNotify(
-    //   {
-    //     data: {
-    //       ...iOSShowStepNotification,
-    //       ...{
-    //         text: iOSShowStepNotification.message,
-    //         textEn: iOSShowStepNotification.messageEn,
-    //         notifyId: 'getStepsNotification',
-    //       },
-    //     },
-    //   },
-    //   Language,
-    // );
-  } catch (error) { }
-};
+//       /* iOS only properties */
+//       alertAction: 'view', // (optional) default: view
+//       category: '', // (optional) default: empty string
+
+//       /* iOS and Android properties */
+//       id: 0, // (optional) Valid unique 32 bit integer specified as string. default: Autogenerated Unique ID
+//       title: moment().format('DD/MM/YYYY'), // (optional)
+//       message: step + '/' + total?.step + ' bước', // (required)
+//       userInfo: {}, // (optional) default: {} (using null throws a JSON value '<null>' error)
+//       playSound: false, // (optional) default: true
+//       soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+//       number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
+//       repeatType: 'time', // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
+//     });
+//     return;
+//     // const {Language} = configuration;
+//     // pushNotify(
+//     //   {
+//     //     data: {
+//     //       ...iOSShowStepNotification,
+//     //       ...{
+//     //         text: iOSShowStepNotification.message,
+//     //         textEn: iOSShowStepNotification.messageEn,
+//     //         notifyId: 'getStepsNotification',
+//     //       },
+//     //     },
+//     //   },
+//     //   Language,
+//     // );
+//   } catch (error) { }
+// };
 
 // Thong bao so buoc con lai sau 7h toi, neu vuot chi tieu se khong thong bao
 export const createWarnningStepNotification = async step => {
@@ -577,7 +616,7 @@ export const createWarnningStepNotification = async step => {
 export const createScheduleWarnningWeightNotification = async (time) => {
   try {
     const { iOSShowStepNotification } = configuration;
-    const timeNoti = time + 7 * 24 * 60 * 60 * 1000
+    const timeNoti = time +  2000
     PushNotification.localNotificationSchedule({
       /* Android Only Properties */
       channelId: FCM_CHANNEL_ID, // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
@@ -629,61 +668,61 @@ export const createScheduleWarnningWeightNotification = async (time) => {
     // );
   } catch (error) { }
 };
-export const createWarnningWeightNotification = async () => {
-  try {
-    const { iOSShowStepNotification } = configuration;
+// export const createWarnningWeightNotification = async () => {
+//   try {
+//     const { iOSShowStepNotification } = configuration;
 
-    PushNotification.localNotification({
-      /* Android Only Properties */
-      channelId: FCM_CHANNEL_ID, // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
-      autoCancel: true, // (optional) default: true
-      largeIcon: '', // (optional) default: "icon_bluezone". Use "" for no large icon.
-      smallIcon: SMALL_ICON, // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
-      vibrate: true, // (optional) default: true
-      priority: 'max', // (optional) set notification priority, default: high
-      visibility: 'private', // (optional) set notification visibility, default: private
-      ignoreInForeground: false, // (optional) if true, the notification will not be visible when the app is in the foreground (useful for parity with how iOS notifications appear). should be used in combine with `com.dieam.reactnativepushnotification.notification_foreground` setting
-      onlyAlertOnce: false, // (optional) alert will open only once with sound and notify, default: false
+//     PushNotification.localNotification({
+//       /* Android Only Properties */
+//       channelId: FCM_CHANNEL_ID, // (required) channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
+//       autoCancel: true, // (optional) default: true
+//       largeIcon: '', // (optional) default: "icon_bluezone". Use "" for no large icon.
+//       smallIcon: SMALL_ICON, // (optional) default: "ic_notification" with fallback for "icon_bluezone". Use "" for default small icon.
+//       vibrate: true, // (optional) default: true
+//       priority: 'max', // (optional) set notification priority, default: high
+//       visibility: 'private', // (optional) set notification visibility, default: private
+//       ignoreInForeground: false, // (optional) if true, the notification will not be visible when the app is in the foreground (useful for parity with how iOS notifications appear). should be used in combine with `com.dieam.reactnativepushnotification.notification_foreground` setting
+//       onlyAlertOnce: false, // (optional) alert will open only once with sound and notify, default: false
 
-      when: null, // (optionnal) Add a timestamp pertaining to the notification (usually the time the event occurred). For apps targeting Build.VERSION_CODES.N and above, this time is not shown anymore by default and must be opted into by using `showWhen`, default: null.
-      usesChronometer: false, // (optional) Show the `when` field as a stopwatch. Instead of presenting `when` as a timestamp, the notification will show an automatically updating display of the minutes and seconds since when. Useful when showing an elapsed time (like an ongoing phone call), default: false.
-      timeoutAfter: null, // (optional) Specifies a duration in milliseconds after which this notification should be canceled, if it is not already canceled, default: null
+//       when: null, // (optionnal) Add a timestamp pertaining to the notification (usually the time the event occurred). For apps targeting Build.VERSION_CODES.N and above, this time is not shown anymore by default and must be opted into by using `showWhen`, default: null.
+//       usesChronometer: false, // (optional) Show the `when` field as a stopwatch. Instead of presenting `when` as a timestamp, the notification will show an automatically updating display of the minutes and seconds since when. Useful when showing an elapsed time (like an ongoing phone call), default: false.
+//       timeoutAfter: null, // (optional) Specifies a duration in milliseconds after which this notification should be canceled, if it is not already canceled, default: null
 
-      /* iOS only properties */
-      alertAction: 'view', // (optional) default: view
-      category: '', // (optional) default: empty string
+//       /* iOS only properties */
+//       alertAction: 'view', // (optional) default: view
+//       category: '', // (optional) default: empty string
 
-      /* iOS and Android properties */
-      id: 2, // (optional) Valid unique 32 bit integer specified as string. default: Autogenerated Unique ID
-      // message: 'Hãy cập nhật cân nặng để theo dõi tình trạng của bạn', // (required)
-      message: 'Bạn còn 10000 bước để hoàn thành mục tiêu ngày hôm nay', // (required)
-      title: 'Sức khoẻ', // (required)
-      userInfo: {
-        screen: 'stepCount',
-        params: {}
-      }, // (optional) default: {} (using null throws a JSON value '<null>' error)
-      playSound: false, // (optional) default: true
-      soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
-      number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
-      repeatType: 'time', // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
-    });
-    return;
-    // const {Language} = configuration;
-    // pushNotify(
-    //   {
-    //     data: {
-    //       ...iOSShowStepNotification,
-    //       ...{
-    //         text: iOSShowStepNotification.message,
-    //         textEn: iOSShowStepNotification.messageEn,
-    //         notifyId: 'getStepsNotification',
-    //       },
-    //     },
-    //   },
-    //   Language,
-    // );
-  } catch (error) { }
-};
+//       /* iOS and Android properties */
+//       id: 2, // (optional) Valid unique 32 bit integer specified as string. default: Autogenerated Unique ID
+//       // message: 'Hãy cập nhật cân nặng để theo dõi tình trạng của bạn', // (required)
+//       message: 'Bạn còn 10000 bước để hoàn thành mục tiêu ngày hôm nay', // (required)
+//       title: 'Sức khoẻ', // (required)
+//       userInfo: {
+//         screen: 'stepCount',
+//         params: {}
+//       }, // (optional) default: {} (using null throws a JSON value '<null>' error)
+//       playSound: false, // (optional) default: true
+//       soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+//       number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
+//       repeatType: 'time', // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
+//     });
+//     return;
+//     // const {Language} = configuration;
+//     // pushNotify(
+//     //   {
+//     //     data: {
+//     //       ...iOSShowStepNotification,
+//     //       ...{
+//     //         text: iOSShowStepNotification.message,
+//     //         textEn: iOSShowStepNotification.messageEn,
+//     //         notifyId: 'getStepsNotification',
+//     //       },
+//     //     },
+//     //   },
+//     //   Language,
+//     // );
+//   } catch (error) { }
+// };
 
 const clearShowStepNotification = () => {
   removeNotify('getStepsNotification');
@@ -704,6 +743,9 @@ export {
   // scheduleScanNotification_ChangeLanguage,
   // scheduleScanNotification_SetConfiguration,
   // ------
+  creatScheduleUpdateWeightNotification,
+  clearScheduleUpdateWeightNotification,
+  // -------
   creatScheduleRegisterNotification,
   clearScheduleRegisterNotification,
   // scheduleRegisterNotification_ChangeLanguage,

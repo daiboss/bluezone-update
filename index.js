@@ -75,32 +75,32 @@ const permissions = [
   },
 ];
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
-PushNotification.configure({
-  onRegister: function (token) {
-  },
-  onRegistrationError: function (err) {
-  },
+// PushNotification.configure({
+//   onRegister: function (token) {
+//   },
+//   onRegistrationError: function (err) {
+//   },
 
-  // IOS ONLY (optional): default: all - Permissions to register.
-  permissions: {
-    alert: true,
-    badge: true,
-    sound: true,
-  },
+//   // IOS ONLY (optional): default: all - Permissions to register.
+//   permissions: {
+//     alert: true,
+//     badge: true,
+//     sound: true,
+//   },
 
-  // Should the initial notification be popped automatically
-  // default: true
-  popInitialNotification: true,
+//   // Should the initial notification be popped automatically
+//   // default: true
+//   popInitialNotification: true,
 
-  /**
-   * (optional) default: true
-   * - Specified if permissions (ios) and token (android and ios) will requested or not,
-   * - if not, you must call PushNotificationsHandler.requestPermissions() later
-   * - if you are not using remote notification or do not have Firebase installed, use this:
-   *     requestPermissions: Platform.OS === 'ios'
-   */
-  requestPermissions: true,
-});
+//   /**
+//    * (optional) default: true
+//    * - Specified if permissions (ios) and token (android and ios) will requested or not,
+//    * - if not, you must call PushNotificationsHandler.requestPermissions() later
+//    * - if you are not using remote notification or do not have Firebase installed, use this:
+//    *     requestPermissions: Platform.OS === 'ios'
+//    */
+//   requestPermissions: true,
+// });
 
 function getAbsoluteMonths(momentDate) {
   var months = Number(momentDate.format('MM'));

@@ -111,19 +111,20 @@ export const onBackgroundFetchEvent = async taskId => {
           );
 
           if (isWarning >= 7) {
-            scheduler.createWarnningWeightNotification();
+            // scheduler.createWarnningWeightNotification();
+            console.log('isWarning',isWarning)
           }
         }
         break;
       case notiStep:
         if (resultSteps) {
           if (today.format('HH') >= 19) {
-            scheduler.createWarnningStepNotification(step?.step);
+            // scheduler.createWarnningStepNotification(step?.step);
           }
         }
         break;
       case realtime:
-        scheduler.createShowStepNotification(step?.step);
+        // scheduler.createShowStepNotification(step?.step);
         break;
       default:
         break;

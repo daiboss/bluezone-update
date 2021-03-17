@@ -91,6 +91,7 @@ function removeNotify(notifyId) {
 }
 
 function cancelNotify(notifyId) {
+  console.log('notifyIdnotifyIdnotifyId',notifyId)
   cancelNotification(notifyId);
 }
 
