@@ -90,10 +90,10 @@ const styles = StyleSheet.create({
     },
     iconMenu: {
         paddingLeft: 20,
-        paddingRight: 20,
+        paddingRight: 10,
         ...Platform.select({
             ios: {
-                paddingTop: 5,
+                // paddingTop: -115,
             },
         }),
     }

@@ -253,7 +253,7 @@ const ProfileScreen = ({ route, intl, navigation }) => {
         styleHeader={styles.header}
         styleTitle={{
           color: '#000',
-          fontSize: fontSize.bigger,
+          fontSize: fontSize.fontSize20,
         }}
       />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>

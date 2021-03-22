@@ -644,7 +644,7 @@ const StepCount = ({ props, intl, navigation }) => {
         styleHeader={styles.header}
         styleTitle={{
           color: '#000',
-          fontSize: fontSize.bigger,
+          fontSize: fontSize.fontSize20,
         }}
         showMenu={true}
         onShowMenu={onShowMenu}

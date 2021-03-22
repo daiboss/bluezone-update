@@ -356,8 +356,16 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const pushNotificationWarning = async () => {
-    let tmpStep = await getNotiStep() || true
-    if (tmpStep) {
+    let checkOnOff = await getIsOnOfApp()
+    if (checkOnOff == undefined) {
+      checkOnOff = true
+    }
+
+    let tmpStep = await getNotiStep()
+    if (tmpStep == undefined) {
+      tmpStep = true
+    }
+    if (checkOnOff == true && tmpStep == true) {
       let totalStep = await getStepsTotalPromise();
       scheduler.createWarnningStepNotification(totalStep || 0)
     }
@@ -416,8 +424,10 @@ const StepCount = ({ props, intl, navigation }) => {
     } catch (err) {
       console.log('setResultSteps error', err)
     }
-    BackgroundJob.sendEmitSaveTargetSuccess()
-    BackgroundJob.updateTypeNotification()
+    try {
+      BackgroundJob.sendEmitSaveTargetSuccess()
+      BackgroundJob.updateTypeNotification()
+    } catch (_) { }
   }
 
   const saveHistory = async () => {
@@ -555,17 +565,6 @@ const StepCount = ({ props, intl, navigation }) => {
             totalCount={totalCount}
             data={dataChart}
             time={time}
-          // data={
-          //   [
-          //     { "x": 1, "y": 10004 },
-          //     { "x": 2, "y": 74 },
-          //     { "x": 3, "y": 273 },
-          //     { "x": 4, "y": 20000 },
-          //     { "x": 5, "y": 0 },
-          //     { "x": 6, "y": 0 },
-          //     { "x": 6, "y": 2000 },
-          //   ]
-          // }
           />
           <TouchableOpacity
             activeOpacity={0.8}
@@ -600,7 +599,7 @@ const StepCount = ({ props, intl, navigation }) => {
         styleHeader={styles.header}
         styleTitle={{
           color: '#000',
-          fontSize: fontSize.bigger,
+          fontSize: fontSize.fontSize20,
         }}
         showMenu={true}
         onShowMenu={onShowMenu}

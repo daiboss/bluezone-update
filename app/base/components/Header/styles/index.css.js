@@ -32,9 +32,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  iconMenu:{
-    paddingLeft: 20,
-    paddingRight: 30,
+  iconMenu: {
+    paddingLeft: 30,
+    paddingRight: 20,
     ...Platform.select({
       ios: {
         paddingTop: 5,
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     zIndex: 99,
   },
   textTitle: {
-    fontSize: fontSize.huge,
+    fontSize: fontSize.fontSize20,
     textAlign: 'center',
     color: '#000',
   },
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 99,
   },
-  
+
 });
 
 export default styles;

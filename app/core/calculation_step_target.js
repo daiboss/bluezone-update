@@ -46,8 +46,13 @@ const CalculationStepTarget = (listStep, oldTarget) => {
     if (stepTarget > STEP_TARGET_DEFAULT) {
         stepTarget = STEP_TARGET_DEFAULT
     }
-    let tmp = (parseInt(stepTarget / 100) * 100)
-    return tmp
+    let oldStep = parseInt(stepTarget)
+
+    let newStep = (parseInt(stepTarget / 100) * 100)
+    if (oldStep - newStep >= 60) {
+        newStep = newStep + 100
+    }
+    return newStep
 }
 
 const tableCalculator = (step, oldTarget) => {

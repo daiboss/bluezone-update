@@ -249,8 +249,12 @@ const SettingScreen = ({ intl, navigation }) => {
     } else {
       await setIsShowNotification(false)
     }
-    if (Platform.OS == 'android')
-      BackgroundJob.updateTypeNotification()
+    // if (Platform.OS == 'android')
+    //   BackgroundJob.updateTypeNotification()
+    try {
+      if (Platform.OS == 'android')
+        BackgroundJob.updateTypeNotification()
+    } catch (_) { }
   }
 
   const getListShortcut = () => {
@@ -276,7 +280,9 @@ const SettingScreen = ({ intl, navigation }) => {
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toDate().getTime()
     await setResultSteps({ step: steps, date: currentTime, hardwork: true })
     if (Platform.OS == 'android') {
-      BackgroundJob.updateTypeNotification()
+      try {
+        BackgroundJob.updateTypeNotification()
+      } catch (_) { }
     }
   }
 
@@ -331,7 +337,7 @@ const SettingScreen = ({ intl, navigation }) => {
         styleHeader={styles.header}
         styleTitle={{
           color: '#000',
-          fontSize: fontSize.bigger,
+          fontSize: fontSize.fontSize20,
         }}
         // showMenu={true}
         onShowMenu={onShowMenu}
