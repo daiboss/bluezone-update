@@ -7,7 +7,6 @@ import message from '../../../../../core/msg/profile';
 import FastImage from 'react-native-fast-image';
 import ModalPickerHeight from '../../../../../base/components/ModalPickerHeight';
 import ModalPickerWeight from '../../../../../base/components/ModalPickerWeight';
-import ChartLine from '../ChartLine';
 import ChartLineV from '../ChartLineV';
 const SelectHeightOrWeight = ({
   intl,

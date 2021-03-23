@@ -12,7 +12,6 @@ import {
   processColor,
 } from 'react-native';
 import Fitness from '@ovalmoney/react-native-fitness';
-// import { BarChart } from 'react-native-charts-wrapper';
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 import { RFValue } from '../../../const/multiscreen';
 

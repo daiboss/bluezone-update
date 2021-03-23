@@ -10,10 +10,7 @@ import {
   Platform,
   Dimensions
 } from 'react-native';
-import update from 'immutability-helper';
 import styles from './styles/index.css';
-import { LineChart } from 'react-native-charts-wrapper';
-import { red_bluezone, blue_bluezone } from '../../../../../core/color';
 import { RFValue } from '../../../../../const/multiscreen';
 
 import {
