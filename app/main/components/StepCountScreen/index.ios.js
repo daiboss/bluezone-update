@@ -51,7 +51,7 @@ import {
   realtime,
   notiStep,
   weightWarning,
-  
+
 } from '../../../const/storage';
 const screenWidth = Dimensions.get('window').width;
 import BackgroundFetch from 'react-native-background-fetch';
@@ -255,8 +255,8 @@ const StepCount = ({ props, intl, navigation }) => {
     try {
       let resultSteps = await getResultSteps(ResultSteps);
       if (!resultSteps) {
-       await setResultSteps({ step: 10000, date: new Date().getTime() });
-       setTotalCount(10000);
+        await setResultSteps({ step: 10000, date: new Date().getTime() });
+        setTotalCount(10000);
       } else {
         setTotalCount(resultSteps.step);
       }
@@ -281,7 +281,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const onGetStepLine = async () => {
     let start = new Date();
     let end = new Date();
-    
+
     start.setDate(start.getDate() - 7);
     Fitness.getSteps({ startDate: start, endDate: end })
       .then(res => {
@@ -313,7 +313,7 @@ const StepCount = ({ props, intl, navigation }) => {
     getStepsRealTime()
     autoChangeStepsTarget()
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightHeight.height, totalCount,countStep])
+  }, [weightHeight.height, totalCount, countStep])
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
@@ -328,7 +328,7 @@ const StepCount = ({ props, intl, navigation }) => {
     let firtTimeUnix3d = moment(firtTimeOpen, 'yyyy-MM-DD').unix() + 3 * 24 * 60 * 60
     // let firtTimeUnix2d = firtTimeOpen + 2 * 24 * 60 * 60
     // let firtTimeUnix3d = firtTimeOpen + 3 * 24 * 60 * 60
-     let todayUnix = moment().unix()
+    let todayUnix = moment().unix()
     //  if (todayUnix < firtTimeUnix2d) {
     //   return
     // }
@@ -346,13 +346,13 @@ const StepCount = ({ props, intl, navigation }) => {
       }
       await setResultSteps(resultSave)
     }
-    else{
+    else {
       start.setDate(start.getDate() - 3);
       end.setDate(end.getDate() - 1)
       let listHistory = await Fitness.getSteps({ startDate: start, endDate: end })
       let CvList = listHistory.map(i => i.quantity)
       let stepTarget = await getResultSteps()
-      if(stepTarget.date + 24*60*60 >= todayUnix){
+      if (stepTarget.date + 24 * 60 * 60 >= todayUnix) {
         return;
       }
       let stepTargetNew = CalculationStepTarget(CvList, stepTarget?.step || 10000)
@@ -586,15 +586,15 @@ const StepCount = ({ props, intl, navigation }) => {
   const showNotificationAlert7DayLessThan100 = async () => {
     let old = await getFirstTimeSetup()
     let today = moment().unix()
-  
-    if (today >= old?.time + 7*24*60*60) {
+
+    if (today >= old?.time + 7 * 24 * 60 * 60) {
       openModalAlert7Day()
     }
   }
 
   const confirmStepsTarget = async (type) => {
     await setConfirmAlert(new moment().format('DD/MM/YYYY'))
-    
+
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     if (type == 1) {
       await setFirstTimeSetup()
@@ -625,8 +625,8 @@ const StepCount = ({ props, intl, navigation }) => {
   const functionTest = () => {
     let options = {
       value: 10,
-      startDate: (moment().subtract(0,'days').startOf('day')).toISOString(),
-      endDate: (moment().subtract(0,'days').endOf('day')).toISOString(),
+      startDate: (moment().subtract(0, 'days').startOf('day')).toISOString(),
+      endDate: (moment().subtract(0, 'days').endOf('day')).toISOString(),
     };
     AppleHealthKit.saveSteps(options, (err, res) => {
       if (err) {
@@ -639,7 +639,7 @@ const StepCount = ({ props, intl, navigation }) => {
       <StatusBar />
       <Header
         onBack={onBack}
-        colorIcon={'#FE4358'}
+        colorIcon={red_bluezone}
         title={formatMessage(message.title)}
         styleHeader={styles.header}
         styleTitle={{
@@ -659,7 +659,7 @@ const StepCount = ({ props, intl, navigation }) => {
         numberWithCommas={numberWithCommas}
         totalCount={totalCount}
       />
-    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <ImageBackground
           resizeMode={'stretch'}
           source={require('./images/bg_step_count.png')}
@@ -667,13 +667,13 @@ const StepCount = ({ props, intl, navigation }) => {
           <Text style={styles.txToday}>{formatMessage(message.today)}</Text>
           <View style={styles.viewBorderCircular}>
             <AnimatedCircularProgress
-              size={RFValue(170)}
+              size={RFValue(170, fontSize.STANDARD_SCREEN_HEIGHT)}
               style={styles.circular}
               width={6}
               rotation={0}
               lineCap="round"
               fill={(countStep / totalCount) * 100}
-              tintColor="#FE4358"
+              tintColor={red_bluezone}
               backgroundColor="#e5e5e5">
               {fill => (
                 <View style={styles.viewFill}>
@@ -681,8 +681,8 @@ const StepCount = ({ props, intl, navigation }) => {
                     source={require('./images/ic_run.png')}
                     resizeMode={'contain'}
                     style={{
-                      width: 30,
-                      height: 30
+                      width: RFValue(24, fontSize.STANDARD_SCREEN_HEIGHT),
+                      height: RFValue(32, fontSize.STANDARD_SCREEN_HEIGHT)
                     }}
                   />
                   <Text style={styles.txCountStep}>{numberWithCommas(countStep || 0)}</Text>
@@ -761,47 +761,36 @@ const StepCount = ({ props, intl, navigation }) => {
           </View>
         </View>
         <View style={styles.viewLineChart}>
-          {(dataChart.length && <View>
-            <ChartLineV totalCount={totalCount} data={dataChart} time={time} />
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() =>
-                navigation.navigate('stepHistory', {
-                  dataHealth: { countStep, countRest, countCarlo, distant },
-                })
-              }
-              style={{
-                zIndex: 10000,
-                position: 'absolute',
-                width: '100%',
-                height: '100%'
-              }}>
-            </TouchableOpacity>
-          </View>) ||
-            null}
+          {(dataChart.length &&
+            <View>
+              <ChartLineV totalCount={totalCount} data={dataChart} time={time} />
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() =>
+                  navigation.navigate('stepHistory', {
+                    dataHealth: { countStep, countRest, countCarlo, distant },
+                  })
+                }
+                style={{
+                  zIndex: 10000,
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%'
+                }}>
+              </TouchableOpacity>
+            </View>
+          ) || null}
 
         </View>
-        {/* <View style={styles.viewHeight} /> */}
       </ScrollView>
-      {/* <TouchableOpacity
-        style={styles.btnHistory}
-        onPress={() =>
-          navigation.navigate('stepHistory', {
-            dataHealth: { countStep, countRest, countCarlo, distant },
-          })
-        }>
-        <Text style={styles.txHistory}>
-          {formatMessage(message.viewHistory)}
-        </Text>
-      </TouchableOpacity> */}
-      
+
       <ButtonIconText
         onPress={
           // functionTest
           () =>
-          navigation.navigate('stepHistory', {
-            dataHealth: { countStep, countRest, countCarlo, distant },
-          })
+            navigation.navigate('stepHistory', {
+              dataHealth: { countStep, countRest, countCarlo, distant },
+            })
         }
         text={formatMessage(message.viewHistory)}
         styleBtn={[styles.colorButtonConfirm]}
@@ -812,8 +801,8 @@ const StepCount = ({ props, intl, navigation }) => {
 };
 const styles = StyleSheet.create({
   img: {
-    width: RFValue(55),
-    height: RFValue(55)
+    width: RFValue(56, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(56, fontSize.STANDARD_SCREEN_HEIGHT)
   },
   chart: {
     flex: 1,
@@ -823,12 +812,12 @@ const styles = StyleSheet.create({
   },
   colorButtonConfirm: {
     backgroundColor: red_bluezone,
-    height: RFValue(46),
+    height: RFValue(46, fontSize.STANDARD_SCREEN_HEIGHT),
     alignSelf: 'center',
-    width: '60%',
+    width: RFValue(217, fontSize.STANDARD_SCREEN_HEIGHT),
     borderRadius: 25,
     paddingVertical: 0,
-    marginBottom: RFValue(10)
+    marginBottom: RFValue(35, fontSize.STANDARD_SCREEN_HEIGHT)
   },
   container: {
     flex: 1,
@@ -842,16 +831,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txData: {
-    color: '#fe4358',
-    fontSize: 14,
+    color: red_bluezone,
+    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: fontSize.fontSize14,
   },
   txUnit: {
     fontSize: 14,
     textAlign: 'center',
-    color: '#fe4358',
+    color: red_bluezone,
     marginTop: RFValue(5),
   },
   dataHealth: {
@@ -859,20 +848,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: 30,
-    marginTop: RFValue(10),
+    marginTop: RFValue(28, fontSize.STANDARD_SCREEN_HEIGHT),
   },
 
   viewCircular: {
-    paddingBottom: RFValue(20),
-    // marginTop: RFValue(20),
+    paddingBottom: RFValue(30, fontSize.STANDARD_SCREEN_HEIGHT),
     alignItems: 'center',
     marginHorizontal: RFValue(20),
     justifyContent: 'center',
+    height: RFValue(263, fontSize.STANDARD_SCREEN_HEIGHT)
   },
   viewBorderCircular: {
     padding: RFValue(10),
     backgroundColor: '#fff',
     borderRadius: 200,
+    height: RFValue(192, fontSize.STANDARD_SCREEN_HEIGHT),
+    width: RFValue(192, fontSize.STANDARD_SCREEN_HEIGHT),
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   circular: {
     alignSelf: 'center',
@@ -885,14 +878,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txCountStep: {
-    color: '#fe4358',
-    fontSize: 37,
+    color: red_bluezone,
+    fontSize: RFValue(37, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: 'bold',
     textAlign: 'center',
+    marginVertical: RFValue(4, fontSize.STANDARD_SCREEN_HEIGHT)
   },
   txCountTarget: {
     color: '#949494',
-    fontSize: 14,
+    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   chart: {
     flex: 1,
@@ -904,7 +898,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '70%',
     height: RFValue(41),
-    backgroundColor: '#fe4358',
+    backgroundColor: red_bluezone,
     borderRadius: 6,
     marginBottom: RFValue(20),
   },

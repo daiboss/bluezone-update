@@ -37,9 +37,8 @@ const SelectGender = ({ intl, onSelectGender, gender }) => {
         <Animated.View style={styles.container}>
 
           <View style={styles.absoluteLayer}>
-            <Animated.Text style={styles.smallZero}>{formatMessage(message.male)}</Animated.Text>
-
-            <Animated.Text style={[styles.smallOne, { paddingRight: locale == 'vi' ? SIZE * 0.16 : SIZE * 0.001 }]} >{formatMessage(message.female)}</Animated.Text>
+            <Text style={styles.smallZero}>{formatMessage(message.male)}</Text>
+            <Text style={styles.smallOne}>{formatMessage(message.female)}</Text>
           </View>
 
           <Animated.View style={[styles.overLay, {
