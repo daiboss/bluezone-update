@@ -16,6 +16,8 @@ import moment from 'moment'
 import MyBarChart from './MyBarChart';
 import BackgroundJob from './../../../../core/service_stepcounter'
 import { getDistances } from '../../../../core/calculation_steps';
+import { RFValue } from '../../../../const/multiscreen';
+import { STANDARD_SCREEN_HEIGHT } from '../../../../core/fontSize';
 
 const BarChart7Item = ({
     data,
@@ -29,26 +31,11 @@ const BarChart7Item = ({
     const [listData, setListData] = useState([])
 
     const [currentDayData, setCurrentDayData] = useState()
-    // const data = [
-    //     {x: "Tháng 2", y: 19466, start: "2021/01/02", end: "2021/28/02", year: "2021"},
-    //     {x: "Tháng này", y: 283, start: "2021/01/03", end: "2021/31/03", year: "2021"},
-    //     {x: "Tháng 12", y: 38491, start: "2020/01/11", end: "2020/30/11", year: "2020"},
-    //     {x: "Tháng 1", y: 489900, start: "2020/01/11", end: "2020/30/11", year: "2020"},
-    //     {x: "Tháng 3", y: 489780, start: "2020/01/11", end: "2020/30/11", year: "2020"},
-    //     {x: "Tháng 4", y: 30333, start: "2020/01/11", end: "2020/30/11", year: "2020"},
-    //     {x: "Tháng 5", y: 39207, start: "2020/01/11", end: "2020/30/11", year: "2020"}
-    // ]
+
     useEffect(() => {
         setIsLast(false)
         setListData([])
     }, [data])
-
-    // useEffect(() => {
-    //     observerableStep()
-    //     return () => {
-    //         BackgroundJob.removeObserverStepChange()
-    //     }
-    // }, [])
 
     useEffect(() => {
         if (currentDayData) {
@@ -60,41 +47,15 @@ const BarChart7Item = ({
         if (listData.length > 0) {
             let currentItem = listData[0]
             let itemToday = currentItem?.list[currentItem?.list?.length - 1]
-            // let old = JSON.parse(dataTodayOld?.resultStep)
-            // console.log('KKOKOKOKOKO', currentDayData?.step , old?.step , itemToday?.results?.step)
             let value = {
                 step: currentDayData?.step,
                 distance: currentDayData?.distance,
                 calories: currentDayData?.calories,
                 time: currentDayData?.time,
-                // step: Math.abs(currentDayData?.step - old?.step + itemToday?.results?.step),
-                // distance: Math.abs(currentDayData?.distance - old?.distance + itemToday?.results?.distance),
-                // calories: Math.abs(currentDayData?.calories - old?.step + itemToday?.results?.calories),
-                // time: Math.abs(currentDayData?.time - old?.step + itemToday?.results?.time),
             }
             itemToday.results = value
             onGetDataBySelect(itemToday, currentItem?.list?.length - 1, 0)
         }
-    }
-
-    const observerableStep = async () => {
-        BackgroundJob.observerStepSaveChange(() => {
-            getDataToday()
-        })
-    }
-
-
-    const getDataToday = async () => {
-        let result = await getDistances();
-        let time = result?.time || 0;
-
-        let stepToday = {
-            step: result?.step || 0,
-            distance: result?.distance || 0,
-            calories: result?.calories || 0,
-            time: time
-        }
-        setCurrentDayData(stepToday)
     }
 
     const addMoreData = (index) => {
@@ -149,7 +110,6 @@ const BarChart7Item = ({
 
     const renderLoadingMore = useMemo(() => {
         if (isLast) return <View />
-        // if (isLoading) {
         return (
             <View style={{
                 justifyContent: 'center',
@@ -160,7 +120,6 @@ const BarChart7Item = ({
                 <ActivityIndicator color={red_bluezone} />
             </View>
         )
-        // }
     }, [isLoading, isLast])
 
     const renderItemChart = ({ item, index }) => {
@@ -181,7 +140,7 @@ const BarChart7Item = ({
         return (
             <FlatList
                 showsHorizontalScrollIndicator={false}
-                style={{ height: 280, width: '100%', marginTop: 8 }}
+                style={{ height: RFValue(190, STANDARD_SCREEN_HEIGHT), width: '100%', marginTop: 8 }}
                 data={listData}
                 initialNumToRender={3}
                 renderItem={renderItemChart}

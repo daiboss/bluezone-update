@@ -4,11 +4,12 @@ import styles from './styles/index.css';
 import { View, TouchableOpacity, Text, Animated, Easing } from 'react-native';
 import message from '../../../../../core/msg/profile';
 import { RFValue } from '../../../../../const/multiscreen';
+import { STANDARD_SCREEN_HEIGHT } from '../../../../../core/fontSize';
 
-const SIZE = RFValue(94)
+const SIZE = RFValue(128, STANDARD_SCREEN_HEIGHT)
 
 const SelectGender = ({ intl, onSelectGender, gender }) => {
-  const { formatMessage,locale} = intl;
+  const { formatMessage, locale } = intl;
   const translateX = useRef(new Animated.Value(0)).current;
 
   const selectGender = gender => () => {
@@ -29,44 +30,18 @@ const SelectGender = ({ intl, onSelectGender, gender }) => {
     <View style={styles.container2}>
       <Text style={styles.textLabel}>{formatMessage(message.gender)}</Text>
 
-      {/* <View
-          style={[
-            styles.buttonSelectGender,
-            gender == 1 ? styles.backgroundColorGenderSelected : {},
-          ]}>
-          <Text
-            style={[
-              styles.textGender,
-              gender == 1 ? styles.colorGenderSelected : styles.colorUnSelected,
-            ]}>
-            {formatMessage(message.male)}
-          </Text>
-        </View>
-        <View
-          style={[
-            styles.buttonSelectGender,
-            gender == 0 ? styles.backgroundColorGenderSelected : {},
-          ]}>
-          <Text
-            style={[
-              styles.textGender,
-              gender == 0 ? styles.colorGenderSelected : styles.colorUnSelected,
-            ]}>
-            {formatMessage(message.female)}
-          </Text>
-        </View> */}
-
-
       <TouchableOpacity
         onPress={selectGender(gender == 1 ? 0 : 1)}
         activeOpacity={0.8}
         style={styles.containerSelectGender}>
         <Animated.View style={styles.container}>
+
           <View style={styles.absoluteLayer}>
             <Animated.Text style={styles.smallZero}>{formatMessage(message.male)}</Animated.Text>
-    
-            <Animated.Text style={[styles.smallOne,{paddingRight: locale == 'vi' ? SIZE * 0.16 : SIZE * 0.001}]} >{formatMessage(message.female)}</Animated.Text>
+
+            <Animated.Text style={[styles.smallOne, { paddingRight: locale == 'vi' ? SIZE * 0.16 : SIZE * 0.001 }]} >{formatMessage(message.female)}</Animated.Text>
           </View>
+
           <Animated.View style={[styles.overLay, {
             width: translateX.interpolate({
               inputRange: [0, SIZE * 0.5, SIZE * 1],
@@ -96,6 +71,7 @@ const SelectGender = ({ intl, onSelectGender, gender }) => {
             }]} >{formatMessage(message.male)}</Animated.Text>
 
           </Animated.View>
+
         </Animated.View>
       </TouchableOpacity>
 

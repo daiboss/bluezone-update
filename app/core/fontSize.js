@@ -21,9 +21,9 @@
 
 'use strict';
 
-import {/* RFPercentage,*/ RFValue} from 'react-native-responsive-fontsize';
+import {/* RFPercentage,*/ RFValue } from 'react-native-responsive-fontsize';
 
-const STANDARD_SCREEN_HEIGHT = 720; // Kích thước phông chữ được tính bằng tỷ lệ phần trăm của chiều cao (chiều rộng ở chế độ ngang) của thiết bị.
+export const STANDARD_SCREEN_HEIGHT = 720; // Kích thước phông chữ được tính bằng tỷ lệ phần trăm của chiều cao (chiều rộng ở chế độ ngang) của thiết bị.
 
 export const tiny = RFValue(8, STANDARD_SCREEN_HEIGHT);
 
@@ -42,6 +42,8 @@ export const normal = RFValue(15, STANDARD_SCREEN_HEIGHT);
 export const fontSize16 = RFValue(16, STANDARD_SCREEN_HEIGHT);
 
 export const large = RFValue(17, STANDARD_SCREEN_HEIGHT);
+
+export const fontSize17 = RFValue(17, STANDARD_SCREEN_HEIGHT);
 
 export const larger = RFValue(18, STANDARD_SCREEN_HEIGHT);
 

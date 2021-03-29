@@ -68,7 +68,7 @@ const ResultBmiScreen = ({ route, intl, navigation }) => {
         // onBack={onGoBack}
         title={formatMessage(message.title)}
         styleHeader={styles.header}
-        colorIcon={'#FE4358'}
+        colorIcon={red_bluezone}
         styleTitle={{
           color: '#000',
           fontSize: fontSize.fontSize20,

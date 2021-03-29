@@ -67,6 +67,8 @@ import ModalAddShortcut from '../../../base/components/ModalAddShortcut';
 import MyShortcut from './CreateShortcut'
 import * as scheduler from '../../../core/notifyScheduler';
 import BackgroundJob from './../../../core/service_stepcounter'
+import { red_bluezone } from '../../../core/color';
+import { RFValue } from '../../../const/multiscreen';
 
 Number.prototype.format = function (n, x) {
   var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
@@ -333,7 +335,7 @@ const SettingScreen = ({ intl, navigation }) => {
         // onBack={onBack}
         onShowMenu={onShowMenu}
         title={formatMessage(message.title)}
-        colorIcon={'#FE4358'}
+        colorIcon={red_bluezone}
         styleHeader={styles.header}
         styleTitle={{
           color: '#000',
@@ -348,7 +350,7 @@ const SettingScreen = ({ intl, navigation }) => {
         </Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
-          thumbColor={autoTarget ? '#fe4358' : '#a5a5a5'}
+          thumbColor={autoTarget ? red_bluezone : '#a5a5a5'}
           ios_backgroundColor="#fff"
           onValueChange={autoTargetSwitch}
           value={autoTarget || false}
@@ -374,7 +376,7 @@ const SettingScreen = ({ intl, navigation }) => {
         <Text style={styles.txLabel}>{formatMessage(message.OnOffApp)}</Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
-          thumbColor={onOffApp ? '#fe4358' : '#a5a5a5'}
+          thumbColor={onOffApp ? red_bluezone : '#a5a5a5'}
           ios_backgroundColor="#fff"
           onValueChange={actionOnOffApp}
           value={onOffApp}
@@ -384,7 +386,7 @@ const SettingScreen = ({ intl, navigation }) => {
         <Text style={styles.txLabel}>{formatMessage(message.NotificationRealtime)}</Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
-          thumbColor={alertStep ? '#fe4358' : '#a5a5a5'}
+          thumbColor={alertStep ? red_bluezone : '#a5a5a5'}
           ios_backgroundColor="#fff"
           onValueChange={alertStepSwitch}
           value={alertStep || false}
@@ -394,7 +396,7 @@ const SettingScreen = ({ intl, navigation }) => {
         <Text style={styles.txLabel}>{formatMessage(message.NotificationTarget)}</Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
-          thumbColor={alertTarget ? '#fe4358' : '#a5a5a5'}
+          thumbColor={alertTarget ? red_bluezone : '#a5a5a5'}
           ios_backgroundColor="#fff"
           onValueChange={alertTargetSwitch}
           value={alertTarget}
@@ -404,7 +406,7 @@ const SettingScreen = ({ intl, navigation }) => {
         <Text style={styles.txLabel}>{formatMessage(message.NotificationWeight)}</Text>
         <Switch
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
-          thumbColor={alertBmi ? '#fe4358' : '#a5a5a5'}
+          thumbColor={alertBmi ? red_bluezone : '#a5a5a5'}
           ios_backgroundColor="#fff"
           onValueChange={alertBmiSwitch}
           value={alertBmi}
@@ -431,7 +433,7 @@ const SettingScreen = ({ intl, navigation }) => {
 };
 const styles = StyleSheet.create({
   txLabel: {
-    fontSize: 15,
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: '600',
     color: '#000',
     width: '70%',
@@ -451,12 +453,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 20,
     marginVertical: 0,
-    paddingVertical: 20,
+    paddingVertical: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   txContent: {
     marginHorizontal: 20,
     textAlign: 'left',
-    fontSize: 14,
+    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     marginTop: -5,
     color: '#00000070',
     marginBottom: 20,
@@ -464,9 +466,9 @@ const styles = StyleSheet.create({
   txNotification: {
     marginHorizontal: 20,
     textAlign: 'left',
-    fontSize: 15,
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: 'bold',
-    marginTop: 20,
+    marginTop: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
     color: '#000000',
   },
   txTarget: {
@@ -486,7 +488,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   txLabelRed: {
-    color: '#fe4358',
+    color: red_bluezone,
     fontSize: 14,
   },
   header: {

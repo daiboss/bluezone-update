@@ -17,6 +17,7 @@ import { StyleSheet, Platform } from 'react-native';
 import * as fontSize from '../../../../../../core/fontSize';
 import { blue_bluezone, red_bluezone } from '../../../../../../core/color';
 import { heightPercentageToDP } from '../../../../../../core/utils/dimension';
+import { RFValue } from '../../../../../../const/multiscreen';
 
 const styles = StyleSheet.create({
   empty: {
@@ -33,10 +34,12 @@ const styles = StyleSheet.create({
   },
   textLabel: {
     fontSize: fontSize.normal,
-    fontWeight: 'bold',
+    marginTop: RFValue(21, fontSize.STANDARD_SCREEN_HEIGHT),
+    marginBottom: RFValue(18, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontWeight: '700'
   },
   container2: {
-    shadowColor: "#000",
+    shadowColor: "black",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -50,16 +53,16 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginHorizontal: 10,
     paddingHorizontal: 10,
-    marginTop: 10,
+    marginTop: RFValue(16, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(106, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   container3: {
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
-    minHeight: 65,
   },
   container4: {
-    alignItems: 'center',
+
   },
   flex: {
     flex: 1,
@@ -68,7 +71,7 @@ const styles = StyleSheet.create({
     // position: 'absolute',
     // right: -10,
     // top: -20,
-    fontSize: fontSize.small,
+    fontSize: fontSize.fontSize11,
     flex: 1,
     textAlign: 'right',
     marginRight: -12
@@ -79,15 +82,15 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   borderRadiusLeft: {
-    borderBottomLeftRadius: 10,
-    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 3,
+    borderTopLeftRadius: 3,
   },
   borderRadiusRight: {
-    borderBottomRightRadius: 10,
-    borderTopRightRadius: 10,
+    borderBottomRightRadius: 0,
+    borderTopRightRadius: 0,
   },
   line: {
-    height: 6,
+    height: RFValue(4, fontSize.STANDARD_SCREEN_HEIGHT),
     width: '100%',
     marginBottom: 10,
   },
@@ -130,9 +133,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderColor: '#015CD0',
     borderWidth: 1,
-    height: 14,
-    width: 14,
-    borderRadius: 15 / 2,
+    height: RFValue(12, fontSize.STANDARD_SCREEN_HEIGHT),
+    width: RFValue(12, fontSize.STANDARD_SCREEN_HEIGHT),
+    borderRadius: RFValue(6, fontSize.STANDARD_SCREEN_HEIGHT),
     position: 'absolute',
     // top: Platform.OS == 'android' ? '17%' : '13%',
   },
@@ -140,6 +143,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1,
     fontSize: fontSize.fontSize11,
+    paddingHorizontal: RFValue(6, fontSize.STANDARD_SCREEN_HEIGHT)
   },
 });
 
