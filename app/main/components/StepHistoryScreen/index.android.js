@@ -579,9 +579,9 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   txtYear: {
-    fontSize: fontSize.normal,
+    fontSize: RFValue(17, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: 'bold',
-    paddingBottom: 5,
+    paddingBottom: RFValue(10, fontSize.STANDARD_SCREEN_HEIGHT),
     alignSelf: 'center',
   },
 });
