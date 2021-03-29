@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     zIndex: 99,
   },
   textTitle: {
-    fontSize: fontSize.fontSize20,
+    fontSize: fontSize.fontSize17,
     textAlign: 'center',
     color: '#000',
   },

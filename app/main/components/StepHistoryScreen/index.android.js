@@ -361,7 +361,7 @@ const StepCount = ({ props, intl, navigation }) => {
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <Header
           // onBack={onBack}
-          colorIcon={'#FE4358'}
+          colorIcon={red_bluezone}
           title={formatMessage(message.stepCountHistory)}
           styleHeader={styles.header}
           styleTitle={{
@@ -469,10 +469,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'center',
-    marginBottom: 30,
+    marginBottom: RFValue(46, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   bgRed: {
-    backgroundColor: '#fe4358',
+    backgroundColor: red_bluezone,
   },
   header: {
     backgroundColor: '#ffffff',
@@ -484,11 +484,15 @@ const styles = StyleSheet.create({
   btnDate: {
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 50
+    borderRadius: 50,
+    height: RFValue(46, fontSize.STANDARD_SCREEN_HEIGHT),
+    width: RFValue(87, fontSize.STANDARD_SCREEN_HEIGHT),
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   img: {
-    width: RFValue(56),
-    height: RFValue(56)
+    width: RFValue(56, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(56, fontSize.STANDARD_SCREEN_HEIGHT)
   },
   chart: {
     flex: 1,
@@ -508,16 +512,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txData: {
-    color: '#fe4358',
-    fontSize: 14,
+    color: red_bluezone,
+    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 10,
   },
   txUnit: {
-    fontSize: 14,
+    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     textAlign: 'center',
-    color: '#fe4358',
+    color: red_bluezone,
     marginTop: 5,
   },
   dataHealth: {
@@ -525,7 +529,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: 30,
-    marginTop: 20,
+    marginTop: RFValue(32, fontSize.STANDARD_SCREEN_HEIGHT),
     borderTopColor: '#00000010',
     borderBottomColor: '#00000010',
     borderTopWidth: 1,
@@ -556,7 +560,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txCountStep: {
-    color: '#fe4358',
+    color: red_bluezone,
     fontSize: 37,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -571,7 +575,7 @@ const styles = StyleSheet.create({
   },
   txDate: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: '700'
   },
   txtYear: {

@@ -22,6 +22,7 @@
 'use strict';
 
 import {StyleSheet} from 'react-native';
+import { RFValue } from '../../../../const/multiscreen';
 import * as fontSize from '../../../../core/fontSize';
 
 const styles = StyleSheet.create({
@@ -31,6 +32,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
+    height: RFValue(46, fontSize.STANDARD_SCREEN_HEIGHT)
   },
 
   text: {

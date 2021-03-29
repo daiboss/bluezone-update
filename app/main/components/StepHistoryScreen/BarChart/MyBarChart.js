@@ -2,7 +2,8 @@ import React, { memo, useEffect, useRef, useState } from 'react'
 import { View, Text, FlatList, Animated, TouchableOpacity, Platform } from 'react-native'
 import { red_bluezone } from '../../../../core/color'
 import { RFValue } from '../../../../const/multiscreen';
-const HEIGHT_CHART = 280
+import { STANDARD_SCREEN_HEIGHT } from '../../../../core/fontSize';
+const HEIGHT_CHART = RFValue(190, STANDARD_SCREEN_HEIGHT)
 const TIME_ANIM = 1000
 
 const MyBarChart = ({
@@ -82,7 +83,7 @@ const ChartColumn = ({ item,
     const refAnim = useRef(new Animated.Value(0)).current
 
     useEffect(() => {
-        let tmp =  (item?.y / maxDomain) * HEIGHT_CHART * 0.8
+        let tmp = (item?.y / maxDomain) * HEIGHT_CHART * 0.8
         Animated.timing(refAnim, {
             toValue: tmp,
             duration: TIME_ANIM,
@@ -100,7 +101,7 @@ const ChartColumn = ({ item,
             activeOpacity={0.8}
             style={{
                 flex: 1,
-                height: HEIGHT_CHART ,
+                height: HEIGHT_CHART,
                 justifyContent: 'space-between',
                 alignItems: 'center',
             }}>
@@ -112,15 +113,15 @@ const ChartColumn = ({ item,
                 marginTop: RFValue(28)
             }} />
             <Text style={{
-                fontSize: Platform.OS == 'android' ? 10 : RFValue(10),
+                fontSize: RFValue(11, STANDARD_SCREEN_HEIGHT),
                 fontWeight: '700',
                 textAlign: 'center',
                 paddingTop: 3,
                 color: selectedItem?.index == index && selectedItem?.page == flIndex ? red_bluezone : '#a1a1a1'
             }}>{item?.x}</Text>
             <Animated.View style={{
-                marginTop:RFValue(10),
-                width: 12,
+                marginTop: RFValue(8, STANDARD_SCREEN_HEIGHT),
+                width: RFValue(10, STANDARD_SCREEN_HEIGHT),
                 height: refAnim,
                 backgroundColor: selectedItem?.index == index && selectedItem?.page == flIndex ? red_bluezone : '#a1a1a1',
                 borderRadius: 20

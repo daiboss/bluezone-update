@@ -6,6 +6,8 @@ import styles from './styles/index.css';
 import { injectIntl, intlShape } from 'react-intl';
 import LinearGradient from './LinearGradient';
 import AnimateNumber from './AnimateNumber';
+import { RFValue } from '../../../../../const/multiscreen';
+import { STANDARD_SCREEN_HEIGHT } from '../../../../../core/fontSize';
 // import Animated, { Easing } from 'react-native-reanimated';
 
 const TIME_ANIM = 2000
@@ -116,13 +118,13 @@ const ResultBmiProgress = ({ bmi, intl }) => {
       <ImageBackground
         source={require('../../styles/images/ic_bg.png')}
         style={styles.container}
-        resizeMode={'contain'}>
+        resizeMode={'stretch'}>
         <View
           style={styles.group}>
           <View style={{
-            width: 200,
-            height: 200,
-            borderRadius: 100,
+            width: RFValue(192, STANDARD_SCREEN_HEIGHT),
+            height: RFValue(192, STANDARD_SCREEN_HEIGHT),
+            borderRadius: RFValue(192 / 2, STANDARD_SCREEN_HEIGHT),
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -142,10 +144,10 @@ const ResultBmiProgress = ({ bmi, intl }) => {
             }
 
             <View style={{
-              width: 185,
-              height: 185,
+              width: RFValue(178, STANDARD_SCREEN_HEIGHT),
+              height: RFValue(178, STANDARD_SCREEN_HEIGHT),
               backgroundColor: '#fff',
-              borderRadius: 100,
+              borderRadius: RFValue(178 / 2, STANDARD_SCREEN_HEIGHT),
               position: 'absolute',
               justifyContent: 'center',
               alignItems: 'center'

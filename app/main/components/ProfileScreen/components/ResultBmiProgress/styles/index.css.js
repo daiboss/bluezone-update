@@ -13,31 +13,32 @@
  */
 'use strict';
 
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import * as fontSize from '../../../../../../core/fontSize';
-import {blue_bluezone, red_bluezone} from '../../../../../../core/color';
-import {heightPercentageToDP} from '../../../../../../core/utils/dimension';
+import { blue_bluezone, red_bluezone } from '../../../../../../core/color';
+import { heightPercentageToDP } from '../../../../../../core/utils/dimension';
+import { RFValue } from '../../../../../../const/multiscreen';
 
 const styles = StyleSheet.create({
-  textStatus:{
-    color:'#949494',
-    fontSize: fontSize.normal,
+  textStatus: {
+    color: '#949494',
+    fontSize: fontSize.smaller,
   },
   group: {
     backgroundColor: '#FFF',
     borderRadius: 200,
-    padding: 10,
+    padding: fontSize.smaller,
   },
   textTotalBmi: {
     fontWeight: 'bold',
-    fontSize: fontSize.biggest,
+    fontSize: RFValue(37, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   container: {
-    height: 300,
-    width: '100%',
+    height: RFValue(264, fontSize.STANDARD_SCREEN_HEIGHT),
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom:20
+    marginBottom: RFValue(17, fontSize.STANDARD_SCREEN_HEIGHT),
+    marginHorizontal: RFValue(10, fontSize.STANDARD_SCREEN_HEIGHT),
   },
 });
 

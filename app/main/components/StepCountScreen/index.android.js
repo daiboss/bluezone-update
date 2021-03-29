@@ -408,9 +408,6 @@ const StepCount = ({ props, intl, navigation }) => {
       let listHistory = await getListHistory(startDay.unix(), new moment().unix())
       if (listHistory?.length <= 0) return
 
-      // let stepTarget = await getResultSteps()
-      // console.log('autoChangeStepsTarget2222', tmpDay, stepTarget, listHistory)
-
       let listData = listHistory.map(element => {
         let resultTmp = JSON.parse(element?.resultStep)
         return (resultTmp?.step || 0)
@@ -435,10 +432,7 @@ const StepCount = ({ props, intl, navigation }) => {
       let tmp = new moment().subtract(1, 'days')
       let yesterdayStart = tmp.clone().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
       let yesterdayEnd = tmp.clone().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix()
-      // let listHistory = await getListHistory(yesterdayStart * 1000, yesterdayEnd * 1000)
-      // if (listHistory?.length > 0) {
-      //   return
-      // }
+
       let listStepYesterday = await getListStepDayBefore()
       let result = await getDistancesWithData(listStepYesterday);
       if (Object.keys(result).length <= 0) {
@@ -594,7 +588,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
       <Header
         // onBack={onBack}
-        colorIcon={'#FE4358'}
+        colorIcon={red_bluezone}
         title={formatMessage(message.title)}
         styleHeader={styles.header}
         styleTitle={{
@@ -633,7 +627,7 @@ const StepCount = ({ props, intl, navigation }) => {
                 totalCount) *
               100
             }
-            tintColor="#FE4358"
+            tintColor={red_bluezone}
             backgroundColor="#e5e5e5">
             {fill => (
               <View style={styles.viewFill}>
@@ -641,8 +635,8 @@ const StepCount = ({ props, intl, navigation }) => {
                   source={require('./images/ic_run.png')}
                   resizeMode={'contain'}
                   style={{
-                    width: RFValue(26),
-                    height: RFValue(26)
+                    width: RFValue(24, fontSize.STANDARD_SCREEN_HEIGHT),
+                    height: RFValue(32, fontSize.STANDARD_SCREEN_HEIGHT),
                   }}
                 />
                 <Text style={styles.txCountStep}>{numberWithCommas(countStep || 0)}</Text>
@@ -723,8 +717,6 @@ const StepCount = ({ props, intl, navigation }) => {
                     </View>
                   )
               }
-
-
             </View>
           </View>
         </View>
@@ -738,7 +730,6 @@ const StepCount = ({ props, intl, navigation }) => {
       </View>
 
       <View style={{ flex: 0.7 }}>
-
         <ButtonIconText
           onPress={() =>
             navigation.navigate('stepHistory', {
@@ -756,8 +747,8 @@ const StepCount = ({ props, intl, navigation }) => {
 
 const styles = StyleSheet.create({
   img: {
-    width: RFValue(56),
-    height: RFValue(56)
+    width: RFValue(56, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(56, fontSize.STANDARD_SCREEN_HEIGHT)
   },
   chart: {
     flex: 1,
@@ -777,16 +768,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txData: {
-    color: '#fe4358',
-    fontSize: 14,
+    color: red_bluezone,
+    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 10,
   },
   txUnit: {
-    fontSize: 14,
+    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     textAlign: 'center',
-    color: '#fe4358',
+    color: red_bluezone,
     marginTop: 5,
   },
   dataHealth: {
@@ -794,21 +785,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: 30,
-    marginTop: 20,
+    marginTop: RFValue(28, fontSize.STANDARD_SCREEN_HEIGHT),
   },
 
   viewCircular: {
-    paddingBottom: 30,
+    paddingBottom: RFValue(30, fontSize.STANDARD_SCREEN_HEIGHT),
     // marginTop: 20,
     alignItems: 'center',
     marginHorizontal: 20,
     justifyContent: 'center',
-    flex: 3
+    flex: 3,
+    height: RFValue(263, fontSize.STANDARD_SCREEN_HEIGHT)
   },
   viewBorderCircular: {
     padding: 10,
     backgroundColor: '#fff',
     borderRadius: 200,
+    width: RFValue(192),
+    height: RFValue(192)
   },
   circular: {
     alignSelf: 'center',
@@ -821,14 +815,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txCountStep: {
-    color: '#fe4358',
-    fontSize: RFValue(32),
+    color: red_bluezone,
+    fontSize: RFValue(37, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: 'bold',
     textAlign: 'center',
   },
   txCountTarget: {
     color: '#949494',
-    fontSize: RFValue(12),
+    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   chart: {
     flex: 1,
@@ -840,7 +834,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '70%',
     height: 41,
-    backgroundColor: '#fe4358',
+    backgroundColor: red_bluezone,
     borderRadius: 20,
     marginBottom: 20,
   },
@@ -850,8 +844,8 @@ const styles = StyleSheet.create({
   },
   txToday: {
     color: '#fff',
-    fontSize: RFValue(12),
-    marginVertical: RFValue(14),
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
+    marginVertical: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     textAlign: 'center',
   },
   header: {
@@ -860,9 +854,9 @@ const styles = StyleSheet.create({
   },
   colorButtonConfirm: {
     backgroundColor: red_bluezone,
-    height: 46,
+    height: RFValue(46, fontSize.STANDARD_SCREEN_HEIGHT),
     alignSelf: 'center',
-    width: '60%',
+    width: RFValue(217, fontSize.STANDARD_SCREEN_HEIGHT),
     borderRadius: 25,
     paddingVertical: 0,
     marginBottom: 10

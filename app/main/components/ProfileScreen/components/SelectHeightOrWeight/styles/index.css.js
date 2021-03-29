@@ -16,6 +16,7 @@
 import { StyleSheet } from 'react-native';
 import * as fontSize from '../../../../../../core/fontSize';
 import { blue_bluezone, red_bluezone } from '../../../../../../core/color';
+import { RFValue } from '../../../../../../const/multiscreen';
 
 const styles = StyleSheet.create({
   iconNext: {
@@ -53,8 +54,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 14,
     marginHorizontal: 10,
-    paddingHorizontal: 10,
-    marginTop: 10,
+    paddingHorizontal: RFValue(16, fontSize.STANDARD_SCREEN_HEIGHT),
+    marginTop: RFValue(16, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(52, fontSize.STANDARD_SCREEN_HEIGHT),
 
     shadowColor: "#000",
     shadowOffset: {

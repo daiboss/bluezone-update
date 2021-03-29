@@ -1,7 +1,9 @@
 import React, { memo, useEffect, useRef, useState } from 'react'
 import { View, Text, FlatList, Animated } from 'react-native'
+import { RFValue } from '../../../../../const/multiscreen'
+import { STANDARD_SCREEN_HEIGHT } from '../../../../../core/fontSize'
 
-const ItemHeight = 36
+const ItemHeight = RFValue(38, STANDARD_SCREEN_HEIGHT)
 const PaddingTop = ItemHeight * 3
 
 const NewSelectedView = ({
@@ -35,19 +37,22 @@ const NewSelectedView = ({
     const renderItemSelected = ({ item, index }) => {
         if (item == "") {
             return <View style={{
-                height: ItemHeight
+                height: ItemHeight,
+                borderWidth: 1,
+                width: 300
             }} />
         }
         return (
             <View style={{
                 height: ItemHeight,
                 justifyContent: 'center',
+                borderWidth: 0.5
             }}>
                 <Text style={[{
                     textAlign: 'center',
-                    fontSize: (index == indexSelected || index == indexSelected - 1 || index == indexSelected + 1) ? 15 : 13,
+                    fontSize: (index == indexSelected || index == indexSelected - 1 || index == indexSelected + 1) ? RFValue(17, STANDARD_SCREEN_HEIGHT) : RFValue(15, STANDARD_SCREEN_HEIGHT),
                     fontWeight: index == indexSelected ? '700' : '400',
-                    color: index == indexSelected ? '#000' : (index == indexSelected - 1 || index == indexSelected + 1) ? '#222' : '#999'
+                    color: index == indexSelected ? '#000' : (index == indexSelected - 1 || index == indexSelected + 1) ? '#222' : '#999',
                 }, textStyle]}>{item}{specialCharacter}</Text>
             </View>
         )
@@ -66,6 +71,26 @@ const NewSelectedView = ({
 
     const onItemIndexChange = React.useCallback(setIndexSelected, []);
 
+    const onMomentumScrollEnd = (ev) => {
+        const newIndex = Math.round(
+            ev.nativeEvent.contentOffset.y / ItemHeight
+        );
+
+        if (onItemIndexChange) {
+            onItemIndexChange(newIndex);
+            onValueChange && onValueChange(dataSource[newIndex])
+        }
+    }
+
+    const onScrollToIndexFailed = (error) => {
+        refFlatList.current?.scrollToOffset({ offset: ItemHeight * error.index, animated: true });
+        setTimeout(() => {
+            if (listData.length !== 0 && refFlatList.current !== null) {
+                refFlatList.current?.scrollToIndex({ index: error.index, animated: true });
+            }
+        }, 100);
+    }
+
     return (
         <View style={[{
             height: ItemHeight * 7,
@@ -80,16 +105,10 @@ const NewSelectedView = ({
                     height: ItemHeight * 7,
                     paddingTop: PaddingTop,
                     zIndex: 10,
+                    borderWidth: 1
                 }}
                 data={listData}
-                onScrollToIndexFailed={(error) => {
-                    refFlatList.current?.scrollToOffset({ offset: error.averageItemLength * error.index, animated: true });
-                    setTimeout(() => {
-                        if (listData.length !== 0 && refFlatList.current !== null) {
-                            refFlatList.current?.scrollToIndex({ index: error.index, animated: true });
-                        }
-                    }, 100);
-                }}
+                onScrollToIndexFailed={onScrollToIndexFailed}
                 removeClippedSubviews
                 renderItem={renderItemSelected}
                 keyExtractor={(item, index) => `item_page_${index}_${specialCharacter}`}
@@ -99,19 +118,10 @@ const NewSelectedView = ({
                 pagingEnabled
                 initialNumToRender={100}
                 // onScroll={onScrollToChangeValue}
-                scrollEventThrottle={16}
+                scrollEventThrottle={1}
                 renderToHardwareTextureAndroid
                 bounces={false}
-                onMomentumScrollEnd={(ev) => {
-                    const newIndex = Math.round(
-                        ev.nativeEvent.contentOffset.y / ItemHeight
-                    );
-
-                    if (onItemIndexChange) {
-                        onItemIndexChange(newIndex);
-                        onValueChange && onValueChange(dataSource[newIndex])
-                    }
-                }}
+                onMomentumScrollEnd={onMomentumScrollEnd}
             />
             <View
                 style={{

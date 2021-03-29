@@ -66,16 +66,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: 10,
     padding: 10,
-    minHeight: 75,
+    minHeight: RFValue(66, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   colorUnSelected: {
     color: '#949494',
   },
 
   container: {
-    width: RFValue(100),
+    width: RFValue(134, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(41, fontSize.STANDARD_SCREEN_HEIGHT),
     backgroundColor: '#fff',
-    height: SIZE * 0.48,
     borderRadius: SIZE * 0.25,
     // elevation: 1,
     justifyContent: "space-between",
@@ -91,35 +91,37 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     position: "absolute",
-    width: '100%',
-    height: (SIZE * 1) / 2,
+    width: RFValue(134, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(41, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   smallZero: {
     color: '#949494',
-    fontSize: RFValue(11),
-    paddingLeft: SIZE * 0.16
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
+    paddingLeft: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   smallOne: {
     color: '#949494',
-    fontSize: RFValue(11),
-    textAlign: 'right',
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
+    paddingLeft: RFValue(23, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   overLay:
   {
     height: SIZE * 0.4,
     backgroundColor: red_bluezone,
     borderRadius: SIZE * 0.25,
-    justifyContent: "center",
-    alignItems: "center",
+    width: RFValue(63, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(33, fontSize.STANDARD_SCREEN_HEIGHT),
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   overLayOne: {
     color: '#fff',
-    fontSize: RFValue(11),
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     position: "absolute",
   },
   overLayZero: {
     color: '#fff',
-    fontSize: RFValue(11),
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     position: "absolute",
   },
 });

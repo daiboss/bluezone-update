@@ -17,6 +17,7 @@ import {
 } from 'victory-native';
 import { Svg, Circle, Defs, Rect, G, Use, LinearGradient, Stop } from 'react-native-svg';
 import { getResultSteps } from '../../../../core/storage';
+import { STANDARD_SCREEN_HEIGHT } from '../../../../core/fontSize';
 
 const { width, height } = Dimensions.get('window')
 
@@ -56,7 +57,7 @@ const ChartLine = ({
         height={RFValue(180)}
         width={width}
         minDomain={{ y: 0 }}
-        padding={{ left: 40, right: 40, top: 30, bottom:50 }}
+        padding={{ left: 40, right: 40, top: 30, bottom: 50 }}
         // maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
         maxDomain={{ y: maxCounter <= 10000 ? RFValue(12000) : (maxCounter + parseInt(maxCounter / 3)) }}
       >
@@ -80,8 +81,8 @@ const ChartLine = ({
             axis: { stroke: 'none' },
             tickLabels: {
               fill: ({ tick, index }) => '#3F3F3F',
-              fontSize: RFValue(11),
-              fontWeight: '700',
+              fontSize: RFValue(11, STANDARD_SCREEN_HEIGHT),
+              fontWeight: '500',
               fontFamily: 'helvetica',
             }
           }}
@@ -113,7 +114,7 @@ const ChartLine = ({
                 strokeWidth: ({ datum }) => 0,
               },
               labels: {
-                fontSize: 15,
+                fontSize: RFValue(11, STANDARD_SCREEN_HEIGHT),
                 fill: red_bluezone
               }
             }}

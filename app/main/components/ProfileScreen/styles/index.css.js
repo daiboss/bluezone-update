@@ -21,13 +21,13 @@
 
 'use strict';
 
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import * as fontSize from '../../../../core/fontSize';
-import {blue_bluezone, red_bluezone} from '../../../../core/color';
-import {isIPhoneX} from '../../../../core/utils/isIPhoneX';
-import {large} from '../../../../core/fontSize';
+import { blue_bluezone, red_bluezone } from '../../../../core/color';
+import { isIPhoneX } from '../../../../core/utils/isIPhoneX';
+import { large } from '../../../../core/fontSize';
 import { RFValue } from '../../../../const/multiscreen';
-import {heightPercentageToDP} from '../../../../core/utils/dimension';
+import { heightPercentageToDP } from '../../../../core/utils/dimension';
 
 const MARGIN_TOP_CONTENT = heightPercentageToDP((62 / 720) * 100);
 const MARGIN_BOTTOM_CONTENT = heightPercentageToDP((64 / 720) * 100);
@@ -43,14 +43,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textLabel: {
-    fontSize: fontSize.normal,
+    fontSize: fontSize.fontSize11,
     flex: 1,
-    paddingLeft: 15,
+    paddingLeft: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontWeight: '600',
+    alignSelf: 'flex-start',
+    paddingRight: RFValue(6, fontSize.STANDARD_SCREEN_HEIGHT)
   },
   iconInfo: {
-    height: 20,
-    width: 20,
-    resizeMode: 'contain',
+    height: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
+    width: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
+    resizeMode: 'center',
   },
   modalFooter: {
     borderTopWidth: 0.5,
@@ -65,7 +68,7 @@ const styles = StyleSheet.create({
 
   buttonConfirm: {
     // marginHorizontal: 43,
-    marginBottom: RFValue(20),
+    marginBottom: RFValue(16, fontSize.STANDARD_SCREEN_HEIGHT),
     paddingTop: 6
   },
   colorButtonConfirm: {
@@ -79,8 +82,9 @@ const styles = StyleSheet.create({
 
   group: {
     flex: 1,
-    padding: RFValue(15),
+    paddingHorizontal: RFValue(8, fontSize.STANDARD_SCREEN_HEIGHT),
     justifyContent: 'space-between',
+    paddingVertical: RFValue(14, fontSize.STANDARD_SCREEN_HEIGHT),
     // paddingTop: '10%',
   },
   container2: {
@@ -96,12 +100,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderColor: '#00000040',
     borderRadius: 14,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     flexDirection: 'row',
     marginHorizontal: 10,
-    padding: 10,
+    padding: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     marginTop: 10,
+    height: RFValue(74, fontSize.STANDARD_SCREEN_HEIGHT)
   },
 
 });

@@ -72,10 +72,6 @@ export default class
             top: (this.wrapperHeight - this.itemHeight) / 2,
             height: this.itemHeight,
             width: highlightWidth,
-            // borderTopColor: highlightColor,
-            // borderBottomColor: highlightColor,
-            // borderTopWidth: StyleSheet.hairlineWidth,
-            // borderBottomWidth: StyleSheet.hairlineWidth,
             backgroundColor: '#fde6e9'
         };
 

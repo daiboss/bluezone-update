@@ -14,6 +14,8 @@
 'use strict';
 
 import { StyleSheet } from 'react-native';
+import { RFValue } from '../../../../const/multiscreen';
+import { red_bluezone } from '../../../../core/color';
 import * as fontSize from '../../../../core/fontSize';
 
 const styles = StyleSheet.create({
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 0,
     paddingTop: 20,
     paddingBottom: 16,
     justifyContent: 'center',
@@ -59,21 +61,22 @@ const styles = StyleSheet.create({
   },
 
   btnSave: {
-    backgroundColor: '#FE4358',
+    backgroundColor: red_bluezone,
     paddingVertical: 10,
     paddingHorizontal: 60,
     borderRadius: 40,
-    marginVertical: 20
+    marginBottom: RFValue(25, fontSize.STANDARD_SCREEN_HEIGHT),
+    marginTop: RFValue(30, fontSize.STANDARD_SCREEN_HEIGHT),
   },
 
   txRed: {
-    fontSize: 14,
+    fontSize: fontSize.smaller,
     fontWeight: '700',
-    color: '#FE4358',
+    color: red_bluezone,
   },
   txRecomends: {
-    fontSize: 13,
-    color: '#00000070'
+    fontSize: fontSize.small,
+    color: '#989898'
   }
 });
 
