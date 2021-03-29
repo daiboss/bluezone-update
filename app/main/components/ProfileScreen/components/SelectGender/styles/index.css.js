@@ -97,12 +97,16 @@ const styles = StyleSheet.create({
   smallZero: {
     color: '#949494',
     fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
-    paddingLeft: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
+    // paddingLeft: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
+    flex: 1,
+    textAlign: 'center'
   },
   smallOne: {
     color: '#949494',
     fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
-    paddingLeft: RFValue(23, fontSize.STANDARD_SCREEN_HEIGHT),
+    // paddingLeft: RFValue(23, fontSize.STANDARD_SCREEN_HEIGHT),
+    flex: 1,
+    textAlign: 'center'
   },
   overLay:
   {

@@ -3,7 +3,7 @@ import { View, Text, FlatList, Animated } from 'react-native'
 import { RFValue } from '../../../../../const/multiscreen'
 import { STANDARD_SCREEN_HEIGHT } from '../../../../../core/fontSize'
 
-const ItemHeight = RFValue(38, STANDARD_SCREEN_HEIGHT)
+const ItemHeight = parseInt(RFValue(38, STANDARD_SCREEN_HEIGHT))
 const PaddingTop = ItemHeight * 3
 
 const NewSelectedView = ({
@@ -12,7 +12,8 @@ const NewSelectedView = ({
     selectedIndex,
     containerStyle,
     textStyle,
-    specialCharacter = ""
+    specialCharacter = "",
+    isRemoveSub = true
 }) => {
     const [listData, setListData] = useState([])
     const refFlatList = useRef(null)
@@ -38,7 +39,6 @@ const NewSelectedView = ({
         if (item == "") {
             return <View style={{
                 height: ItemHeight,
-                borderWidth: 1,
                 width: 300
             }} />
         }
@@ -46,7 +46,6 @@ const NewSelectedView = ({
             <View style={{
                 height: ItemHeight,
                 justifyContent: 'center',
-                borderWidth: 0.5
             }}>
                 <Text style={[{
                     textAlign: 'center',
@@ -105,20 +104,20 @@ const NewSelectedView = ({
                     height: ItemHeight * 7,
                     paddingTop: PaddingTop,
                     zIndex: 10,
-                    borderWidth: 1
                 }}
                 data={listData}
                 onScrollToIndexFailed={onScrollToIndexFailed}
-                removeClippedSubviews
+                removeClippedSubview={isRemoveSub}
                 renderItem={renderItemSelected}
                 keyExtractor={(item, index) => `item_page_${index}_${specialCharacter}`}
-                snapToAlignment={"start"}
+                snapToAlignment={"center"}
                 snapToInterval={ItemHeight}
-                decelerationRate={"fast"}
+                snapToOffsets={[...Array(listData.length)].map((x, i) => (i * ItemHeight))}
+                decelerationRate={"normal"}
                 pagingEnabled
                 initialNumToRender={100}
                 // onScroll={onScrollToChangeValue}
-                scrollEventThrottle={1}
+                scrollEventThrottle={16}
                 renderToHardwareTextureAndroid
                 bounces={false}
                 onMomentumScrollEnd={onMomentumScrollEnd}

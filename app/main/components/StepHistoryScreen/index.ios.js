@@ -38,6 +38,7 @@ import {
   getFirstTimeOpen
 } from '../../../core/storage';
 import { objectOf } from 'prop-types';
+import { red_bluezone } from '../../../core/color';
 const PERMS = AppleHealthKit.Constants.Permissions;
 
 Date.prototype.getWeek = function (dowOffset) {
@@ -620,19 +621,19 @@ const StepCount = ({ props, intl, navigation }) => {
               // type == 'month' && listDataChart.reverse() //: listDataChart
               if (type == 'month') {
                 // const thisMonth = moment().format('M')
-                const arrMonth =  listDataChart.map(i => i.x)
+                const arrMonth = listDataChart.map(i => i.x)
                 const indexThisMonth = arrMonth.indexOf('This\nmonth')
                 const indexThangNay = arrMonth.indexOf('Tháng\nnày')
-                if(indexThisMonth !== -1){
+                if (indexThisMonth !== -1) {
                   const arrSlice = listDataChart.splice(0, indexThisMonth + 1)
                   const listDataChartConvert = arrSlice.concat(listDataChart)
                   setDataChart(listDataChartConvert);
-                }else{
+                } else {
                   const arrSlice = listDataChart.splice(0, indexThangNay + 1)
                   const listDataChartConvert = listDataChart.concat(arrSlice)
                   setDataChart(listDataChartConvert);
                 }
-               
+
               }
 
 
@@ -748,7 +749,7 @@ const StepCount = ({ props, intl, navigation }) => {
     <SafeAreaView style={styles.container}>
       <Header
         onBack={onBack}
-        colorIcon={'#FE4358'}
+        colorIcon={red_bluezone}
         title={formatMessage(message.stepCountHistory)}
         styleHeader={styles.header}
         styleTitle={{
@@ -760,24 +761,11 @@ const StepCount = ({ props, intl, navigation }) => {
         textAlign: 'center',
         // paddingTop:RFValue(10),
         color: 'black',
-        fontSize: RFValue(18),
+        fontSize: RFValue(17, fontSize.STANDARD_SCREEN_HEIGHT),
         fontWeight: '600'
       }}>{year}</Text>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-        {/* <View>
-                    <Text>Thống kê bước chân</Text>
-                </View> */}
         <View style={styles.viewLineChart}>
-          {/* {(dataChart.length && (
-            <BarChart
-              onGetDataBySelect={(start, end, marker) =>
-                onGetDataBySelect(start, end, marker)
-              }
-              data={dataChart}
-              time={time}
-            />
-          )) ||
-            null} */}
 
           {renderChart}
         </View>
@@ -876,7 +864,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   bgRed: {
-    backgroundColor: '#fe4358',
+    backgroundColor: red_bluezone,
   },
   header: {
     backgroundColor: '#ffffff',
@@ -889,10 +877,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 50,
+    width: RFValue(87, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(46, fontSize.STANDARD_SCREEN_HEIGHT),
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   img: {
-    width: 64,
-    height: 64
+    width: RFValue(56, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(56, fontSize.STANDARD_SCREEN_HEIGHT)
   },
   chart: {
     flex: 1,
@@ -912,16 +904,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txData: {
-    color: '#fe4358',
-    fontSize: 14,
+    color: red_bluezone,
+    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: RFValue(14, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   txUnit: {
-    fontSize: 14,
+    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     textAlign: 'center',
-    color: '#fe4358',
+    color: red_bluezone,
     marginTop: 5,
   },
   dataHealth: {
@@ -960,7 +952,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txCountStep: {
-    color: '#fe4358',
+    color: red_bluezone,
     fontSize: 37,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -975,7 +967,7 @@ const styles = StyleSheet.create({
   },
   txDate: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   txtYear: {
     fontSize: fontSize.normal,

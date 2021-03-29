@@ -237,7 +237,7 @@ class ChartLine extends React.Component {
                 fill: red_bluezone
               }
             }}
-            size={RFValue(4, STANDARD_SCREEN_HEIGHT)}
+            size={6}
             labels={() => null}
           />
           <VictoryScatter

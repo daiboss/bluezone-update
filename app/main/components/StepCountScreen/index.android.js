@@ -385,7 +385,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
         if (currentTime.isBefore(lastUpdateTarget, 'seconds') ||
           (currentTime.format('DD/MM/YYYY') == lastUpdateTarget.format('DD/MM/YYYY'))) {
-          console.log('autoChangeStepsTarget exist')
           return
         }
       }
@@ -552,7 +551,8 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const renderChart = useMemo(() => {
-    if (dataChart?.length > 0) {
+    if (dataChart?.length > 0 && time?.length > 0) {
+      console.log('changeeeee')
       return (
         <View>
           <ChartLineV
@@ -619,6 +619,7 @@ const StepCount = ({ props, intl, navigation }) => {
             size={RFValue(170)}
             style={styles.circular}
             width={6}
+            duration={3000}
             lineCap="round"
             rotation={0}
             fill={

@@ -65,6 +65,7 @@ function ModalPicker({
     >
       <View style={styles.content}>
         <NewSelectedView
+          isRemoveSub={false}
           onValueChange={setHeight}
           dataSource={data}
           selectedIndex={
