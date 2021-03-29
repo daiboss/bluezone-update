@@ -59,7 +59,7 @@ const ChartLine = ({
         minDomain={{ y: 0 }}
         padding={{ left: 40, right: 40, top: 30, bottom: 50 }}
         // maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
-        maxDomain={{ y: maxCounter <= 10000 ? RFValue(12000) : (maxCounter + parseInt(maxCounter / 3)) }}
+        maxDomain={{ y: maxCounter <= 10000 ? RFValue(13000) : (maxCounter + parseInt(maxCounter / 2)) }}
       >
 
         <Defs>
