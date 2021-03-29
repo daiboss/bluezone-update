@@ -729,7 +729,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
       </View>
 
-      <View style={{ flex: 0.7 }}>
+      <View style={{ flex: 1 }}>
         <ButtonIconText
           onPress={() =>
             navigation.navigate('stepHistory', {
@@ -802,7 +802,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 200,
     width: RFValue(192),
-    height: RFValue(192)
+    height: RFValue(192),
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   circular: {
     alignSelf: 'center',

@@ -6,7 +6,7 @@ import NumberAnimate from './../../components/ResultBmiProgress/AnimateNumber'
 import { Position } from './PositionDot';
 import { injectIntl, intlShape } from 'react-intl';
 import { RFValue } from '../../../../../const/multiscreen';
-import { STANDARD_SCREEN_HEIGHT } from '../../../../../core/fontSize';
+import { fontSize14, STANDARD_SCREEN_HEIGHT } from '../../../../../core/fontSize';
 const { width, height } = Dimensions.get('window')
 
 const WIDTH_ITEM = (width - ((RFValue(15) + 20) * 2)) / 5
@@ -40,6 +40,7 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
   return (
     <View style={[styles.container2, {
       // overflow: 'hidden'
+      height: resultScreen ? RFValue(106, STANDARD_SCREEN_HEIGHT) : RFValue(129, STANDARD_SCREEN_HEIGHT)
     }]}>
       {resultScreen ? (
         <View style={[styles.empty]} />
@@ -53,7 +54,8 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
                 return parseFloat(val).toFixed(1)
               }}
               styleText={{
-                fontSize: 10
+                fontSize: fontSize14,
+                fontWeight: '700'
               }}
               value={bmi} />
           </View>

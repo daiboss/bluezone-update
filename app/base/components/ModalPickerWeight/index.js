@@ -81,10 +81,6 @@ function ModalPicker({
             marginVertical: 30,
             flex: 1
           }}
-          // textStyle={{
-          //   alignSelf: 'flex-end',
-          //   marginRight: 14
-          // }}
         />
 
         <NewSelectedView

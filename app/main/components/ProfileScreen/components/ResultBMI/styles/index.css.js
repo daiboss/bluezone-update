@@ -34,10 +34,12 @@ const styles = StyleSheet.create({
   },
   textLabel: {
     fontSize: fontSize.normal,
-    fontWeight: 'bold',
+    marginTop: RFValue(21, fontSize.STANDARD_SCREEN_HEIGHT),
+    marginBottom: RFValue(18, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontWeight: '700'
   },
   container2: {
-    shadowColor: "#000",
+    shadowColor: "black",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   container4: {
-    
+
   },
   flex: {
     flex: 1,

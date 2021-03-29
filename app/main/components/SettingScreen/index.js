@@ -68,6 +68,7 @@ import MyShortcut from './CreateShortcut'
 import * as scheduler from '../../../core/notifyScheduler';
 import BackgroundJob from './../../../core/service_stepcounter'
 import { red_bluezone } from '../../../core/color';
+import { RFValue } from '../../../const/multiscreen';
 
 Number.prototype.format = function (n, x) {
   var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
@@ -432,7 +433,7 @@ const SettingScreen = ({ intl, navigation }) => {
 };
 const styles = StyleSheet.create({
   txLabel: {
-    fontSize: 15,
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: '600',
     color: '#000',
     width: '70%',
@@ -452,12 +453,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 20,
     marginVertical: 0,
-    paddingVertical: 20,
+    paddingVertical: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   txContent: {
     marginHorizontal: 20,
     textAlign: 'left',
-    fontSize: 14,
+    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     marginTop: -5,
     color: '#00000070',
     marginBottom: 20,
@@ -465,9 +466,9 @@ const styles = StyleSheet.create({
   txNotification: {
     marginHorizontal: 20,
     textAlign: 'left',
-    fontSize: 15,
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: 'bold',
-    marginTop: 20,
+    marginTop: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
     color: '#000000',
   },
   txTarget: {

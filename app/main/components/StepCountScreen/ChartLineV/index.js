@@ -54,7 +54,7 @@ const ChartLine = ({
   const renderCharMain = () => {
     return (
       <VictoryChart
-        height={RFValue(180)}
+        height={RFValue(170, STANDARD_SCREEN_HEIGHT)}
         width={width}
         minDomain={{ y: 0 }}
         padding={{ left: 40, right: 40, top: 30, bottom: 50 }}
@@ -157,7 +157,7 @@ const ChartLine = ({
             position: 'absolute',
             backgroundColor: red_bluezone,
             zIndex: 1,
-            top: height * 0.06,
+            top: height * 0.055,
             // left: ,
             alignSelf: 'center',
             paddingHorizontal: RFValue(10),
@@ -179,7 +179,7 @@ const ChartLine = ({
                 width: RFValue(10),
                 height: RFValue(10),
                 position: 'absolute',
-                bottom: -8,
+                bottom: -6,
                 alignSelf: 'center',
                 tintColor: red_bluezone
               }}
@@ -190,7 +190,7 @@ const ChartLine = ({
             width: width * 0.81,
             alignSelf: 'center',
             position: 'absolute',
-            top: height * 0.1
+            top: height * 0.09
           }}
             dashColor={red_bluezone}
           />

@@ -67,15 +67,14 @@ const styles = StyleSheet.create({
   },
 
   buttonConfirm: {
-    // marginHorizontal: 43,
-    marginBottom: RFValue(16, fontSize.STANDARD_SCREEN_HEIGHT),
-    paddingTop: 6
+    marginBottom: RFValue(45, fontSize.STANDARD_SCREEN_HEIGHT),
+    paddingTop: 6,
   },
   colorButtonConfirm: {
     backgroundColor: red_bluezone,
-    height: 46,
+    height: RFValue(46, fontSize.STANDARD_SCREEN_HEIGHT),
     alignSelf: 'center',
-    width: '60%',
+    width: RFValue(217, fontSize.STANDARD_SCREEN_HEIGHT),
     borderRadius: 25,
     paddingVertical: 0,
   },

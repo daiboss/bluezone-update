@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     marginHorizontal: 10,
-    padding: 10,
+    paddingHorizontal: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     minHeight: RFValue(66, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   colorUnSelected: {

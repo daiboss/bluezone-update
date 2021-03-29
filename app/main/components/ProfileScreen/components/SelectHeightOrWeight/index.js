@@ -1,5 +1,5 @@
 import { injectIntl, intlShape } from 'react-intl';
-import React, { useEffect, useState,memo } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import AppleHealthKit from 'rn-apple-healthkit';
 import styles from './styles/index.css';
 import { View, TouchableOpacity, Text } from 'react-native';
@@ -9,6 +9,8 @@ import ModalPickerHeight from '../../../../../base/components/ModalPickerHeight'
 import ModalPickerWeight from '../../../../../base/components/ModalPickerWeight';
 import ChartLine from '../ChartLine';
 import ChartLineV from '../ChartLineV';
+import { RFValue } from '../../../../../const/multiscreen';
+import { STANDARD_SCREEN_HEIGHT } from '../../../../../core/fontSize';
 const SelectHeightOrWeight = ({
   intl,
   onSelected,
@@ -50,7 +52,9 @@ const SelectHeightOrWeight = ({
 
   return (
     <>
-      <View style={[styles.container2, error ? styles.borderError : {}]}>
+      <View style={[styles.container2, error ? styles.borderError : {}, type == 'weight' && listProfile?.length && {
+        height: RFValue(209, STANDARD_SCREEN_HEIGHT)
+      }]}>
         <View style={[styles.container3]}>
           <Text style={styles.textLabel}>{label}</Text>
           <View style={styles.containerSelectGender}>
