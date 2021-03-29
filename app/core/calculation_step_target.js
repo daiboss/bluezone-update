@@ -13,8 +13,11 @@ const CalculationStepTargetAndroid = (listStep, oldTarget, days) => {
 
 const CalculationStepTarget = (listStep, oldTarget) => {
     if (!listStep || !oldTarget || listStep.length < 2) {
+        console.log('vaovaovoaovoavoaovoCACACACACARETURN')
         return STEP_TARGET_DEFAULT
     }
+
+    console.log('listSteplistStep',listStep,oldTarget)
     let lastItem = undefined
     let stepTarget = STEP_TARGET_DEFAULT
     if (listStep.length == 2) {
