@@ -19,6 +19,8 @@ import styles from './styles/index.css';
 import ModalComponent from '../ModalComponent';
 import CustomSelect from './../../../main/components/ProfileScreen/components/SelectHeightOrWeight/CustomSelect'
 import NewSelectedView from './../../../main/components/ProfileScreen/components/NewSelectedView/NewSelectedView'
+import { RFValue } from '../../../const/multiscreen';
+import { STANDARD_SCREEN_HEIGHT } from '../../../core/fontSize';
 
 function ModalPicker({
   isVisibleModal,
@@ -81,6 +83,10 @@ function ModalPicker({
             marginVertical: 30,
             flex: 1
           }}
+          textStyle={{
+            alignSelf: 'flex-end',
+            marginRight: RFValue(25, STANDARD_SCREEN_HEIGHT)
+          }}
         />
 
         <NewSelectedView
@@ -101,7 +107,7 @@ function ModalPicker({
           }}
           textStyle={{
             alignSelf: 'flex-start',
-            marginLeft: 14
+            marginLeft: RFValue(25, STANDARD_SCREEN_HEIGHT)
           }}
         />
       </View>
