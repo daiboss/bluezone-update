@@ -36,6 +36,7 @@ const ChartLine = ({
   }, [data])
 
   const handleData = async () => {
+    console.log('handleData')
     let stepTarget = await getResultSteps()
     let tmpDif = Number(10000 / (stepTarget?.step == undefined ? 10000 : stepTarget?.step == 0 ? 10000 : stepTarget?.step))
 
@@ -52,6 +53,7 @@ const ChartLine = ({
   }
 
   const renderCharMain = () => {
+    console.log('renderCharMain')
     return (
       <VictoryChart
         height={RFValue(170, STANDARD_SCREEN_HEIGHT)}
@@ -59,7 +61,7 @@ const ChartLine = ({
         minDomain={{ y: 0 }}
         padding={{ left: 40, right: 40, top: 30, bottom: 50 }}
         // maxDomain={{ y: this.state.maxCounter <= 10000 ? RFValue(12000) : this.state.maxCounter }}
-        maxDomain={{ y: maxCounter <= 10000 ? RFValue(12000) : (maxCounter + parseInt(maxCounter / 3)) }}
+        maxDomain={{ y: maxCounter <= 10000 ? RFValue(13000) : (maxCounter + parseInt(maxCounter / 2)) }}
       >
 
         <Defs>
@@ -147,7 +149,7 @@ const ChartLine = ({
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
 
-  const renderView = useMemo(() => {
+  const renderView = () => {
     if (totalCount && time?.length > 0 && dataConvert?.length > 0) {
       return (
         <View
@@ -204,9 +206,9 @@ const ChartLine = ({
       );
     }
     return <View />
-  }, [totalCount, time, dataConvert])
+  }
 
-  return renderView
+  return renderView()
 }
 
 export default ChartLine;
