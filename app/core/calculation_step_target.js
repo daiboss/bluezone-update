@@ -17,7 +17,6 @@ const CalculationStepTarget = (listStep, oldTarget) => {
         return STEP_TARGET_DEFAULT
     }
 
-    console.log('listSteplistStep', listStep, oldTarget)
     let lastItem = undefined
     let stepTarget = STEP_TARGET_DEFAULT
     if (listStep.length < 2) {
@@ -32,8 +31,8 @@ const CalculationStepTarget = (listStep, oldTarget) => {
     } else {
         lastItem = listStep[listStep.length - 1]
         if (lastItem <= 1000) {
-            // stepTarget = oldTarget;
-            stepTarget = 1000;
+            stepTarget = oldTarget;
+            // stepTarget = 1000;
         } else if (lastItem > oldTarget) {
             if (oldTarget <= 5000) {
                 stepTarget = lastItem + 250

@@ -307,7 +307,7 @@ const StepCount = ({ props, intl, navigation }) => {
           distance: 0.00,
           calories: 0,
           time: 0,
-        }).then(re => console.log('RESSSSS', res)).catch(err => console.log('DENEWRRORR', err))
+        }).then(re => console.log('RESSSSS', re)).catch(err => console.log('DENEWRRORR', err))
       }))
       console.log('DENDAY5')
       BackgroundJob.sendEmitSaveHistorySuccess()
@@ -379,11 +379,10 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const autoChangeStepsTarget = async () => {
     try {
-      
+
 
 
       let stepTarget = await getResultSteps()
-      console.log('stepTarget', stepTarget)
       if (stepTarget != undefined) {
         let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
         let tmp = `${stepTarget?.date}`
@@ -403,7 +402,6 @@ const StepCount = ({ props, intl, navigation }) => {
       let firstTime = new moment.unix(lastTime?.time)
       let tmpDay = new moment().diff(firstTime, 'days')
 
-      console.log('lastTime', lastTime, 'firstTime', firstTime, 'tmpDay', tmpDay)
       if (tmpDay < 2) {
         return
       }
@@ -423,7 +421,6 @@ const StepCount = ({ props, intl, navigation }) => {
         let resultTmp = JSON.parse(element?.resultStep)
         return (resultTmp?.step || 0)
       })
-      console.log('listData', listData)
       let stepTargetNew = CalculationStepTargetAndroid(listData, stepTarget?.step || 10000, tmpDay)
       let resultSave = {
         step: stepTargetNew,
@@ -557,6 +554,7 @@ const StepCount = ({ props, intl, navigation }) => {
         step: 10000,
         date: currentTime.toDate().getTime()
       }
+      await setFirstTimeSetup()
       await setResultSteps(resultSave)
       await resultSteps()
       closeModalAlert7Day()
@@ -565,7 +563,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const renderChart = useMemo(() => {
     if (dataChart?.length > 0 && time?.length > 0) {
-      console.log('changeeeee')
       return (
         <View>
           <ChartLineV
