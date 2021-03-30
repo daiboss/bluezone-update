@@ -71,7 +71,7 @@ const ResultBmiScreen = ({ route, intl, navigation }) => {
         colorIcon={red_bluezone}
         styleTitle={{
           color: '#000',
-          fontSize: fontSize.fontSize20,
+          fontSize: fontSize.fontSize17,
         }}
       />
       <ScrollView>

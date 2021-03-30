@@ -16,13 +16,13 @@
 import { StyleSheet } from 'react-native';
 import * as fontSize from '../../../../../../core/fontSize';
 import { blue_bluezone, red_bluezone } from '../../../../../../core/color';
-import { RFValue } from '../../../../../../const/multiscreen';
+import { MSCALE, RFValue,FS } from '../../../../../../const/multiscreen';
 
 const styles = StyleSheet.create({
   iconNext: {
-    height: 17,
-    width: 17,
-    resizeMode: 'cover',
+    height: MSCALE(12),
+    width: MSCALE(12),
+    resizeMode: 'contain',
     marginTop: 2,
     marginLeft: 10,
   },

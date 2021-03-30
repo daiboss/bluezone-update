@@ -339,7 +339,7 @@ const SettingScreen = ({ intl, navigation }) => {
         styleHeader={styles.header}
         styleTitle={{
           color: '#000',
-          fontSize: fontSize.fontSize20,
+          fontSize: fontSize.fontSize17,
         }}
         // showMenu={true}
         onShowMenu={onShowMenu}

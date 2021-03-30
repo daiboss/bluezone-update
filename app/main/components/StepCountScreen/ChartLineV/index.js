@@ -159,7 +159,7 @@ const ChartLine = ({
             position: 'absolute',
             backgroundColor: red_bluezone,
             zIndex: 1,
-            top: height * 0.055,
+            top: Platform.OS == 'ios' ? height * 0.05 : height * 0.055,
             // left: ,
             alignSelf: 'center',
             paddingHorizontal: RFValue(10),

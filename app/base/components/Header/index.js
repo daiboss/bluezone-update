@@ -32,6 +32,7 @@ import { MediumText } from '../Text';
 // Styles
 import styles from './styles/index.css';
 import { blue_bluezone } from '../../../core/color';
+import { MSCALE } from '../../../const/multiscreen';
 
 class Header extends React.Component {
   constructor(props) {
@@ -74,7 +75,7 @@ class Header extends React.Component {
           <TouchableOpacity onPress={this.onGoBack} style={styles.btnBack}>
             <Ionicons
               name={'ios-arrow-back'}
-              size={28}
+              size={MSCALE(24)}
               style={styles.icon}
               color={colorIcon}
             />

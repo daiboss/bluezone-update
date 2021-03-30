@@ -111,7 +111,7 @@ const BmiScreen = ({ route, intl, navigation }) => {
         styleHeader={styles.header}
         styleTitle={{
           color: '#000',
-          fontSize: fontSize.fontSize20,
+          fontSize: fontSize.fontSize17,
         }}
       />
       <View style={styles.group}>
