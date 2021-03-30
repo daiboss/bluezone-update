@@ -332,6 +332,9 @@ const StepCount = ({ props, intl, navigation }) => {
     //  if (todayUnix < firtTimeUnix2d) {
     //   return
     // }
+    if(todayUnix < firtTimeUnix2d){
+      return;
+    }
     if (todayUnix > firtTimeUnix2d && todayUnix < firtTimeUnix3d) {
       console.log('vaovaovaovaovoavoIF')
       start.setDate(start.getDate() - 2);
@@ -355,11 +358,6 @@ const StepCount = ({ props, intl, navigation }) => {
       let CvList = listHistory.map(i => i.quantity)
       let stepTarget = await getResultSteps()
 
-      console.log('stepTarget.date + 24 * 60 * 60',stepTarget,todayUnix)
-      // if (stepTarget.date + 24 * 60 * 60 >= todayUnix) {
-      //   console.log('vaovaovoaovaovoaovoaRETUEN')
-      //   return;
-      // }
       let stepTargetNew = CalculationStepTarget(CvList, stepTarget?.step || 10000)
       let resultSave = {
         step: stepTargetNew,

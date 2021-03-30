@@ -349,65 +349,6 @@ const StepCount = ({ props, intl, navigation }) => {
         let valueEnd = endWeek.isAfter(currentTime) ? formatMessage(message.now) : `${endWeek.format('DD')}`
         startWeek.locale('en').format('MMM')
         endWeek.locale('en').format('MMM')
-        // let label = ''
-        // if (locale == 'en') {
-        //   switch (parseInt(key)) {
-        //     case 0: {
-        //       label = 'Jan'
-        //       break
-        //     }
-        //     case 1: {
-        //       label = 'Feb'
-        //       break
-        //     }
-        //     case 2: {
-        //       label = 'Mar'
-        //       break
-        //     }
-        //     case 3: {
-        //       label = 'Apr'
-        //       break
-        //     }
-        //     case 4: {
-        //       label = 'May'
-        //       break
-        //     }
-        //     case 5: {
-        //       label = 'Jun'
-        //       break
-        //     }
-        //     case 6: {
-        //       label = 'Jul'
-        //       break
-        //     }
-        //     case 7: {
-        //       label = 'Aug'
-        //       break
-        //     }
-        //     case 8: {
-        //       label = 'Sep'
-        //       break
-        //     }
-        //     case 9: {
-        //       label = 'Oct'
-        //       break
-        //     }
-        //     case 10: {
-        //       label = 'Nov'
-        //       break
-        //     }
-        //     case 11: {
-        //       label = 'Dec'
-        //       break
-        //     }
-        //     default: label = ''
-        //   }
-        //   if (key == currentMonth) {
-        //     label = 'This\nmonth'
-        //   }
-        // } else {
-        //   label = `${formatMessage(message.month)}\n${key < currentMonth ? (parseInt(key) + 1) : 'này'}`
-        // }
         let label = ''
         if (locale == 'en') {
           label = `${startWeek.format('DD')} - ${valueEnd}\n ${endWeek.locale('en').format('MMM')}`
@@ -420,6 +361,7 @@ const StepCount = ({ props, intl, navigation }) => {
           end: endWeek.format('YYYY/DD/MM'),
           year: startWeek.format('YYYY')
         })
+  
       }
     }
 
@@ -633,7 +575,30 @@ const StepCount = ({ props, intl, navigation }) => {
                   const listDataChartConvert = listDataChart.concat(arrSlice)
                   setDataChart(listDataChartConvert);
                 }
-
+              }
+              if(type == 'week'){
+                let arrayConvert = listDataChart.map((i,index) => {
+                  const monthEn = moment().locale('en').format('MMM')
+                  const monthVn = moment().format('MM')
+                  console.log('valvlavlalvalvlavlav',i)
+                  if(index == listDataChart.length - 1){
+                    const startWeek = moment(i.start,'yyyy/DD/MM').startOf('isoWeek')
+                    return{
+                      ...i,
+                      x: locale == 'en' ? `${startWeek.format('DD')} - now\n ${monthEn}` : `${startWeek.format('DD')} - nay\nT ${monthVn}`
+                    }
+                  //   console.log('vaovaovaovoaoaovoa')
+                  //  if (locale == 'en'){
+                  //   return i.x == `${startWeek.format('DD')} - ${valueEnd}\n ${monthEn}`
+                  //  }
+                  //  else{
+                  //   return i.x == `${startWeek.format('DD')} - ${valueEnd}\n ${monthVn}`
+                  //  }
+                  }
+                  return i
+                })
+                console.log('arrayConvertarrayConvertarrayConvert',arrayConvert)
+                setDataChart(arrayConvert)
               }
 
 
