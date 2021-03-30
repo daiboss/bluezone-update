@@ -36,7 +36,6 @@ const ChartLine = ({
   }, [data])
 
   const handleData = async () => {
-    console.log('handleData')
     let stepTarget = await getResultSteps()
     let tmpDif = Number(10000 / (stepTarget?.step == undefined ? 10000 : stepTarget?.step == 0 ? 10000 : stepTarget?.step))
 
@@ -53,7 +52,6 @@ const ChartLine = ({
   }
 
   const renderCharMain = () => {
-    console.log('renderCharMain')
     return (
       <VictoryChart
         height={RFValue(170, STANDARD_SCREEN_HEIGHT)}
