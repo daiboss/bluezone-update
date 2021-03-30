@@ -17,10 +17,12 @@ const CalculationStepTarget = (listStep, oldTarget) => {
         return STEP_TARGET_DEFAULT
     }
 
-    console.log('listSteplistStep',listStep,oldTarget)
+    console.log('listSteplistStep', listStep, oldTarget)
     let lastItem = undefined
     let stepTarget = STEP_TARGET_DEFAULT
-    if (listStep.length == 2) {
+    if (listStep.length < 2) {
+        stepTarget = STEP_TARGET_DEFAULT
+    } else if (listStep.length == 2) {
         lastItem = listStep[1]
         if (lastItem >= STEP_TARGET_DEFAULT) {
             return STEP_TARGET_DEFAULT

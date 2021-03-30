@@ -114,16 +114,16 @@ class BackgroundServer {
 
     updateTypeNotification() {
         if (Platform.OS !== 'android') return;
-        if (!this.isRunning())
-            throw new Error('updateTypeNotification: A BackgroundAction must be running before updating the notification');
-        RNBackgroundActions.updateTypeNotification()
+        if (this.isRunning()) {
+            RNBackgroundActions.updateTypeNotification()
+        }
     }
 
     updateStepTargetSuccess() {
         if (Platform.OS !== 'android') return;
-        if (!this.isRunning())
-            throw new Error('updateStepTargetSuccess: A BackgroundAction must be running before updating the notification');
-        RNBackgroundActions.updateStepTargetSuccess()
+        if (this.isRunning()) {
+            RNBackgroundActions.updateStepTargetSuccess()
+        }
     }
 
     /**
@@ -266,16 +266,16 @@ class BackgroundServer {
 
     sendEmitSaveSuccess() {
         if (Platform.OS !== 'android') return;
-        if (!this.isRunning())
-            throw new Error('sendEmitSaveSuccess: A BackgroundAction must be running before updating the notification');
-        RNBackgroundActions.sendEmitSaveSuccess();
+        if (this.isRunning()) {
+            RNBackgroundActions.sendEmitSaveSuccess();
+        }
     }
 
     sendEmitSaveHistorySuccess() {
         if (Platform.OS !== 'android') return;
-        if (!this.isRunning())
-            throw new Error('sendEmitSaveSuccess: A BackgroundAction must be running before updating the notification');
-        RNBackgroundActions.sendEmitSaveHistorySuccess();
+        if (this.isRunning()) {
+            RNBackgroundActions.sendEmitSaveHistorySuccess();
+        }
     }
 
     observerStepSaveChange(callback) {
@@ -302,9 +302,9 @@ class BackgroundServer {
 
     sendEmitSaveTargetSuccess() {
         if (Platform.OS !== 'android') return;
-        if (!this.isRunning())
-            throw new Error('sendEmitSaveTargetSuccess: A BackgroundAction must be running before updating the notification');
-        RNBackgroundActions.sendEmitSaveTargetSuccess();
+        if (this.isRunning()) {
+            RNBackgroundActions.sendEmitSaveTargetSuccess();
+        }
     }
 
     removeTargetChange() {
