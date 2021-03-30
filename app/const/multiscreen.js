@@ -45,6 +45,20 @@ export function RFValue(fontSize, standardScreenHeight = 680) {
   const heightPercent = (fontSize * deviceHeight) / standardScreenHeight;
   return Math.round(heightPercent);
 }
+const MSCALE = (size, factor) => {
+  const newSize = MODERATE_SCALE(size, factor || 1);
+  if (Platform.OS === 'ios') {
+    return Math.round(PixelRatio.roundToNearestPixel(newSize));
+  } else {
+    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2;
+  }
+};
+
+//RESPONSIVE FONT
+const FS = (size, factor) => {
+  const newSize = MODERATE_SCALE(size, factor || 0.6);
+  return newSize;
+};
 
 export {
   SMALL_SCREEN,
@@ -55,4 +69,6 @@ export {
   MODERATE_SCALE,
   MODERATE_VERTICAL_SCALE,
   FONT_SCALE,
+  MSCALE,
+  FS
 };

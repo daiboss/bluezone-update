@@ -21,6 +21,95 @@ import { Svg, Circle, Defs, Rect, G, Use, LinearGradient, Stop } from 'react-nat
 import { STANDARD_SCREEN_HEIGHT } from '../../../../../core/fontSize';
 const { width, height } = Dimensions.get('window')
 
+
+
+const  dataTest = [
+  {x:1,y:65},
+  {x:2,y:15},
+  {x:3,y:15},
+  {x:4,y:60},
+  {x:5,y:60.3},
+  {x:6,y:15},
+  {x:7,y:15},
+  // {x:8,y:300.9},
+  // {x:9,y:60,},
+  // {x:10,y:60,},
+  // {x:11,y:60,},
+  // {x:12,y:60,},
+  // {x:13,y:60,},
+  // {x:14,y:60,},
+  // {x:15,y:60,},
+  // {x:16,y:60,},
+  // {x:17,y:60,},
+  // {x:18,y:60,},
+  // {x:19,y:60,},
+  // {x:20,y:60,},
+  // {x:21,y:65},
+  // {x:22,y:50},
+  // {x:23,y:50},
+  // {x:24,y:60},
+  // {x:25,y:60.3},
+  // {x:26,y:1},
+  // {x:27,y:1},
+  // {x:28,y:300.9},
+  // {x:29,y:60,},
+  // {x:30,y:60,},
+  // {x:31,y:60,},
+  // {x:32,y:60,},
+  // {x:33,y:60,},
+  // {x:34,y:60,},
+  // {x:35,y:60,},
+  // {x:36,y:60,},
+  // {x:37,y:60,},
+  // {x:38,y:60,},
+  // {x:39,y:60,},
+  // {x:40,y:60,},
+]
+
+  const tickdataTest = [
+    '01/11/2021',
+    '02/11/2021',
+    '03/11/2021',
+    '04/11/2021',
+    '05/11/2021',
+    '06/11/2021',
+    '07/11/2021',
+    // '08/11/2021',
+    // '09/11/2020',
+    // '10/11/2020',
+    // '11/11/2020',
+    // '12/11/2020',
+    // '13/11/2020',
+    // '14/11/2020',
+    // '15/11/2020',
+    // '16/11/2020',
+    // '17/11/2020',
+    // '18/11/2020',
+    // '19/11/2020',
+    // '20/11/2020',
+    // '21/11/2021',
+    // '22/11/2021',
+    // '23/11/2021',
+    // '24/11/2021',
+    // '25/11/2021',
+    // '26/11/2021',
+    // '27/11/2021',
+    // '28/11/2021',
+    // '29/11/2020',
+    // '30/11/2020',
+    // '31/11/2020',
+    // '32/11/2020',
+    // '33/11/2020',
+    // '34/11/2020',
+    // '35/11/2020',
+    // '36/11/2020',
+    // '37/11/2020',
+    // '38/11/2020',
+    // '39/11/2020',
+    // '40/11/2020',
+    
+
+  ]
 class ChartLine extends React.Component {
   constructor(props) {
     super(props);
@@ -101,12 +190,12 @@ class ChartLine extends React.Component {
       x = width * 0.8
       return x
     }
-    else if (dataConvert.length == 8 || dataConvert.length == 9) {
-      x = Platform.OS == 'android' ? dataConvert.length * width * 0.12 - dataConvert.length : dataConvert.length * width * 0.12 - dataConvert.length * 0.5
+    else if (dataConvert.length == 8 || dataConvert.length == 9 || dataConvert.length == 10) {
+      x = Platform.OS == 'android' ? dataConvert.length * width * 0.122 - dataConvert.length  : dataConvert.length * width * 0.12 - dataConvert.length * 0.5
       return x
     }
     else {
-      x = Platform.OS == 'android' ? dataConvert.length * width * 0.12 - dataConvert.length * 1.5 : dataConvert.length * width * 0.12 - dataConvert.length
+      x = Platform.OS == 'android' ? dataConvert.length * width * 0.12 - dataConvert.length * 1.2 : dataConvert.length * width * 0.12 - dataConvert.length
       return x
     }
   }
