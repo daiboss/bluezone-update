@@ -14,6 +14,7 @@
 'use strict';
 
 import { StyleSheet } from 'react-native';
+import { RFValue } from '../../../../const/multiscreen';
 import * as fontSize from '../../../../core/fontSize';
 
 const styles = StyleSheet.create({
@@ -53,30 +54,36 @@ const styles = StyleSheet.create({
   },
 
   txButton: {
-    fontSize: 16,
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     color: '#fff',
     fontWeight: '700',
+    fontFamily: 'OpenSans-Bold'
   },
 
   btnSave: {
     backgroundColor: '#FE4358',
-    paddingVertical: 10,
-    paddingHorizontal: 60,
     borderRadius: 40,
-    marginVertical: 10
+    marginVertical: 10,
+    width: RFValue(187, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(46, fontSize.STANDARD_SCREEN_HEIGHT),
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   txRed: {
-    fontSize: 14,
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: '700',
     color: '#FE4358',
+    fontFamily: 'OpenSans-Bold'
   },
   txRecomends: {
-    fontSize: 14,
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     color: '#000',
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 40
+    marginBottom: RFValue(58, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontFamily: 'OpenSans-Bold',
+    marginTop: RFValue(10, fontSize.STANDARD_SCREEN_HEIGHT)
   }
 });
 
