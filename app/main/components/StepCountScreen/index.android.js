@@ -265,6 +265,7 @@ const StepCount = ({ props, intl, navigation }) => {
       let listDayStart = await getListStartDateHistory(currentTime)
       listDayStart = listDayStart.map(t => t.starttime)
       let lastTime = await getFirstTimeSetup()
+      console.log('DENDAY1')
       if (!lastTime) {
         lastTime = { time: currentTime }
       }
@@ -276,12 +277,14 @@ const StepCount = ({ props, intl, navigation }) => {
           listDayStart.push(currentTime)
         }
       }
+      console.log('DENDAY2')
 
       if (listDayStart.length <= 1) {
         BackgroundJob.sendEmitSaveHistorySuccess()
         return
       }
       // Nếu ngày nào chưa có trong db sẽ tự động thêm, nhưng dữ liệu sẽ mặc định là 0 0 0 0
+      console.log('DENDAY3')
       let tmp = []
       listDayStart.forEach((item, index) => {
         if (index > 0) {
@@ -296,14 +299,17 @@ const StepCount = ({ props, intl, navigation }) => {
         }
       });
 
+      console.log('DENDAY4')
       await Promise.all(tmp.map(async element => {
+        console.log('elementelement', element)
         await addHistory(element, {
           step: 0,
           distance: 0.00,
           calories: 0,
           time: 0,
-        })
+        }).then(re => console.log('RESSSSS', res)).catch(err => console.log('DENEWRRORR', err))
       }))
+      console.log('DENDAY5')
       BackgroundJob.sendEmitSaveHistorySuccess()
     } catch (error) {
       console.log('saveHistoryEmpty error', error)
@@ -373,7 +379,11 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const autoChangeStepsTarget = async () => {
     try {
+      
+
+
       let stepTarget = await getResultSteps()
+      console.log('stepTarget', stepTarget)
       if (stepTarget != undefined) {
         let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
         let tmp = `${stepTarget?.date}`
@@ -392,6 +402,8 @@ const StepCount = ({ props, intl, navigation }) => {
       let lastTime = await getFirstTimeSetup()
       let firstTime = new moment.unix(lastTime?.time)
       let tmpDay = new moment().diff(firstTime, 'days')
+
+      console.log('lastTime', lastTime, 'firstTime', firstTime, 'tmpDay', tmpDay)
       if (tmpDay < 2) {
         return
       }
@@ -411,6 +423,7 @@ const StepCount = ({ props, intl, navigation }) => {
         let resultTmp = JSON.parse(element?.resultStep)
         return (resultTmp?.step || 0)
       })
+      console.log('listData', listData)
       let stepTargetNew = CalculationStepTargetAndroid(listData, stepTarget?.step || 10000, tmpDay)
       let resultSave = {
         step: stepTargetNew,
