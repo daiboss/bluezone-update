@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.larger,
     textAlign: 'center',
     color: '#FFFFFF',
+    fontFamily: 'OpenSans-Bold'
   },
 
   scanImage: {

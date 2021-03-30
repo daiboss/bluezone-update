@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   textTotalBmi: {
     fontWeight: 'bold',
     fontSize: RFValue(37, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontFamily: 'OpenSans-Bold'
   },
   container: {
     height: RFValue(264, fontSize.STANDARD_SCREEN_HEIGHT),

@@ -166,10 +166,14 @@ const ResultBmiProgress = ({ bmi, intl }) => {
                 ]}
                 value={bmi} />
 
-              <Animated.Text style={[styles.textStatus, {
+              <Animated.Text 
+              numberOfLines={1}
+              style={[styles.textStatus, {
                 width: '100%',
                 textAlign: 'center',
-                opacity: animShow
+                opacity: animShow,
+                fontFamily: 'OpenSans-Bold',
+                fontWeight: '600',
               }]}>{formatMessage(status)}</Animated.Text>
 
             </View>

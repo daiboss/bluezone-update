@@ -48,7 +48,8 @@ const styles = StyleSheet.create({
     paddingLeft: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: '600',
     alignSelf: 'flex-start',
-    paddingRight: RFValue(6, fontSize.STANDARD_SCREEN_HEIGHT)
+    paddingRight: RFValue(6, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontFamily: 'OpenSans-Regular'
   },
   iconInfo: {
     height: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),

@@ -154,7 +154,7 @@ const BmiScreen = ({ route, intl, navigation }) => {
             onPress={onConfirm}
             text={formatMessage(message.finish)}
             styleBtn={[styles.colorButtonConfirm]}
-            styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
+            styleText={{ fontSize: fontSize.normal}}
           />
         </View>
       </View>

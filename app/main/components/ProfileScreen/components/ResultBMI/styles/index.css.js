@@ -34,9 +34,10 @@ const styles = StyleSheet.create({
   },
   textLabel: {
     fontSize: fontSize.normal,
-    marginTop: RFValue(21, fontSize.STANDARD_SCREEN_HEIGHT),
+    marginTop: RFValue(19, fontSize.STANDARD_SCREEN_HEIGHT),
     marginBottom: RFValue(18, fontSize.STANDARD_SCREEN_HEIGHT),
-    fontWeight: '700'
+    fontWeight: '700',
+    fontFamily: 'OpenSans-Bold'
   },
   container2: {
     shadowColor: "black",
@@ -74,7 +75,8 @@ const styles = StyleSheet.create({
     fontSize: fontSize.fontSize11,
     flex: 1,
     textAlign: 'right',
-    marginRight: -12
+    marginRight: -12,
+    fontFamily: 'OpenSans-Bold'
   },
   group: {
     justifyContent: 'center',
@@ -143,7 +145,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1,
     fontSize: fontSize.fontSize11,
-    paddingHorizontal: RFValue(6, fontSize.STANDARD_SCREEN_HEIGHT)
+    paddingHorizontal: RFValue(4, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontFamily: 'OpenSans-Regular'
   },
 });
 

@@ -3,6 +3,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import message from '../../../core/msg/setting';
 import { injectIntl, intlShape } from 'react-intl';
 import { View, Text, TouchableOpacity, Image, StyleSheet, SafeAreaView, Platform } from 'react-native'
+import { RFValue } from '../../../const/multiscreen';
+import { STANDARD_SCREEN_HEIGHT } from '../../../core/fontSize';
 
 const CustomDrawer = ({ intl, navigation }) => {
     const { formatMessage } = intl;
@@ -65,15 +67,16 @@ const styles = StyleSheet.create({
         padding: 16
     },
     image: {
-        height: 18,
-        width: 18
+        height: RFValue(16, STANDARD_SCREEN_HEIGHT),
+        width: RFValue(16, STANDARD_SCREEN_HEIGHT)
     },
     txBtn: {
-        fontSize: 15,
+        fontSize: RFValue(15, STANDARD_SCREEN_HEIGHT),
         fontWeight: '500',
         color: '#000',
-        marginLeft: 10,
-        fontWeight: '700'
+        marginLeft: RFValue(13, STANDARD_SCREEN_HEIGHT),
+        fontWeight: '700',
+        fontFamily: 'OpenSans-Bold'
     },
     container: {
     },
