@@ -14,7 +14,7 @@ class ModalComponent extends Component {
 
   render() {
     if (Platform.OS == 'android')
-      return <Modal {...this.props}>{this.props.children}</Modal>;
+      return <Modal useNativeDriver {...this.props}>{this.props.children}</Modal>;
     return (
       <Modal
         useNativeDriver

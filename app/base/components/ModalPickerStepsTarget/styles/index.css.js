@@ -53,6 +53,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  viewBoundSelect: {
+    width: '100%'
+  },
   viewSeelct: {
     position: 'absolute',
     bottom: 0,
@@ -64,18 +67,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   txButton: {
-    fontSize: 16,
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     color: '#fff',
     fontWeight: '700',
+    fontFamily: 'OpenSans-Bold'
   },
 
   btnSave: {
     backgroundColor: red_bluezone,
-    paddingVertical: 10,
-    paddingHorizontal: 60,
+    width: RFValue(188, fontSize.STANDARD_SCREEN_HEIGHT),
+    height: RFValue(46, fontSize.STANDARD_SCREEN_HEIGHT),
     borderRadius: 40,
     marginBottom: RFValue(25, fontSize.STANDARD_SCREEN_HEIGHT),
     marginTop: RFValue(30, fontSize.STANDARD_SCREEN_HEIGHT),
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   txRed: {
