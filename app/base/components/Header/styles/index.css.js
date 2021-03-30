@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
   textTitle: {
     fontSize: fontSize.fontSize17,
     textAlign: 'center',
+    fontFamily:'OpenSans-Bold',
     color: '#000',
   },
   icon: {

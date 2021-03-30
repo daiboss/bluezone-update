@@ -434,7 +434,8 @@ const SettingScreen = ({ intl, navigation }) => {
 const styles = StyleSheet.create({
   txLabel: {
     fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
-    fontWeight: '600',
+    // fontWeight: '600',
+    fontFamily:'OpenSans-Bold',
     color: '#000',
     width: '70%',
   },
@@ -460,6 +461,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     marginTop: -5,
+    fontFamily:'OpenSans-Regular',
     color: '#00000070',
     marginBottom: 20,
   },
@@ -489,7 +491,8 @@ const styles = StyleSheet.create({
   },
   txLabelRed: {
     color: red_bluezone,
-    fontSize: 14,
+    fontFamily:'OpenSans-Bold',
+    fontSize: RFValue(15),
   },
   header: {
     // backgroundColor: '#ffffff',

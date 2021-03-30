@@ -580,24 +580,15 @@ const StepCount = ({ props, intl, navigation }) => {
                 let arrayConvert = listDataChart.map((i,index) => {
                   const monthEn = moment().locale('en').format('MMM')
                   const monthVn = moment().format('MM')
-                  console.log('valvlavlalvalvlavlav',i)
                   if(index == listDataChart.length - 1){
                     const startWeek = moment(i.start,'yyyy/DD/MM').startOf('isoWeek')
                     return{
                       ...i,
                       x: locale == 'en' ? `${startWeek.format('DD')} - now\n ${monthEn}` : `${startWeek.format('DD')} - nay\nT ${monthVn}`
                     }
-                  //   console.log('vaovaovaovoaoaovoa')
-                  //  if (locale == 'en'){
-                  //   return i.x == `${startWeek.format('DD')} - ${valueEnd}\n ${monthEn}`
-                  //  }
-                  //  else{
-                  //   return i.x == `${startWeek.format('DD')} - ${valueEnd}\n ${monthVn}`
-                  //  }
                   }
                   return i
                 })
-                console.log('arrayConvertarrayConvertarrayConvert',arrayConvert)
                 setDataChart(arrayConvert)
               }
 

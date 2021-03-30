@@ -254,7 +254,7 @@ const StepCount = ({ props, intl, navigation }) => {
           })
         }
       } else if (type == 'week') {
-
+        let listdataWeek = []
         const groups = step.reduce((acc, current) => {
           const yearWeek = moment.unix(current?.starttime).week();
           if (!acc[yearWeek]) {
@@ -284,16 +284,29 @@ const StepCount = ({ props, intl, navigation }) => {
           } else {
             label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
           }
-          list.push({
+          listdataWeek.push({
             x: label,
             y: results?.steps || 0,
             results: results,
           })
+          let arrayConvert = listdataWeek.map((i,index) => {
+            const monthEn = moment().locale('en').format('MMM')
+            const monthVn = moment().format('MM')
+            if(index == listdataWeek.length - 1){
+              // const startWeek = moment(i.start,'yyyy/DD/MM').startOf('isoWeek')
+              return{
+                ...i,
+                x: locale == 'en' ? `${startWeek.format('DD')} - now\n ${monthEn}` : `${startWeek.format('DD')} - nay\nT ${monthVn}`
+              }
+            }
+            return i
+          })
+         list.push(...arrayConvert)
         }
       }
       let max = Math.max.apply(Math, list.map(function (o) { return o.y; }))
       setMaxDomain(max + 1000)
-
+      
       setDataChart(list);
     } catch (error) {
       console.log('getDataHealth error', error)
