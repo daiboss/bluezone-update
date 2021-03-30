@@ -55,7 +55,8 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
               }}
               styleText={{
                 fontSize: fontSize14,
-                fontWeight: '700'
+                fontWeight: '700',
+                fontFamily: 'OpenSans-Bold'
               }}
               value={bmi} />
           </View>
@@ -66,7 +67,7 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
         <View style={{
           flexDirection: 'row',
           width: '100%',
-          paddingBottom: 2
+          paddingBottom: RFValue(4, STANDARD_SCREEN_HEIGHT)
         }}>
           <Text style={styles.textValue}>18.5</Text>
           <Text style={styles.textValue}>22.9</Text>
@@ -124,10 +125,10 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
             {formatMessage(message.overWeight)}
           </Text>
           <Text style={[styles.textWarning, styles.textWarning4]}>
-            {formatMessage(message.classOneObesity)}
+            {formatMessage(message.classOneObesity2Line)}
           </Text>
           <Text style={[styles.textWarning, styles.textWarning5]}>
-            {formatMessage(message.classTwoObesity)}
+            {formatMessage(message.classTwoObesity2Line)}
           </Text>
         </View>
 

@@ -341,10 +341,11 @@ const StepCount = ({ props, intl, navigation }) => {
       return (
         <View>
           <Text style={{
-            fontSize: 16,
+            fontSize: RFValue(17, fontSize.STANDARD_SCREEN_HEIGHT),
             fontWeight: '700',
             textAlign: 'center',
-            marginBottom: 0
+            marginBottom: RFValue(8, fontSize.STANDARD_SCREEN_HEIGHT),
+            fontFamily: 'OpenSans-Bold',
           }}>{new moment().format('YYYY')}</Text>
 
           <BarChart7Item
@@ -530,12 +531,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 10,
+    fontFamily: 'OpenSans-Regular'
   },
   txUnit: {
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     textAlign: 'center',
     color: red_bluezone,
     marginTop: 5,
+    fontFamily: 'OpenSans-Regular'
   },
   dataHealth: {
     flexDirection: 'row',
@@ -547,7 +550,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#00000010',
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    paddingVertical: 20,
+    paddingVertical: RFValue(30, fontSize.STANDARD_SCREEN_HEIGHT),
   },
 
   viewCircular: {
@@ -596,6 +599,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingBottom: RFValue(10, fontSize.STANDARD_SCREEN_HEIGHT),
     alignSelf: 'center',
+    fontFamily: 'OpenSans-Bold'
   },
 });
 

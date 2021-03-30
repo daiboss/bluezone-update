@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
   smallZero: {
     color: '#949494',
     fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontFamily: 'OpenSans-Bold',
     // paddingLeft: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     flex: 1,
     textAlign: 'center'
@@ -104,6 +105,7 @@ const styles = StyleSheet.create({
   smallOne: {
     color: '#949494',
     fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontFamily: 'OpenSans-Bold',
     // paddingLeft: RFValue(23, fontSize.STANDARD_SCREEN_HEIGHT),
     flex: 1,
     textAlign: 'center'
@@ -122,11 +124,13 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     position: "absolute",
+    fontFamily: 'OpenSans-Bold'
   },
   overLayZero: {
     color: '#fff',
     fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     position: "absolute",
+    fontFamily: 'OpenSans-Bold'
   },
 });
 

@@ -260,6 +260,8 @@
     "bluezone.profile.overWeight": "Overweight",
     "bluezone.profile.classOneObesity": "Class 1 obesity",
     "bluezone.profile.classTwoObesity": "Class 2 obesity",
+    "bluezone.profile.classOneObesity2Line": "Class 1\nobesity",
+    "bluezone.profile.classTwoObesity2Line": "Class 2\nobesity",
 
 
     "bluezone.bmi.titleHeader":"BMI",

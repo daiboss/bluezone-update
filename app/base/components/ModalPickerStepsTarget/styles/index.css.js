@@ -51,9 +51,18 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 16,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
-
+  viewSeelct: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#FFF',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    paddingHorizontal: 30,
+  },
   txButton: {
     fontSize: 16,
     color: '#fff',

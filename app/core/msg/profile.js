@@ -96,4 +96,12 @@ export default defineMessages({
     id: 'bluezone.profile.classTwoObesity',
     defaultMessage: 'bluezone.profile.classTwoObesity',
   },
+  classOneObesity2Line: {
+    id: 'bluezone.profile.classOneObesity2Line',
+    defaultMessage: 'bluezone.profile.classOneObesity2Line',
+  },
+  classTwoObesity2Line: {
+    id: 'bluezone.profile.classTwoObesity2Line',
+    defaultMessage: 'bluezone.profile.classTwoObesity2Line',
+  },
 });

@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily:'OpenSans-Bold',
     color: '#000',
+    fontFamily: 'OpenSans-Bold'
   },
   icon: {
     paddingLeft: 20,

@@ -263,6 +263,8 @@
   "bluezone.profile.overWeight": "Thừa cân",
   "bluezone.profile.classOneObesity": "Béo phì độ 1",
   "bluezone.profile.classTwoObesity": "Béo phì độ 2",
+  "bluezone.profile.classOneObesity2Line": "Béo phì\nđộ 1",
+  "bluezone.profile.classTwoObesity2Line": "Béo phì\nđộ 2",
 
 
   "bluezone.bmi.titleHeader":"Chỉ số BMI",

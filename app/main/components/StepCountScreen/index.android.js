@@ -781,15 +781,16 @@ const styles = StyleSheet.create({
   txData: {
     color: red_bluezone,
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
-    fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 10,
+    fontFamily: 'OpenSans-Regular'
   },
   txUnit: {
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     textAlign: 'center',
     color: red_bluezone,
     marginTop: 5,
+    fontFamily: 'OpenSans-Regular'
   },
   dataHealth: {
     flexDirection: 'row',
@@ -797,6 +798,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginHorizontal: 30,
     marginTop: RFValue(28, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontFamily: 'OpenSans-Bold'
   },
 
   viewCircular: {
@@ -832,10 +834,12 @@ const styles = StyleSheet.create({
     fontSize: RFValue(37, fontSize.STANDARD_SCREEN_HEIGHT),
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'OpenSans-Bold'
   },
   txCountTarget: {
     color: '#949494',
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontFamily: 'OpenSans-Bold'
   },
   chart: {
     flex: 1,
@@ -860,6 +864,7 @@ const styles = StyleSheet.create({
     fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     marginVertical: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     textAlign: 'center',
+    fontFamily: 'OpenSans-Bold'
   },
   header: {
     backgroundColor: '#ffffff',
@@ -872,7 +877,8 @@ const styles = StyleSheet.create({
     width: RFValue(217, fontSize.STANDARD_SCREEN_HEIGHT),
     borderRadius: 25,
     paddingVertical: 0,
-    marginBottom: 10
+    marginBottom: 10,
+    fontFamily: 'OpenSans-Bold'
   }
 });
 

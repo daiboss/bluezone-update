@@ -16,7 +16,7 @@
 import { StyleSheet } from 'react-native';
 import * as fontSize from '../../../../../../core/fontSize';
 import { blue_bluezone, red_bluezone } from '../../../../../../core/color';
-import { MSCALE, RFValue,FS } from '../../../../../../const/multiscreen';
+import { MSCALE, RFValue, FS } from '../../../../../../const/multiscreen';
 
 const styles = StyleSheet.create({
   iconNext: {
@@ -28,11 +28,12 @@ const styles = StyleSheet.create({
   },
   textGender: {
     fontSize: fontSize.normal,
-    fontWeight: '700'
+    fontFamily: 'OpenSans-Regular'
   },
   textLabel: {
     fontSize: fontSize.normal,
     fontWeight: 'bold',
+    fontFamily: 'OpenSans-Bold'
   },
   buttonSelectGender: {
     borderRadius: 15,
@@ -81,7 +82,9 @@ const styles = StyleSheet.create({
   textError: {
     color: 'red',
     paddingLeft: 15,
-    paddingTop: 5,
+    paddingTop: RFValue(5, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontFamily: 'OpenSans-Regular',
+    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT)
   },
   buttonSelect: {
     flexDirection: 'row',

@@ -17,6 +17,7 @@ import message from './../../../core/msg/setting'
 const windowWidth = Dimensions.get('window').width;
 
 import { DATA_STEP, DATA_STEP_EN } from './data'
+import NewSelectedView from '../../../main/components/ProfileScreen/components/NewSelectedView/NewSelectedView';
 
 Number.prototype.format = function (n, x) {
   var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
@@ -62,7 +63,7 @@ function ModalPickerStepsTarget({
       <View style={styles.content}>
         <View style={styles.body}>
 
-          <CustomSelect
+          <NewSelectedView
             formatMessage={formatMessage}
             onValueChange={changeStep}
             dataSource={locale == 'en' ? DATA_STEP_EN : DATA_STEP}
@@ -74,6 +75,20 @@ function ModalPickerStepsTarget({
               marginVertical: 30,
               width: '100%'
             }}
+
+
+
+            // isRemoveSub={false}
+            // onValueChange={changeStep}
+            // dataSource={locale == 'en' ? DATA_STEP_EN : DATA_STEP}
+            // selectedIndex={
+            //   (locale == 'en' ? DATA_STEP_EN : DATA_STEP).findIndex(e => e == `${currentSteps.format()} ${formatMessage(message.steps).toLowerCase()}`) != -1
+            //     ? (locale == 'en' ? DATA_STEP_EN : DATA_STEP).findIndex(e => e == `${currentSteps.format()} ${formatMessage(message.steps).toLowerCase()}`) : 0
+            // }
+            // containerStyle={{
+            //   marginVertical: 30,
+            //   flex: 1
+            // }}
           />
 
           <TouchableOpacity
