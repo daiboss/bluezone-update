@@ -74,7 +74,7 @@ function ModalPickerStepsTarget({
                   ? (locale == 'en' ? DATA_STEP_EN : DATA_STEP).findIndex(e => e == `${currentSteps.format()} ${formatMessage(message.steps).toLowerCase()}`) : 0
               }
               containerStyle={{
-                marginVertical: RFValue(18, STANDARD_SCREEN_HEIGHT),
+                marginVertical: RFValue(0, STANDARD_SCREEN_HEIGHT),
                 flex: 1
               }}
             />

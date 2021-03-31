@@ -891,6 +891,7 @@ const styles = StyleSheet.create({
   txCountTarget: {
     color: '#949494',
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontFamily:'OpenSans-Bold'
   },
   chart: {
     flex: 1,

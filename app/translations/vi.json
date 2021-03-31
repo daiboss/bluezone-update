@@ -293,7 +293,7 @@
     
     "bluezone.settings.updateProfile": "Cập nhật hồ sơ",
     "bluezone.settings.autoAdjustTarget": "Tự động điều chỉnh mục tiêu",
-    "bluezone.settings.content": "Khi bật tùy chọn này, mục tiêu sẽ được tự động tính để phù hợp với tổng số bước đi hàng ngày của bạn.",
+    "bluezone.settings.content": "Khi bật tùy chọn này, mục tiêu sẽ được tự động tính để phù hợp với tổng số bước đi hàng ngày của bạn",
     "bluezone.settings.stepTarget": "Số bước mục tiêu",
     "bluezone.settings.showNotification ": "Hiển thị thông báo",
     "bluezone.settings.enterStepTarget": "Bạn vui lòng nhập số bước mục tiêu",

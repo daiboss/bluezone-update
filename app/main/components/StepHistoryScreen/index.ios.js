@@ -710,15 +710,17 @@ const StepCount = ({ props, intl, navigation }) => {
         styleHeader={styles.header}
         styleTitle={{
           color: '#000',
+          fontFamily:'OpenSans-Bold',
           fontSize: fontSize.fontSize17,
         }}
       />
       <Text style={{
         textAlign: 'center',
         // paddingTop:RFValue(10),
-        color: 'black',
-        fontSize: RFValue(17, fontSize.STANDARD_SCREEN_HEIGHT),
-        fontWeight: '600'
+        // color: 'black',
+        fontSize: fontSize.fontSize17,
+        // fontWeight: '600'
+        fontFamily:'OpenSans-Bold'
       }}>{year}</Text>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <View style={styles.viewLineChart}>
@@ -862,7 +864,8 @@ const styles = StyleSheet.create({
   txData: {
     color: red_bluezone,
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontFamily:'OpenSans-Regular',
     textAlign: 'center',
     marginTop: RFValue(14, fontSize.STANDARD_SCREEN_HEIGHT),
   },

@@ -455,15 +455,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 0,
     paddingVertical: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
+   
   },
   txContent: {
     marginHorizontal: 20,
     textAlign: 'left',
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
-    marginTop: -5,
+    marginTop: RFValue(-15),
     fontFamily:'OpenSans-Regular',
     color: '#00000070',
-    marginBottom: 20,
+    paddingBottom: RFValue(25),
   },
   txNotification: {
     marginHorizontal: 20,

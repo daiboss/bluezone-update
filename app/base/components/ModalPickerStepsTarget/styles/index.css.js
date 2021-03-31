@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
 
   body: {
     paddingHorizontal: 0,
-    paddingTop: 20,
-    paddingBottom: 16,
+    paddingTop: RFValue(20),
+    paddingBottom: RFValue(16),
     justifyContent: 'center',
     alignItems: 'center',
   },

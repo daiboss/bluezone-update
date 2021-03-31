@@ -45,8 +45,9 @@ const styles = StyleSheet.create({
   textLabel: {
     fontSize: fontSize.fontSize11,
     flex: 1,
+    color:'#090909',
     paddingLeft: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
-    fontWeight: '600',
+    // fontWeight: '600',
     alignSelf: 'flex-start',
     paddingRight: RFValue(6, fontSize.STANDARD_SCREEN_HEIGHT),
     fontFamily: 'OpenSans-Regular'

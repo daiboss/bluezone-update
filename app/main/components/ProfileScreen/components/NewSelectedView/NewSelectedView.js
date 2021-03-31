@@ -3,7 +3,7 @@ import { View, Text, FlatList, Animated } from 'react-native'
 import { RFValue } from '../../../../../const/multiscreen'
 import { STANDARD_SCREEN_HEIGHT } from '../../../../../core/fontSize'
 
-const ItemHeight = parseInt(RFValue(38, STANDARD_SCREEN_HEIGHT))
+const ItemHeight = parseInt(RFValue(50, STANDARD_SCREEN_HEIGHT))
 const PaddingTop = ItemHeight * 3
 
 const NewSelectedView = ({
@@ -124,7 +124,7 @@ const NewSelectedView = ({
             />
             <View
                 style={{
-                    height: ItemHeight,
+                    height: ItemHeight - RFValue(5),
                     position: 'absolute',
                     backgroundColor: '#fde6e9',
                     width: '100%',

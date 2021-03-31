@@ -65,7 +65,8 @@ const SelectHeightOrWeight = ({
                 style={[
                   styles.textGender,
                   {
-                    color: (value == 'cm' || value == 'kg') ? '#949494' : '#222'
+                    color: (value == 'cm' || value == 'kg') ? '#949494' : '#222',
+                    fontFamily:(value == 'cm' || value == 'kg') ? 'OpenSans-Regular' : 'OpenSans-Bold'
                   }
                 ]}>
                 {value}

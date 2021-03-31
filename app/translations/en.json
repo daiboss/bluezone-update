@@ -290,7 +290,7 @@
     "bluezone.settings.profile": "Profile",
     "bluezone.settings.updateProfile": "Update profile",
     "bluezone.settings.autoAdjustTarget": "Automatically adjust target",
-    "bluezone.settings.content": "When this option is enabled, target will be automatically calculated to match your daily steps.",
+    "bluezone.settings.content": "When this option is enabled, target will be automatically calculated to match your daily steps",
     "bluezone.settings.stepTarget": "Step target",
     "bluezone.settings.showNotification ": "Show notification",
     "bluezone.settings.enterStepTarget": "Please enter your step target",

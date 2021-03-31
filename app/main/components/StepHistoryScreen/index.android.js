@@ -528,7 +528,7 @@ const styles = StyleSheet.create({
   txData: {
     color: red_bluezone,
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
-    fontWeight: 'bold',
+    fontFamily:'OpenSans-Regular',
     textAlign: 'center',
     marginTop: 10,
     fontFamily: 'OpenSans-Regular'

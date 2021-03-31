@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   textGender: {
     fontSize: fontSize.normal,
-    fontFamily: 'OpenSans-Bold'
+    // fontFamily: 'OpenSans-Bold'
   },
   textLabel: {
     fontSize: fontSize.normal,
