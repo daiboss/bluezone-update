@@ -84,7 +84,6 @@ const SettingScreen = ({ intl, navigation }) => {
   const [alertBmi, setAlertBmi] = useState(false);
   const [onOffApp, setOnOffApp] = useState(true)
   const [totalStep, setTotalStep] = useState(0);
-  const [isHardwork, setIsHardwork] = useState(true)
   const [timeWeight, setTimeWeight] = useState(0)
   const [isShowModalTarget, setIsShowModalTarget] = useState(false)
   const [isShowModalShortcut, setIsShowModalShortcut] = useState(false)
@@ -149,12 +148,11 @@ const SettingScreen = ({ intl, navigation }) => {
     try {
       let result = await getResultSteps()
       setTotalStep(parseInt(result.step))
-      setIsHardwork(result?.hardwork || false)
       let res = await getAutoChange();
       if (res == undefined) {
-        res = true;
+        res = { value: true, time: moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix() };
       }
-      setAutoTarget(res);
+      setAutoTarget(res?.value == undefined ? true : res.value);
       let res1 = (await getIsShowNotification());
       setAlertStep(res1 || false);
 
@@ -178,7 +176,7 @@ const SettingScreen = ({ intl, navigation }) => {
 
   useEffect(() => {
     if (autoTarget != undefined) {
-      setAutoChange(autoTarget);
+      setAutoChange({ value: autoTarget, time: moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix() });
     }
   }, [autoTarget])
 
@@ -280,7 +278,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const saveStepsTarget = async (steps) => {
     setTotalStep(steps)
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toDate().getTime()
-    await setResultSteps({ step: steps, date: currentTime, hardwork: true })
+    await setResultSteps({ step: steps, date: currentTime })
     if (Platform.OS == 'android') {
       try {
         BackgroundJob.updateTypeNotification()
@@ -435,7 +433,7 @@ const styles = StyleSheet.create({
   txLabel: {
     fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
     // fontWeight: '600',
-    fontFamily:'OpenSans-Bold',
+    fontFamily: 'OpenSans-Bold',
     color: '#000',
     width: '70%',
   },
@@ -455,14 +453,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 0,
     paddingVertical: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
-   
+
   },
   txContent: {
     marginHorizontal: 20,
     textAlign: 'left',
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
     marginTop: RFValue(-15),
-    fontFamily:'OpenSans-Regular',
+    fontFamily: 'OpenSans-Regular',
     color: '#00000070',
     paddingBottom: RFValue(25),
   },
@@ -492,7 +490,7 @@ const styles = StyleSheet.create({
   },
   txLabelRed: {
     color: red_bluezone,
-    fontFamily:'OpenSans-Bold',
+    fontFamily: 'OpenSans-Bold',
     fontSize: RFValue(15),
   },
   header: {

@@ -49,15 +49,12 @@ import {
 import BackgroundJob from './../../../core/service_stepcounter'
 import {
   addStepCounter,
-  removeAllStep,
   getListHistory,
   addHistory,
   removeAllStepDay,
   getListStepDayBefore,
   getListStartDateHistory,
-  getListStepDay,
   getListStepsBefore,
-  removeAllHistory
 } from './../../../core/db/RealmDb'
 
 import ButtonIconText from '../../../base/components/ButtonIconText';
@@ -265,7 +262,6 @@ const StepCount = ({ props, intl, navigation }) => {
       let listDayStart = await getListStartDateHistory(currentTime)
       listDayStart = listDayStart.map(t => t.starttime)
       let lastTime = await getFirstTimeSetup()
-      console.log('DENDAY1')
       if (!lastTime) {
         lastTime = { time: currentTime }
       }
@@ -277,14 +273,12 @@ const StepCount = ({ props, intl, navigation }) => {
           listDayStart.push(currentTime)
         }
       }
-      console.log('DENDAY2')
 
       if (listDayStart.length <= 1) {
         BackgroundJob.sendEmitSaveHistorySuccess()
         return
       }
       // Nếu ngày nào chưa có trong db sẽ tự động thêm, nhưng dữ liệu sẽ mặc định là 0 0 0 0
-      console.log('DENDAY3')
       let tmp = []
       listDayStart.forEach((item, index) => {
         if (index > 0) {
@@ -299,9 +293,7 @@ const StepCount = ({ props, intl, navigation }) => {
         }
       });
 
-      console.log('DENDAY4')
       await Promise.all(tmp.map(async element => {
-        console.log('elementelement', element)
         await addHistory(element, {
           step: 0,
           distance: 0.00,
@@ -309,7 +301,6 @@ const StepCount = ({ props, intl, navigation }) => {
           time: 0,
         }).then(re => console.log('RESSSSS', re)).catch(err => console.log('DENEWRRORR', err))
       }))
-      console.log('DENDAY5')
       BackgroundJob.sendEmitSaveHistorySuccess()
     } catch (error) {
       console.log('saveHistoryEmpty error', error)
@@ -379,12 +370,9 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const autoChangeStepsTarget = async () => {
     try {
-
-
-
       let stepTarget = await getResultSteps()
+      let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
       if (stepTarget != undefined) {
-        let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
         let tmp = `${stepTarget?.date}`
         if (tmp.length >= 13) {
           tmp = tmp.slice(0, 10)
@@ -392,7 +380,7 @@ const StepCount = ({ props, intl, navigation }) => {
         let v = parseInt(tmp)
         let lastUpdateTarget = moment.unix(v).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
 
-        if (currentTime.isBefore(lastUpdateTarget, 'seconds') ||
+        if (currentTime.unix() <= v ||
           (currentTime.format('DD/MM/YYYY') == lastUpdateTarget.format('DD/MM/YYYY'))) {
           return
         }
@@ -408,12 +396,14 @@ const StepCount = ({ props, intl, navigation }) => {
 
       let auto = await getAutoChange();
 
-      if (auto != undefined && auto == false) {
+      if ((auto != undefined && auto?.value == false) ||
+        (auto?.value == true && auto?.time == currentTime.unix())
+      ) {
         return
       }
 
+      currentTime = currentTime.toDate().getTime()
       let startDay = new moment().subtract(4, 'days').set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-      let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toDate().getTime()
       let listHistory = await getListHistory(startDay.unix(), new moment().unix())
       if (listHistory?.length <= 0) return
 

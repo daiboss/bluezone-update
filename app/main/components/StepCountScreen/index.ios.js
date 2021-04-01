@@ -134,7 +134,10 @@ export const onBackgroundFetchEvent = async taskId => {
 
       if (auto == undefined || auto == null) {
         await scheduleTask(autoChange);
-        setAutoChange(true);
+        setAutoChange({
+          value: true,
+          time: moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+        });
       }
     }
   } catch (e) { }
@@ -317,7 +320,7 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
-    if (auto != undefined && auto == false) {
+    if (auto != undefined && auto?.value == false) {
       return
     }
     let start = new Date();
@@ -332,7 +335,7 @@ const StepCount = ({ props, intl, navigation }) => {
     //  if (todayUnix < firtTimeUnix2d) {
     //   return
     // }
-    if(todayUnix < firtTimeUnix2d){
+    if (todayUnix < firtTimeUnix2d) {
       return;
     }
     if (todayUnix > firtTimeUnix2d && todayUnix < firtTimeUnix3d) {
@@ -891,7 +894,7 @@ const styles = StyleSheet.create({
   txCountTarget: {
     color: '#949494',
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
-    fontFamily:'OpenSans-Bold'
+    fontFamily: 'OpenSans-Bold'
   },
   chart: {
     flex: 1,

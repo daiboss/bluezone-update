@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
@@ -75,19 +77,17 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
         ReadableMap icon = shortcut.getMap("icon");
         ReadableMap link = shortcut.getMap("link");
 
-//        Log.e("SHORTCUTTTTTTTT", "Tren bitmap");
         BitmapDrawable drawable = null;
+        Bitmap bitmapIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_health);
         try {
             Class<?> clazz = Class.forName("prscx.imagehelper.RNImageHelperModule");
             Class params[] = {ReadableMap.class};
             Method method = clazz.getDeclaredMethod("GenerateImage", params);
 
-            drawable = (BitmapDrawable) method.invoke(null, icon);
+//            drawable = (BitmapDrawable) method.invoke(null, icon);
         } catch (Exception e) {
         }
-//        Log.e("SHORTCUTTTTTTTT", "Duoi bitmap");
         if (Build.VERSION.SDK_INT > 26) {
-//            Log.e("SHORTCUTTTTTTTT", "Tren 26");
             ShortcutManager mShortcutManager = getReactApplicationContext().getSystemService(ShortcutManager.class);
 
             Intent shortcutIntent = new Intent(getReactApplicationContext(), ShortcutModule.class);
@@ -96,10 +96,11 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(link.getString("url")));
 
+
             ShortcutInfo shortcutInfo = null;
-            if (drawable != null) {
+            if (bitmapIcon != null) {
                 shortcutInfo = new ShortcutInfo.Builder(getReactApplicationContext(), label).setShortLabel(label)
-                        .setLongLabel(description).setIntent(intent).setIcon(Icon.createWithBitmap(drawable.getBitmap())).build();
+                        .setLongLabel(description).setIntent(intent).setIcon(Icon.createWithBitmap(bitmapIcon)).build();
             } else {
                 shortcutInfo = new ShortcutInfo.Builder(getReactApplicationContext(), label).setShortLabel(label)
                         .setLongLabel(description).setIntent(intent).build();
@@ -114,7 +115,6 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
 
             onCancel.invoke();
         } else {
-            Log.e("SHORTCUTTTTTTTT", "Duoi 26");
             Intent shortcutIntent = new Intent(context,
                     MainActivity.class);
 
@@ -127,7 +127,7 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
             addIntent
                     .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
             addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, label);
-            addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Icon.createWithBitmap(drawable.getBitmap()));
+            addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Icon.createWithBitmap(bitmapIcon));
 
             addIntent
                     .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
