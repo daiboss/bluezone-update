@@ -304,7 +304,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
         //   setTime(timeLine)
         // }
-        if (res.length) {
           let startTimeStamp = moment(start).startOf('days').unix()
           let endTimeStamp = moment(end).startOf('days').unix()
 
@@ -334,7 +333,6 @@ const StepCount = ({ props, intl, navigation }) => {
           alert7dayLessThan1000(data)
 
           setTime(timeLine)
-        }
       })
       .catch(err => { });
   };
