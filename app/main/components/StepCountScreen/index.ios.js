@@ -288,22 +288,52 @@ const StepCount = ({ props, intl, navigation }) => {
     start.setDate(start.getDate() - 7);
     Fitness.getSteps({ startDate: start, endDate: end })
       .then(res => {
+        // if (res.length) {
+        //   res.pop()
+        //   let data = res.map((obj, index) => ({
+        //     x: obj.quantity,
+        //     y: obj.quantity,
+        //   }));
+        //   let timeLine = res.map(obj => {
+        //     return new Date(obj.startDate).format('dd/MM')
+        //   })
+        //   // data.length !== 0 && data.pop()
+        //   setDataChart(data);
+
+        //   alert7dayLessThan1000(data)
+
+        //   setTime(timeLine)
+        // }
         if (res.length) {
+          let startTimeStamp = moment(start).startOf('days').unix()
+          let endTimeStamp = moment(end).startOf('days').unix()
+
+          let p = parseInt((endTimeStamp - startTimeStamp) / 86400)
+
           res.pop()
           let data = res.map((obj, index) => ({
-            x: obj.quantity,
+            x: moment(obj.startDate).unix(),
             y: obj.quantity,
           }));
-          let timeLine = res.map(obj => {
-            return new Date(obj.startDate).format('dd/MM')
+          let listEmpty = []
+          for (let i = 0; i <= p; i++) {
+            listEmpty.push({
+              x: startTimeStamp + 86400 * i,
+              y: 0
+            })
+          }
+          let dataValue = [...listEmpty, ...data]
+          dataValue.length > 0 && dataValue.pop()
+
+          let timeLine = dataValue.map(obj => {
+            return moment.unix(obj.x).toDate().format('dd/MM')
           })
-          // data.length !== 0 && data.pop()
-          setDataChart(data);
+
+          setDataChart(dataValue);
 
           alert7dayLessThan1000(data)
 
           setTime(timeLine)
-        } else {
         }
       })
       .catch(err => { });
