@@ -140,7 +140,7 @@ const BarChart7Item = ({
         return (
             <FlatList
                 showsHorizontalScrollIndicator={false}
-                style={{ height: RFValue(190, STANDARD_SCREEN_HEIGHT), width: '100%', marginTop: 8 }}
+                style={{ height: RFValue(204, STANDARD_SCREEN_HEIGHT), width: '100%', marginTop: 8 }}
                 data={listData}
                 initialNumToRender={3}
                 renderItem={renderItemChart}

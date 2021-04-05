@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     height: RFValue(264, fontSize.STANDARD_SCREEN_HEIGHT),
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: RFValue(17, fontSize.STANDARD_SCREEN_HEIGHT),
+    marginBottom: RFValue(12, fontSize.STANDARD_SCREEN_HEIGHT),
     marginHorizontal: RFValue(10, fontSize.STANDARD_SCREEN_HEIGHT),
   },
 });
