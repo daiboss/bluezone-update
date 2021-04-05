@@ -40,7 +40,7 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
   return (
     <View style={[styles.container2, {
       // overflow: 'hidden'
-      height: resultScreen ? RFValue(106, STANDARD_SCREEN_HEIGHT) : RFValue(129, STANDARD_SCREEN_HEIGHT)
+      height: resultScreen ? RFValue(102, STANDARD_SCREEN_HEIGHT) : RFValue(129, STANDARD_SCREEN_HEIGHT)
     }]}>
       {resultScreen ? (
         <View style={[styles.empty]} />
@@ -113,7 +113,6 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
         <View style={{
           flexDirection: 'row',
           width: '100%',
-          paddingBottom: 20
         }}>
           <Text style={[styles.textWarning, styles.textWarning1]}>
             {formatMessage(message.skinny)}

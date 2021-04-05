@@ -798,7 +798,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     justifyContent: 'center',
     flex: 3,
-    height: RFValue(263, fontSize.STANDARD_SCREEN_HEIGHT)
+    height: RFValue(270, fontSize.STANDARD_SCREEN_HEIGHT)
   },
   viewBorderCircular: {
     padding: 10,

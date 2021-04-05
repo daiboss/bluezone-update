@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: RFValue(8, fontSize.STANDARD_SCREEN_HEIGHT),
     justifyContent: 'space-between',
-    paddingVertical: RFValue(14, fontSize.STANDARD_SCREEN_HEIGHT),
+    paddingVertical: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
     // paddingTop: '10%',
   },
   container2: {
