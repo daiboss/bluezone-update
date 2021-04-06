@@ -237,6 +237,7 @@ const StepCount = ({ props, intl, navigation }) => {
     let list = [];
     if (type == 'day') {
       let currentDay = moment(new Date())
+      console.log('datatatatatata',data)
       list = data.map(item => ({
         x: moment(item.endDate).isAfter(currentDay) ? formatMessage(message.today) : moment(item.startDate).format('DD/MM'),
         y: Number(item.quantity),
@@ -551,22 +552,6 @@ const StepCount = ({ props, intl, navigation }) => {
     start.setDate(start.getDate() - 7);
     Fitness.getSteps({ startDate: start, endDate: end })
       .then(res => {
-        // if (res.length) {
-        //   res.pop()
-        //   let data = res.map((obj, index) => ({
-        //     x: obj.quantity,
-        //     y: obj.quantity,
-        //   }));
-        //   let timeLine = res.map(obj => {
-        //     return new Date(obj.startDate).format('dd/MM')
-        //   })
-        //   // data.length !== 0 && data.pop()
-        //   setDataChart(data);
-
-        //   alert7dayLessThan1000(data)
-
-        //   setTime(timeLine)
-        // }
           let startTimeStamp = moment(start).startOf('days').unix()
           let endTimeStamp = moment(end).startOf('days').unix()
 
@@ -590,11 +575,8 @@ const StepCount = ({ props, intl, navigation }) => {
           let timeLine = dataValue.map(obj => {
             return moment.unix(obj.x).toDate().format('dd/MM')
           })
-
           setDataChart(dataValue);
-
           alert7dayLessThan1000(data)
-
           setTime(timeLine)
       })
       .catch(err => { });
@@ -602,12 +584,43 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const onGetSteps = (start, end, type) => {
     try {
+      
       Fitness.getSteps({ startDate: start, endDate: end })
         .then(res => {
+          // const nowUnix = moment().startOf('day').format('yyyy/MM/DD')
+          // const sixAgoUnix = new Date(new Date() - 6 * 30 * 24 * 60 * 60 * 1000).format('yyyy/MM/dd')
+          // console.log('sixAgoUnixsixAgoUnixsixAgoUnix',nowUnix,sixAgoUnix)
+          // const dayOfTime = moment(nowUnix).diff(moment(sixAgoUnix),'day')
+          // console.log('dayOfTimedayOfTime',dayOfTime)
           if (res.length) {
             try {
               let listDataChart = getDataChart(res, type)
               let max = Math.max.apply(Math, listDataChart.map(function (o) { return o.y; }))
+              // fix
+              if(type == 'day'){
+                let timeUnix = listDataChart.map(i => {
+                  return moment(i.start,'YYYY/DD/MM').unix()
+                })
+                for(let i = 0;i <= 178; i++ ){
+                  // if(timeConvert[0] !==  dayStartUnix){
+                  //   data.splice(i,0,{x:0,y:0})
+                  //   timeConvert.splice(i,0,dayStartUnix)
+                  // }
+                  if(timeUnix[i] + 86400 !==  timeUnix[i+1]){
+                    let dataPush = {
+                      end:moment.unix(timeUnix[i] + 86400).format('YYYY/DD/MM'),
+                      start:moment.unix(timeUnix[i] + 86400).format('YYYY/DD/MM'),
+                      x:moment.unix(timeUnix[i] + 86400).format('DD/MM'),
+                      y:0,
+                      year:moment.unix(timeUnix[i] + 86400).format('yyyy')
+                    }
+                    timeUnix.splice(i+1,0,timeUnix[i] + 86400)
+                    listDataChart.splice(i+1,0,dataPush)
+                  //  timeConvert.splice(i+1,0,timeConvert[i] + 86400)
+                  }
+                }
+              }
+             
               setMaxDomain(max + 1000)
               if (listDataChart.length <= 7) {
                 setWidthChart(screenWidth)
@@ -649,8 +662,6 @@ const StepCount = ({ props, intl, navigation }) => {
                 })
                 setDataChart(arrayConvert)
               }
-
-
             } catch (e) {
             }
           }

@@ -108,7 +108,7 @@ const ChartColumn = ({ item,
             <View style={{
                 position: 'absolute',
                 width: 1,
-                height: '100%',
+                height: HEIGHT_CHART - RFValue(28),
                 backgroundColor: '#f3f3f3',
                 marginTop: RFValue(28)
             }} />

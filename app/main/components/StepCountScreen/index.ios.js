@@ -288,53 +288,35 @@ const StepCount = ({ props, intl, navigation }) => {
     start.setDate(start.getDate() - 7);
     Fitness.getSteps({ startDate: start, endDate: end })
       .then(res => {
-        // if (res.length) {
-        //   res.pop()
-        //   let data = res.map((obj, index) => ({
-        //     x: obj.quantity,
-        //     y: obj.quantity,
-        //   }));
-        //   let timeLine = res.map(obj => {
-        //     return new Date(obj.startDate).format('dd/MM')
-        //   })
-        //   // data.length !== 0 && data.pop()
-        //   setDataChart(data);
-
-        //   alert7dayLessThan1000(data)
-
-        //   setTime(timeLine)
-        // }
-          let startTimeStamp = moment(start).startOf('days').unix()
-          let endTimeStamp = moment(end).startOf('days').unix()
-
-          let p = parseInt((endTimeStamp - startTimeStamp) / 86400)
-
+        if (res.length) {
           res.pop()
           let data = res.map((obj, index) => ({
-            x: moment(obj.startDate).unix(),
+            x: obj.quantity,
             y: obj.quantity,
           }));
-          let listEmpty = []
-          for (let i = 0; i <= p; i++) {
-            listEmpty.push({
-              x: startTimeStamp + 86400 * i,
-              y: 0
-            })
-          }
-          let dataValue = [...listEmpty, ...data]
-          dataValue.length > 0 && dataValue.pop()
-
-          let timeLine = dataValue.map(obj => {
-            return moment.unix(obj.x).toDate().format('dd/MM')
+          let timeConvert = res.map(obj => {
+            return moment(obj.startDate).unix()
           })
-
-          setDataChart(dataValue);
+          const dayStartUnix = moment().subtract(7,'day').startOf('day').unix()
+          for(let i = 0 ; i<=5 ;i++){
+            if(timeConvert[0] !==  dayStartUnix){
+              data.splice(i,0,{x:0,y:0})
+              timeConvert.splice(i,0,dayStartUnix)
+            }
+            if(timeConvert[i] + 86400 !==  timeConvert[i+1]){
+             data.splice(i+1,0,{x:0,y:0})
+             timeConvert.splice(i+1,0,timeConvert[i] + 86400)
+            }
+          } 
+          let timeCV2 = timeConvert.map(i => moment.unix(i).format('DD/MM'))
+          setDataChart(data);
 
           alert7dayLessThan1000(data)
-
-          setTime(timeLine)
+          setTime(timeCV2)
+        } else {
+        }
       })
-      .catch(err => { });
+      .catch(err =>  console.log('errrrrr',err));
   };
 
 
