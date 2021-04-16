@@ -1,4 +1,4 @@
-{
+ {
   "bluezone.tab.home": "Trang chủ",
   "bluezone.tab.report": "Thông báo",
   "bluezone.tab.invite": "Mời",
@@ -259,7 +259,7 @@
   "bluezone.profile.errorTitle": "Thông báo",
   "bluezone.profile.errorDescription": "Đã có lỗi xảy ra. Bạn vui lòng thử lại.",
   "bluezone.profile.skinny": "Gầy",
-  "bluezone.profile.fit": "Bình\nthường",
+  "bluezone.profile.fit": "Bình thường",
   "bluezone.profile.overWeight": "Thừa cân",
   "bluezone.profile.classOneObesity": "Béo phì độ 1",
   "bluezone.profile.classTwoObesity": "Béo phì độ 2",

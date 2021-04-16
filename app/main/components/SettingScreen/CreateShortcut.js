@@ -70,6 +70,12 @@ class CreateShortcut extends PureComponent {
             }
         );
     }
+
+    static CheckSupportShortcut = (callback) => {
+        ShortcutModule.CheckSupportedShortcut((v) => {
+            callback(v)
+        })
+    }
 }
 
 export default CreateShortcut

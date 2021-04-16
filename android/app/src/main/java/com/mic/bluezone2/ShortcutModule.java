@@ -16,6 +16,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
 
 import com.facebook.infer.annotation.SynchronizedCollection;
 import com.facebook.react.bridge.Callback;
@@ -48,9 +51,9 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getAllShortcut(final Callback onDone, final Callback onCancel) {
-        if (Build.VERSION.SDK_INT < 26) {
+        if (Build.VERSION.SDK_INT < 25) {
             HashMap<String, String> shortcutMap = new HashMap<>();
-            onDone.invoke(shortcutMap);
+            onDone.invoke(shortcutMap.toString());
 
         } else {
             List<ShortcutInfo> shortcuts = getReactApplicationContext().getSystemService(ShortcutManager.class)
@@ -74,19 +77,9 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
     private void AddPinnedShortcut(ReadableMap shortcut, final Callback onDone, final Callback onCancel) {
         String label = shortcut.getString("label");
         String description = shortcut.getString("description");
-        ReadableMap icon = shortcut.getMap("icon");
         ReadableMap link = shortcut.getMap("link");
 
-        BitmapDrawable drawable = null;
         Bitmap bitmapIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_health);
-        try {
-            Class<?> clazz = Class.forName("prscx.imagehelper.RNImageHelperModule");
-            Class params[] = {ReadableMap.class};
-            Method method = clazz.getDeclaredMethod("GenerateImage", params);
-
-//            drawable = (BitmapDrawable) method.invoke(null, icon);
-        } catch (Exception e) {
-        }
         if (Build.VERSION.SDK_INT > 26) {
             ShortcutManager mShortcutManager = getReactApplicationContext().getSystemService(ShortcutManager.class);
 
@@ -115,49 +108,27 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
 
             onCancel.invoke();
         } else {
-            Intent shortcutIntent = new Intent(context,
-                    MainActivity.class);
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(link.getString("url")));
 
-            shortcutIntent.setAction(Intent.ACTION_MAIN);
-
-            Intent addIntent = new Intent();
-            addIntent.setAction(Intent.ACTION_VIEW);
-            addIntent.setData(Uri.parse(link.getString("url")));
-
-            addIntent
-                    .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-            addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, label);
-            addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Icon.createWithBitmap(bitmapIcon));
-
-            addIntent
-                    .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-            context.getApplicationContext().sendBroadcast(addIntent);
+            ShortcutInfoCompat shortcutInfo = new ShortcutInfoCompat.Builder(context, "#1")
+                    .setIntent(intent)
+                    .setShortLabel(label)
+                    .setLongLabel(description)
+                    .setIcon(IconCompat.createWithResource(context, R.drawable.ic_health))
+                    .build();
+            ShortcutManagerCompat.requestPinShortcut(context, shortcutInfo, null);
+            onDone.invoke();
         }
     }
 
-//    class TaskCreateShortcut extends AsyncTask<Void, Void, Void> {
-//        final Callback onDone;
-//        final Callback onCancel;
-//
-//        public TaskCreateShortcut(final Callback onDone, final Callback onCancel) {
-//            this.onCancel = onCancel;
-//            this.onDone = onDone;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... arg0) {
-//            //Record method
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void result) {
-//            super.onPostExecute(result);
-//
-//        }
-//    }
+    @ReactMethod
+    private void CheckSupportedShortcut(final Callback onResult) {
+        if (ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
+            onResult.invoke(true);
+        } else {
+            onResult.invoke(false);
+        }
+    }
 }

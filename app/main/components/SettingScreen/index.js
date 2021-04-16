@@ -21,24 +21,9 @@ import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
 // import * as scheduler from '../../../core/notifyScheduler';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
-import {
-  FCM_CHANNEL_ID,
-  FCM_CHANNEL_DES,
-  FCM_CHANNEL_NAME,
-} from '../../../const/fcm';
-import moment, { duration } from 'moment';
-import BackgroundFetch, {
-  BackgroundFetchStatus,
-} from 'react-native-background-fetch';
-import firebase from 'react-native-firebase';
-import AsyncStorage from '@react-native-community/async-storage';
-import {
-  ResultSteps,
-  autoChange,
-  realtime,
-  notiStep,
-  weightWarning,
-} from '../../../const/storage';
+
+import moment from 'moment';
+
 import {
   getAutoChange,
   setAutoChange,
@@ -56,7 +41,6 @@ import {
   setIsOnOfApp,
   getIsOnOfApp
 } from '../../../core/storage';
-import { scheduleTask, stopScheduleTask } from '../StepCountScreen';
 import PushNotification from 'react-native-push-notification';
 import Toast from 'react-native-simple-toast';
 
@@ -87,9 +71,16 @@ const SettingScreen = ({ intl, navigation }) => {
   const [timeWeight, setTimeWeight] = useState(0)
   const [isShowModalTarget, setIsShowModalTarget] = useState(false)
   const [isShowModalShortcut, setIsShowModalShortcut] = useState(false)
+  const [isSupportShortcut, setIsSupportShortcut] = useState(true)
 
   useEffect(() => {
     getIsOnOffAppFromStorage()
+  }, [])
+
+  useEffect(() => {
+    MyShortcut.CheckSupportShortcut((t) => {
+      setIsSupportShortcut(t)
+    })    
   }, [])
 
   const getIsOnOffAppFromStorage = async () => {
@@ -412,7 +403,7 @@ const SettingScreen = ({ intl, navigation }) => {
       </View>
 
       {
-        Platform.OS == 'android' && (
+        Platform.OS == 'android' && isSupportShortcut && (
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={getListShortcut}
@@ -429,6 +420,7 @@ const SettingScreen = ({ intl, navigation }) => {
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   txLabel: {
     fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
@@ -498,6 +490,7 @@ const styles = StyleSheet.create({
     marginTop: isIPhoneX ? 0 : 20,
   },
 });
+
 SettingScreen.propTypes = {
   intl: intlShape.isRequired,
 };
