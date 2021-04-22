@@ -23,7 +23,7 @@ import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { getDistances } from '../../../core/calculation_steps';
 import { getListHistory } from '../../../core/db/RealmDb';
 import BarChart7Item from './BarChart/BarChart7Item';
-import { RFValue } from '../../../const/multiscreen';
+import { FS, RFValue } from '../../../const/multiscreen';
 import { red_bluezone } from '../../../core/color';
 
 
@@ -496,8 +496,6 @@ const styles = StyleSheet.create({
     color: '#a1a1a1',
   },
   btnDate: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
     borderRadius: 50,
     height: RFValue(46, fontSize.STANDARD_SCREEN_HEIGHT),
     width: RFValue(87, fontSize.STANDARD_SCREEN_HEIGHT),
@@ -591,7 +589,7 @@ const styles = StyleSheet.create({
   },
   txDate: {
     color: '#fff',
-    fontSize: RFValue(15, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontSize: FS(12),
     fontWeight: '700'
   },
   txtYear: {

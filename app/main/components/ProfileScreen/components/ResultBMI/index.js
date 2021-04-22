@@ -40,27 +40,28 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
   return (
     <View style={[styles.container2, {
       // overflow: 'hidden'
-      height: resultScreen ? RFValue(102, STANDARD_SCREEN_HEIGHT) : RFValue(129, STANDARD_SCREEN_HEIGHT)
+      // height: resultScreen ? RFValue(102, STANDARD_SCREEN_HEIGHT)
+      //   : RFValue(129, STANDARD_SCREEN_HEIGHT)
     }]}>
       {resultScreen ? (
         <View style={[styles.empty]} />
       ) : (
-          <View style={[styles.container3]}>
-            <Text style={styles.textLabel}>{formatMessage(message.result)}</Text>
-            <NumberAnimate
-              steps={40}
-              interval={1500 / (40)}
-              formatter={(val) => {
-                return parseFloat(val).toFixed(1)
-              }}
-              styleText={{
-                fontSize: fontSize14,
-                fontWeight: '700',
-                fontFamily: 'OpenSans-Bold'
-              }}
-              value={bmi} />
-          </View>
-        )
+        <View style={[styles.container3]}>
+          <Text style={styles.textLabel}>{formatMessage(message.result)}</Text>
+          <NumberAnimate
+            steps={40}
+            interval={1500 / (40)}
+            formatter={(val) => {
+              return parseFloat(val).toFixed(1)
+            }}
+            styleText={{
+              fontSize: fontSize14,
+              fontWeight: '700',
+              fontFamily: 'OpenSans-Bold'
+            }}
+            value={bmi} />
+        </View>
+      )
       }
 
       <View style={styles.container4}>
@@ -133,6 +134,11 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
 
       </View>
 
+      {
+        resultScreen && (
+          <View style={{ height: RFValue(10, STANDARD_SCREEN_HEIGHT) }} />
+        )
+      }
     </View>
   );
 };

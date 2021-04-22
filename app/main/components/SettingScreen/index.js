@@ -78,9 +78,11 @@ const SettingScreen = ({ intl, navigation }) => {
   }, [])
 
   useEffect(() => {
-    MyShortcut.CheckSupportShortcut((t) => {
-      setIsSupportShortcut(t)
-    })    
+    if (Platform.OS == 'android') {
+      MyShortcut.CheckSupportShortcut((t) => {
+        setIsSupportShortcut(t)
+      })
+    }
   }, [])
 
   const getIsOnOffAppFromStorage = async () => {
@@ -118,6 +120,7 @@ const SettingScreen = ({ intl, navigation }) => {
     const time = profiles?.[profiles.length - 1]?.date
     setTimeWeight(time)
   }
+  
   const alertPermission = (type) => {
     if (type == 'step') setAlertStep(!alertStep)
     if (type == 'target') setAlertTarget(!alertTarget);
@@ -135,6 +138,7 @@ const SettingScreen = ({ intl, navigation }) => {
       { text: "Cho phép", onPress: () => Linking.openURL('app-settings:{3}') }
     ])
   }
+
   const getStatus = async () => {
     try {
       let result = await getResultSteps()
@@ -153,14 +157,11 @@ const SettingScreen = ({ intl, navigation }) => {
       setAlertBmi(res3);
     } catch (error) { }
   };
-  const onBack = () => {
-    try {
-      navigation.pop();
-    } catch (e) { }
-  };
+
   const onShowMenu = () => {
     navigation.openDrawer();
   };
+
   const autoTargetSwitch = async value => {
     setAutoTarget(!autoTarget);
   };

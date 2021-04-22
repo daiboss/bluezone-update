@@ -1,8 +1,8 @@
 import { Dimensions, Platform, PixelRatio,PlatformStatic,StatusBar } from 'react-native';
 import { isIphoneX } from "react-native-iphone-x-helper";
 
-const guidelineBaseWidth = 375;
-const guidelineBaseHeight = 667;
+const guidelineBaseWidth = 360;
+const guidelineBaseHeight = 720;
 
 const { width, height } = Dimensions.get('window');
 const SMALL_SCREEN = width < guidelineBaseWidth || height < guidelineBaseHeight;

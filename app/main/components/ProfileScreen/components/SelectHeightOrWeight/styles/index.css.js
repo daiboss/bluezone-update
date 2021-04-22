@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
-    minHeight: 55,
+    height: RFValue(52, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   borderError: {
     borderColor: red_bluezone,

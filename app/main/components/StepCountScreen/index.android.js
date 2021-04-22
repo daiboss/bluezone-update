@@ -59,7 +59,7 @@ import {
 
 import ButtonIconText from '../../../base/components/ButtonIconText';
 import { red_bluezone } from '../../../core/color';
-import { RFValue } from '../../../const/multiscreen';
+import { FS, RFValue } from '../../../const/multiscreen';
 
 import { CalculationStepTargetAndroid } from '../../../core/calculation_step_target';
 import ModalChangeTarget from './Components/ModalChangeTarget';
@@ -664,9 +664,9 @@ const StepCount = ({ props, intl, navigation }) => {
                 message.stepsNormal,
               )}`}</Text>
             </View> : <View>
-                <Text style={styles.txData}>{numberWithCommas((totalCount - countStep) > 0 ? (totalCount - countStep) : 0)} <Text style={[styles.txUnit, { marginTop: 10, fontWeight: '400' }]}>steps</Text> </Text>
-                <Text style={styles.txUnit}>to target</Text>
-              </View>}
+              <Text style={styles.txData}>{numberWithCommas((totalCount - countStep) > 0 ? (totalCount - countStep) : 0)} <Text style={[styles.txUnit, { marginTop: 10, fontWeight: '400' }]}>steps</Text> </Text>
+              <Text style={styles.txUnit}>to target</Text>
+            </View>}
 
 
           </View>
@@ -712,11 +712,11 @@ const StepCount = ({ props, intl, navigation }) => {
                     </View>
                   </View>
                 ) : (
-                    <View>
-                      <Text style={styles.txData}>{countTime}</Text>
-                      <Text style={styles.txUnit}>{countTime <= 1 ? formatMessage(message.minute) : formatMessage(message.minutes)}</Text>
-                    </View>
-                  )
+                  <View>
+                    <Text style={styles.txData}>{countTime}</Text>
+                    <Text style={styles.txUnit}>{countTime <= 1 ? formatMessage(message.minute) : formatMessage(message.minutes)}</Text>
+                  </View>
+                )
               }
             </View>
           </View>
@@ -828,7 +828,7 @@ const styles = StyleSheet.create({
   },
   txCountTarget: {
     color: '#949494',
-    fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
+    fontSize: FS(11),
     fontFamily: 'OpenSans-Bold'
   },
   chart: {

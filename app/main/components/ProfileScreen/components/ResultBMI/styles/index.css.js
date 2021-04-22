@@ -21,7 +21,7 @@ import { RFValue } from '../../../../../../const/multiscreen';
 
 const styles = StyleSheet.create({
   empty: {
-    height: 30,
+    height: RFValue(20, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   textTotalBmi: {
     color: '#00B67E',
@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     paddingHorizontal: 10,
     marginTop: RFValue(16, fontSize.STANDARD_SCREEN_HEIGHT),
-    height: RFValue(106, fontSize.STANDARD_SCREEN_HEIGHT),
+    // height: RFValue(106, fontSize.STANDARD_SCREEN_HEIGHT),
+    paddingBottom: RFValue(10, fontSize.STANDARD_SCREEN_HEIGHT),
   },
   container3: {
     alignItems: 'center',
