@@ -63,7 +63,6 @@ import { FS, RFValue } from '../../../const/multiscreen';
 
 import { CalculationStepTargetAndroid } from '../../../core/calculation_step_target';
 import ModalChangeTarget from './Components/ModalChangeTarget';
-import { StartServiceStepCounter, StopServiceStepCounter } from './TaskStepcounter';
 
 const options = {
   taskName: 'Bluezone',
@@ -165,6 +164,60 @@ const StepCount = ({ props, intl, navigation }) => {
     setCountStep(result?.step || 0);
   }
 
+  const taskStepCounter = async () => {
+    await new Promise(async () => {
+      // scheduleLastDay()
+      // schedule7PM();
+      let isFirst = await getFirstTimeSetup()
+      if (isFirst == undefined) {
+        await setFirstTimeSetup()
+      }
+
+      loopTimeToSchedule()
+
+      getStepsTotal(async total => {
+        let targetSteps = await getResultSteps();
+        let isShowStep = await getIsShowNotification()
+        BackgroundJob.updateNotification({
+          ...options,
+          currentStep: total || 0,
+          targetStep: targetSteps?.step || 10000,
+          isShowStep: isShowStep
+        })
+      })
+
+      BackgroundJob.observerStep(async steps => {
+        let targetSteps = await getResultSteps();
+        let isShowStep = await getIsShowNotification()
+
+
+        if (steps.stepCounter) {
+          try {
+            await addStepCounter(steps?.startTime,
+              steps?.endTime,
+              steps?.stepCounter)
+            BackgroundJob.sendEmitSaveSuccess()
+          } catch (er) {
+          }
+        }
+
+        getStepsTotal(total => {
+          BackgroundJob.updateNotification({
+            ...options,
+            currentStep: total || 0,
+            targetStep: parseInt(targetSteps?.step || 10000),
+            isShowStep: isShowStep,
+            valueTarget: 123
+          })
+        })
+      })
+
+      BackgroundJob.observerHistorySaveChange(async () => {
+        await autoChangeStepsTarget()
+      })
+    })
+  }
+
   const synchronizeDatabaseStepsHistory = async () => {
     try {
       let listStepBefore = await getListStepsBefore();
@@ -246,11 +299,161 @@ const StepCount = ({ props, intl, navigation }) => {
           distance: 0.00,
           calories: 0,
           time: 0,
-        }).then(re => console.log('saveHistoryEmpty', re)).catch(err => console.log('saveHistoryEmpty error', err))
+        }).then(re => console.log('RESSSSS', re)).catch(err => console.log('DENEWRRORR', err))
       }))
       BackgroundJob.sendEmitSaveHistorySuccess()
     } catch (error) {
       console.log('saveHistoryEmpty error', error)
+    }
+  }
+
+  const loopTimeToSchedule = async (oldId) => {
+    if (oldId) {
+      BackgroundJob.clearTimeout(oldId);
+    }
+    await switchTimeToSchedule();
+    let currentTime = new moment()
+    let today7pm = new moment().set({ hour: 19, minute: 0, second: 0, millisecond: 0 })
+    let tomorow = new moment(currentTime).add(1, 'days')
+    tomorow.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+
+    let timeDiff = tomorow.diff(currentTime, 'milliseconds')
+    let timeDiff7h = 10001
+    if (today7pm.isAfter(currentTime)) {
+      timeDiff7h = today7pm.diff(currentTime, 'milliseconds')
+    }
+    let tmpTime = Math.min(timeDiff, timeDiff7h)
+    if (tmpTime > 10000) {
+      tmpTime = 10000
+    }
+    const timeoutId = BackgroundJob.setTimeout(() => {
+      loopTimeToSchedule(timeoutId);
+    }, tmpTime)
+  }
+
+  const switchTimeToSchedule = async () => {
+    let currentTime = new moment()
+    let tmpStart1 = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    let tmpEnd1 = new moment().set({ hour: 0, minute: 0, second: 9, millisecond: 59 })
+    let tmpStart2 = new moment().set({ hour: 19, minute: 0, second: 0, millisecond: 0 })
+    let tmpEnd2 = new moment().set({ hour: 19, minute: 0, second: 9, millisecond: 59 })
+    if (currentTime.isAfter(tmpStart1) && currentTime.isBefore(tmpEnd1)) {
+      await scheduleLastDay()
+    } else if (currentTime.isAfter(tmpStart2) && currentTime.isBefore(tmpEnd2)) {
+      await schedule7PM()
+    }
+  }
+
+  const schedule7PM = async () => {
+    await pushNotificationWarning()
+  }
+
+  const scheduleLastDay = async () => {
+    await saveHistory();
+  }
+
+  const pushNotificationWarning = async () => {
+    let checkOnOff = await getIsOnOfApp()
+    if (checkOnOff == undefined) {
+      checkOnOff = true
+    }
+
+    let tmpStep = await getNotiStep()
+    if (tmpStep == undefined) {
+      tmpStep = true
+    }
+    if (checkOnOff == true && tmpStep == true) {
+      let totalStep = await getStepsTotalPromise();
+      scheduler.createWarnningStepNotification(totalStep || 0)
+    }
+  }
+
+  const autoChangeStepsTarget = async () => {
+    try {
+      let stepTarget = await getResultSteps()
+      let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      if (stepTarget != undefined) {
+        let tmp = `${stepTarget?.date}`
+        if (tmp.length >= 13) {
+          tmp = tmp.slice(0, 10)
+        }
+        let v = parseInt(tmp)
+        let lastUpdateTarget = moment.unix(v).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+
+        if (currentTime.unix() <= v ||
+          (currentTime.format('DD/MM/YYYY') == lastUpdateTarget.format('DD/MM/YYYY'))) {
+          return
+        }
+      }
+
+      let lastTime = await getFirstTimeSetup()
+      let firstTime = new moment.unix(lastTime?.time)
+      let tmpDay = new moment().diff(firstTime, 'days')
+
+      if (tmpDay < 2) {
+        return
+      }
+
+      let auto = await getAutoChange();
+
+      if ((auto != undefined && auto?.value == false) ||
+        (auto?.value == true && auto?.time == currentTime.unix())
+      ) {
+        return
+      }
+
+      currentTime = currentTime.toDate().getTime()
+      let startDay = new moment().subtract(4, 'days').set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      let listHistory = await getListHistory(startDay.unix(), new moment().unix())
+      if (listHistory?.length <= 0) return
+
+      let listData = listHistory.map(element => {
+        let resultTmp = JSON.parse(element?.resultStep)
+        return (resultTmp?.step || 0)
+      })
+      let stepTargetNew = CalculationStepTargetAndroid(listData, stepTarget?.step || 10000, tmpDay)
+      let resultSave = {
+        step: stepTargetNew,
+        date: currentTime
+      }
+      await setResultSteps(resultSave)
+    } catch (err) {
+      console.log('setResultSteps error', err)
+    }
+    try {
+      BackgroundJob.sendEmitSaveTargetSuccess()
+      BackgroundJob.updateTypeNotification()
+    } catch (_) { }
+  }
+
+  const saveHistory = async () => {
+    try {
+      let tmp = new moment().subtract(1, 'days')
+      let yesterdayStart = tmp.clone().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+      let yesterdayEnd = tmp.clone().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix()
+
+      let listStepYesterday = await getListStepDayBefore()
+      let result = await getDistancesWithData(listStepYesterday);
+      if (Object.keys(result).length <= 0) {
+        return;
+      }
+
+      try {
+        await addHistory(yesterdayStart, result)
+      } catch (err) {
+        console.log('addHistory ERROR', err)
+      }
+
+      try {
+        await removeAllStepDay(yesterdayStart * 1000, yesterdayEnd * 1000)
+      } catch (err) {
+        console.log('removeAllStepDay ERROR', err)
+      }
+
+      BackgroundJob.sendEmitSaveHistorySuccess()
+      BackgroundJob.updateTypeNotification()
+    } catch (error) {
+      console.log('saveHistory error', error)
     }
   }
 
@@ -286,10 +489,11 @@ const StepCount = ({ props, intl, navigation }) => {
       if (checkOnOff == undefined) {
         checkOnOff = true
       }
-      if (checkOnOff) {
-        StartServiceStepCounter()
-      } else if (!checkOnOff) {
-        StopServiceStepCounter()
+      let isRun = BackgroundJob.isRunning();
+      if (!isRun && checkOnOff) {
+        BackgroundJob.start(taskStepCounter, options);
+      } else if (isRun && !checkOnOff) {
+        BackgroundJob.stop()
       }
     } catch (err) {
       console.log('startOrOffApp error', err)

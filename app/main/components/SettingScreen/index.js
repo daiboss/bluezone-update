@@ -53,6 +53,7 @@ import * as scheduler from '../../../core/notifyScheduler';
 import BackgroundJob from './../../../core/service_stepcounter'
 import { red_bluezone } from '../../../core/color';
 import { RFValue } from '../../../const/multiscreen';
+import { StartServiceStepCounter, StopServiceStepCounter } from '../StepCountScreen/TaskStepcounter';
 
 Number.prototype.format = function (n, x) {
   var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
@@ -113,14 +114,14 @@ const SettingScreen = ({ intl, navigation }) => {
       if (alertBmi)
         scheduler.createScheduleWarnningWeightNotification(timeWeight)
     }
-  }, [onOffApp])
+  }, [onOffApp, alertBmi])
 
   const getProfileUser = async () => {
     let profiles = (await getProfile()) || [];
     const time = profiles?.[profiles.length - 1]?.date
     setTimeWeight(time)
   }
-  
+
   const alertPermission = (type) => {
     if (type == 'step') setAlertStep(!alertStep)
     if (type == 'target') setAlertTarget(!alertTarget);
@@ -241,8 +242,6 @@ const SettingScreen = ({ intl, navigation }) => {
     } else {
       await setIsShowNotification(false)
     }
-    // if (Platform.OS == 'android')
-    //   BackgroundJob.updateTypeNotification()
     try {
       if (Platform.OS == 'android')
         BackgroundJob.updateTypeNotification()
@@ -299,11 +298,20 @@ const SettingScreen = ({ intl, navigation }) => {
     try {
       setIsOnOfApp(value)
       setOnOffApp(value)
-      navigation.goBack()
+      // navigation.goBack()
     } catch (err) {
       console.log('actionOnOffApp error', error)
     }
   }
+
+  // Handle onof app
+  useEffect(() => {
+    if (onOffApp) {
+      StartServiceStepCounter()
+    } else {
+      StopServiceStepCounter()
+    }
+  }, [onOffApp])
 
   return (
     <SafeAreaView>

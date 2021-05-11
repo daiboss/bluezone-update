@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 import React from 'react';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -115,7 +115,7 @@ import ResultBmiScreen from './app/main/components/ProfileScreen/ResultBmiScreen
 
 // animation transaction
 import { TransitionSpecs, HeaderStyleInterpolators } from '@react-navigation/stack';
-import { Platform } from 'react-native';
+import { Linking, Platform } from 'react-native';
 
 const MyTransition = {
   gestureDirection: 'horizontal',
@@ -243,6 +243,15 @@ class App extends React.Component {
     this.HomeProps = propsComponent => (
       <HomeScreen name={MAIN_INITIAL_ROUTE} {...propsComponent} />
     );
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (prevState.loading && !this.state.loading) {
+      const linking = await Linking.getInitialURL();
+      if (linking) {
+        await Linking.openURL(linking);
+      }
+    }
   }
 
   async componentDidMount() {
@@ -473,71 +482,71 @@ class App extends React.Component {
         <Stack.Screen name={'settingScreen'} component={SettingScreen} />
       </Stack.Navigator>
     ) : (
-          <Stack.Navigator
-            id="home"
-            headerMode="none"
-            mode="card"
-            initialRouteName={MAIN_INITIAL_ROUTE}>
-            {/* <Stack.Screen
+      <Stack.Navigator
+        id="home"
+        headerMode="none"
+        mode="card"
+        initialRouteName={MAIN_INITIAL_ROUTE}>
+        {/* <Stack.Screen
                       name={'stepCount'}
                       component={StepCount}
                     > */}
-            {/* </Stack.Screen> */}
-            <Stack.Screen
-              name={MAIN_INITIAL_ROUTE}
-              component={currentComponent.HomeProps}
-            />
+        {/* </Stack.Screen> */}
+        <Stack.Screen
+          name={MAIN_INITIAL_ROUTE}
+          component={currentComponent.HomeProps}
+        />
 
-            <Stack.Screen name="WatchScan" component={WatchScan} />
-            <Stack.Screen name="HistoryScan" component={HistoryScan} />
-            <Stack.Screen
-              name="NotifyDetail"
-              component={NotifyDetail}
-              path="NotifyDetail"
-            />
-            <Stack.Screen name="Invite" component={Invite} />
-            <Stack.Screen
-              name="PhoneNumberRegisterScreen"
-              component={PhoneNumberRegisterScreen}
-            />
-            <Stack.Screen
-              name="PhoneNumberVerifyOTPScreen"
-              component={PhoneNumberVerifyOTPScreen}
-            />
-            <Stack.Screen
-              name="RegisterInfomation"
-              component={RegisterInfomation}
-            />
-            <Stack.Screen name="PageView" component={PageView} />
-            <Stack.Screen name="DetailNew" component={DetailNew} />
-            <Stack.Screen
-              name="HistoryUploadedByOTP"
-              component={HistoryUploadedByOTPScreen}
-            />
-            <Stack.Screen name="ViewLog" component={ViewLog} />
-            <Stack.Screen
-              name="DownloadLatestVersionScreen"
-              component={DownloadLatestVersionScreen}
-            />
-            <Stack.Screen name="ContactHistory" component={ContactHistory} />
-            {/*<Stack.Screen name="ScanScreen" component={ScanScreen} />*/}
-            <Stack.Screen name="Welcome" component={Welcome} />
-            <Stack.Screen name="FAQScreen">
-              {props => <FAQScreen {...props} showBack={true} />}
-            </Stack.Screen>
-            <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
-            <Stack.Screen name={'stepHistory'} component={StepHistory} />
-            <Stack.Screen name={'settingScreen'} component={SettingScreen} />
+        <Stack.Screen name="WatchScan" component={WatchScan} />
+        <Stack.Screen name="HistoryScan" component={HistoryScan} />
+        <Stack.Screen
+          name="NotifyDetail"
+          component={NotifyDetail}
+          path="NotifyDetail"
+        />
+        <Stack.Screen name="Invite" component={Invite} />
+        <Stack.Screen
+          name="PhoneNumberRegisterScreen"
+          component={PhoneNumberRegisterScreen}
+        />
+        <Stack.Screen
+          name="PhoneNumberVerifyOTPScreen"
+          component={PhoneNumberVerifyOTPScreen}
+        />
+        <Stack.Screen
+          name="RegisterInfomation"
+          component={RegisterInfomation}
+        />
+        <Stack.Screen name="PageView" component={PageView} />
+        <Stack.Screen name="DetailNew" component={DetailNew} />
+        <Stack.Screen
+          name="HistoryUploadedByOTP"
+          component={HistoryUploadedByOTPScreen}
+        />
+        <Stack.Screen name="ViewLog" component={ViewLog} />
+        <Stack.Screen
+          name="DownloadLatestVersionScreen"
+          component={DownloadLatestVersionScreen}
+        />
+        <Stack.Screen name="ContactHistory" component={ContactHistory} />
+        {/*<Stack.Screen name="ScanScreen" component={ScanScreen} />*/}
+        <Stack.Screen name="Welcome" component={Welcome} />
+        <Stack.Screen name="FAQScreen">
+          {props => <FAQScreen {...props} showBack={true} />}
+        </Stack.Screen>
+        <Stack.Screen name={'stepCount'} component={StepCount} path={'stepCount'} />
+        <Stack.Screen name={'stepHistory'} component={StepHistory} />
+        <Stack.Screen name={'settingScreen'} component={SettingScreen} />
 
-            <Stack.Screen name="Profile2" component={ProfileScreen} />
-            <Stack.Screen name="Profile" component={ProfileScreen} path={'Profile'} />
-            <Stack.Screen name="Bmi" component={BmiScreen} />
-            <Stack.Screen name="resultBmi" component={ResultBmiScreen}
-              options={{
-                ...MyTransition
-              }} />
-          </Stack.Navigator>
-        );
+        <Stack.Screen name="Profile2" component={ProfileScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} path={'Profile'} />
+        <Stack.Screen name="Bmi" component={BmiScreen} />
+        <Stack.Screen name="resultBmi" component={ResultBmiScreen}
+          options={{
+            ...MyTransition
+          }} />
+      </Stack.Navigator>
+    );
   };
 
   RightDrawer = props => {

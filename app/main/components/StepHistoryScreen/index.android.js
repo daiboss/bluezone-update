@@ -254,7 +254,6 @@ const StepCount = ({ props, intl, navigation }) => {
           })
         }
       } else if (type == 'week') {
-        let listdataWeek = []
         const groups = step.reduce((acc, current) => {
           const yearWeek = moment.unix(current?.starttime).week();
           if (!acc[yearWeek]) {
@@ -282,31 +281,22 @@ const StepCount = ({ props, intl, navigation }) => {
           if (locale == 'en') {
             label = `${startWeek.format('DD')} - ${valueEnd}\n${endWeek.locale('en').format('MMM')}`
           } else {
-            label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
+            if (endWeek.isAfter(currentTime) || endWeek.isSame(currentTime)) {
+              label = `${startWeek.format('DD')} - ${valueEnd}\nT ${currentTime.format('MM')}`
+            } else {
+              label = `${startWeek.format('DD')} - ${valueEnd}\nT ${endWeek.format('MM')}`
+            }
           }
-          listdataWeek.push({
+          list.push({
             x: label,
             y: results?.steps || 0,
             results: results,
           })
-          let arrayConvert = listdataWeek.map((i,index) => {
-            const monthEn = moment().locale('en').format('MMM')
-            const monthVn = moment().format('MM')
-            if(index == listdataWeek.length - 1){
-              // const startWeek = moment(i.start,'yyyy/DD/MM').startOf('isoWeek')
-              return{
-                ...i,
-                x: locale == 'en' ? `${startWeek.format('DD')} - now\n ${monthEn}` : `${startWeek.format('DD')} - nay\nT ${monthVn}`
-              }
-            }
-            return i
-          })
-         list.push(...arrayConvert)
         }
       }
       let max = Math.max.apply(Math, list.map(function (o) { return o.y; }))
       setMaxDomain(max + 1000)
-      
+
       setDataChart(list);
     } catch (error) {
       console.log('getDataHealth error', error)
@@ -441,11 +431,11 @@ const StepCount = ({ props, intl, navigation }) => {
                   </View>
                 </View>
               ) : (
-                  <View>
-                    <Text style={styles.txData}>{countTime}</Text>
-                    <Text style={styles.txUnit}>{countTime <= 1 ? formatMessage(message.minute) : formatMessage(message.minutes)}</Text>
-                  </View>
-                )
+                <View>
+                  <Text style={styles.txData}>{countTime}</Text>
+                  <Text style={styles.txUnit}>{countTime <= 1 ? formatMessage(message.minute) : formatMessage(message.minutes)}</Text>
+                </View>
+              )
             }
 
           </View>
@@ -526,7 +516,7 @@ const styles = StyleSheet.create({
   txData: {
     color: red_bluezone,
     fontSize: RFValue(13, fontSize.STANDARD_SCREEN_HEIGHT),
-    fontFamily:'OpenSans-Regular',
+    fontFamily: 'OpenSans-Regular',
     textAlign: 'center',
     marginTop: 10,
     fontFamily: 'OpenSans-Regular'
