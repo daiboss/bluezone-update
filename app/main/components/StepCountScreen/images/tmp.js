@@ -187,6 +187,7 @@ const StepCount = ({ props, intl, navigation }) => {
       })
 
       BackgroundJob.observerStep(async steps => {
+        console.log('=======>>>>', steps)
         let targetSteps = await getResultSteps();
         let isShowStep = await getIsShowNotification()
 

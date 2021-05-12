@@ -55,10 +55,13 @@ const getListStepDay = async () => {
     let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix() * 1000
     let currentEndTime = moment().set({ hour: 23, minute: 59, second: 59, millisecond: 59 }).unix() * 1000
 
+    console.log('getListStepDay', currentTime, currentEndTime)
+
     return new Promise((resolve, reject) => {
         Realm.open(realmConfig).then(realmDb => {
             let filterQuery = realmDb.objects(TABLE_STEPCOUNTER)
                 .filtered(`starttime >= ${currentTime} && starttime < ${currentEndTime}`);
+                console.log('filterQuery', filterQuery)
             resolve(Array.from(filterQuery));
         }).catch((error) => reject(error));
     })
@@ -145,6 +148,16 @@ const getListStepsBefore = async () => {
     })
 };
 
+// lấy tất cả các bước đi
+const getListStepsAll = async () => {
+    return new Promise((resolve, reject) => {
+        Realm.open(realmConfig).then(realmDb => {
+            let filterQuery = realmDb.objects(TABLE_STEPCOUNTER);
+            resolve(Array.from(filterQuery));
+        }).catch((error) => reject(error));
+    })
+};
+
 // Xoá hết lịch sử trong db
 const removeAllHistory = async () => {
     return new Promise((resolve, reject) => {
@@ -195,7 +208,8 @@ export {
     getListStepsBefore,
     removeAllHistory,
     removeAllStep,
-    removeAllStepDay
+    removeAllStepDay,
+    getListStepsAll
 }
 
 export default new Realm(realmConfig);

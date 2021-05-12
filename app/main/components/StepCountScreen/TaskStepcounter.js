@@ -67,6 +67,7 @@ export const taskStepCounter = async () => {
         })
 
         BackgroundJob.observerStep(async steps => {
+            console.log('=======>>>>', steps)
             let targetSteps = await getResultSteps();
             let isShowStep = await getIsShowNotification()
 
@@ -75,9 +76,13 @@ export const taskStepCounter = async () => {
                 try {
                     await addStepCounter(steps?.startTime,
                         steps?.endTime,
-                        steps?.stepCounter)
+                        steps?.stepCounter).then(res => console.log('RESSSS', res))
                     BackgroundJob.sendEmitSaveSuccess()
+                    console.log('da luu duoc',steps?.startTime,
+                    steps?.endTime,
+                    steps?.stepCounter)
                 } catch (er) {
+                    console.log('khong luu duoc', er)
                 }
             }
 

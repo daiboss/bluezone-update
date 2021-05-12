@@ -12,7 +12,7 @@ import {
     setStepChange,
 } from './storage';
 import moment from 'moment';
-import { getListStepDay } from './db/RealmDb'
+import { getListStepDay, getListStepsAll } from './db/RealmDb'
 
 let count = 0;
 var timeout;
@@ -75,9 +75,12 @@ export const getAllDistance = (data, sex, height, weight) => {
 export const getDistances = async () => {
     try {
         let stepData = [];
+        const esss = await getListStepsAll()
+        console.log('KKKKKKKKKK', esss)
         const res = await getListStepDay()
         // .then(res => {
         Array.prototype.push.apply(stepData, res);
+        console.log('LISISIIS:::::', res)
         // })
         let profiles = (await getProfile()) || [];
         let profile = profiles.find(

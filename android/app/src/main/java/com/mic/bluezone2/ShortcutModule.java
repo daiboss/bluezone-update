@@ -53,8 +53,10 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
     public void getAllShortcut(final Callback onDone, final Callback onCancel) {
         if (Build.VERSION.SDK_INT < 25) {
             HashMap<String, String> shortcutMap = new HashMap<>();
-            onDone.invoke(shortcutMap.toString());
+            List<ShortcutInfoCompat> shortcuts = ShortcutManagerCompat.getDynamicShortcuts(context);
 
+            onDone.invoke(shortcutMap.toString());
+//            onDone.invoke(shortcuts.toString());
         } else {
             List<ShortcutInfo> shortcuts = getReactApplicationContext().getSystemService(ShortcutManager.class)
                     .getPinnedShortcuts();
@@ -119,6 +121,7 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
                     .setIcon(IconCompat.createWithResource(context, R.drawable.ic_health))
                     .build();
             ShortcutManagerCompat.requestPinShortcut(context, shortcutInfo, null);
+
             onDone.invoke();
         }
     }

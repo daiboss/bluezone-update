@@ -170,7 +170,7 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
             mSensorManager.registerListener(this, sensorStepCounter, SensorManager.SENSOR_DELAY_FASTEST);
         }
 
-//
+
 //        if (sensorStepDetector == null) {
 //            Log.e("StepCounter", "sensorStepDetector khong support");
 //            check = true;
@@ -185,7 +185,8 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                 .emit(EMIT_EVENT_STEP, params);
 
         if (check) {
-            mSensorManager.registerListener(this, sensorStepAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+            boolean sp = mSensorManager.registerListener(this, sensorStepAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+            Log.e("StepCounter", "value: " + sp);
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -216,7 +217,6 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                 emitValue(map);
                 return;
             }
-//            Log.e("TAGGGGG", "So luong buoc: " + numberStep + " - " + lastStepCounter + " - " + (numberStep - lastStepCounter));
             if (numberStep != lastStepCounter) {
                 if (curTime - lastUpdateTime >= 3000) {
                     map.putDouble(END_TIME, curTime);
@@ -245,14 +245,12 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
             lastUpdateTime = curTime;
         }
 
-        if (mySensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+//        if (mySensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
 //            Log.e("StepCounter", "TYPE_STEP_DETECTOR: " + sensorEvent.values[0]);
 //            emitValue(EVENT_DETECTOR, sensorEvent.values[0]);
-        }
+//        }
 
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-//            Log.e("StepCounter", "TYPE_ACCELEROMETER: " + sensorEvent.values[0]);
-//            emitValue(EVENT_ACCELEROMETER, sensorEvent.values[0]);
             calculationStepAccelerometer(sensorEvent);
         }
     }
@@ -278,7 +276,6 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                 }
                 map.putDouble(START_TIME, streakPrevTime);
                 emitValue(map);
-//                Log.e("StepCounter", "EMIT VALUEEE===: " + streakStartTime + " - " + ((int) (streakStartTime - streakPrevTime) / 1000) + " - " + stepCount + " - " + streakPrevTime);
                 streakPrevTime = streakStartTime;
             }
             PREVIOUS_STATE = CURRENT_STATE;
@@ -306,6 +303,8 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
     }
 
     private void emitValue(WritableMap params) {
+        Log.e("stepCountstepCount", "stepCount: " + params);
+
         getReactNativeHost().getReactInstanceManager().getCurrentReactContext()
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(EMIT_EVENT_STEP, params);

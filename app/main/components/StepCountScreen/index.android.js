@@ -154,6 +154,7 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const getResultBindingUI = async () => {
+    console.log('thay doi')
     let result = await getDistances();
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
@@ -163,6 +164,7 @@ const StepCount = ({ props, intl, navigation }) => {
     setCountTime(m);
     setCountTimeHour(h)
     setCountStep(result?.step || 0);
+    console.log('thay doi valueeeee ><<<<<<<', result)
   }
 
   const synchronizeDatabaseStepsHistory = async () => {
