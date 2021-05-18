@@ -53,27 +53,13 @@ import BackgroundFetch from 'react-native-background-fetch';
 import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import Fitness from '@ovalmoney/react-native-fitness';
 import {
   autoChange,
   notiStep,
   realtime,
   weightWarning,
 } from './app/const/storage';
-const permissions = [
-  {
-    kind: Fitness.PermissionKinds.Steps,
-    access: Fitness.PermissionAccesses.Read,
-  },
-  {
-    kind: Fitness.PermissionKinds.Calories,
-    access: Fitness.PermissionAccesses.Read,
-  },
-  {
-    kind: Fitness.PermissionKinds.Distances,
-    access: Fitness.PermissionAccesses.Read,
-  },
-];
+
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
 PushNotification.configure({
   onRegister: function (token) {

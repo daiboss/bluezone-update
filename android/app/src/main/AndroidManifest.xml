@@ -121,7 +121,14 @@
 
         <service
             android:name=".services.RNBackgroundActionsTask"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+            android:exported="true" />
+
+        <receiver android:name=".receiver.ChangeTimeReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
         <receiver android:name=".BootStartReceiver">
             <intent-filter>

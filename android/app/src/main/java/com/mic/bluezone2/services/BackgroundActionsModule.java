@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -24,6 +24,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.mic.bluezone2.util.ConfigNotification;
 
 @SuppressWarnings("WeakerAccess")
 public class BackgroundActionsModule extends ReactContextBaseJavaModule {
@@ -64,8 +65,9 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
         this.reactContext = reactContext;
         this.reactContextStatic = reactContext;
         this.powerManager = (PowerManager) getReactApplicationContext().getSystemService(reactContext.POWER_SERVICE);
-        this.wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "rohit_bg_wakelock");
+        this.wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "bluezone2:ALARM");
         reactContext.addLifecycleEventListener(listener);
+        RNBackgroundActionsTask.reactContext = reactContext;
     }
 
     @NonNull
@@ -76,21 +78,17 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void start(@NonNull final ReadableMap options, @NonNull final Promise promise) {
+    public void start(@NonNull final Promise promise) {
         // Stop any other intent
         if (currentServiceIntent != null) reactContext.stopService(currentServiceIntent);
         // Create the service
         currentServiceIntent = new Intent(reactContext, RNBackgroundActionsTask.class);
-        // Get the task info from the options
-        try {
-            final BackgroundTaskOptions bgOptions = new BackgroundTaskOptions(reactContext, options);
-            currentServiceIntent.putExtras(bgOptions.getExtras());
-        } catch (Exception e) {
-            promise.reject(e);
-            return;
-        }
         // Start the task
-        reactContext.startService(currentServiceIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            reactContext.startForegroundService(currentServiceIntent);
+        } else {
+            reactContext.startService(currentServiceIntent);
+        }
         promise.resolve(null);
     }
 
@@ -104,21 +102,23 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
 
     @SuppressWarnings("unused")
     @ReactMethod
-    public void updateNotification(@NonNull final ReadableMap options, @NonNull final Promise promise) {
+    public void updateNotification(final Promise promise) {
         // Get the task info from the options
         try {
-            final BackgroundTaskOptions bgOptions = new BackgroundTaskOptions(reactContext, options);
-
-            final Notification notification = RNBackgroundActionsTask.buildNotification(reactContext, bgOptions);
+            final Notification notification = RNBackgroundActionsTask.buildNotification(reactContext);
 
             final NotificationManager notificationManager = (NotificationManager) reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
             notificationManager.notify(RNBackgroundActionsTask.SERVICE_NOTIFICATION_ID, notification);
         } catch (Exception e) {
-            promise.reject(e);
+            if (promise != null) {
+                promise.reject(e);
+            }
             return;
         }
-        promise.resolve(null);
+        if (promise != null) {
+            promise.resolve(null);
+        }
     }
 
     @ReactMethod
@@ -179,9 +179,9 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setTimeout(final int id, final double timeout) {
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable(){
+        handler.postDelayed(new Runnable() {
             @Override
-            public void run(){
+            public void run() {
                 if (getReactApplicationContext().hasActiveCatalystInstance()) {
                     getReactApplicationContext()
                             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
@@ -192,18 +192,17 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void sendEmitSaveSuccess(){
+    public void sendEmitSaveSuccess() {
         sendEvent(reactContext, EMIT_EVENT_STEP_SAVE);
     }
 
-
     @ReactMethod
-    public void sendEmitSaveHistorySuccess(){
+    public void sendEmitSaveHistorySuccess() {
         sendEvent(reactContext, EMIT_EVENT_HISTORY_SAVE);
     }
 
     @ReactMethod
-    public void sendEmitSaveTargetSuccess(){
+    public void sendEmitSaveTargetSuccess() {
         sendEvent(reactContext, EMIT_EVENT_TARGET_SAVE);
     }
 
@@ -211,5 +210,39 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
         reactContextStatic
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(event, params);
+    }
+
+    @ReactMethod
+    public void setShowStepsTarget(boolean isShow, Promise promise) {
+        ConfigNotification.toggleStepTarget(isShow, reactContext);
+        updateNotification(promise);
+    }
+
+    @ReactMethod
+    public void getIsShowStepTarget(Promise promise) {
+        boolean res = ConfigNotification.getIsShowStepTarget(reactContext);
+        promise.resolve(res);
+    }
+
+    @ReactMethod
+    public void setServiceIsOpen(boolean isOpen, Promise promise) {
+        ConfigNotification.toggleOnOffService(isOpen, reactContext);
+        if (!isOpen) {
+            Intent intent = new Intent(reactContext, RNBackgroundActionsTask.class);
+            getCurrentActivity().stopService(intent);
+        }
+        promise.resolve(null);
+    }
+
+    @ReactMethod
+    public void getIsOpenService(Promise promise) {
+        boolean res = ConfigNotification.getIsOpenService(reactContext);
+        promise.resolve(res);
+    }
+
+    @ReactMethod
+    public void setStepTarget(int target, Promise promise) {
+        ConfigNotification.setStepTarget(target, reactContext);
+        updateNotification(promise);
     }
 }

@@ -1,11 +1,4 @@
 import {
-  accelerometer,
-  gyroscope,
-  setUpdateIntervalForType,
-  SensorTypes,
-} from 'react-native-sensors';
-import { map, filter } from 'rxjs/operators';
-import {
   getProfile,
   getResultSteps,
   getStepChange,

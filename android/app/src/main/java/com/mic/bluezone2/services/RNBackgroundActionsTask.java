@@ -4,16 +4,17 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
+import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -23,23 +24,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.facebook.react.HeadlessJsTaskService;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.jstasks.HeadlessJsTaskConfig;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.mic.bluezone2.MainActivity;
 import com.mic.bluezone2.R;
+import com.mic.bluezone2.dao.DatabaseHelper;
 import com.mic.bluezone2.model.Accelerometer;
+import com.mic.bluezone2.util.ConfigNotification;
+import com.mic.bluezone2.util.EmitEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-final public class RNBackgroundActionsTask extends HeadlessJsTaskService implements SensorEventListener {
+final public class RNBackgroundActionsTask extends Service implements SensorEventListener {
+    public static ReactApplicationContext reactContext;
+
+    private static final String TAG = RNBackgroundActionsTask.class.getName();
+
     private static final String EVENT_COUNTER = "stepCounter";
     private static final String EVENT_DETECTOR = "stepDetector";
     private static final String EVENT_ACCELEROMETER = "stepAccelerometer";
     private static final String EMIT_EVENT_STEP = "EMIT_EVENT_STEP";
+    public static final String EMIT_EVENT_STEP_SAVE = "EMIT_EVENT_STEP_SAVE";
     private static final String EMIT_EVENT_CHANGE_TIME = "EMIT_EVENT_CHANGE_TIME";
     private static final String EMIT_IS_SUPPORT = "EMIT_IS_SUPPORT";
     private static final String START_TIME = "startTime";
@@ -51,9 +58,9 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
     private static final String CHANNEL_ID_2 = "CHANNEL_HEALTH_BLUEZONE_NORMAL";
     private static final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private SensorManager mSensorManager;
+    private DatabaseHelper databaseHelper;
 
     private Sensor sensorStepCounter;
-    private Sensor sensorStepDetector;
     private Sensor sensorStepAccelerometer;
 
     private boolean isSupportStepCounter = true;
@@ -71,24 +78,29 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
     private long streakStartTime;
     private long streakPrevTime = System.currentTimeMillis();
 
+    private PowerManager mPowerManger;
+    private PowerManager.WakeLock mWakelockSettle;
+
     @NonNull
-    public static Notification buildNotification(@NonNull final ReactContext context, @NonNull final BackgroundTaskOptions bgOptions) {
+    public static Notification buildNotification(@NonNull final Context context) {
+        ConfigNotification configNotification = new ConfigNotification(context);
+
         // Get info
-        final String taskTitle = bgOptions.getTaskTitle();
-        final double currentSteps = bgOptions.getCurrentSteps();
-        boolean isShowNofi = bgOptions.isShowStep();
-        double targetSteps = bgOptions.getStepsTarget();
+        final String taskTitle = configNotification.getTaskTitle();
+        final double currentSteps = configNotification.getCurrentSteps();
+        boolean isShowNofi = configNotification.isShowStepTarget();
+        double targetSteps = configNotification.getStepsTarget();
+
         if (targetSteps == 0) {
             targetSteps = 10000;
         }
-        final int iconInt = bgOptions.getIconInt();
-        final String linkingURI = bgOptions.getLinkingURI();
+        final String linkingURI = configNotification.getLinkingURI();
         Intent notificationIntent;
         if (linkingURI != null) {
             notificationIntent = new Intent(Intent.ACTION_VIEW);
             notificationIntent.setData(Uri.parse(linkingURI));
         } else {
-            notificationIntent = new Intent(context, context.getCurrentActivity().getClass());
+            notificationIntent = new Intent(context, MainActivity.class);
         }
         final PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         //custom notification
@@ -114,7 +126,6 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
 
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.icon_bluezone)
-//                .setSmallIcon(iconInt)
                 .setContentTitle(taskTitle)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(notificationLayout)
@@ -123,73 +134,64 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                 .setAutoCancel(false)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
-//                .setStyle(new NotificationCompat.BigTextStyle().bigText("Bluezone - App sức khoẻ"))
                 .build();
         return notification;
     }
 
     @Override
-    protected @Nullable
-    HeadlessJsTaskConfig getTaskConfig(Intent intent) {
-        final Bundle extras = intent.getExtras();
-        if (extras != null) {
-            return new HeadlessJsTaskConfig(extras.getString("taskName"), Arguments.fromBundle(extras), 0, true);
-        }
-        return null;
-    }
+    public void onCreate() {
+        super.onCreate();
+        Log.e(TAG, "onCreate Service");
 
+        mPowerManger = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakelockSettle = mPowerManger.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "bluezone2:ALARM");
+        mWakelockSettle.acquire();
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        final Bundle extras = intent.getExtras();
-        if (extras == null) {
-            throw new IllegalArgumentException("Extras cannot be null");
-        }
+        Log.e(TAG, "onStartCommand service");
+        databaseHelper = new DatabaseHelper(getApplicationContext());
+
         Context context = getApplicationContext();
 
-        final BackgroundTaskOptions bgOptions = new BackgroundTaskOptions(extras);
-        createNotificationChannel(bgOptions.getTaskTitle(), bgOptions.getTaskDesc());
-        // Create the notification
-        final Notification notification = buildNotification(getReactNativeHost().getReactInstanceManager().getCurrentReactContext(), bgOptions);
-        startForeground(SERVICE_NOTIFICATION_ID, notification);
+        ConfigNotification configNotification = new ConfigNotification(this);
+        createNotificationChannel(configNotification.getTaskTitle(), configNotification.getTaskDesc());
 
+        // Create the notification
+        final Notification notification = buildNotification(context);
+        startForeground(SERVICE_NOTIFICATION_ID, notification);
 
         mSensorManager = (SensorManager)
                 context.getSystemService(Context.SENSOR_SERVICE);
 
         sensorStepCounter = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-//        sensorStepDetector = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         sensorStepAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         boolean check = false;
 
         if (sensorStepCounter == null) {
-            Log.e("StepCounter", "sensorStepCounter khong support");
+            Log.e(TAG, "sensorStepCounter khong support");
             check = true;
         } else {
             mSensorManager.registerListener(this, sensorStepCounter, SensorManager.SENSOR_DELAY_FASTEST);
+            Toast.makeText(context, "Có support sensor", Toast.LENGTH_SHORT).show();
         }
-
-
-//        if (sensorStepDetector == null) {
-//            Log.e("StepCounter", "sensorStepDetector khong support");
-//            check = true;
-//        } else {
-//            mSensorManager.registerListener(this, sensorStepDetector, SensorManager.SENSOR_DELAY_FASTEST);
-//        }
-
-        WritableMap params = Arguments.createMap();
-        params.putBoolean(EMIT_IS_SUPPORT, !check);
-        getReactNativeHost().getReactInstanceManager().getCurrentReactContext()
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(EMIT_EVENT_STEP, params);
 
         if (check) {
             boolean sp = mSensorManager.registerListener(this, sensorStepAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-            Log.e("StepCounter", "value: " + sp);
+            Log.e(TAG, "value: " + sp);
         }
 
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
+    }
+
+    private void updateNotification() {
+        final Notification notification = RNBackgroundActionsTask.buildNotification(getApplicationContext());
+
+        final NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(RNBackgroundActionsTask.SERVICE_NOTIFICATION_ID, notification);
     }
 
     private void createNotificationChannel(@NonNull final String taskTitle, @NonNull final String taskDesc) {
@@ -206,55 +208,62 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
     public void onSensorChanged(SensorEvent sensorEvent) {
         Sensor mySensor = sensorEvent.sensor;
         if (mySensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            WritableMap map = Arguments.createMap();
-
-            long curTime = System.currentTimeMillis();
-            int numberStep = (int) sensorEvent.values[0];
-            if (lastStepCounter == 0 && numberStep != 0) {
-                lastStepCounter = numberStep;
-                lastUpdateTime = curTime;
-                map.putDouble(TOTAL_STEP, numberStep);
-                emitValue(map);
-                return;
-            }
-            if (numberStep != lastStepCounter) {
-                if (curTime - lastUpdateTime >= 3000) {
-                    map.putDouble(END_TIME, curTime);
-                    map.putDouble(EVENT_COUNTER, numberStep - lastStepCounter);
-                    map.putDouble(TOTAL_STEP, numberStep);
-                    double tmpStep = (Math.abs(numberStep - lastStepCounter) / 1.8) * 1000;
-                    if (tmpStep < 1000) {
-                        tmpStep = 1000;
-                    }
-                    double timeBefore = curTime - tmpStep;
-                    map.putDouble(START_TIME, timeBefore);
-                } else {
-
-                    double timeTmp = numberStep - lastStepCounter;
-                    if (timeTmp < 1000) {
-                        timeTmp = 1000;
-                    }
-                    map.putDouble(START_TIME, (curTime - timeTmp));
-                    map.putDouble(END_TIME, curTime);
-                    map.putDouble(EVENT_COUNTER, numberStep - lastStepCounter);
-                    map.putDouble(TOTAL_STEP, numberStep);
-                }
-                emitValue(map);
-            }
-            lastStepCounter = numberStep;
-            lastUpdateTime = curTime;
+            calculationStepCounter(sensorEvent);
         }
-
-//        if (mySensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
-//            Log.e("StepCounter", "TYPE_STEP_DETECTOR: " + sensorEvent.values[0]);
-//            emitValue(EVENT_DETECTOR, sensorEvent.values[0]);
-//        }
 
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             calculationStepAccelerometer(sensorEvent);
         }
     }
 
+    /**
+     * Tính toán dựa theo stepcounter sensor
+     */
+    private void calculationStepCounter(SensorEvent sensorEvent) {
+        WritableMap map = Arguments.createMap();
+
+        long curTime = System.currentTimeMillis();
+        int numberStep = (int) sensorEvent.values[0];
+        if (lastStepCounter == 0 && numberStep != 0) {
+            lastStepCounter = numberStep;
+            lastUpdateTime = curTime;
+            map.putDouble(TOTAL_STEP, numberStep);
+            emitValue(map);
+            return;
+        }
+        if (numberStep != lastStepCounter) {
+            if (curTime - lastUpdateTime >= 3000) {
+                map.putDouble(END_TIME, curTime);
+                map.putDouble(EVENT_COUNTER, numberStep - lastStepCounter);
+                map.putDouble(TOTAL_STEP, numberStep);
+                double tmpStep = (Math.abs(numberStep - lastStepCounter) / 1.8) * 1000;
+                if (tmpStep < 1000) {
+                    tmpStep = 1000;
+                }
+                double timeBefore = curTime - tmpStep;
+                map.putDouble(START_TIME, timeBefore);
+            } else {
+
+                double timeTmp = numberStep - lastStepCounter;
+                if (timeTmp < 1000) {
+                    timeTmp = 1000;
+                }
+                map.putDouble(START_TIME, (curTime - timeTmp));
+                map.putDouble(END_TIME, curTime);
+                map.putDouble(EVENT_COUNTER, numberStep - lastStepCounter);
+                map.putDouble(TOTAL_STEP, numberStep);
+            }
+            // todo: save to database step counter
+            saveStepsToDatabase(map.getDouble(START_TIME), map.getDouble(END_TIME), map.getInt(EVENT_COUNTER));
+            emitValue(map);
+        }
+        lastStepCounter = numberStep;
+        lastUpdateTime = curTime;
+    }
+
+    /**
+     * Tính toán dựa theo accelerometer sensor
+     */
     private void calculationStepAccelerometer(SensorEvent event) {
         prev = lowPassFilter(event.values, prev);
         Accelerometer data = new Accelerometer(prev);
@@ -276,6 +285,8 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
                 }
                 map.putDouble(START_TIME, streakPrevTime);
                 emitValue(map);
+                // todo: save stepcounter
+                saveStepsToDatabase(streakPrevTime, streakStartTime, 1);
                 streakPrevTime = streakStartTime;
             }
             PREVIOUS_STATE = CURRENT_STATE;
@@ -299,15 +310,32 @@ final public class RNBackgroundActionsTask extends HeadlessJsTaskService impleme
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.e(TAG, "onDestroy");
         mSensorManager.unregisterListener(this);
     }
 
-    private void emitValue(WritableMap params) {
-        Log.e("stepCountstepCount", "stepCount: " + params);
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
-        getReactNativeHost().getReactInstanceManager().getCurrentReactContext()
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(EMIT_EVENT_STEP, params);
+    /**
+     * Send emit event toi tang JS
+     */
+    private void emitValue(WritableMap params) {
+        Log.e(TAG, "stepCount: " + params);
+
+        EmitEvent.sendEvent(reactContext,
+                EMIT_EVENT_STEP_SAVE,
+                params);
+    }
+
+    private void saveStepsToDatabase(double startTime, double endTime, int steps) {
+        if (databaseHelper != null) {
+            databaseHelper.addStepCounter(startTime, endTime, steps);
+            updateNotification();
+        }
     }
 
     @Override

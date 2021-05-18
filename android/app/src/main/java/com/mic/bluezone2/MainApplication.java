@@ -61,18 +61,6 @@ public class MainApplication extends Application implements ReactApplication {
     public ReactNativeHost getReactNativeHost() {
         return mReactNativeHost;
     }
-// @Override    
-// public boolean canOverrideExistingModule() {        
-//   return true;    
-// }  
-// @Override
-// public void checkPermission(){
-//   if (ContextCompat.checkSelfPermission(thisActivity, Manifest.permission.ACTIVITY_RECOGNITION)
-//           != PackageManager.PERMISSION_GRANTED) {
-//       ActivityCompat.requestPermissions(thisActivity,
-//             arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
-//             MY_PERMISSIONS_REQUEST_ACTIVITY_RECOGNITION);
-// }}
 
     @Override
     public void onCreate() {

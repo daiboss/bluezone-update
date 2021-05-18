@@ -32,7 +32,9 @@ import {
   getConfirmAlert,
   getFirstTimeSetup,
   setFirstTimeSetup,
-  getIsOnOfApp
+  getIsOnOfApp,
+  getIsFirstTimeOpenApp,
+  setIsFirstTimeOpenApp
 } from '../../../core/storage';
 import ChartLineV from './ChartLineV';
 import {
@@ -41,21 +43,20 @@ import {
 
 import {
   getDistances,
-  getStepsTotal,
-  getStepsTotalPromise,
   getDistancesWithData
 } from '../../../core/calculation_steps';
 
+import { check, PERMISSIONS, request, RESULTS } from 'react-native-permissions';
+
 import BackgroundJob from './../../../core/service_stepcounter'
+
 import {
-  addStepCounter,
-  getListHistory,
   addHistory,
-  removeAllStepDay,
-  getListStepDayBefore,
+  getListHistory,
   getListStartDateHistory,
   getListStepsBefore,
-} from './../../../core/db/RealmDb'
+  removeAllStepDay,
+} from './../../../core/db/NativeDB'
 
 import ButtonIconText from '../../../base/components/ButtonIconText';
 import { red_bluezone } from '../../../core/color';
@@ -64,6 +65,7 @@ import { FS, RFValue } from '../../../const/multiscreen';
 import { CalculationStepTargetAndroid } from '../../../core/calculation_step_target';
 import ModalChangeTarget from './Components/ModalChangeTarget';
 import { StartServiceStepCounter, StopServiceStepCounter } from './TaskStepcounter';
+import ModalFirstOpenApp from './Components/ModalFirstOpenApp';
 
 const options = {
   taskName: 'Bluezone',
@@ -84,16 +86,170 @@ const options = {
 };
 
 const StepCount = ({ props, intl, navigation }) => {
+  const { formatMessage, locale } = intl;
+
+  const [time, setTime] = useState([]);
+  const [countStep, setCountStep] = useState(null);
+  const [countRest, setCountRest] = useState(0);
+  const [countCarlo, setCountCarlo] = useState(0);
+  const [countTime, setCountTime] = useState(0);
+  const [countTimeHour, setCountTimeHour] = useState(0);
+  const [distant, setDistant] = useState(0);
+  const [totalCount, setTotalCount] = useState(10000);
+  const [dataChart, setDataChart] = useState([]);
+
+  const [isVisiblePermissionHealth, setIsVisiblePermissionHealth] = useState(undefined)
+  const [isPermissionGranted, setIsPermissionGranted] = useState(false)
+
+  const [isShowModalAlert, setIsShowModalAlert] = useState(false)
+
+  const openModalAlert7Day = () => setIsShowModalAlert(true)
+
+  const closeModalAlert7Day = () => setIsShowModalAlert(false)
 
   useEffect(() => {
+    checkFirstOpenApp()
     observerStepDrawUI();
     // scheduler.createWarnningWeightNotification()
     synchronizeDatabaseStepsHistory()
+    autoChangeStepsTarget()
     return () => {
       BackgroundJob.removeTargetChange();
       BackgroundJob.removeObserverHistoryChange();
     }
   }, [])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // startOrOffApp();
+      resultSteps();
+      getListHistoryChart();
+    }, [])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (isPermissionGranted) {
+        startOrOffApp();
+      }
+    }, [isPermissionGranted])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (isVisiblePermissionHealth == false) {
+        checkPermissionStepCounter();
+      }
+    }, [isVisiblePermissionHealth])
+  );
+
+  const checkFirstOpenApp = async () => {
+    let isFirst = await getIsFirstTimeOpenApp()
+
+    if (isFirst == undefined || isFirst == true) {
+      setIsVisiblePermissionHealth(true)
+    } else {
+      setIsVisiblePermissionHealth(false)
+    }
+  }
+
+  const closeModalFirstOpenApp = async () => {
+    await setIsFirstTimeOpenApp(false)
+    setIsVisiblePermissionHealth(false)
+  }
+
+  const checkPermissionStepCounter = async () => {
+    check(PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION).then(status => {
+      switch (status) {
+        case RESULTS.DENIED: {
+          requestPermissionStepCounter()
+          break;
+        }
+        case RESULTS.GRANTED:
+        case RESULTS.UNAVAILABLE: {
+          setIsPermissionGranted(true)
+          break;
+        }
+      }
+    });
+  }
+
+  const requestPermissionStepCounter = async () => {
+    request(PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION).then(status => {
+      switch (status) {
+        case RESULTS.GRANTED: {
+          setIsPermissionGranted(true)
+          break;
+        }
+      }
+    });
+  }
+
+  const autoChangeStepsTarget = async () => {
+    try {
+      let stepTarget = await getResultSteps()
+      let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      if (stepTarget != undefined) {
+        let tmp = `${stepTarget?.date}`
+        if (tmp.length >= 13) {
+          tmp = tmp.slice(0, 10)
+        }
+        let v = parseInt(tmp)
+        let lastUpdateTarget
+        if (tmp.length >= 13) {
+          lastUpdateTarget
+            = moment(v).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        } else {
+          lastUpdateTarget
+            = moment.unix(v).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        }
+
+        if (currentTime.unix() <= v ||
+          (currentTime.format('DD/MM/YYYY') == lastUpdateTarget.format('DD/MM/YYYY'))) {
+          return
+        }
+      }
+
+      let lastTime = await getFirstTimeSetup()
+      let firstTime = new moment.unix(lastTime?.time)
+      let tmpDay = new moment().diff(firstTime, 'days')
+
+      if (tmpDay < 2) {
+        return
+      }
+
+      let auto = await getAutoChange();
+
+      if ((auto != undefined && auto?.value == false) ||
+        (auto?.value == true && auto?.time == currentTime.unix())
+      ) {
+        return
+      }
+
+      currentTime = currentTime.toDate().getTime()
+      let startDay = new moment().subtract(4, 'days').set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      let listHistory = await getListHistory(startDay.unix() * 1000, new moment().unix() * 1000)
+      if (listHistory?.length <= 0) return
+
+      let listData = listHistory.map(element => {
+        let resultTmp = JSON.parse(element?.resultStep)
+        return (resultTmp?.step || 0)
+      })
+      let stepTargetNew = CalculationStepTargetAndroid(listData, stepTarget?.step || 10000, tmpDay)
+      let resultSave = {
+        step: stepTargetNew,
+        date: currentTime
+      }
+      await BackgroundJob.setStepTarget(parseInt(stepTargetNew))
+      await setResultSteps(resultSave)
+    } catch (err) {
+      console.log('setResultSteps error', err)
+    }
+    try {
+      BackgroundJob.sendEmitSaveTargetSuccess()
+      BackgroundJob.updateTypeNotification()
+    } catch (_) { }
+  }
 
   const observerStepDrawUI = async () => {
     getResultBindingUI();
@@ -111,9 +267,9 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const getListHistoryChart = async () => {
     try {
-      let curentTime = moment().unix()
-      let start = curentTime - 86400 * 8
-      let end = curentTime - 86400
+      let curentTime = moment().unix() * 1000
+      let start = curentTime - 86400000 * 8
+      let end = curentTime - 86400000
       let steps = await getListHistory(start, end)
       if (steps.length > 7) {
         steps.splice(0, 1)
@@ -121,7 +277,7 @@ const StepCount = ({ props, intl, navigation }) => {
       let list = steps.map(item => {
         let tmp = JSON.parse(item?.resultStep || {})
         return {
-          x: moment.unix(item?.starttime).format('DD/MM'),
+          x: moment(item?.starttime).format('DD/MM'),
           y: tmp?.step || 0,
         }
       });
@@ -154,7 +310,6 @@ const StepCount = ({ props, intl, navigation }) => {
   }
 
   const getResultBindingUI = async () => {
-    console.log('thay doi')
     let result = await getDistances();
     let time = result?.time || 0;
     let h = parseInt(time / 3600)
@@ -164,18 +319,18 @@ const StepCount = ({ props, intl, navigation }) => {
     setCountTime(m);
     setCountTimeHour(h)
     setCountStep(result?.step || 0);
-    console.log('thay doi valueeeee ><<<<<<<', result)
   }
 
   const synchronizeDatabaseStepsHistory = async () => {
     try {
       let listStepBefore = await getListStepsBefore();
+
       if (listStepBefore?.length == 0) {
         await saveHistoryEmpty()
         return
       }
       const group = listStepBefore.reduce((acc, current) => {
-        const time = moment.unix(parseInt(current.starttime / 1000)).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+        const time = moment(current.starttime).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix() * 1000
         if (!acc[time]) {
           acc[time] = [];
         }
@@ -184,18 +339,18 @@ const StepCount = ({ props, intl, navigation }) => {
       }, {})
 
       for (const [key, value] of Object.entries(group)) {
-        let timeMoment = moment.unix(key)
-        let startTime = timeMoment.startOf('day').unix()
-        let endTime = timeMoment.endOf('day').unix()
+        let timeMoment = moment(parseInt(key))
+        let startTime = timeMoment.startOf('day').unix() * 1000
+        let endTime = timeMoment.endOf('day').unix() * 1000
 
         // Nếu ngày đó trong lịch sử chưa có, sẽ lưu lại giá trị
         let result = await getDistancesWithData(value);
         if (Object.keys(result).length <= 0) {
           return;
         }
-        await addHistory(startTime, result)
+        await addHistory(startTime, JSON.stringify(result))
 
-        await removeAllStepDay(startTime * 1000, endTime * 1000)
+        await removeAllStepDay(startTime, endTime)
       }
 
       await saveHistoryEmpty()
@@ -206,16 +361,18 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const saveHistoryEmpty = async () => {
     try {
-      let currentTime = moment().startOf('day').unix()
+      let currentTime = moment().startOf('day').unix() * 1000
       // Lọc ra tất cả thời gian trên db
-      let listDayStart = await getListStartDateHistory(currentTime)
+      let listDayStart = await getListStartDateHistory()
       listDayStart = listDayStart.map(t => t.starttime)
       let lastTime = await getFirstTimeSetup()
       if (!lastTime) {
         lastTime = { time: currentTime }
+      } else {
+        lastTime.time = lastTime.time * 1000
       }
-      if (listDayStart.length == 0 && (currentTime - lastTime?.time == 86400)) {
-        listDayStart.push(lastTime?.time - 86400)
+      if (listDayStart.length == 0 && (currentTime - lastTime?.time == 86400000)) {
+        listDayStart.push(lastTime?.time - 86400000)
         listDayStart.push(currentTime)
       } else {
         if (!listDayStart.some(t => t == currentTime)) {
@@ -232,23 +389,23 @@ const StepCount = ({ props, intl, navigation }) => {
       listDayStart.forEach((item, index) => {
         if (index > 0) {
           let kAbstract = item - listDayStart[index - 1]
-          if (kAbstract > 86400) {
-            let x = parseInt(kAbstract / 86400) - 1
+          if (kAbstract > 86400000) {
+            let x = parseInt(kAbstract / 86400000) - 1
             let listFor = Array.from(Array(x).keys())
             listFor.forEach(e => {
-              tmp.push(item - (e + 1) * 86400)
+              tmp.push(item - (e + 1) * 86400000)
             })
           }
         }
       });
 
       await Promise.all(tmp.map(async element => {
-        await addHistory(element, {
+        await addHistory(element, JSON.stringify({
           step: 0,
           distance: 0.00,
           calories: 0,
           time: 0,
-        }).then(re => console.log('saveHistoryEmpty', re)).catch(err => console.log('saveHistoryEmpty error', err))
+        }))
       }))
       BackgroundJob.sendEmitSaveHistorySuccess()
     } catch (error) {
@@ -256,41 +413,12 @@ const StepCount = ({ props, intl, navigation }) => {
     }
   }
 
-  const { formatMessage, locale } = intl;
-
-  const [time, setTime] = useState([]);
-  const [countStep, setCountStep] = useState(null);
-  const [countRest, setCountRest] = useState(0);
-  const [countCarlo, setCountCarlo] = useState(0);
-  const [countTime, setCountTime] = useState(0);
-  const [countTimeHour, setCountTimeHour] = useState(0);
-  const [distant, setDistant] = useState(0);
-  const [totalCount, setTotalCount] = useState(10000);
-  const [dataChart, setDataChart] = useState([]);
-
-  const [isShowModalAlert, setIsShowModalAlert] = useState(false)
-
-  const openModalAlert7Day = () => setIsShowModalAlert(true)
-
-  const closeModalAlert7Day = () => setIsShowModalAlert(false)
-
-  useFocusEffect(
-    React.useCallback(() => {
-      startOrOffApp();
-      resultSteps();
-      getListHistoryChart();
-    }, [])
-  );
-
   const startOrOffApp = async () => {
     try {
-      let checkOnOff = await getIsOnOfApp()
-      if (checkOnOff == undefined) {
-        checkOnOff = true
-      }
+      let checkOnOff = await BackgroundJob.getIsOpenService()
       if (checkOnOff) {
         StartServiceStepCounter()
-      } else if (!checkOnOff) {
+      } else {
         StopServiceStepCounter()
       }
     } catch (err) {
@@ -304,6 +432,7 @@ const StepCount = ({ props, intl, navigation }) => {
       let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toDate().getTime()
       if (!resultSteps) {
         setResultSteps({ step: totalCount, date: currentTime });
+        await BackgroundJob.setStepTarget(parseInt(totalCount))
       } else {
         setTotalCount(resultSteps.step);
       }
@@ -344,6 +473,7 @@ const StepCount = ({ props, intl, navigation }) => {
       }
       await setFirstTimeSetup()
       await setResultSteps(resultSave)
+      await BackgroundJob.setStepTarget(10000)
       await resultSteps()
       closeModalAlert7Day()
     }
@@ -405,6 +535,13 @@ const StepCount = ({ props, intl, navigation }) => {
         message={message}
         numberWithCommas={numberWithCommas}
         totalCount={totalCount}
+      />
+
+      <ModalFirstOpenApp
+        formatMessage={formatMessage}
+        message={message}
+        isShowModal={isVisiblePermissionHealth == undefined ? false : isVisiblePermissionHealth}
+        closeModal={closeModalFirstOpenApp}
       />
 
       <ImageBackground
@@ -540,6 +677,7 @@ const StepCount = ({ props, intl, navigation }) => {
           styleText={{ fontSize: fontSize.normal, fontWeight: 'bold' }}
         />
       </View>
+
     </SafeAreaView>
   );
 };

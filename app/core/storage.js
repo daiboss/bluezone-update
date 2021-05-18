@@ -498,6 +498,16 @@ const getIsOnOfApp = async () => {
   return _processOutput(result);
 };
 
+const getIsFirstTimeOpenApp = async () => {
+  const result = await AsyncStorage.getItem('isFirstOpenModal');
+  return _processOutput(result);
+}
+
+const setIsFirstTimeOpenApp = (value = true) => {
+  const _resource = _processInput(value);
+  AsyncStorage.setItem('isFirstOpenModal', _resource);
+};
+
 const setIsOnOfApp = (value = true) => {
   const _resource = _processInput(value);
   AsyncStorage.setItem(onOfApp, _resource);
@@ -573,5 +583,7 @@ export {
   getFirstTimeSetup,
   setFirstTimeSetup,
   getIsOnOfApp,
-  setIsOnOfApp
+  setIsOnOfApp,
+  getIsFirstTimeOpenApp,
+  setIsFirstTimeOpenApp
 };

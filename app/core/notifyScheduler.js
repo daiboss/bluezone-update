@@ -577,7 +577,6 @@ export const createWarnningStepNotification = async step => {
 export const createScheduleWarnningWeightNotification = async (time) => {
   try {
     const { iOSShowStepNotification } = configuration;
-    console.log('timetimetimetimetimetime',time)
     const timeNoti = time + 7 * 24 * 60 * 60 * 1000
     PushNotification.localNotificationSchedule({
       /* Android Only Properties */

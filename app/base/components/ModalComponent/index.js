@@ -17,7 +17,7 @@ class ModalComponent extends Component {
       return <Modal useNativeDriver {...this.props}>{this.props.children}</Modal>;
     return (
       <Modal
-        useNativeDriver
+        useNativeDriver={Platform.OS != 'ios'}
         {...this.props}>
         <TouchableWithoutFeedback
           style={StyleSheet.absoluteFillObject}

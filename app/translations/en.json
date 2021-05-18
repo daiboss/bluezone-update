@@ -312,5 +312,6 @@
     "bluezone.settings.shortcutText": "Would you like to add Health Widgets to\nHome screen?",
     "bluezone.settings.shortcutAccept": "Accept",
     "bluezone.settings.shortcutCancel": "Cancel",
+    "bluezone.settings.firstOpenHealth": "The Health widget is enabled to track your steps daily. You can configure the extension on/off in Settings.",
 
 }

@@ -36,8 +36,6 @@ import {
   setWeightWarning,
   getResultSteps,
   setResultSteps,
-  getIsShowNotification,
-  setIsShowNotification,
   setIsOnOfApp,
   getIsOnOfApp
 } from '../../../core/storage';
@@ -88,7 +86,8 @@ const SettingScreen = ({ intl, navigation }) => {
 
   const getIsOnOffAppFromStorage = async () => {
     try {
-      let res = await getIsOnOfApp()
+      // let res = await getIsOnOfApp()
+      let res = await BackgroundJob.getIsOpenService()
       if (res == undefined) {
         res = true
       }
@@ -149,7 +148,7 @@ const SettingScreen = ({ intl, navigation }) => {
         res = { value: true, time: moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix() };
       }
       setAutoTarget(res?.value == undefined ? true : res.value);
-      let res1 = (await getIsShowNotification());
+      let res1 = await BackgroundJob.getIsShowStepTarget()
       setAlertStep(res1 || false);
 
       let res2 = (await getNotiStep()) || false;
@@ -176,6 +175,7 @@ const SettingScreen = ({ intl, navigation }) => {
   const alertStepSwitch = async value => {
     if (Platform.OS == 'android') {
       await setAlertStep(value);
+      BackgroundJob.setValueShowStepTarget(value)
     } else
       try {
         PushNotification.requestPermissions().then(res => {
@@ -237,11 +237,7 @@ const SettingScreen = ({ intl, navigation }) => {
     if (alertStep == undefined) {
       return;
     }
-    if (alertStep) {
-      await setIsShowNotification(true);
-    } else {
-      await setIsShowNotification(false)
-    }
+    await BackgroundJob.setValueShowStepTarget(alertStep)
     try {
       if (Platform.OS == 'android')
         BackgroundJob.updateTypeNotification()
@@ -270,6 +266,7 @@ const SettingScreen = ({ intl, navigation }) => {
     setTotalStep(steps)
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).toDate().getTime()
     await setResultSteps({ step: steps, date: currentTime })
+    await BackgroundJob.setStepTarget(parseInt(steps))
     if (Platform.OS == 'android') {
       try {
         BackgroundJob.updateTypeNotification()
@@ -296,22 +293,17 @@ const SettingScreen = ({ intl, navigation }) => {
 
   const actionOnOffApp = async (value) => {
     try {
-      setIsOnOfApp(value)
       setOnOffApp(value)
-      // navigation.goBack()
+      await BackgroundJob.setValueIsOpenService(value)
+      if (value) {
+        StartServiceStepCounter()
+      } else {
+        StopServiceStepCounter()
+      }
     } catch (err) {
       console.log('actionOnOffApp error', error)
     }
   }
-
-  // Handle onof app
-  useEffect(() => {
-    if (onOffApp) {
-      StartServiceStepCounter()
-    } else {
-      StopServiceStepCounter()
-    }
-  }, [onOffApp])
 
   return (
     <SafeAreaView>
@@ -383,8 +375,9 @@ const SettingScreen = ({ intl, navigation }) => {
       {Platform.OS == 'android' && <View style={[styles.viewTx, styles.borderBottom]}>
         <Text style={styles.txLabel}>{formatMessage(message.NotificationRealtime)}</Text>
         <Switch
+          disabled={!onOffApp}
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
-          thumbColor={alertStep ? red_bluezone : '#a5a5a5'}
+          thumbColor={alertStep ? (onOffApp ? red_bluezone : '#a5a5a5') : '#a5a5a5'}
           ios_backgroundColor="#fff"
           onValueChange={alertStepSwitch}
           value={alertStep || false}
@@ -393,8 +386,9 @@ const SettingScreen = ({ intl, navigation }) => {
       {Platform.OS == 'android' && <View style={[styles.viewTx, styles.borderBottom]}>
         <Text style={styles.txLabel}>{formatMessage(message.NotificationTarget)}</Text>
         <Switch
+          disabled={!onOffApp}
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
-          thumbColor={alertTarget ? red_bluezone : '#a5a5a5'}
+          thumbColor={alertTarget ? (onOffApp ? red_bluezone : '#a5a5a5') : '#a5a5a5'}
           ios_backgroundColor="#fff"
           onValueChange={alertTargetSwitch}
           value={alertTarget}
@@ -403,8 +397,9 @@ const SettingScreen = ({ intl, navigation }) => {
       <View style={[styles.viewTx, styles.borderBottom]}>
         <Text style={styles.txLabel}>{formatMessage(message.NotificationWeight)}</Text>
         <Switch
+          disabled={!onOffApp}
           trackColor={{ false: '#d8d8d8', true: '#fe435850' }}
-          thumbColor={alertBmi ? red_bluezone : '#a5a5a5'}
+          thumbColor={alertBmi ? (onOffApp ? red_bluezone : '#a5a5a5') : '#a5a5a5'}
           ios_backgroundColor="#fff"
           onValueChange={alertBmiSwitch}
           value={alertBmi}

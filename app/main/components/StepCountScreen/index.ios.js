@@ -622,6 +622,7 @@ const StepCount = ({ props, intl, navigation }) => {
       }
       await setFirstTimeSetup()
       await setResultSteps(resultSave)
+      await BackgroundJob.setStepTarget(10000)
       closeModalAlert7Day()
     }
   }

@@ -92,7 +92,6 @@
     "react-native-wheel-picker": "^1.2.0",
     "react-native-wheel-picker-android": "^2.0.6",
     "react-timer-mixin": "^0.13.4",
-    "realm": "^10.2.0",
     "rgb2hex": "^0.2.5",
     "rn-apple-healthkit": "^0.8.0",
     "rn-fetch-blob": "^0.12.0",

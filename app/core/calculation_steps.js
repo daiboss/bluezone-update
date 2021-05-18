@@ -1,18 +1,8 @@
 import {
-    accelerometer,
-    gyroscope,
-    setUpdateIntervalForType,
-    SensorTypes,
-} from 'react-native-sensors';
-import { map, filter } from 'rxjs/operators';
-import {
     getProfile,
-    getResultSteps,
-    getStepChange,
-    setStepChange,
 } from './storage';
 import moment from 'moment';
-import { getListStepDay, getListStepsAll } from './db/RealmDb'
+import { getListStepDay } from './db/NativeDB'
 
 let count = 0;
 var timeout;
@@ -20,7 +10,6 @@ export const gender = [0.413, 0.415];
 var startTimeMS = 0;
 var data = [];
 const STEP_IN_METERS = 0.762;
-setUpdateIntervalForType(SensorTypes.accelerometer, 400); // defaults to 100ms
 
 export function getAbsoluteMonths(momentDate) {
     var months = Number(momentDate.format('MM'));
@@ -75,13 +64,8 @@ export const getAllDistance = (data, sex, height, weight) => {
 export const getDistances = async () => {
     try {
         let stepData = [];
-        const esss = await getListStepsAll()
-        console.log('KKKKKKKKKK', esss)
         const res = await getListStepDay()
-        // .then(res => {
         Array.prototype.push.apply(stepData, res);
-        console.log('LISISIIS:::::', res)
-        // })
         let profiles = (await getProfile()) || [];
         let profile = profiles.find(
             item =>

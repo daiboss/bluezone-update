@@ -21,7 +21,7 @@ import * as fontSize from '../../../core/fontSize';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 
 import { getDistances } from '../../../core/calculation_steps';
-import { getListHistory } from '../../../core/db/RealmDb';
+import { getListHistory } from '../../../core/db/NativeDB';
 import BarChart7Item from './BarChart/BarChart7Item';
 import { FS, RFValue } from '../../../const/multiscreen';
 import { red_bluezone } from '../../../core/color';
@@ -72,8 +72,8 @@ const StepCount = ({ props, intl, navigation }) => {
   const [distant, setDistant] = useState(0);
   const [dataChart, setDataChart] = useState([]);
   const [maxDomain, setMaxDomain] = useState(10000)
-  const [startTime, setStartTime] = useState(new moment(new Date()).startOf('year').unix())
-  const [endTime, setEndTime] = useState(new moment(new Date()).subtract(1, 'days').unix())
+  const [startTime, setStartTime] = useState(new moment(new Date()).startOf('year').unix() * 1000)
+  const [endTime, setEndTime] = useState(new moment(new Date()).subtract(1, 'days').unix() * 1000)
   const [listStepToday, setListStepToday] = useState(undefined)
   const [listTotalSteps, setListTotalSteps] = useState([])
   const [selectedItem, setSelectedItem] = useState({
@@ -131,7 +131,7 @@ const StepCount = ({ props, intl, navigation }) => {
         let result = await getDistances();
         let time = result?.time || 0;
 
-        let start = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
+        let start = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix() * 1000
         let jj = JSON.stringify({
           step: result?.step || 0,
           distance: result?.distance || 0,
@@ -159,9 +159,9 @@ const StepCount = ({ props, intl, navigation }) => {
         list = step.map(item => {
           let tmp = JSON.parse(item?.resultStep || {})
           return {
-            x: (new moment().isSame(new moment.unix(item?.starttime), 'days')) ?
+            x: (new moment().isSame(new moment(item?.starttime), 'days')) ?
               formatMessage(message.today) :
-              moment.unix(item?.starttime).format('DD/MM'),
+              moment(item?.starttime).format('DD/MM'),
             y: tmp?.step,
             results: tmp
           }
@@ -170,7 +170,7 @@ const StepCount = ({ props, intl, navigation }) => {
       else if (type == 'month') {
         let currentMonth = moment().month();
         const groups = step.reduce((acc, current) => {
-          const monthYear = moment.unix(current?.starttime).month();
+          const monthYear = moment(current?.starttime).month();
           if (!acc[monthYear]) {
             acc[monthYear] = [];
           }
@@ -255,7 +255,7 @@ const StepCount = ({ props, intl, navigation }) => {
         }
       } else if (type == 'week') {
         const groups = step.reduce((acc, current) => {
-          const yearWeek = moment.unix(current?.starttime).week();
+          const yearWeek = moment(current?.starttime).week();
           if (!acc[yearWeek]) {
             acc[yearWeek] = [];
           }
@@ -274,8 +274,8 @@ const StepCount = ({ props, intl, navigation }) => {
               time: (t?.time || 0) + (tmp?.time || 0),
             }
           }, {})
-          let startWeek = moment.unix(value[0]?.starttime).startOf('isoWeek')
-          let endWeek = moment.unix(value[0]?.starttime).endOf('isoWeek')
+          let startWeek = moment(value[0]?.starttime).startOf('isoWeek')
+          let endWeek = moment(value[0]?.starttime).endOf('isoWeek')
           let valueEnd = (endWeek.isAfter(currentTime) || endWeek.isSame(currentTime)) ? formatMessage(message.now) : `${endWeek.format('DD')}`
           let label = ''
           if (locale == 'en') {

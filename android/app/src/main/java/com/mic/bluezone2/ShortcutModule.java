@@ -56,7 +56,6 @@ public class ShortcutModule extends ReactContextBaseJavaModule {
             List<ShortcutInfoCompat> shortcuts = ShortcutManagerCompat.getDynamicShortcuts(context);
 
             onDone.invoke(shortcutMap.toString());
-//            onDone.invoke(shortcuts.toString());
         } else {
             List<ShortcutInfo> shortcuts = getReactApplicationContext().getSystemService(ShortcutManager.class)
                     .getPinnedShortcuts();

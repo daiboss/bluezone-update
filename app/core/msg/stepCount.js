@@ -92,4 +92,16 @@ export default defineMessages({
         defaultMessage: 'bluezone.settings.shortcutCancel'
     },
    
+    close: {
+        id: 'bluezone.auth.close',
+        defaultMessage: 'bluezone.auth.close'
+    },
+    report: {
+        id: 'bluezone.modal.report',
+        defaultMessage: 'bluezone.modal.report'
+    },
+    firstHealth: {
+        id: 'bluezone.settings.firstOpenHealth',
+        defaultMessage: 'bluezone.settings.firstOpenHealth'
+    }
 })

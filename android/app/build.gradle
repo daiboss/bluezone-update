@@ -261,6 +261,14 @@ dependencies {
     implementation project(':react-native-bluetooth-scan')
     implementation project(':react-native-fs')
 
+    // room db
+    def room_version = "2.3.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    // gson
+    implementation 'com.google.code.gson:gson:2.8.6'
+
     // This should be here already
     implementation project(':react-native-firebase')
 

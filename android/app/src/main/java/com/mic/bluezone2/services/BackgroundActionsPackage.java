@@ -7,6 +7,7 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -16,8 +17,10 @@ public class BackgroundActionsPackage implements ReactPackage {
     @Override
     public @NonNull
     List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
-        //noinspection ArraysAsListWithZeroOrOneArgument
-        return Arrays.<NativeModule>asList(new BackgroundActionsModule(reactContext));
+        ArrayList<NativeModule> list = new ArrayList<>();
+        list.add(new BackgroundActionsModule(reactContext));
+        list.add(new StepcounterModule(reactContext));
+        return list;
     }
 
     @Override

@@ -131,34 +131,15 @@ class BackgroundServer {
      * @param {BackgroundTaskOptions & {parameters?: any}} options
      * @returns {Promise<void>}
      */
-    async start(task, options) {
+    async start() {
         this._runnedTasks++;
-        this._currentOptions = this._normalizeOptions(options);
-        const finalTask = this._generateTask(task, options.parameters);
         if (Platform.OS === 'android') {
-            AppRegistry.registerHeadlessTask(this._currentOptions.taskName, () => finalTask);
-            await RNBackgroundActions.start(this._currentOptions);
-        } else {
-            await RNBackgroundActions.start(this._currentOptions);
-            finalTask();
+            // AppRegistry.registerHeadlessTask("BluezoneHealth", finalTask);
+            await RNBackgroundActions.start();
         }
         this._isRunning = true;
     }
 
-    /**
-     * @private
-     * @param {(taskData: any) => Promise<void>} task
-     * @param {any} [parameters]
-     */
-    _generateTask(task, parameters) {
-        const self = this;
-        return async () => {
-            await new Promise((resolve) => {
-                self._stopTask = resolve;
-                task(parameters).then(() => self.stop());
-            });
-        };
-    }
 
     /**
      * @private
@@ -317,6 +298,34 @@ class BackgroundServer {
             () => callback()
         )
     }
+
+    setValueShowStepTarget(value) {
+        if (Platform.OS !== 'android') return;
+        RNBackgroundActions.setShowStepsTarget(value);
+    }
+
+    async getIsShowStepTarget() {
+        if (Platform.OS !== 'android') false;
+        const res = await RNBackgroundActions.getIsShowStepTarget();
+        return res;
+    }
+
+    async setValueIsOpenService(value) {
+        if (Platform.OS !== 'android') return;
+        return RNBackgroundActions.setServiceIsOpen(value);
+    }
+
+    async getIsOpenService() {
+        if (Platform.OS !== 'android') false;
+        const res = await RNBackgroundActions.getIsOpenService();
+        return res;
+    }
+
+    async setStepTarget(target) {
+        if (Platform.OS !== 'android') return;
+        await RNBackgroundActions.setStepTarget(target);
+    }
+
 }
 
 const backgroundStepCounter = new BackgroundServer();
