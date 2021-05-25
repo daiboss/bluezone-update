@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.mic.bluezone2.dao.DatabaseHelper;
 import com.mic.bluezone2.model.StepCounter;
@@ -59,7 +60,7 @@ public class StepcounterModule extends ReactContextBaseJavaModule {
             promise.resolve(res);
             return;
         }
-        promise.resolve("");
+        promise.resolve(new WritableNativeArray());
     }
 
     @ReactMethod
@@ -141,6 +142,16 @@ public class StepcounterModule extends ReactContextBaseJavaModule {
             List<StepHistory> listStep = databaseHelper.getListStartDateHistory();
             WritableArray res = ConvertArrayToWritableMap.convertToWritableMapStepHistory(listStep);
             promise.resolve(res);
+            return;
+        }
+        promise.resolve(null);
+    }
+
+    @ReactMethod
+    public void getCountStepsToday(Promise promise){
+        if (databaseHelper != null) {
+            int listStep = databaseHelper.getTotalStepToDay();
+            promise.resolve(listStep);
             return;
         }
         promise.resolve(null);

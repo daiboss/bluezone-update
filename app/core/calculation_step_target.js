@@ -1,11 +1,21 @@
 const STEP_TARGET_DEFAULT = 10000
 
 const CalculationStepTargetAndroid = (listStep, oldTarget, days) => {
+    console.log('listStep', listStep, oldTarget, days)
     if (days == 2 && listStep.length >= 2) {
         let tmp = listStep.slice(0, 2)
         return CalculationStepTarget(tmp, oldTarget, days)
     } else if (days >= 3 && listStep.length > 2) {
-        return CalculationStepTarget(listStep, oldTarget, days)
+        let targetNew = oldTarget;
+        if (listStep.length == days) {
+            targetNew = CalculationStepTarget([1, listStep[0]], targetNew)
+        } else {
+            targetNew = CalculationStepTarget([1, 1, listStep[0]], targetNew)
+        }
+        for (var i = 1; i < listStep.length; i++) {
+            targetNew = CalculationStepTarget([1, 1, listStep[i]], targetNew)
+        }
+        return targetNew;
     } else {
         return STEP_TARGET_DEFAULT
     }
@@ -13,7 +23,6 @@ const CalculationStepTargetAndroid = (listStep, oldTarget, days) => {
 
 const CalculationStepTarget = (listStep, oldTarget) => {
     if (!listStep || !oldTarget || listStep.length < 2) {
-        console.log('vaovaovoaovoavoaovoCACACACACARETURN')
         return STEP_TARGET_DEFAULT
     }
 

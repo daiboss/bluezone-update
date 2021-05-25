@@ -22,6 +22,7 @@
 'use strict';
 
 import { Platform } from 'react-native';
+
 import firebase from 'react-native-firebase';
 
 import configuration from '../configuration';
@@ -36,6 +37,8 @@ import PushNotification from 'react-native-push-notification';
 import { ResultSteps } from '../const/storage';
 import { getResultSteps } from './storage';
 import moment from 'moment';
+import BackgroundJob from './../core/service_stepcounter'
+
 const bluetoothGranted = async () => {
   const v = check(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
   return v === RESULTS.GRANTED;
@@ -574,6 +577,7 @@ export const createWarnningStepNotification = async step => {
     // );
   } catch (error) { }
 };
+
 export const createScheduleWarnningWeightNotification = async (time) => {
   try {
     const { iOSShowStepNotification } = configuration;
@@ -629,6 +633,7 @@ export const createScheduleWarnningWeightNotification = async (time) => {
     // );
   } catch (error) { }
 };
+
 export const createWarnningWeightNotification = async () => {
   try {
     const { iOSShowStepNotification } = configuration;

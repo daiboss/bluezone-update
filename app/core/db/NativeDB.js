@@ -47,6 +47,11 @@ const removeAllStepDay = async (startDay, endDay) => {
     return RNStepCounterModule.removeAllStepDay(startDay, endDay)
 }
 
+// Lấy tổng số bước hôm nay
+const getCountStepsToday = async () => {
+    return RNStepCounterModule.getCountStepsToday()
+}
+
 export {
     getListStepDay,
     getListHistory,
@@ -56,6 +61,7 @@ export {
     removeAllHistory,
     removeAllStep,
     removeAllStepDay,
-    getListStepsAll
+    getListStepsAll,
+    getCountStepsToday
 }
 

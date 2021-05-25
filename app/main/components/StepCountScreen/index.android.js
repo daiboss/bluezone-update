@@ -111,13 +111,17 @@ const StepCount = ({ props, intl, navigation }) => {
     checkFirstOpenApp()
     observerStepDrawUI();
     // scheduler.createWarnningWeightNotification()
-    synchronizeDatabaseStepsHistory()
-    autoChangeStepsTarget()
+    syncValueAndChangeTarget();
     return () => {
       BackgroundJob.removeTargetChange();
       BackgroundJob.removeObserverHistoryChange();
     }
   }, [])
+
+  const syncValueAndChangeTarget = async () => {
+    await synchronizeDatabaseStepsHistory()
+    await autoChangeStepsTarget()
+  }
 
   useFocusEffect(
     React.useCallback(() => {
@@ -187,24 +191,13 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const autoChangeStepsTarget = async () => {
     try {
+      console.log('skjsakjdkasjdka')
       let stepTarget = await getResultSteps()
       let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      let lastUpdateTarget = moment(new Date(stepTarget?.date)).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      console.log('lastUpdateTarget', lastUpdateTarget)
       if (stepTarget != undefined) {
-        let tmp = `${stepTarget?.date}`
-        if (tmp.length >= 13) {
-          tmp = tmp.slice(0, 10)
-        }
-        let v = parseInt(tmp)
-        let lastUpdateTarget
-        if (tmp.length >= 13) {
-          lastUpdateTarget
-            = moment(v).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-        } else {
-          lastUpdateTarget
-            = moment.unix(v).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-        }
-
-        if (currentTime.unix() <= v ||
+        if (currentTime.toDate().getTime() <= stepTarget?.date ||
           (currentTime.format('DD/MM/YYYY') == lastUpdateTarget.format('DD/MM/YYYY'))) {
           return
         }
@@ -217,6 +210,7 @@ const StepCount = ({ props, intl, navigation }) => {
       if (tmpDay < 2) {
         return
       }
+      console.log('Den day')
 
       let auto = await getAutoChange();
 
@@ -227,7 +221,7 @@ const StepCount = ({ props, intl, navigation }) => {
       }
 
       currentTime = currentTime.toDate().getTime()
-      let startDay = new moment().subtract(4, 'days').set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      let startDay = lastUpdateTarget.add(1, 'days')
       let listHistory = await getListHistory(startDay.unix() * 1000, new moment().unix() * 1000)
       if (listHistory?.length <= 0) return
 
@@ -235,6 +229,11 @@ const StepCount = ({ props, intl, navigation }) => {
         let resultTmp = JSON.parse(element?.resultStep)
         return (resultTmp?.step || 0)
       })
+
+      // console.log('ssslslsls', listData, stepTarget?.step || 10000, tmpDay)
+      // let stepTargetNew = CalculationStepTargetAndroid([1239, 5281, 14201], 10000, 6)
+      // console.log('stepTargetNew', stepTargetNew)
+
       let stepTargetNew = CalculationStepTargetAndroid(listData, stepTarget?.step || 10000, tmpDay)
       let resultSave = {
         step: stepTargetNew,
@@ -337,6 +336,7 @@ const StepCount = ({ props, intl, navigation }) => {
         acc[time].push(current);
         return acc;
       }, {})
+      console.log('groupgroup', group)
 
       for (const [key, value] of Object.entries(group)) {
         let timeMoment = moment(parseInt(key))

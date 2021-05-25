@@ -27,6 +27,7 @@ const _XHR = GLOBAL.originalXMLHttpRequest
     GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest);
 XMLHttpRequest = _XHR;
 
+import { taskPushNotificationStepWarning7Pm, taskStepCounter } from './app/main/components/StepCountScreen/TaskStepcounter'
 import { AppRegistry, Platform } from 'react-native';
 // import './app/core/log/console';
 
@@ -51,6 +52,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import BackgroundFetch from 'react-native-background-fetch';
 // import { scheduleTask } from './app/main/components/SettingScreen';
 import moment from 'moment';
+import BackgroundJob from './app/core/service_stepcounter'
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {
@@ -104,3 +106,6 @@ AppRegistry.registerHeadlessTask(
   'RNFirebaseBackgroundMessage',
   () => handleBackgroundMessage,
 );
+BackgroundJob.observerTimeWarningStepCounter(async () => {
+  taskPushNotificationStepWarning7Pm()
+})

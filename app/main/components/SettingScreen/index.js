@@ -11,15 +11,12 @@ import {
   Alert,
   Linking,
 } from 'react-native';
-// import Header from '../Header';
 import Header from '../../../base/components/Header';
 import { isIPhoneX } from '../../../core/utils/isIPhoneX';
 
-// import { RNAddShortcuts } from 'react-native-add-shortcuts'
 import message from '../../../core/msg/setting';
 import { injectIntl, intlShape } from 'react-intl';
 import * as fontSize from '../../../core/fontSize';
-// import * as scheduler from '../../../core/notifyScheduler';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
 
 import moment from 'moment';
@@ -110,10 +107,11 @@ const SettingScreen = ({ intl, navigation }) => {
     if (onOffApp == false) {
       PushNotification.cancelAllLocalNotifications()
     } else {
-      if (alertBmi)
+      if (alertBmi) {
         scheduler.createScheduleWarnningWeightNotification(timeWeight)
+      }
     }
-  }, [onOffApp, alertBmi])
+  }, [onOffApp, alertBmi, alertTarget])
 
   const getProfileUser = async () => {
     let profiles = (await getProfile()) || [];
