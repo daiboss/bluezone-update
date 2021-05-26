@@ -639,7 +639,7 @@ const StepCount = ({ props, intl, navigation }) => {
                 const indexThangNay = arrMonth.indexOf('Tháng\nnày')
                 if (indexThisMonth !== -1) {
                   const arrSlice = listDataChart.splice(0, indexThisMonth + 1)
-                  const listDataChartConvert = arrSlice.concat(listDataChart)
+                  const listDataChartConvert = listDataChart.concat(arrSlice)
                   setDataChart(listDataChartConvert);
                 } else {
                   const arrSlice = listDataChart.splice(0, indexThangNay + 1)

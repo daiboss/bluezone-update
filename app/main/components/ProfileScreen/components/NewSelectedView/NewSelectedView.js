@@ -87,7 +87,7 @@ const NewSelectedView = ({
             if (listData.length !== 0 && refFlatList.current !== null) {
                 refFlatList.current?.scrollToIndex({ index: error.index, animated: true });
             }
-        }, 100);
+        }, 500);
     }
 
     return (

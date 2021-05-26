@@ -12,7 +12,7 @@ export const gender = [0.413, 0.415];
 var startTimeMS = 0;
 var data = [];
 const STEP_IN_METERS = 0.762;
-setUpdateIntervalForType(SensorTypes.accelerometer, 400); // defaults to 100ms
+// setUpdateIntervalForType(SensorTypes.accelerometer, 400); // defaults to 100ms
 export function getAbsoluteMonths(momentDate) {
   var months = Number(momentDate.format('MM'));
   var years = Number(momentDate.format('YYYY'));
