@@ -1,13 +1,6 @@
 import React, { useState, useEffect, } from 'react';
 import * as PropTypes from 'prop-types';
-import { useFocusEffect } from '@react-navigation/native';
 import { View, Platform, TouchableOpacity, Dimensions } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import {
-  WheelPicker,
-  TimePicker,
-  DatePicker,
-} from 'react-native-wheel-picker-android';
 
 import { DATA_LEFT, DATA_RIGHT } from './data'
 

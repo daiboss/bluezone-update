@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import * as PropTypes from 'prop-types';
 import { View, Platform, TouchableOpacity, Dimensions } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import {
-  WheelPicker,
-  TimePicker,
-  DatePicker,
-} from 'react-native-wheel-picker-android';
 // Components
 import Text from '../Text';
 // Styles
