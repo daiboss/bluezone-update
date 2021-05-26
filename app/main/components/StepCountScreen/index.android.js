@@ -191,7 +191,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
   const autoChangeStepsTarget = async () => {
     try {
-      console.log('skjsakjdkasjdka')
       let stepTarget = await getResultSteps()
       let currentTime = moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
       let lastUpdateTarget = moment(new Date(stepTarget?.date)).set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
@@ -210,7 +209,6 @@ const StepCount = ({ props, intl, navigation }) => {
       if (tmpDay < 2) {
         return
       }
-      console.log('Den day')
 
       let auto = await getAutoChange();
 
@@ -221,7 +219,7 @@ const StepCount = ({ props, intl, navigation }) => {
       }
 
       currentTime = currentTime.toDate().getTime()
-      let startDay = lastUpdateTarget.add(1, 'days')
+      let startDay = lastUpdateTarget
       let listHistory = await getListHistory(startDay.unix() * 1000, new moment().unix() * 1000)
       if (listHistory?.length <= 0) return
 
@@ -229,10 +227,6 @@ const StepCount = ({ props, intl, navigation }) => {
         let resultTmp = JSON.parse(element?.resultStep)
         return (resultTmp?.step || 0)
       })
-
-      // console.log('ssslslsls', listData, stepTarget?.step || 10000, tmpDay)
-      // let stepTargetNew = CalculationStepTargetAndroid([1239, 5281, 14201], 10000, 6)
-      // console.log('stepTargetNew', stepTargetNew)
 
       let stepTargetNew = CalculationStepTargetAndroid(listData, stepTarget?.step || 10000, tmpDay)
       let resultSave = {
@@ -336,7 +330,6 @@ const StepCount = ({ props, intl, navigation }) => {
         acc[time].push(current);
         return acc;
       }, {})
-      console.log('groupgroup', group)
 
       for (const [key, value] of Object.entries(group)) {
         let timeMoment = moment(parseInt(key))

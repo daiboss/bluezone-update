@@ -6,14 +6,9 @@ import android.util.Log;
 import com.mic.bluezone2.database.StepCounterDatabase;
 import com.mic.bluezone2.model.StepCounter;
 import com.mic.bluezone2.model.StepHistory;
-import com.mic.bluezone2.util.ConfigNotification;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -31,7 +26,7 @@ public class DatabaseHelper {
     // Thêm giá trị bước đi được
     public void addStepCounter(double start, double end, int steps) {
         try {
-            StepCounter stepCounter = new StepCounter(start, end, steps);
+            StepCounter stepCounter = new StepCounter(start, end, steps * 67);
             stepCounterDatabase.stepCounterDAO().insert(stepCounter);
         } catch (Exception e) {
             Log.e(TAG, "addStepCounter error: " + e.getMessage());

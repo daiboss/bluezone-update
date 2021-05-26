@@ -1,7 +1,6 @@
 const STEP_TARGET_DEFAULT = 10000
 
 const CalculationStepTargetAndroid = (listStep, oldTarget, days) => {
-    console.log('listStep', listStep, oldTarget, days)
     if (days == 2 && listStep.length >= 2) {
         let tmp = listStep.slice(0, 2)
         return CalculationStepTarget(tmp, oldTarget, days)
@@ -13,6 +12,12 @@ const CalculationStepTargetAndroid = (listStep, oldTarget, days) => {
             targetNew = CalculationStepTarget([1, 1, listStep[0]], targetNew)
         }
         for (var i = 1; i < listStep.length; i++) {
+            targetNew = CalculationStepTarget([1, 1, listStep[i]], targetNew)
+        }
+        return targetNew;
+    } else if (days > 2 && listStep?.length <= 2) {
+        let targetNew = oldTarget;
+        for (var i = 0; i < listStep.length; i++) {
             targetNew = CalculationStepTarget([1, 1, listStep[i]], targetNew)
         }
         return targetNew;
