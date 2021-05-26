@@ -13,12 +13,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,9 +33,11 @@ import com.mic.bluezone2.dao.DatabaseHelper;
 import com.mic.bluezone2.model.Accelerometer;
 import com.mic.bluezone2.util.ConfigNotification;
 import com.mic.bluezone2.util.EmitEvent;
-
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 final public class RNBackgroundActionsTask extends Service implements SensorEventListener {
     public static ReactApplicationContext reactContext;
@@ -43,19 +45,14 @@ final public class RNBackgroundActionsTask extends Service implements SensorEven
     private static final String TAG = RNBackgroundActionsTask.class.getName();
 
     private static final String EVENT_COUNTER = "stepCounter";
-    private static final String EVENT_DETECTOR = "stepDetector";
-    private static final String EVENT_ACCELEROMETER = "stepAccelerometer";
-    private static final String EMIT_EVENT_STEP = "EMIT_EVENT_STEP";
     public static final String EMIT_EVENT_STEP_SAVE = "EMIT_EVENT_STEP_SAVE";
-    private static final String EMIT_EVENT_CHANGE_TIME = "EMIT_EVENT_CHANGE_TIME";
-    private static final String EMIT_IS_SUPPORT = "EMIT_IS_SUPPORT";
+    private static final String EMIT_TIME_WARNING_STEP_TARGET = "EMIT_TIME_WARNING_STEP_TARGET";
     private static final String START_TIME = "startTime";
     private static final String END_TIME = "endTime";
     private static final String TOTAL_STEP = "totalStep";
 
     public static final int SERVICE_NOTIFICATION_ID = 92963;
     private static final String CHANNEL_ID = "CHANNEL_HEALTH_BLUEZONE";
-    private static final String CHANNEL_ID_2 = "CHANNEL_HEALTH_BLUEZONE_NORMAL";
     private static final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private SensorManager mSensorManager;
     private DatabaseHelper databaseHelper;
@@ -68,6 +65,7 @@ final public class RNBackgroundActionsTask extends Service implements SensorEven
     private long lastUpdateTime = System.currentTimeMillis();
     private int lastStepCounter = 0;
 
+    final Handler handler = new Handler();
 
     private float[] prev = {0f, 0f, 0f};
     private int stepCount = 0;
@@ -171,17 +169,16 @@ final public class RNBackgroundActionsTask extends Service implements SensorEven
         boolean check = false;
 
         if (sensorStepCounter == null) {
-            Log.e(TAG, "sensorStepCounter khong support");
             check = true;
         } else {
             mSensorManager.registerListener(this, sensorStepCounter, SensorManager.SENSOR_DELAY_FASTEST);
-            Toast.makeText(context, "Có support sensor", Toast.LENGTH_SHORT).show();
         }
 
         if (check) {
-            boolean sp = mSensorManager.registerListener(this, sensorStepAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
-            Log.e(TAG, "value: " + sp);
+            mSensorManager.registerListener(this, sensorStepAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
         }
+
+        backgroundRuntime();
 
         return START_STICKY;
     }
@@ -259,6 +256,36 @@ final public class RNBackgroundActionsTask extends Service implements SensorEven
         }
         lastStepCounter = numberStep;
         lastUpdateTime = curTime;
+    }
+
+    private void backgroundRuntime() {
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            public void run() {
+                handler.post(() -> {
+                    Date current = new Date();
+                    long currentTime = current.getTime() / 1000;
+                    SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat("dd/MM/yyyy");
+                    SimpleDateFormat simpleDateFormatHour = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                    Date time7PmDate = null;
+                    try {
+                        time7PmDate = simpleDateFormatHour.parse(simpleDateFormatDay.format(current) + " 19:00:00");
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }//
+                    long time7Pm = time7PmDate.getTime() / 1000;
+
+                    Log.e(TAG, "Dang chay :::: " + currentTime + "  - " + time7Pm);
+                    if ((currentTime - time7Pm) >= 0 && (currentTime - time7Pm) <= 9) {
+                        Log.e(TAG, "Send event push notification warning step counter");
+                        EmitEvent.sendEvent(reactContext,
+                                EMIT_TIME_WARNING_STEP_TARGET,
+                                Arguments.createMap());
+                    }
+                });
+            }
+        };
+        timer.schedule(timerTask, 0, 10000);
     }
 
     /**

@@ -108,6 +108,17 @@ class BackgroundServer {
         )
     }
 
+    observerTimeWarningStepCounter(callback) {
+        DeviceEventEmitter.addListener(
+            'EMIT_TIME_WARNING_STEP_TARGET',
+            () => {
+                if(callback != undefined){
+                    callback();
+                }
+            }
+        )
+    }
+
     isSupportStepCounter(callback) {
         RNBackgroundActions.isSupportStepCounter(callback)
     }
@@ -134,7 +145,6 @@ class BackgroundServer {
     async start() {
         this._runnedTasks++;
         if (Platform.OS === 'android') {
-            // AppRegistry.registerHeadlessTask("BluezoneHealth", finalTask);
             await RNBackgroundActions.start();
         }
         this._isRunning = true;
@@ -325,7 +335,6 @@ class BackgroundServer {
         if (Platform.OS !== 'android') return;
         await RNBackgroundActions.setStepTarget(target);
     }
-
 }
 
 const backgroundStepCounter = new BackgroundServer();

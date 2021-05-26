@@ -62,6 +62,7 @@ public class DatabaseHelper {
         }
     }
 
+    // Lấy tổng số bước đi hôm nay
     public int getTotalStepToDay() {
         try {
             Calendar currentTime = new GregorianCalendar();

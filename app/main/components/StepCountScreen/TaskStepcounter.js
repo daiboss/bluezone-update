@@ -1,29 +1,11 @@
+import { getCountStepsToday } from '../../../core/db/NativeDB';
 import {
-    getFirstTimeSetup,
     getIsOnOfApp,
-    setFirstTimeSetup,
+    getNotiStep,
 } from '../../../core/storage';
+import * as scheduler from '../../../core/notifyScheduler';
 
 import BackgroundJob from './../../../core/service_stepcounter'
-
-// export const taskStepCounter = async () => {
-//     await new Promise(async () => {
-//         console.log('Dang chay.....')
-//         let checkOnOff = await getIsOnOfApp()
-//         if (checkOnOff == undefined) {
-//             checkOnOff = true
-//         }
-//         if (!checkOnOff) {
-//             console.log('DA BAT SERVICE NHUNG CAI DAT LA TAT')
-//             StopServiceStepCounter()
-//         }
-
-//         let isFirst = await getFirstTimeSetup()
-//         if (isFirst == undefined) {
-//             await setFirstTimeSetup()
-//         }
-//     })
-// }
 
 export const StartServiceStepCounter = () => {
     let isRun = BackgroundJob.isRunning();
@@ -42,5 +24,21 @@ export const StopServiceStepCounter = () => {
 export const setValueShowStepTarget = (value) => {
     if (isRun) {
         BackgroundJob.setValueShowStepTarget(value)
+    }
+}
+
+export const taskPushNotificationStepWarning7Pm = async () => {
+    let checkOnOff = await getIsOnOfApp()
+    if (checkOnOff == undefined) {
+        checkOnOff = true
+    }
+
+    let tmpStep = await getNotiStep()
+    if (tmpStep == undefined) {
+        tmpStep = true
+    }
+    if (checkOnOff == true && tmpStep == true) {
+        let totalStep = await getCountStepsToday()
+        scheduler.createWarnningStepNotification(totalStep || 0)
     }
 }
