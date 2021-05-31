@@ -1,7 +1,7 @@
 export function Position(bmi, widthView) {
   let per = 0
   if (bmi >= 0 && bmi <= 18.5) {
-    per = (bmi / 18.5) * widthView
+    per = (bmi / 18.5) * widthView - 6
   } else if (bmi > 18.5 && bmi <= 22.9) {
     per = ((bmi - 18.5) / (22.9 - 18.5)) * widthView + widthView - 6
   } else if (bmi > 22.9 && bmi <= 24.9) {
