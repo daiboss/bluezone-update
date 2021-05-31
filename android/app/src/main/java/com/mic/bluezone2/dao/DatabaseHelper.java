@@ -26,7 +26,7 @@ public class DatabaseHelper {
     // Thêm giá trị bước đi được
     public void addStepCounter(double start, double end, int steps) {
         try {
-            StepCounter stepCounter = new StepCounter(start, end, steps * 67);
+            StepCounter stepCounter = new StepCounter(start, end, steps);
             stepCounterDatabase.stepCounterDAO().insert(stepCounter);
         } catch (Exception e) {
             Log.e(TAG, "addStepCounter error: " + e.getMessage());

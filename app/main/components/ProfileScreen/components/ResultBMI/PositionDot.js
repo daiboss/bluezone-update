@@ -5,7 +5,7 @@ export function Position(bmi, widthView) {
   } else if (bmi > 18.5 && bmi <= 22.9) {
     per = ((bmi - 18.5) / (22.9 - 18.5)) * widthView + widthView - 6
   } else if (bmi > 22.9 && bmi <= 24.9) {
-    per = ((bmi - 22.9) / (24.9 - 22.9)) * widthView + widthView * 2 - 12
+    per = ((bmi - 22.9) / (24.9 - 22.9)) * widthView + widthView * 2 - 6
   } else if (bmi > 24.9 && bmi <= 29.9) {
     per = ((bmi - 24.9) / (29.9 - 24.9)) * widthView + widthView * 3 - 6
   } else {

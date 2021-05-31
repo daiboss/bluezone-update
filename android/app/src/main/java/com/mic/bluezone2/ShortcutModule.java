@@ -28,6 +28,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.mic.bluezone2.R;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import com.mic.bluezone2.services.BackgroundActionsPackage;
+import com.mic.bluezone2.BuildConfig;
 import com.scan.TraceCovidPackage;
 
 import android.content.IntentFilter;

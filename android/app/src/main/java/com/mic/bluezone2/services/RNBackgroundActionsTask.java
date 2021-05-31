@@ -28,11 +28,12 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.mic.bluezone2.MainActivity;
-import com.mic.bluezone2.R;
 import com.mic.bluezone2.dao.DatabaseHelper;
 import com.mic.bluezone2.model.Accelerometer;
 import com.mic.bluezone2.util.ConfigNotification;
 import com.mic.bluezone2.util.EmitEvent;
+import com.mic.bluezone2.R;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

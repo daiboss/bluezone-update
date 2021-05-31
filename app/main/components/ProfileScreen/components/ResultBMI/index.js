@@ -9,7 +9,7 @@ import { RFValue } from '../../../../../const/multiscreen';
 import { fontSize14, STANDARD_SCREEN_HEIGHT } from '../../../../../core/fontSize';
 const { width, height } = Dimensions.get('window')
 
-const WIDTH_ITEM = (width - ((RFValue(15) + 20) * 2)) / 5
+const WIDTH_ITEM = (width - ((RFValue(8, 720) * 2 + 40))) / 5
 
 const ResultBMI = ({ height, weight, intl, resultScreen }) => {
   const { formatMessage } = intl;
@@ -89,7 +89,9 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
             overflow: 'hidden',
             height: RFValue(4, STANDARD_SCREEN_HEIGHT)
           }}>
-            <View style={[styles.line1, styles.line]} />
+            <View style={[styles.line1, styles.line]} onLayout={e => {
+              console.log('DODAAIIIIII', e.nativeEvent.layout.width, WIDTH_ITEM)
+            }} />
             <View style={[styles.line2, styles.line]} />
             <View style={[styles.line3, styles.line]} />
             <View style={[styles.line4, styles.line]} />
