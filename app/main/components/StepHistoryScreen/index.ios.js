@@ -768,6 +768,11 @@ const StepCount = ({ props, intl, navigation }) => {
           widthChart={widthChart} />
       )
     }
+    return (
+      <View style={{
+        height: RFValue(204, fontSize.STANDARD_SCREEN_HEIGHT)
+      }} />
+    )
   }, [dataChart, select])
 
   return (
