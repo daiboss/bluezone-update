@@ -112,7 +112,7 @@ class BackgroundServer {
         DeviceEventEmitter.addListener(
             'EMIT_TIME_WARNING_STEP_TARGET',
             () => {
-                if(callback != undefined){
+                if (callback != undefined) {
                     callback();
                 }
             }
@@ -334,6 +334,11 @@ class BackgroundServer {
     async setStepTarget(target) {
         if (Platform.OS !== 'android') return;
         await RNBackgroundActions.setStepTarget(target);
+    }
+
+    async setIsShowNotificationTarget(isShow) {
+        if (Platform.OS !== 'android') return;
+        await RNBackgroundActions.setIsShowNotificationTarget(isShow);
     }
 }
 

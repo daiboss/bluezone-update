@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.mic.bluezone2.services.RNBackgroundActionsTask;
 import com.mic.bluezone2.util.ScheduleLastDay;
 
 
@@ -16,5 +17,6 @@ public class ChangeTimeReceiver extends BroadcastReceiver {
         Log.e(TAG, "Co su thay doi gio he thong");
         ScheduleLastDay scheduleLastDay = new ScheduleLastDay(context);
         scheduleLastDay.handleNewDay();
+        RNBackgroundActionsTask.backgroundRuntime();
     }
 }

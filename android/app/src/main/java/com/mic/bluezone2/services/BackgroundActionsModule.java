@@ -24,6 +24,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.mic.bluezone2.schedule.NotificationStepTarget;
 import com.mic.bluezone2.util.ConfigNotification;
 
 @SuppressWarnings("WeakerAccess")
@@ -243,6 +244,15 @@ public class BackgroundActionsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setStepTarget(int target, Promise promise) {
         ConfigNotification.setStepTarget(target, reactContext);
+        NotificationStepTarget notificationStepTarget = new NotificationStepTarget(reactContext);
+        notificationStepTarget.setStepTarget(target);
         updateNotification(promise);
+    }
+
+    @ReactMethod
+    public void setIsShowNotificationTarget(boolean isShow, Promise promise){
+        NotificationStepTarget notificationStepTarget = new NotificationStepTarget(reactContext);
+        notificationStepTarget.saveIsNoti(isShow);
+        promise.resolve(null);
     }
 }

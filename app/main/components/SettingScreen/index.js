@@ -83,8 +83,12 @@ const SettingScreen = ({ intl, navigation }) => {
 
   const getIsOnOffAppFromStorage = async () => {
     try {
-      // let res = await getIsOnOfApp()
-      let res = await BackgroundJob.getIsOpenService()
+      let res;
+      if (Platform.OS == 'ios') {
+        res = await getIsOnOfApp()
+      } else {
+        res = await BackgroundJob.getIsOpenService()
+      }
       if (res == undefined) {
         res = true
       }
@@ -146,14 +150,19 @@ const SettingScreen = ({ intl, navigation }) => {
         res = { value: true, time: moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix() };
       }
       setAutoTarget(res?.value == undefined ? true : res.value);
-      let res1 = await BackgroundJob.getIsShowStepTarget()
-      setAlertStep(res1 || false);
 
       let res2 = (await getNotiStep()) || false;
       setAlertTarget(res2);
       let res3 = (await getWeightWarning()) || false;
       setAlertBmi(res3);
-    } catch (error) { }
+
+      if (Platform.OS == 'android') {
+        let res1 = await BackgroundJob.getIsShowStepTarget()
+        setAlertStep(res1 || false);
+      }
+    } catch (error) {
+      console.log('GETSTATUS ERROR', error)
+    }
   };
 
   const onShowMenu = () => {
@@ -193,6 +202,7 @@ const SettingScreen = ({ intl, navigation }) => {
     if (Platform.OS == 'android') {
       await setAlertTarget(value);
       await setNotiStep(value)
+      await BackgroundJob.setIsShowNotificationTarget(value)
     } else
       try {
         PushNotification.requestPermissions().then(res => {
@@ -292,11 +302,15 @@ const SettingScreen = ({ intl, navigation }) => {
   const actionOnOffApp = async (value) => {
     try {
       setOnOffApp(value)
-      await BackgroundJob.setValueIsOpenService(value)
-      if (value) {
-        StartServiceStepCounter()
+      if (Platform.OS == 'android') {
+        await BackgroundJob.setValueIsOpenService(value)
+        if (value) {
+          StartServiceStepCounter()
+        } else {
+          StopServiceStepCounter()
+        }
       } else {
-        StopServiceStepCounter()
+        await setIsOnOfApp(value)
       }
     } catch (err) {
       console.log('actionOnOffApp error', error)
