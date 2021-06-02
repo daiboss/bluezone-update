@@ -148,8 +148,8 @@ const MyTransition = {
           },
           {
             scale: current.progress.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0, 1],
+              inputRange: [0, Platform.OS == 'android' ? 1: 0.85, 1],
+              outputRange: [0,1, 1],
             }),
           },
         ],
