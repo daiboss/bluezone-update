@@ -237,7 +237,6 @@ const StepCount = ({ props, intl, navigation }) => {
     let list = [];
     if (type == 'day') {
       let currentDay = moment(new Date())
-      console.log('datatatatatata',data)
       list = data.map(item => ({
         x: moment(item.endDate).isAfter(currentDay) ? formatMessage(message.today) : moment(item.startDate).format('DD/MM'),
         y: Number(item.quantity),
@@ -770,7 +769,7 @@ const StepCount = ({ props, intl, navigation }) => {
     }
     return (
       <View style={{
-        height: RFValue(204, fontSize.STANDARD_SCREEN_HEIGHT)
+        height: RFValue(213, fontSize.STANDARD_SCREEN_HEIGHT)
       }} />
     )
   }, [dataChart, select])

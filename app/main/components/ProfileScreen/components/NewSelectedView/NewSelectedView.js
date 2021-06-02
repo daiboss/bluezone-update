@@ -98,6 +98,7 @@ const NewSelectedView = ({
         }, containerStyle]}>
             <Animated.FlatList
                 ref={refFlatList}
+                windowSize={10}
                 showsHorizontalScrollIndicator={false}
                 showsVerticalScrollIndicator={false}
                 style={{

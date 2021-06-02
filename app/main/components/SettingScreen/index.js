@@ -202,6 +202,7 @@ const SettingScreen = ({ intl, navigation }) => {
     if (Platform.OS == 'android') {
       await setAlertTarget(value);
       await setNotiStep(value)
+      await BackgroundJob.setIsShowNotificationTarget(value)
     } else
       try {
         PushNotification.requestPermissions().then(res => {

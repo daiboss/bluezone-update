@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,10 +20,13 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -30,6 +34,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.mic.bluezone2.MainActivity;
 import com.mic.bluezone2.dao.DatabaseHelper;
 import com.mic.bluezone2.model.Accelerometer;
+import com.mic.bluezone2.schedule.NotificationStepTarget;
+import com.mic.bluezone2.schedule.ScheduleTimer;
 import com.mic.bluezone2.util.ConfigNotification;
 import com.mic.bluezone2.util.EmitEvent;
 import com.mic.bluezone2.R;
@@ -39,6 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 final public class RNBackgroundActionsTask extends Service implements SensorEventListener {
     public static ReactApplicationContext reactContext;
@@ -47,13 +54,13 @@ final public class RNBackgroundActionsTask extends Service implements SensorEven
 
     private static final String EVENT_COUNTER = "stepCounter";
     public static final String EMIT_EVENT_STEP_SAVE = "EMIT_EVENT_STEP_SAVE";
-    private static final String EMIT_TIME_WARNING_STEP_TARGET = "EMIT_TIME_WARNING_STEP_TARGET";
+    public static final String EMIT_TIME_WARNING_STEP_TARGET = "EMIT_TIME_WARNING_STEP_TARGET";
     private static final String START_TIME = "startTime";
     private static final String END_TIME = "endTime";
     private static final String TOTAL_STEP = "totalStep";
 
     public static final int SERVICE_NOTIFICATION_ID = 92963;
-    private static final String CHANNEL_ID = "CHANNEL_HEALTH_BLUEZONE";
+    public static final String CHANNEL_ID = "CHANNEL_HEALTH_BLUEZONE";
     private static final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private SensorManager mSensorManager;
     private DatabaseHelper databaseHelper;
@@ -79,6 +86,8 @@ final public class RNBackgroundActionsTask extends Service implements SensorEven
 
     private PowerManager mPowerManger;
     private PowerManager.WakeLock mWakelockSettle;
+
+    private static Timer timer;
 
     @NonNull
     public static Notification buildNotification(@NonNull final Context context) {
@@ -259,29 +268,51 @@ final public class RNBackgroundActionsTask extends Service implements SensorEven
         lastUpdateTime = curTime;
     }
 
-    private void backgroundRuntime() {
-        Timer timer = new Timer();
+    public static void backgroundRuntime() {
+//        WorkManager.getInstance(reactContext).cancelAllWork();
+//        PeriodicWorkRequest workRequest = new PeriodicWorkRequest
+//                .Builder(ScheduleTimer.class, 5, TimeUnit.MINUTES)
+//                .addTag(TAG)
+//                .build();
+//        WorkManager.getInstance(reactContext).enqueue(workRequest);
+
+        if (timer != null) {
+            timer.cancel();
+        }
+        Handler handler = new Handler();
+        timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             public void run() {
                 handler.post(() -> {
                     Date current = new Date();
                     long currentTime = current.getTime() / 1000;
-                    SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat("dd/MM/yyyy");
-                    SimpleDateFormat simpleDateFormatHour = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-                    Date time7PmDate = null;
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    String currentDayStr = simpleDateFormat.format(current);
+                    Date startDate = null;
                     try {
-                        time7PmDate = simpleDateFormatHour.parse(simpleDateFormatDay.format(current) + " 19:00:00");
+                        startDate = simpleDateFormat.parse(currentDayStr);
                     } catch (ParseException e) {
                         e.printStackTrace();
-                    }//
-                    long time7Pm = time7PmDate.getTime() / 1000;
+                    }
+                    long time7Pm = startDate.getTime() / 1000 + 19 * 60 * 60;
+                    long lastDay = startDate.getTime() / 1000 + 24 * 60 * 60;
 
-                    Log.e(TAG, "Dang chay :::: " + currentTime + "  - " + time7Pm);
-                    if ((currentTime - time7Pm) >= 0 && (currentTime - time7Pm) <= 9) {
-                        Log.e(TAG, "Send event push notification warning step counter");
-                        EmitEvent.sendEvent(reactContext,
-                                EMIT_TIME_WARNING_STEP_TARGET,
-                                Arguments.createMap());
+//                    Log.e(TAG, "Timeout " + currentTime);
+                    NotificationStepTarget notificationStepTarget = new NotificationStepTarget(reactContext);
+                    if (currentTime >= time7Pm && currentTime < lastDay) {
+                        boolean isNoti = notificationStepTarget.isNoti();
+                        if (!isNoti) {
+                            return;
+                        }
+                        if (!notificationStepTarget.checkDayExist(currentDayStr)) {
+                            Log.e(TAG, "Send event push notification warning step counter");
+//                            EmitEvent.sendEvent(reactContext,
+//                                    EMIT_TIME_WARNING_STEP_TARGET,
+//                                    Arguments.createMap());
+                            DatabaseHelper db =  new DatabaseHelper(reactContext);
+                            int steps = db.getTotalStepToDay();
+                            notificationStepTarget.pushNotificationWarning(steps);
+                        }
                     }
                 });
             }

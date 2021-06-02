@@ -47,7 +47,7 @@ function ModalPicker({
 
   return (
     <ModalComponent
-      useNativeDriver={Platform.OS == 'android' ? true : false}
+      useNativeDriver={Platform.OS == 'android'}
       isVisible={isVisibleModal}
       onBackdropPress={selectHeight}
       backdropOpacity={0.5}
@@ -59,7 +59,7 @@ function ModalPicker({
     >
       <View style={styles.content}>
         <NewSelectedView
-          isRemoveSub={false}
+          // isRemoveSub={false}
           onValueChange={setHeight}
           dataSource={data}
           selectedIndex={
