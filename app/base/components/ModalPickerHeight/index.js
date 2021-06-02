@@ -47,7 +47,7 @@ function ModalPicker({
 
   return (
     <ModalComponent
-      useNativeDriver={Platform.OS == 'android' ? true : false}
+      useNativeDriver={true}
       isVisible={isVisibleModal}
       onBackdropPress={selectHeight}
       backdropOpacity={0.5}
