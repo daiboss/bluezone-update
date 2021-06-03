@@ -368,15 +368,14 @@ const StepCount = ({ props, intl, navigation }) => {
       start.setDate(start.getDate() - 3);
       end.setDate(end.getDate() - 1)
       let listHistory = await Fitness.getSteps({ startDate: start, endDate: end })
+      console.log('listHistorylistHistory',listHistory)
       let CvList = listHistory.map(i => i.quantity)
       let stepTarget = await getResultSteps()
-
       let stepTargetNew = CalculationStepTarget(CvList, stepTarget?.step || 10000)
       let resultSave = {
         step: stepTargetNew,
         date: moment().unix()
       }
-
       await setResultSteps(resultSave)
     }
   }
@@ -387,7 +386,6 @@ const StepCount = ({ props, intl, navigation }) => {
     if (profiles) {
       sex = profiles[0].gender
     }
-
   }
   const getWeightHeight = async () => {
     let profiles = (await getProfile()) || [];
@@ -402,7 +400,6 @@ const StepCount = ({ props, intl, navigation }) => {
   }
   const getStepsRealTime = async () => {
     let stepCurrent
-
     const healthKitOptions = {
       permissions: {
         read: [
@@ -424,6 +421,22 @@ const StepCount = ({ props, intl, navigation }) => {
         return;
       }
 
+      //new get count
+      let optionsStepNew = {
+        startDate: moment().startOf('day'), // required
+        endDate: moment(), // optional; default now
+      };
+      AppleHealthKit.getStepCount(optionsStepNew, (err, results) => {
+        if (err) {
+          console.log('erererere',err)
+          functionTest()
+          return;
+        }
+      console.log('rerebreurheuhre',results)
+
+      });
+
+      //
       let optionsStepCurrent = {
         startDate: moment().startOf('day'), // required
         endDate: moment(), // optional; default now
@@ -622,7 +635,7 @@ const StepCount = ({ props, intl, navigation }) => {
       }
       await setFirstTimeSetup()
       await setResultSteps(resultSave)
-      await BackgroundJob.setStepTarget(10000)
+      // await BackgroundJob.setStepTarget(10000)
       closeModalAlert7Day()
     }
   }
@@ -641,7 +654,7 @@ const StepCount = ({ props, intl, navigation }) => {
   };
   const functionTest = () => {
     let options = {
-      value: 10,
+      value: 0,
       startDate: (moment().subtract(0, 'days').startOf('day')).toISOString(),
       endDate: (moment().subtract(0, 'days').endOf('day')).toISOString(),
     };
