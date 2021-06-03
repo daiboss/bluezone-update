@@ -595,12 +595,13 @@ const StepCount = ({ props, intl, navigation }) => {
             try {
               let listDataChart = getDataChart(res, type)
               let max = Math.max.apply(Math, listDataChart.map(function (o) { return o.y; }))
+              const lengthChart = listDataChart.length - 2
               // fix
               if(type == 'day'){
                 let timeUnix = listDataChart.map(i => {
                   return moment(i.start,'YYYY/DD/MM').unix()
                 })
-                for(let i = 0;i <= 178; i++ ){
+                for(let i = 0;i <= lengthChart ; i++ ){
                   // if(timeConvert[0] !==  dayStartUnix){
                   //   data.splice(i,0,{x:0,y:0})
                   //   timeConvert.splice(i,0,dayStartUnix)
