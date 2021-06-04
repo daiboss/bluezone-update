@@ -203,19 +203,20 @@ const SettingScreen = ({ intl, navigation }) => {
       await setAlertTarget(value);
       await setNotiStep(value)
       await BackgroundJob.setIsShowNotificationTarget(value)
-    } else
-      try {
-        PushNotification.requestPermissions().then(res => {
-          if (res.notificationCenter) {
-            setAlertTarget(!alertTarget);
-          }
-          else {
-            alertPermission('target')
-          }
-        }).catch(er => console.log('errerjeirjeijre', er))
-        setNotiStep(value);
+    } 
+    // else
+    //   try {
+    //     PushNotification.requestPermissions().then(res => {
+    //       if (res.notificationCenter) {
+    //         setAlertTarget(!alertTarget);
+    //       }
+    //       else {
+    //         alertPermission('target')
+    //       }
+    //     }).catch(er => console.log('errerjeirjeijre', er))
+    //     setNotiStep(value);
 
-      } catch (error) { }
+    //   } catch (error) { }
   };
 
   const alertBmiSwitch = async value => {
