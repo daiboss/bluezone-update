@@ -52,7 +52,7 @@ function ModalPickerStepsTarget({
       onBackdropPress={onCloseModal}
       backdropOpacity={0.5}
       animationInTiming={500}
-      animationOutTiming={500}
+      animationOutTiming={1}
       style={styles.modal}
       backdropTransitionInTiming={1000}
       backdropTransitionOutTiming={1000}>

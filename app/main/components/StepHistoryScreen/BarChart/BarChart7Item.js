@@ -157,7 +157,7 @@ const BarChart7Item = ({
             />
         )
     else return <View style={{
-        height: RFValue(213, STANDARD_SCREEN_HEIGHT)
+        height: RFValue(211, STANDARD_SCREEN_HEIGHT)
     }} />
 }
 
