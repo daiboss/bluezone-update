@@ -47,18 +47,7 @@ import {
   setAutoChange,
   setEvents,
 } from './app/core/storage';
-import AsyncStorage from '@react-native-community/async-storage';
-import BackgroundFetch from 'react-native-background-fetch';
-// import { scheduleTask } from './app/main/components/SettingScreen';
-import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import {
-  autoChange,
-  notiStep,
-  realtime,
-  weightWarning,
-} from './app/const/storage';
 
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
 PushNotification.configure({
@@ -88,11 +77,6 @@ PushNotification.configure({
   requestPermissions: true,
 });
 
-function getAbsoluteMonths(momentDate) {
-  var months = Number(momentDate.format('MM'));
-  var years = Number(momentDate.format('YYYY'));
-  return months + years * 12;
-}
 async function handleBackgroundMessage(message: RemoteMessage) {
   const language = await getLanguage();
   await remoteMessageListener(message, language);
