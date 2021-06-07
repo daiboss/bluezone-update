@@ -213,7 +213,7 @@ const StepCount = ({ props, intl, navigation }) => {
     return () => {
       timeInterval.current && clearInterval(timeInterval.current);
     };
-  }, [dataChart.length]);
+  }, []);
 
   const init = async () => {
     try {
@@ -326,7 +326,7 @@ const StepCount = ({ props, intl, navigation }) => {
     getStepsRealTime()
     autoChangeStepsTarget()
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightHeight.height, totalCount, countStep,dataChart.length])
+  }, [weightHeight.height, totalCount, countStep])
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
@@ -446,8 +446,9 @@ const StepCount = ({ props, intl, navigation }) => {
         }
         stepCurrent = results.value
         const countR = totalCount - stepCurrent
-        setCountRest(countR)
-
+        console.log('totalCounttotalCount',totalCount,results)
+        console.log('countRcountRcountR',countR)
+        setCountRest(countR.toFixed(0))
       });
       let distanUser
       //get calo and time

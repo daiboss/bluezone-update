@@ -14,7 +14,13 @@ export default () => {
 }
 
 const goToScreent = (notification) => {
+    console.log('notificationnotification',notification)
     if (notification?.userInfo?.screen) {
         navigationRef.current.navigate(notification?.userInfo?.screen, notification?.userInfo?.params)
+        return
+    }
+    if (notification?._data?.screen) {
+        navigationRef.current.navigate(notification?._data?.screen, notification?._data?.params)
+        return
     }
 }
