@@ -213,7 +213,7 @@ const StepCount = ({ props, intl, navigation }) => {
     return () => {
       timeInterval.current && clearInterval(timeInterval.current);
     };
-  }, []);
+  }, [dataChart.length]);
 
   const init = async () => {
     try {
@@ -271,10 +271,9 @@ const StepCount = ({ props, intl, navigation }) => {
   const getPermission = async (start, end, startLine, endLine) => {
     try {
       let resPermissions = await Fitness.requestPermissions(permissions);
-
       let resAuth = await Fitness.isAuthorized(permissions);
       if (resAuth == true) {
-        init();
+        // init();
         getData(start, end, startLine, endLine);
       }
     } catch (error) {
@@ -310,7 +309,8 @@ const StepCount = ({ props, intl, navigation }) => {
           } 
           let timeCV2 = timeConvert.map(i => moment.unix(i).format('DD/MM'))
           setDataChart(data);
-
+          console.log('datadatadatadata',data)
+          console.log('datadatadatadata',dataChart)
           alert7dayLessThan1000(data)
           setTime(timeCV2)
         } else {
@@ -326,7 +326,7 @@ const StepCount = ({ props, intl, navigation }) => {
     getStepsRealTime()
     autoChangeStepsTarget()
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightHeight.height, totalCount, countStep])
+  }, [weightHeight.height, totalCount, countStep,dataChart.length])
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
@@ -432,7 +432,6 @@ const StepCount = ({ props, intl, navigation }) => {
           functionTest()
           return;
         }
-      console.log('rerebreurheuhre',results)
 
       });
 
