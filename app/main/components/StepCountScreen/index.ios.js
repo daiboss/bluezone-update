@@ -273,7 +273,7 @@ const StepCount = ({ props, intl, navigation }) => {
       let resPermissions = await Fitness.requestPermissions(permissions);
       let resAuth = await Fitness.isAuthorized(permissions);
       if (resAuth == true) {
-        // init();
+        init();
         getData(start, end, startLine, endLine);
       }
     } catch (error) {
@@ -424,11 +424,10 @@ const StepCount = ({ props, intl, navigation }) => {
       //new get count
       let optionsStepNew = {
         startDate: moment().startOf('day'), // required
-        endDate: moment(), // optional; default now
+        endDate: moment().endOf('day'), // optional; default now
       };
       AppleHealthKit.getStepCount(optionsStepNew, (err, results) => {
         if (err) {
-          console.log('erererere',err)
           functionTest()
           return;
         }
@@ -446,15 +445,13 @@ const StepCount = ({ props, intl, navigation }) => {
         }
         stepCurrent = results.value
         const countR = totalCount - stepCurrent
-        console.log('totalCounttotalCount',totalCount,results)
-        console.log('countRcountRcountR',countR)
         setCountRest(countR.toFixed(0))
       });
       let distanUser
       //get calo and time
       let optionsAll = {
         startDate: (moment().startOf('day')).toISOString(),
-        endDate: (new Date()).toISOString(),
+        endDate: (moment().endOf('day')).toISOString(),
         type: 'Walking', // one of: ['Walking', 'StairClimbing', 'Running', 'Cycling', 'Workout']
       };
       AppleHealthKit.getSamples(optionsAll, (err, results) => {
@@ -465,8 +462,8 @@ const StepCount = ({ props, intl, navigation }) => {
         let initialValue = 0
 
         //get Calo
-
         const a = results.reduce((k, i) => {
+          // console.log('k, ik, ik, i',k, i)
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
           const timeS = timeEnd - timeStart
@@ -492,11 +489,16 @@ const StepCount = ({ props, intl, navigation }) => {
           let distanceInStep = sexValue * weightHeight.height * stepRateFactor
           let speed = distanceInStep * stepRate * 3.6
           let calo
-          if (speed <= 5.5) calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightHeight.weight * 2 / 12000
-          else calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightHeight.weight * 2 / 12000
+          if (speed <= 5.5) {
+            calo = ((0.1 * 1000 * speed) / 60 + 3.5) * weightHeight.weight * 2 / 12000
+          }
+          else {
+            calo = ((0.2 * 1000 * speed) / 60 + 3.5) * weightHeight.weight * 2 / 12000
+          }
           // setCountCarlo(calo.toFixed(2))
           return k + calo * timeS * 2
         }, initialValue)
+       
         setCountCarlo(parseInt(a * 2 / 1000))
         //get time
         let timeUse = results.reduce((k, i) => {
@@ -655,8 +657,8 @@ const StepCount = ({ props, intl, navigation }) => {
   const functionTest = () => {
     let options = {
       value: 0,
-      startDate: (moment().subtract(0, 'days').startOf('day')).toISOString(),
-      endDate: (moment().subtract(0, 'days').endOf('day')).toISOString(),
+      startDate: (moment().startOf('day')).toISOString(),
+      endDate: (moment().startOf('day').add(1,'seconds')).toISOString(),
     };
     AppleHealthKit.saveSteps(options, (err, res) => {
       if (err) {

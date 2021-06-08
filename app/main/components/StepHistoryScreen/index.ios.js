@@ -482,6 +482,7 @@ const StepCount = ({ props, intl, navigation }) => {
         setCountCarlo(parseInt(a * 2 / 1000))
         //get time
         const timeUse = results.reduce((k, i) => {
+          console.log('k, ik, ik, i',k, i)
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
           const timeT = timeEnd - timeStart
