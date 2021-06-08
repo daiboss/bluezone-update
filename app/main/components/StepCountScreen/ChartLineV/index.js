@@ -157,11 +157,11 @@ const ChartLine = ({
             position: 'absolute',
             backgroundColor: red_bluezone,
             zIndex: 1,
-            top: Platform.OS == 'ios' ? height * 0.05 : height * 0.055,
+            top: Platform.OS == 'ios' ? height * 0.05 : height * 0.059,
             // left: ,
             alignSelf: 'center',
             paddingHorizontal: RFValue(10),
-            paddingVertical: RFValue(Platform.OS == 'ios' ? 5 : 3),
+            paddingVertical: RFValue(Platform.OS == 'ios' ? 5 : 2),
             borderWidth: 1,
             borderRadius: 15,
             borderColor: 'red',
@@ -179,7 +179,7 @@ const ChartLine = ({
                 width: RFValue(10),
                 height: RFValue(10),
                 position: 'absolute',
-                bottom: -6,
+                bottom: -5,
                 alignSelf: 'center',
                 tintColor: red_bluezone
               }}

@@ -89,9 +89,7 @@ const ResultBMI = ({ height, weight, intl, resultScreen }) => {
             overflow: 'hidden',
             height: RFValue(4, STANDARD_SCREEN_HEIGHT)
           }}>
-            <View style={[styles.line1, styles.line]} onLayout={e => {
-              console.log('DODAAIIIIII', e.nativeEvent.layout.width, WIDTH_ITEM)
-            }} />
+            <View style={[styles.line1, styles.line]} />
             <View style={[styles.line2, styles.line]} />
             <View style={[styles.line3, styles.line]} />
             <View style={[styles.line4, styles.line]} />
