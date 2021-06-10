@@ -111,19 +111,19 @@ export const onBackgroundFetchEvent = async taskId => {
           );
 
           if (isWarning >= 7) {
-            scheduler.createWarnningWeightNotification();
+            // scheduler.createWarnningWeightNotification();
           }
         }
         break;
       case notiStep:
         if (resultSteps) {
           if (today.format('HH') >= 19) {
-            scheduler.createWarnningStepNotification(step?.step);
+            // scheduler.createWarnningStepNotification(step?.step);
           }
         }
         break;
       case realtime:
-        scheduler.createShowStepNotification(step?.step);
+        // scheduler.createShowStepNotification(step?.step);
         break;
       default:
         break;
@@ -370,7 +370,7 @@ const StepCount = ({ props, intl, navigation }) => {
       let listHistory = await Fitness.getSteps({ startDate: start, endDate: end })
       console.log('listHistorylistHistory',listHistory)
       let CvList = listHistory.map(i => i.quantity)
-      let stepTarget = await getResultSteps()
+      let stepTarget = await getResultSteps()     
       let stepTargetNew = CalculationStepTarget(CvList, stepTarget?.step || 10000)
       let resultSave = {
         step: stepTargetNew,
@@ -586,19 +586,19 @@ const StepCount = ({ props, intl, navigation }) => {
     })
   }
 
-  const onGetDistances = (start, end) => {
-    Fitness.getDistances({ startDate: start, endDate: end })
-      .then(res => {
-        //
-        var total = 0;
-        res.map(obj => {
-          total += obj.quantity;
-        });
-        total = total / 1000;
-        setDistant(total.toFixed(1));
-      })
-      .catch(err => { });
-  };
+  // const onGetDistances = (start, end) => {
+  //   Fitness.getDistances({ startDate: start, endDate: end })
+  //     .then(res => {
+  //       //
+  //       var total = 0;
+  //       res.map(obj => {
+  //         total += obj.quantity;
+  //       });
+  //       total = total / 1000;
+  //       setDistant(total.toFixed(1));
+  //     })
+  //     .catch(err => { });
+  // };
 
   const alert7dayLessThan1000 = (steps) => {
     if (steps.length >= 7) {
@@ -628,9 +628,11 @@ const StepCount = ({ props, intl, navigation }) => {
 
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     if (type == 1) {
+      console.log('vavaovoavoa',type)
       await setFirstTimeSetup()
       closeModalAlert7Day()
     } else {
+      console.log('vavaovoavoa2222',type)
       let resultSave = {
         step: 10000,
         date: currentTime
@@ -683,8 +685,8 @@ const StepCount = ({ props, intl, navigation }) => {
 
       <ModalChangeTarget
         isShowModalAlert={isShowModalAlert}
-        closeModalAlert7Day={closeModalAlert7Day}
-        confirmStepsTarget={confirmStepsTarget}
+        closeModalAlert7Day={() => confirmStepsTarget(1)}
+        confirmStepsTarget={() => confirmStepsTarget(0)}
         formatMessage={formatMessage}
         message={message}
         numberWithCommas={numberWithCommas}

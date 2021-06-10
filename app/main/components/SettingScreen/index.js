@@ -104,18 +104,18 @@ const SettingScreen = ({ intl, navigation }) => {
     // scheduler.createScheduleWarnningWeightNotification(alertStep)
   }, [timeWeight]);
   useEffect(() => {
-    alertBmi ? scheduler.createScheduleWarnningWeightNotification(timeWeight) : PushNotification.cancelAllLocalNotifications()
+    alertBmi && onOffApp ? scheduler.createScheduleWarnningWeightNotification(timeWeight) : PushNotification.cancelAllLocalNotifications()
   }, [alertBmi])
 
-  useEffect(() => {
-    if (onOffApp == false) {
-      PushNotification.cancelAllLocalNotifications()
-    } else {
-      if (alertBmi) {
-        scheduler.createScheduleWarnningWeightNotification(timeWeight)
-      }
-    }
-  }, [onOffApp, alertBmi, alertTarget])
+  // useEffect(() => {
+  //   if (onOffApp == false) {
+  //     PushNotification.cancelAllLocalNotifications()
+  //   } else {
+  //     if (alertBmi) {
+  //       scheduler.createScheduleWarnningWeightNotification(timeWeight)
+  //     }
+  //   }
+  // }, [onOffApp, alertBmi, alertTarget])
 
   const getProfileUser = async () => {
     let profiles = (await getProfile()) || [];
