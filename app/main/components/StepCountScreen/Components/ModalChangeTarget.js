@@ -36,7 +36,7 @@ export default function ModalChangeTarget({
                     </TouchableOpacity>
                     <View style={{ height: RFValue(36), width: 1, backgroundColor: '#d3d3d3' }} />
                     <TouchableOpacity
-                        onPress={() => confirmStepsTarget(1)}
+                        onPress={closeModalAlert7Day}
                         activeOpacity={0.5}
                         style={{ flex: 1, justifyContent: 'center' }} >
                         <Text style={[styles.btnAlert, {

@@ -112,7 +112,7 @@ import { getIsFirstLoading, setIsFirstLoading, setFirstTimeOpen, getFirstTimeOpe
 import ProfileScreen from './app/main/components/ProfileScreen';
 import BmiScreen from './app/main/components/ProfileScreen/BmiScreen';
 import ResultBmiScreen from './app/main/components/ProfileScreen/ResultBmiScreen';
-
+import ConfigurationNotification from './app/core/NotificationService';
 // animation transaction
 import { TransitionSpecs, HeaderStyleInterpolators } from '@react-navigation/stack';
 import { Linking, Platform } from 'react-native';
@@ -352,11 +352,17 @@ class App extends React.Component {
 
   onNotificationOpened = remoteMessage => {
     const { loading } = this.state;
-
+    console.log('remoteMessageremoteMessage',remoteMessage)
     if (!remoteMessage) {
       return;
     }
     const obj = remoteMessage.notification;
+    if(obj && obj._data.screen == 'Profile'){
+      console.log('vaovaovaooa')
+      navigate('Profile',{isAutoOpen:1})
+      // ConfigurationNotification()
+      return
+    }
     if (
       (obj && obj.data._group === 'INFO') ||
       (obj && obj.data._group === NOTIFICATION_TYPE.SEND_SHORT_NEWS)

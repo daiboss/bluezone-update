@@ -3,6 +3,7 @@ import { navigate, navigationRef } from './../../RootNavigation'
 
 export default () => {
     PushNotification.popInitialNotification((notification) => {
+        console.log('notificationnotification',notification)
         goToScreent(notification)
     })
     PushNotification.configure({
@@ -14,13 +15,15 @@ export default () => {
 }
 
 const goToScreent = (notification) => {
-    console.log('notificationnotification',notification)
+    console.log('notificationnotificationSS',notification)
     if (notification?.userInfo?.screen) {
         navigationRef.current.navigate(notification?.userInfo?.screen, notification?.userInfo?.params)
         return
     }
     if (notification?._data?.screen) {
         navigationRef.current.navigate(notification?._data?.screen, notification?._data?.params)
+        return
+    }else{
         return
     }
 }

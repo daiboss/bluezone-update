@@ -152,6 +152,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const timeInterval = useRef();
   let sex
   const { formatMessage, locale } = intl;
+  const [loading,setLoading] = useState(false)
   const [time, setTime] = useState([]);
   const [heightUser, setHeightUser] = useState(0)
   const [countTimeHour, setCountTimeHour] = useState(0);
@@ -251,10 +252,12 @@ const StepCount = ({ props, intl, navigation }) => {
   };
   useFocusEffect(
     React.useCallback(() => {
+      onGetStepLine()
       resultSteps();
     }, [])
   );
   const resultSteps = async () => {
+  console.log('vapvavoaovapapvppva')
     try {
       let resultSteps = await getResultSteps(ResultSteps);
       if (!resultSteps) {
@@ -631,14 +634,16 @@ const StepCount = ({ props, intl, navigation }) => {
       console.log('vavaovoavoa',type)
       await setFirstTimeSetup()
       closeModalAlert7Day()
+      return;
     } else {
-      console.log('vavaovoavoa2222',type)
       let resultSave = {
         step: 10000,
         date: currentTime
       }
       await setFirstTimeSetup()
       await setResultSteps(resultSave)
+      setTotalCount(10000)
+      console.log('vavaovoavoa2222',type)
       closeModalAlert7Day()
     }
   }

@@ -75,3 +75,31 @@ APK files are stored within ```./app/build/outputs/apk/debug/``` and ```./app/bu
 Copyright © 2020 - Bluezone Global.
 
  - under a [GNU/GPLv3 license](https://www.gnu.org/licenses/gpl-3.0.en.html), for free (open source). Please make sure that you understand and agree with the terms of this license before using it (see LICENSE file for details).
+
+ fix bug when run "yarn"
+ go to file ./node_modules/react-native-firebase/ios/RNFirebase/notifications/RNFirebaseNotifications.m
+ add 
+ RCT_EXPORT_METHOD(complete:(NSString*)handlerKey fetchResult:(UIBackgroundFetchResult)fetchResult) { if (handlerKey != nil) {
+    void (^fetchCompletionHandler)(UIBackgroundFetchResult) = fetchCompletionHandlers[handlerKey];
+    if (fetchCompletionHandler != nil) {
+        fetchCompletionHandlers[handlerKey] = nil;
+        @try {
+            fetchCompletionHandler(fetchResult);
+        } 
+        @catch (NSException * e) {
+            NSLog(@"Exception fetchCompletionHandler: %@", e);
+        };
+    } else {
+        void(^completionHandler)(void) = completionHandlers[handlerKey];
+        if (completionHandler != nil) {
+            completionHandlers[handlerKey] = nil;
+            @try {
+                completionHandler();
+            }
+            @catch (NSException * e) {
+                NSLog(@"Exception completionHandler: %@", e);
+            };
+
+        }
+    }
+}}
