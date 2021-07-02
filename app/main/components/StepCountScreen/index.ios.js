@@ -170,6 +170,10 @@ const StepCount = ({ props, intl, navigation }) => {
       access: Fitness.PermissionAccesses.Read,
     },
     {
+      kind: Fitness.PermissionKinds.Steps,
+      access: Fitness.PermissionAccesses.Write,
+    },
+    {
       kind: Fitness.PermissionKinds.Calories,
       access: Fitness.PermissionAccesses.Read,
     },
@@ -187,6 +191,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const closeModalAlert7Day = () => setIsShowModalAlert(false)
 
   useEffect(() => {
+    console.log('vao1')
     var end = new Date();
     end.setDate(end.getDate() + 1);
     var start = new Date();
@@ -194,9 +199,7 @@ const StepCount = ({ props, intl, navigation }) => {
     startLine.setDate(new Date().getDate() - 7);
     var endLine = new Date();
     endLine.setDate(new Date().getDate() - 1);
-    // let listDate = getListDate(start, end)
-    resultSteps();
-
+    // getStepsRealTime()
     getPermission(
       moment(start.getTime())
         .format('YYYY-MM-DD')
@@ -211,6 +214,10 @@ const StepCount = ({ props, intl, navigation }) => {
         .format('YYYY-MM-DD')
         .toString(),
     );
+    // let listDate = getListDate(start, end)
+    resultSteps();
+
+    
     return () => {
       timeInterval.current && clearInterval(timeInterval.current);
     };
@@ -252,12 +259,25 @@ const StepCount = ({ props, intl, navigation }) => {
   };
   useFocusEffect(
     React.useCallback(() => {
-      onGetStepLine()
+      onGetStepLine() // sữa lỗi đổi ngày không tắt app ở màn hình thống kê vẫn giữ ngày hôm qua
       resultSteps();
     }, [])
   );
+  const getPermission = async (start, end, startLine, endLine) => {
+    console.log('vao2')
+    try {
+      let resPermissions = await Fitness.requestPermissions(permissions);
+      let resAuth = await Fitness.isAuthorized(permissions);
+      if (resAuth == true) {
+        init();
+        getData(start, end, startLine, endLine);
+      }
+    } catch (error) {
+      getPermission();
+    }
+  };
   const resultSteps = async () => {
-  console.log('vapvavoaovapapvppva')
+    console.log('vao3')
     try {
       let resultSteps = await getResultSteps(ResultSteps);
       if (!resultSteps) {
@@ -271,18 +291,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const getData = (start, end, startLine, endLine) => {
     onGetStepLine();
   };
-  const getPermission = async (start, end, startLine, endLine) => {
-    try {
-      let resPermissions = await Fitness.requestPermissions(permissions);
-      let resAuth = await Fitness.isAuthorized(permissions);
-      if (resAuth == true) {
-        init();
-        getData(start, end, startLine, endLine);
-      }
-    } catch (error) {
-      getPermission();
-    }
-  };
+
   const onGetStepLine = async () => {
     let start = new Date();
     let end = new Date();
@@ -407,13 +416,13 @@ const StepCount = ({ props, intl, navigation }) => {
       permissions: {
         read: [
           PERMS.DateOfBirth,
-          PERMS.Weight,
-          PERMS.StepCount,
-          PERMS.ActiveEnergyBurned
+          // PERMS.Weight,
+          // PERMS.StepCount,
+          // PERMS.ActiveEnergyBurned
         ],
-        write: [
-          PERMS.StepCount
-        ]
+        // write: [
+        //   PERMS.StepCount
+        // ]
       }
     };
     AppleHealthKit.initHealthKit(healthKitOptions, (err, res) => {
