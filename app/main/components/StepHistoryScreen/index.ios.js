@@ -234,6 +234,7 @@ const StepCount = ({ props, intl, navigation }) => {
     }, 3000);
   };
   const getDataChart = (data, type) => {
+    console.log('datadatadatadata',data)
     let list = [];
     if (type == 'day') {
       let currentDay = moment(new Date())
@@ -337,12 +338,17 @@ const StepCount = ({ props, intl, navigation }) => {
         acc[yearWeek].push(current);
         return acc;
       }, {});
+      console.log('groupsgroups',groups)
       let currentTime = moment(new Date());
       let b = Object.entries(groups)
-      const firstA = b.filter(i => i[0] <= 26)
-      const endA = b.filter(i => i[0] > 26)
-      let c = endA.concat(firstA)
-      for (const [key, value] of c) {
+      // console.log('bbbbbbb',b)
+      // const firstA = b.filter(i => i[0] <= 26)
+      // console.log('firstAfirstA',firstA)
+      // const endA = b.filter(i => i[0] > 26)
+      // console.log('endAendAendA',endA)
+      // let c = firstA.concat(endA)
+      // console.log('cccccccc',c)
+      for (const [key, value] of b) {
         let steps = value.reduce((t, v) => t + v.quantity, 0)
         let startWeek = moment(value[0].startDate).startOf('isoWeek')
         let endWeek = moment(value[0].startDate).endOf('isoWeek')
@@ -482,7 +488,6 @@ const StepCount = ({ props, intl, navigation }) => {
         setCountCarlo(parseInt(a * 2 / 1000))
         //get time
         const timeUse = results.reduce((k, i) => {
-          console.log('k, ik, ik, i',k, i)
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
           const timeT = timeEnd - timeStart
@@ -650,10 +655,12 @@ const StepCount = ({ props, intl, navigation }) => {
               }
               if(type == 'week'){
                 let arrayConvert = listDataChart.map((i,index) => {
+                  console.log('iiiiiii',i)
                   const monthEn = moment().locale('en').format('MMM')
                   const monthVn = moment().format('MM')
                   if(index == listDataChart.length - 1){
                     const startWeek = moment(i.start,'yyyy/DD/MM').startOf('isoWeek')
+                    console.log('startWeekstartWeek',startWeek)
                     return{
                       ...i,
                       x: locale == 'en' ? `${startWeek.format('DD')} - now\n ${monthEn}` : `${startWeek.format('DD')} - nay\nT ${monthVn}`
@@ -661,6 +668,7 @@ const StepCount = ({ props, intl, navigation }) => {
                   }
                   return i
                 })
+                console.log('arrayConvertarrayConvert',arrayConvert)
                 setDataChart(arrayConvert)
               }
             } catch (e) {

@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
+  Easing,
   Image,
   NativeAppEventEmitter,
-  ScrollView,
+  ScrollView,AppState
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import Fitness from '@ovalmoney/react-native-fitness';
@@ -150,6 +151,9 @@ export const onBackgroundFetchEvent = async taskId => {
 // or assign battery-blame for consuming too much background-time
 const StepCount = ({ props, intl, navigation }) => {
   const timeInterval = useRef();
+  const refCircular = useRef();
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
   let sex
   const { formatMessage, locale } = intl;
   const [loading,setLoading] = useState(false)
@@ -160,7 +164,7 @@ const StepCount = ({ props, intl, navigation }) => {
   const [weightHeight, setWeightHeight] = useState({ weight: 65, height: 165 })
   const [countTime, setCountTime] = useState(0)
   const [countStep, setCountStep] = useState(null);
-  const [countRest, setCountRest] = useState(0);
+  const [countRest, setCountRest] = useState(0);  
   const [countCarlo, setCountCarlo] = useState(0);
   const [distant, setDistant] = useState(0);
   const [totalCount, setTotalCount] = useState(1);
@@ -183,15 +187,40 @@ const StepCount = ({ props, intl, navigation }) => {
     },
   ];
   const [dataChart, setDataChart] = useState([]);
-
   const [isShowModalAlert, setIsShowModalAlert] = useState(false)
-
   const openModalAlert7Day = () => setIsShowModalAlert(true)
-
   const closeModalAlert7Day = () => setIsShowModalAlert(false)
 
+
   useEffect(() => {
-    console.log('vao1')
+    AppState.addEventListener("change", _handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener("change", _handleAppStateChange);
+    };
+  }, []);
+  const _handleAppStateChange = (nextAppState) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      // console.log('refCircularaa',countStep,totalCount)
+      // refCircular.current.state.fillAnimation.Animated = 0
+      resultSteps()
+      fetchStepCountData()
+      onGetStepLine()
+    }else{
+      // const {_toValue,_duration} = refCircular.current.state.fillAnimation._animation
+      // refCircular.current.state.fillAnimation._value = 0
+
+    }
+    appState.current = nextAppState;
+    setAppStateVisible(appState.current);
+  };
+
+
+
+  useEffect(() => {
     var end = new Date();
     end.setDate(end.getDate() + 1);
     var start = new Date();
@@ -259,12 +288,12 @@ const StepCount = ({ props, intl, navigation }) => {
   };
   useFocusEffect(
     React.useCallback(() => {
-      onGetStepLine() // sữa lỗi đổi ngày không tắt app ở màn hình thống kê vẫn giữ ngày hôm qua
+      // functionTest()
+      // onGetStepLine() // sữa lỗi đổi ngày không tắt app ở màn hình thống kê vẫn giữ ngày hôm qua
       resultSteps();
     }, [])
   );
   const getPermission = async (start, end, startLine, endLine) => {
-    console.log('vao2')
     try {
       let resPermissions = await Fitness.requestPermissions(permissions);
       let resAuth = await Fitness.isAuthorized(permissions);
@@ -277,7 +306,6 @@ const StepCount = ({ props, intl, navigation }) => {
     }
   };
   const resultSteps = async () => {
-    console.log('vao3')
     try {
       let resultSteps = await getResultSteps(ResultSteps);
       if (!resultSteps) {
@@ -321,8 +349,6 @@ const StepCount = ({ props, intl, navigation }) => {
           } 
           let timeCV2 = timeConvert.map(i => moment.unix(i).format('DD/MM'))
           setDataChart(data);
-          console.log('datadatadatadata',data)
-          console.log('datadatadatadata',dataChart)
           alert7dayLessThan1000(data)
           setTime(timeCV2)
         } else {
@@ -336,9 +362,9 @@ const StepCount = ({ props, intl, navigation }) => {
     getWeightHeight()
     getSex()
     getStepsRealTime()
-    autoChangeStepsTarget()
+    autoChangeStepsTarget() 
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightHeight.height, totalCount, countStep])
+  }, [weightHeight.height, totalCount, countStep,appStateVisible])
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();
@@ -348,49 +374,45 @@ const StepCount = ({ props, intl, navigation }) => {
     let start = new Date();
     let end = new Date();
     let firtTimeOpen = await getFirstTimeOpen()
-    // let firtTimeOpen = moment().subtract(2,'days').startOf('day').unix()
     let firtTimeUnix2d = moment(firtTimeOpen, 'yyyy-MM-DD').unix() + 2 * 24 * 60 * 60
     let firtTimeUnix3d = moment(firtTimeOpen, 'yyyy-MM-DD').unix() + 3 * 24 * 60 * 60
-    // let firtTimeUnix2d = firtTimeOpen + 2 * 24 * 60 * 60
-    // let firtTimeUnix3d = firtTimeOpen + 3 * 24 * 60 * 60
-    let todayUnix = moment().unix()
-    //  if (todayUnix < firtTimeUnix2d) {
-    //   return
-    // }
+    let todayUnix = moment().startOf('day').unix()
+    const targetLocal = await getResultSteps()
+    let stepTarget = targetLocal?.step
     if (todayUnix < firtTimeUnix2d) {
       return;
     }
-    if (todayUnix > firtTimeUnix2d && todayUnix < firtTimeUnix3d) {
-      console.log('vaovaovaovaovoavoIF')
+    if(targetLocal?.date == todayUnix){
+      return;
+    }
+    if (todayUnix >= firtTimeUnix2d && todayUnix < firtTimeUnix3d) {
       start.setDate(start.getDate() - 2);
       end.setDate(end.getDate() - 1)
       let listHistory = await Fitness.getSteps({ startDate: start, endDate: end })
       let CvList = listHistory.map(i => i.quantity)
-      let stepTarget = await getResultSteps()
-      let stepTargetNew = CalculationStepTarget(CvList, stepTarget?.step || 10000)
+      let stepTargetNew = CalculationStepTarget(CvList, stepTarget || 10000)
       setTotalCount(parseInt(stepTargetNew))
       let resultSave = {
         step: stepTargetNew,
-        date: moment().unix()
+        date: moment().startOf('day').unix()
       }
       await setResultSteps(resultSave)
     }
     else {
-      console.log('vaovaovaovaovoavoELSEF')
       start.setDate(start.getDate() - 3);
       end.setDate(end.getDate() - 1)
       let listHistory = await Fitness.getSteps({ startDate: start, endDate: end })
-      console.log('listHistorylistHistory',listHistory)
       let CvList = listHistory.map(i => i.quantity)
-      let stepTarget = await getResultSteps()     
-      let stepTargetNew = CalculationStepTarget(CvList, stepTarget?.step || 10000)
+      let stepTargetNew = CalculationStepTarget(CvList, stepTarget || 10000)
+      setTotalCount(parseInt(stepTargetNew))
       let resultSave = {
         step: stepTargetNew,
-        date: moment().unix()
+        date: moment().startOf('day').unix()
       }
       await setResultSteps(resultSave)
     }
   }
+ 
 
   const getSex = async () => {
     let profiles = (await getProfile()) || [];
@@ -416,7 +438,7 @@ const StepCount = ({ props, intl, navigation }) => {
       permissions: {
         read: [
           PERMS.DateOfBirth,
-          // PERMS.Weight,
+          PERMS.Weight,
           // PERMS.StepCount,
           // PERMS.ActiveEnergyBurned
         ],
@@ -475,7 +497,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
         //get Calo
         const a = results.reduce((k, i) => {
-          // console.log('k, ik, ik, i',k, i)
           const timeStart = moment(i.start).unix()
           const timeEnd = moment(i.end).unix()
           const timeS = timeEnd - timeStart
@@ -640,7 +661,6 @@ const StepCount = ({ props, intl, navigation }) => {
 
     let currentTime = new moment().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).unix()
     if (type == 1) {
-      console.log('vavaovoavoa',type)
       await setFirstTimeSetup()
       closeModalAlert7Day()
       return;
@@ -652,7 +672,6 @@ const StepCount = ({ props, intl, navigation }) => {
       await setFirstTimeSetup()
       await setResultSteps(resultSave)
       setTotalCount(10000)
-      console.log('vavaovoavoa2222',type)
       closeModalAlert7Day()
     }
   }
@@ -714,13 +733,19 @@ const StepCount = ({ props, intl, navigation }) => {
           <Text style={styles.txToday}>{formatMessage(message.today)}</Text>
           <View style={styles.viewBorderCircular}>
             <AnimatedCircularProgress
+              ref={refCircular}
+              // onAnimationComplete={() => {
+              //   refCircular.current.reAnimate(100, 0,3000, Easing.ease)
+              // }}
+              // useNativeDriver={true}
+              prefill={0}
               size={RFValue(170, fontSize.STANDARD_SCREEN_HEIGHT)}
               style={styles.circular}
               width={6}
               rotation={0}
               duration={3000}
               lineCap="round"
-              fill={(countStep / totalCount) * 100}
+              fill={countStep >= totalCount ? 100 : (countStep / totalCount) * 100}
               tintColor={red_bluezone}
               backgroundColor="#e5e5e5">
               {fill => (
