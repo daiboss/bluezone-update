@@ -206,9 +206,9 @@ const StepCount = ({ props, intl, navigation }) => {
     ) {
       // console.log('refCircularaa',countStep,totalCount)
       // refCircular.current.state.fillAnimation.Animated = 0
-      resultSteps()
-      fetchStepCountData()
-      onGetStepLine()
+      // resultSteps()
+      // fetchStepCountData()
+      // onGetStepLine()
     }else{
       // const {_toValue,_duration} = refCircular.current.state.fillAnimation._animation
       // refCircular.current.state.fillAnimation._value = 0
@@ -364,7 +364,7 @@ const StepCount = ({ props, intl, navigation }) => {
     getStepsRealTime()
     autoChangeStepsTarget() 
     return NativeAppEventEmitter.removeListener('change:steps')
-  }, [weightHeight.height, totalCount, countStep,appStateVisible])
+  }, [weightHeight.height, totalCount, countStep])
 
   const autoChangeStepsTarget = async () => {
     let auto = await getAutoChange();

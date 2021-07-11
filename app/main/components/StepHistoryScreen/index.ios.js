@@ -123,8 +123,6 @@ const StepCount = ({ props, intl, navigation }) => {
     // let start = firstOpenApp
     // let start = new Date(2020,1,1).format('yyyy-MM-dd')
     let start = new Date(new Date() - 6 * 30 * 24 * 60 * 60 * 1000).format('yyyy-MM-dd')
-    // console.log('monthAgomonthAgo',monthAgo)
-    // console.log('anannanannanaan',start)
     getDataHealth(start, end.format('yyyy-MM-dd'), 'day');
     return () => {
       intervalNow.current && clearInterval(intervalNow.current);
@@ -234,7 +232,6 @@ const StepCount = ({ props, intl, navigation }) => {
     }, 3000);
   };
   const getDataChart = (data, type) => {
-    console.log('datadatadatadata',data)
     let list = [];
     if (type == 'day') {
       let currentDay = moment(new Date())
@@ -338,7 +335,6 @@ const StepCount = ({ props, intl, navigation }) => {
         acc[yearWeek].push(current);
         return acc;
       }, {});
-      console.log('groupsgroups',groups)
       let currentTime = moment(new Date());
       let b = Object.entries(groups)
       // console.log('bbbbbbb',b)
@@ -438,7 +434,6 @@ const StepCount = ({ props, intl, navigation }) => {
       // get to localStorage or get to redux
       //get calo and time
       // const timeSet = `${result.year}/${result.x}`
-      // console.log('timeSettimeSettimeSet',timeSet)
       let optionsAll = {
         startDate: (moment(`${result.start}`, 'YYYY/DD/MM').startOf('day')).toISOString(),
         endDate: (moment(`${result.end}`, 'YYYY/DD/MM').endOf('day')).toISOString(),
@@ -594,9 +589,7 @@ const StepCount = ({ props, intl, navigation }) => {
         .then(res => {
           // const nowUnix = moment().startOf('day').format('yyyy/MM/DD')
           // const sixAgoUnix = new Date(new Date() - 6 * 30 * 24 * 60 * 60 * 1000).format('yyyy/MM/dd')
-          // console.log('sixAgoUnixsixAgoUnixsixAgoUnix',nowUnix,sixAgoUnix)
           // const dayOfTime = moment(nowUnix).diff(moment(sixAgoUnix),'day')
-          // console.log('dayOfTimedayOfTime',dayOfTime)
           if (res.length) {
             try {
               let listDataChart = getDataChart(res, type)
@@ -655,12 +648,10 @@ const StepCount = ({ props, intl, navigation }) => {
               }
               if(type == 'week'){
                 let arrayConvert = listDataChart.map((i,index) => {
-                  console.log('iiiiiii',i)
                   const monthEn = moment().locale('en').format('MMM')
                   const monthVn = moment().format('MM')
                   if(index == listDataChart.length - 1){
                     const startWeek = moment(i.start,'yyyy/DD/MM').startOf('isoWeek')
-                    console.log('startWeekstartWeek',startWeek)
                     return{
                       ...i,
                       x: locale == 'en' ? `${startWeek.format('DD')} - now\n ${monthEn}` : `${startWeek.format('DD')} - nay\nT ${monthVn}`
@@ -668,7 +659,6 @@ const StepCount = ({ props, intl, navigation }) => {
                   }
                   return i
                 })
-                console.log('arrayConvertarrayConvert',arrayConvert)
                 setDataChart(arrayConvert)
               }
             } catch (e) {
