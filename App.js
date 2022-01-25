@@ -257,7 +257,6 @@ class App extends React.Component {
   async componentDidMount() {
     //   // Check trạng thái lần đầu tiên vào app => hien: Dang khoi tao. Lan sau: Dang dong bo
     const dateInstall = moment().format('yyyy-MM-DD')
-
     const firstOpenApp = await getFirstTimeOpen();
     if (firstOpenApp == null) {
       setFirstTimeSetup()

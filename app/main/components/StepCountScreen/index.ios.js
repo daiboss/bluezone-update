@@ -206,9 +206,9 @@ const StepCount = ({ props, intl, navigation }) => {
     ) {
       // console.log('refCircularaa',countStep,totalCount)
       // refCircular.current.state.fillAnimation.Animated = 0
-      // resultSteps()
-      // fetchStepCountData()
-      // onGetStepLine()
+      resultSteps()
+      fetchStepCountData()
+      onGetStepLine()
     }else{
       // const {_toValue,_duration} = refCircular.current.state.fillAnimation._animation
       // refCircular.current.state.fillAnimation._value = 0
@@ -665,10 +665,14 @@ const StepCount = ({ props, intl, navigation }) => {
       closeModalAlert7Day()
       return;
     } else {
+      //////////////////
+      const dateInstall = moment().format('yyyy-MM-DD')
+      
       let resultSave = {
         step: 10000,
         date: currentTime
       }
+      await setFirstTimeOpen(dateInstall)
       await setFirstTimeSetup()
       await setResultSteps(resultSave)
       setTotalCount(10000)
