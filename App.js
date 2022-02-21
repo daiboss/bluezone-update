@@ -461,7 +461,7 @@ class App extends React.Component {
         <Stack.Screen name={'settingScreen'} component={SettingScreen} />
 
       </Stack.Navigator>
-    ) : !isHome ? (
+    ) : isHome ? (
       <Stack.Navigator
         id="Welcome"
         headerMode="none"

@@ -352,6 +352,7 @@ const StepCount = ({ props, intl, navigation }) => {
         startWeek.locale('en').format('MMM')
         endWeek.locale('en').format('MMM')
         let label = ''
+        console.log('valueEndvalueEnd',valueEnd)
         if (locale == 'en') {
           label = `${startWeek.format('DD')} - ${valueEnd}\n ${endWeek.locale('en').format('MMM')}`
         }
@@ -359,6 +360,7 @@ const StepCount = ({ props, intl, navigation }) => {
         list.push({
           x: label,
           y: steps,
+          isWeekNow : valueEnd,
           start: startWeek.format('YYYY/DD/MM'),
           end: endWeek.format('YYYY/DD/MM'),
           year: startWeek.format('YYYY')
@@ -647,7 +649,17 @@ const StepCount = ({ props, intl, navigation }) => {
                 }
               }
               if(type == 'week'){
-                let arrayConvert = listDataChart.map((i,index) => {
+                console.log('listDataChartlistDataChartlistDataChart',listDataChart)
+                
+               
+                let indexNow;
+                if(locale == 'en'){
+                    indexNow = listDataChart.map(i => i.isWeekNow).indexOf('now')
+                }else indexNow = listDataChart.map(i => i.isWeekNow).indexOf('nay')
+                let arrayCutWeek = listDataChart.filter((item,index) => index <= indexNow)
+                let arrayTemp = listDataChart.slice(indexNow + 1)
+                let arrayFinal = arrayTemp.concat(arrayCutWeek)
+                 let arrayConvert = arrayFinal.map((i,index) => {
                   const monthEn = moment().locale('en').format('MMM')
                   const monthVn = moment().format('MM')
                   if(index == listDataChart.length - 1){
@@ -659,9 +671,11 @@ const StepCount = ({ props, intl, navigation }) => {
                   }
                   return i
                 })
+                console.log('arrayConvertarrayConvertarrayConvert',arrayConvert)
                 setDataChart(arrayConvert)
               }
             } catch (e) {
+              console.log('eeeeeee',e)
             }
           }
         })
